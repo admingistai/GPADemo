@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "functions": {
+    "pages/api/proxy.js": {
+      "memory": 3008,
+      "maxDuration": 30
+    },
+    "pages/api/chat.js": {
+      "memory": 1024,
+      "maxDuration": 30
+    },
+    "pages/api/image.js": {
+      "memory": 1024,
+      "maxDuration": 60
+    }
+  },
+  "env": {
+    "NODE_ENV": "production",
+    "MAX_REQUEST_SIZE": "52428800",
+    "RATE_LIMIT_REQUESTS": "100",
+    "CHAT_RATE_LIMIT": "20",
+    "IMAGE_RATE_LIMIT": "5"
+  }
+}
