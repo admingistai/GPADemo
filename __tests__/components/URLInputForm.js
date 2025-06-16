@@ -14,7 +14,7 @@ describe('URLInputForm', () => {
     
     expect(screen.getByLabelText('Enter Website URL:')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('https://example.com')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Replicate Website' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Add Widget' })).toBeInTheDocument();
   });
 
   test('shows loading state', () => {
@@ -27,7 +27,7 @@ describe('URLInputForm', () => {
   test('validates empty input', async () => {
     render(<URLInputForm onSubmit={mockOnSubmit} loading={false} />);
     
-    const submitButton = screen.getByRole('button', { name: 'Replicate Website' });
+    const submitButton = screen.getByRole('button', { name: 'Add Widget' });
     fireEvent.click(submitButton);
     
     await waitFor(() => {
@@ -42,7 +42,7 @@ describe('URLInputForm', () => {
     const input = screen.getByPlaceholderText('https://example.com');
     await user.type(input, 'not-a-url');
     
-    const submitButton = screen.getByRole('button', { name: 'Replicate Website' });
+    const submitButton = screen.getByRole('button', { name: 'Add Widget' });
     await user.click(submitButton);
     
     expect(screen.getByRole('alert')).toHaveTextContent(/must start with http/i);
@@ -56,7 +56,7 @@ describe('URLInputForm', () => {
     const input = screen.getByPlaceholderText('https://example.com');
     await user.type(input, 'https://example.com');
     
-    const submitButton = screen.getByRole('button', { name: 'Replicate Website' });
+    const submitButton = screen.getByRole('button', { name: 'Add Widget' });
     await user.click(submitButton);
     
     await waitFor(() => {
@@ -71,7 +71,7 @@ describe('URLInputForm', () => {
     const input = screen.getByPlaceholderText('https://example.com');
     await user.type(input, 'invalid');
     
-    const submitButton = screen.getByRole('button', { name: 'Replicate Website' });
+    const submitButton = screen.getByRole('button', { name: 'Add Widget' });
     await user.click(submitButton);
     
     expect(screen.getByRole('alert')).toBeInTheDocument();

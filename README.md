@@ -154,7 +154,7 @@ vercel --prod
 
 1. Navigate to your deployed application
 2. Enter a complete URL (including http:// or https://)
-3. Click "Replicate Website"
+3. Click "Add Widget"
 4. The website will be displayed with your widget.js injected
 
 ## Security Considerations

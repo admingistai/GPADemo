@@ -48,7 +48,7 @@ export default function Home() {
     <div className="container">
       <header>
                         <h1>GPA</h1>
-        <p>Enter a URL to replicate any website with custom JavaScript injection</p>
+                    <p>Enter a URL to add widget to any website with custom JavaScript injection</p>
       </header>
 
       <main>
@@ -79,7 +79,7 @@ export default function Home() {
       <footer>
         <div className="disclaimer">
           <strong>Disclaimer:</strong> This tool is for educational and testing purposes only. 
-          Please ensure you have permission to replicate websites and respect copyright laws 
+                      Please ensure you have permission to add widgets to websites and respect copyright laws 
           and terms of service.
         </div>
       </footer>

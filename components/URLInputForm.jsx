@@ -60,7 +60,7 @@ export default function URLInputForm({ onSubmit, loading, error }) {
                 Loading...
               </>
             ) : (
-              'Replicate Website'
+              'Add Widget'
             )}
           </button>
         </div>
