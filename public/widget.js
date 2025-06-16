@@ -2787,11 +2787,11 @@
                                 <div class="gist-widget minimized" id="gist-widget">
                 <div class="gist-pill" id="gist-pill">
                     <div class="gist-pill-content">
-                        ${enhancedStyling.logoUrl ? 
-                            `<img src="${enhancedStyling.logoUrl}" class="gist-pill-logo" alt="Website Logo" onerror="this.src='${BACKEND_BASE_URL}/assets/gist-logo.png'; this.alt='Gist Logo';">` :
-                            enhancedStyling.faviconUrl ?
-                            `<img src="${enhancedStyling.faviconUrl}" class="gist-pill-logo" alt="Website Icon" onerror="this.src='${BACKEND_BASE_URL}/assets/gist-logo.png'; this.alt='Gist Logo';">` :
-                            `<img src="${BACKEND_BASE_URL}/assets/gist-logo.png" class="gist-pill-logo" alt="Gist Logo">`
+                                        ${enhancedStyling.logoUrl ?
+                `<img src="${enhancedStyling.logoUrl}" class="gist-pill-logo" alt="Website Logo" onerror="this.src='${BACKEND_BASE_URL}/gist-logo.png'; this.alt='Gist Logo';">` :
+                enhancedStyling.faviconUrl ?
+                `<img src="${enhancedStyling.faviconUrl}" class="gist-pill-logo" alt="Website Icon" onerror="this.src='${BACKEND_BASE_URL}/gist-logo.png'; this.alt='Gist Logo';">` :
+                `<img src="${BACKEND_BASE_URL}/gist-logo.png" class="gist-pill-logo" alt="Gist Logo">`
                         }
                         <input type="text" class="gist-pill-input" placeholder="Ask..." id="gist-input">
                         <button class="gist-desktop-mode-btn" id="gist-desktop-mode-btn" title="Desktop Mode">⊞</button>
@@ -2815,7 +2815,7 @@
                     </div>
                     <div class="gist-answer-footer">
                         <div class="gist-powered-section">
-                            <img src="${BACKEND_BASE_URL}/assets/gist-logo.png" alt="Gist Logo" class="gist-footer-logo">
+                            <img src="${BACKEND_BASE_URL}/gist-logo.png" alt="Gist Logo" class="gist-footer-logo">
                             <span class="gist-powered-text">Powered by Gist</span>
                         </div>
                         <a href="https://gist.ai" target="_blank" class="gist-add-to-site">Add to your site</a>
@@ -3111,7 +3111,7 @@
                     placeholderText = 'Get a summary of this page. Feature coming soon!';
                     break;
                 case 'remix':
-                    placeholderText = `<img src=\"${BACKEND_BASE_URL}/assets/remix-coming-soon.png\" alt=\"Remix Coming Soon\" class=\"remix-coming-soon-img\" />`;
+                    placeholderText = `<img src=\"${BACKEND_BASE_URL}/remix-coming-soon.png\" alt=\"Remix Coming Soon\" class=\"remix-coming-soon-img\" />`;
                     break;
                 case 'share':
                     placeholderText = 'Share insights from this page. Feature coming soon!';

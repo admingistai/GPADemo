@@ -29,6 +29,42 @@ const nextConfig = {
             value: 'origin-when-cross-origin'
           }
         ]
+      },
+      // Widget.js specific headers for cross-origin access
+      {
+        source: '/widget.js',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*'
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET'
+          },
+          {
+            key: 'Content-Type',
+            value: 'application/javascript'
+          }
+        ]
+      },
+      // Asset headers for images, logos, etc.
+      {
+        source: '/(.*\\.(png|jpg|jpeg|gif|svg|ico))',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*'
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET'
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000'
+          }
+        ]
       }
     ];
   }
