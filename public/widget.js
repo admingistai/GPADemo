@@ -3625,7 +3625,7 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
             userIsInteracting = true;
             
             // Update button appearance
-            desktopModeBtn.style.background = '#16a34a';
+            desktopModeBtn.style.background = '#4b5563';
             desktopModeBtn.title = 'Exit Desktop Mode';
             
             log('debug', 'Desktop mode enabled - widget moved to side with expanded view');
@@ -5675,36 +5675,10 @@ Instructions:
     }, 100);
         });
         
-        // Handle input hover for auto-desktop mode on desktop devices
+        // Handle input hover - auto-desktop mode disabled
         input.addEventListener('mouseenter', () => {
-            // Only auto-switch to desktop mode if:
-            // 1. User is on a desktop device
-            // 2. Not already in desktop mode
-            // 3. Haven't already auto-switched in this session
-            if (isDesktopDevice() && !isDesktopMode && !hasAutoSwitchedToDesktop) {
-                hasAutoSwitchedToDesktop = true;
-                
-                // Create smooth fade out effect
-                widget.style.transition = 'opacity 200ms ease-out, transform 200ms ease-out';
-                widget.style.opacity = '0';
-                widget.style.transform = 'translateX(-50%) translateY(10px) scale(0.95)';
-                
-                setTimeout(() => {
-                    enableDesktopMode();
-                    
-                    // Create smooth fade in effect for desktop mode
-                    widget.style.transition = 'opacity 300ms ease-in, transform 300ms ease-in';
-                    widget.style.opacity = '1';
-                    widget.style.transform = 'translateX(0) translateY(0) scale(1)';
-                    
-                    // Reset transition after animation completes
-                    setTimeout(() => {
-                        widget.style.transition = '';
-                    }, 300);
-                }, 200);
-                
-                log('debug', 'Auto-switched to desktop mode on hover with smooth fade effect');
-            }
+            // Auto-desktop mode functionality disabled per user request
+            // Users can still manually toggle desktop mode using the desktop mode button
         });
         
         // Handle Enter key press
