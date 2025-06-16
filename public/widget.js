@@ -2050,6 +2050,22 @@
                     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
                 }
                 
+                /* Summer Reading Ad Theme */
+                .summer-reading-ad {
+                    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fed7aa 100%);
+                    border: 1px solid #f59e0b;
+                    border-radius: 12px;
+                    padding: 12px 16px;
+                    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2);
+                }
+                
+                .summer-reading-ad:hover {
+                    background: linear-gradient(135deg, #fde68a 0%, #fcd34d 50%, #f59e0b 100%);
+                    border-color: #d97706;
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
+                }
+                
                 .gist-mock-ad::before {
                     content: 'Ad';
                     position: absolute;
@@ -2061,6 +2077,15 @@
                     padding: 1px 4px;
                     border-radius: 3px;
                     font-weight: 500;
+                }
+                
+                .summer-reading-ad::before {
+                    content: 'Ad by ProRata';
+                    color: #92400e;
+                    background: rgba(255, 255, 255, 0.8);
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    font-size: 8px;
                 }
                 
                 .gist-mock-ad-icon {
@@ -2099,6 +2124,14 @@
                     overflow: hidden;
                     text-overflow: ellipsis;
                     white-space: nowrap;
+                }
+                
+                .gist-mock-ad-brand {
+                    font-size: 9px;
+                    font-weight: 600;
+                    margin-top: 3px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
                 }
                 
                 .gist-mock-ad-cta {
@@ -5346,60 +5379,32 @@ Instructions:
         }
         
         function generateMockAds() {
-            const mockAds = [
+            const summerReadingAds = [
                 {
-                    icon: '💰',
-                    iconBg: '#10b981',
-                    title: 'Invest Smarter with AI',
-                    description: 'Get personalized investment recommendations powered by machine learning',
-                    cta: 'Start Free',
-                    url: '#'
+                    icon: '🏖️',
+                    iconBg: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
+                    title: 'Swoon-worthy summer fling',
+                    description: 'Dive into a hot-summer fling with Penguin Audio\'s new rom-com, perfect for a beach read.',
+                    cta: 'Listen on Audible',
+                    url: '#',
+                    brand: 'Penguin Audio',
+                    brandColor: '#f59e0b'
                 },
                 {
-                    icon: '📊',
-                    iconBg: '#3b82f6',
-                    title: 'Market Analytics Pro',
-                    description: 'Real-time market data and advanced charting tools for traders',
-                    cta: 'Try Now',
-                    url: '#'
-                },
-                {
-                    icon: '🎓',
-                    iconBg: '#8b5cf6',
-                    title: 'Learn Finance Online',
-                    description: 'Master financial concepts with interactive courses and expert guidance',
-                    cta: 'Enroll',
-                    url: '#'
-                },
-                {
-                    icon: '🏦',
-                    iconBg: '#f59e0b',
-                    title: 'Digital Banking Plus',
-                    description: 'Next-gen banking with zero fees and instant transfers worldwide',
-                    cta: 'Sign Up',
-                    url: '#'
-                },
-                {
-                    icon: '📱',
-                    iconBg: '#ef4444',
-                    title: 'Trading App 2024',
-                    description: 'Commission-free trading with advanced mobile tools and insights',
-                    cta: 'Download',
-                    url: '#'
-                },
-                {
-                    icon: '🔒',
-                    iconBg: '#06b6d4',
-                    title: 'Secure Crypto Wallet',
-                    description: 'Store and trade cryptocurrencies with military-grade security',
-                    cta: 'Get Wallet',
-                    url: '#'
+                    icon: '📚',
+                    iconBg: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)',
+                    title: 'Beach reads collection',
+                    description: 'Escape with captivating stories perfect for your summer vacation adventures.',
+                    cta: 'Explore Now',
+                    url: '#',
+                    brand: 'Summer Reading',
+                    brandColor: '#06b6d4'
                 }
             ];
             
-            // Randomly select 3 ads
-            const shuffled = mockAds.sort(() => 0.5 - Math.random());
-            return shuffled.slice(0, 3);
+            // Return only one ad (randomly selected)
+            const shuffled = summerReadingAds.sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, 1);
         }
         
         function createMockAdsHTML() {
@@ -5412,15 +5417,16 @@ Instructions:
             
             ads.forEach(ad => {
                 html += `
-                    <div class="gist-mock-ad" onclick="window.open('${ad.url}', '_blank')">
+                    <div class="gist-mock-ad summer-reading-ad" onclick="window.open('${ad.url}', '_blank')">
                         <div class="gist-mock-ad-icon" style="background: ${ad.iconBg};">
                             ${ad.icon}
                         </div>
                         <div class="gist-mock-ad-content">
                             <div class="gist-mock-ad-title">${ad.title}</div>
                             <div class="gist-mock-ad-description">${ad.description}</div>
+                            ${ad.brand ? `<div class="gist-mock-ad-brand" style="color: ${ad.brandColor};">${ad.brand}</div>` : ''}
                         </div>
-                        <button class="gist-mock-ad-cta">${ad.cta}</button>
+                        <button class="gist-mock-ad-cta" style="background: ${ad.brandColor || '#3b82f6'};">${ad.cta}</button>
                     </div>
                 `;
             });
