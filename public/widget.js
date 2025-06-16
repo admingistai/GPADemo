@@ -84,7 +84,7 @@
         accentColor: '#ec4899'
     };
     
-    // Extract website favicon and logo with smart detection
+    // Extract website favicon and logo with reliable, simple detection
     function extractLogosAndIcons() {
         const results = {
             favicon: null,
@@ -92,172 +92,186 @@
             icons: []
         };
         
-        // Extract favicon
+        // 1. FAVICON EXTRACTION - Most reliable source for brand identity
         const faviconSelectors = [
+            'link[rel="apple-touch-icon"][sizes="180x180"]', // High res iPhone
+            'link[rel="apple-touch-icon"][sizes="192x192"]', // High res Android
+            'link[rel="apple-touch-icon"]', // General Apple touch icon
+            'link[rel="icon"][sizes*="192"]', // High res favicon
+            'link[rel="icon"][sizes*="180"]',
+            'link[rel="icon"][sizes*="96"]',
             'link[rel="icon"]',
-            'link[rel="shortcut icon"]',
-            'link[rel="apple-touch-icon"]',
-            'link[rel="apple-touch-icon-precomposed"]'
+            'link[rel="shortcut icon"]'
         ];
         
         for (const selector of faviconSelectors) {
             const element = document.querySelector(selector);
-            if (element && element.href) {
+            if (element && element.href && isValidImageUrl(element.href)) {
                 results.favicon = element.href;
                 break;
             }
         }
         
-        // Smart logo detection with scoring system
-        const logoSelectors = [
-            // High priority selectors - most specific
-            { selector: 'img[alt*="logo" i][class*="logo" i]', score: 100 },
-            { selector: 'img[id*="logo" i][class*="logo" i]', score: 100 },
-            { selector: '.logo img', score: 95 },
-            { selector: '.brand img', score: 95 },
-            { selector: '.site-logo img', score: 95 },
-            { selector: '.brand-logo img', score: 95 },
-            { selector: '.company-logo img', score: 95 },
-            
-            // Medium-high priority - good positioning
-            { selector: 'header .logo img', score: 90 },
-            { selector: 'nav .logo img', score: 90 },
-            { selector: '.navbar .logo img', score: 90 },
-            { selector: '.navbar-brand img', score: 85 },
-            { selector: '.header .logo img', score: 85 },
-            { selector: '.site-header img[alt*="logo" i]', score: 85 },
-            
-            // Medium priority - location-based
-            { selector: 'header img[alt*="logo" i]', score: 80 },
-            { selector: 'nav img[alt*="logo" i]', score: 80 },
-            { selector: '.navbar img[alt*="logo" i]', score: 80 },
-            { selector: '.masthead img[alt*="logo" i]', score: 75 },
-            { selector: '.top-bar img[alt*="logo" i]', score: 75 },
-            
-            // Lower priority - generic attribute-based
-            { selector: 'img[alt*="logo" i]', score: 70 },
-            { selector: 'img[class*="logo" i]', score: 65 },
-            { selector: 'img[id*="logo" i]', score: 65 },
-            { selector: 'img[alt*="brand" i]', score: 60 },
-            { selector: 'img[class*="brand" i]', score: 60 },
-            
-            // Even lower priority - position-based without explicit logo terms
-            { selector: 'header img:first-child', score: 40 },
-            { selector: 'nav img:first-child', score: 40 },
-            { selector: '.navbar img:first-child', score: 40 },
-            { selector: '.header img:first-child', score: 35 }
+        // 2. META TAG EXTRACTION - Social media images often represent brand well
+        const metaImageSelectors = [
+            'meta[property="og:logo"]', // Explicit logo
+            'meta[name="twitter:image"]', // Twitter card image
+            'meta[property="twitter:image"]',
+            'meta[property="og:image"]' // Facebook Open Graph image (but might be article images)
         ];
         
-        const logoCandidates = [];
+        for (const selector of metaImageSelectors) {
+            const meta = document.querySelector(selector);
+            if (meta && meta.content && isValidImageUrl(meta.content)) {
+                const imageUrl = meta.content.toLowerCase();
+                // Only use if it looks like a logo (has "logo" in name or is small enough)
+                if (imageUrl.includes('logo') || imageUrl.includes('brand') || 
+                    selector === 'meta[property="og:logo"]') {
+                    results.logo = meta.content;
+                    break;
+                }
+            }
+        }
         
-        // Collect all potential logo candidates
-        logoSelectors.forEach(({ selector, score }) => {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(element => {
-                if (element && element.src && isValidImageUrl(element.src)) {
-                    // Check if this candidate is already in our list
-                    const existing = logoCandidates.find(c => c.src === element.src);
-                    if (existing) {
-                        // Update score if this selector has higher priority
-                        existing.score = Math.max(existing.score, score);
-                    } else {
-                        logoCandidates.push({
-                            element: element,
-                            src: element.src,
-                            alt: element.alt || '',
-                            className: element.className || '',
-                            id: element.id || '',
-                            width: element.width || element.naturalWidth || 0,
-                            height: element.height || element.naturalHeight || 0,
-                            score: score
+        // 3. URL-BASED LOGO DETECTION - Look for logo in filename/path first
+        if (!results.logo) {
+            const allImages = document.querySelectorAll('img');
+            const logoUrlCandidates = [];
+            
+            allImages.forEach(img => {
+                if (img.src && isValidImageUrl(img.src)) {
+                    const src = img.src.toLowerCase();
+                    const rect = img.getBoundingClientRect();
+                    
+                    let priority = 0;
+                    
+                    // Highest priority: explicit logo in URL
+                    if (src.includes('/logo') || src.includes('logo.') || src.includes('_logo') || src.includes('-logo')) {
+                        priority = 100;
+                    }
+                    // High priority: brand in URL
+                    else if (src.includes('/brand') || src.includes('brand.') || src.includes('_brand') || src.includes('-brand')) {
+                        priority = 90;
+                    }
+                    // Medium priority: header images
+                    else if (src.includes('/header') || src.includes('header.')) {
+                        priority = 70;
+                    }
+                    
+                    if (priority > 0) {
+                        logoUrlCandidates.push({
+                            src: img.src,
+                            element: img,
+                            priority: priority,
+                            rect: rect,
+                            width: img.width || rect.width,
+                            height: img.height || rect.height
                         });
                     }
                 }
             });
-        });
-        
-        // Apply smart scoring heuristics
-        logoCandidates.forEach(candidate => {
-            const img = candidate.element;
-            const rect = img.getBoundingClientRect();
             
-            // Bonus points for good positioning
-            if (rect.top < 200) candidate.score += 20; // Near top of page
-            if (rect.left < 300) candidate.score += 15; // Near left side
+            // Sort by priority, position, and size
+            logoUrlCandidates.sort((a, b) => {
+                let aScore = a.priority;
+                let bScore = b.priority;
+                
+                // Bonus for good position (top 150px, left 400px)
+                if (a.rect.top < 150) aScore += 20;
+                if (a.rect.left < 400) aScore += 10;
+                if (b.rect.top < 150) bScore += 20;
+                if (b.rect.left < 400) bScore += 10;
+                
+                // Bonus for reasonable logo size
+                if (a.width > 50 && a.width < 300 && a.height > 20 && a.height < 150) aScore += 15;
+                if (b.width > 50 && b.width < 300 && b.height > 20 && b.height < 150) bScore += 15;
+                
+                return bScore - aScore;
+            });
             
-            // Bonus for appropriate size
-            const width = candidate.width || rect.width;
-            const height = candidate.height || rect.height;
-            if (width > 50 && width < 300 && height > 20 && height < 150) {
-                candidate.score += 25;
-            }
-            
-            // Bonus for good aspect ratio (logos are usually wider than tall)
-            if (width > 0 && height > 0) {
-                const aspectRatio = width / height;
-                if (aspectRatio >= 1.2 && aspectRatio <= 4) {
-                    candidate.score += 15;
-                }
-            }
-            
-            // Bonus for semantic indicators in alt text
-            const altLower = candidate.alt.toLowerCase();
-            if (altLower.includes('logo')) candidate.score += 30;
-            if (altLower.includes('brand')) candidate.score += 20;
-            if (altLower.includes('company')) candidate.score += 15;
-            if (altLower.includes('site')) candidate.score += 10;
-            
-            // Bonus for semantic indicators in class/id
-            const classLower = candidate.className.toLowerCase();
-            const idLower = candidate.id.toLowerCase();
-            if (classLower.includes('logo') || idLower.includes('logo')) candidate.score += 25;
-            if (classLower.includes('brand') || idLower.includes('brand')) candidate.score += 20;
-            
-            // Penalty for obvious non-logos
-            if (altLower.includes('avatar') || altLower.includes('profile')) candidate.score -= 30;
-            if (altLower.includes('banner') || altLower.includes('ad')) candidate.score -= 40;
-            if (altLower.includes('thumbnail') || altLower.includes('preview')) candidate.score -= 25;
-            if (altLower.includes('icon') && !altLower.includes('logo')) candidate.score -= 10;
-            
-            // Penalty for very small or very large images
-            if (width > 0 && height > 0) {
-                if (width < 30 || height < 20) candidate.score -= 20; // Too small
-                if (width > 400 || height > 200) candidate.score -= 15; // Too large
-            }
-            
-            // Penalty for images with suspicious URLs
-            const srcLower = candidate.src.toLowerCase();
-            if (srcLower.includes('avatar') || srcLower.includes('profile')) candidate.score -= 30;
-            if (srcLower.includes('banner') || srcLower.includes('ad')) candidate.score -= 40;
-            if (srcLower.includes('thumb') || srcLower.includes('preview')) candidate.score -= 25;
-        });
-        
-        // Sort candidates by score (highest first)
-        logoCandidates.sort((a, b) => b.score - a.score);
-        
-        // Select the best logo candidate
-        if (logoCandidates.length > 0) {
-            const bestCandidate = logoCandidates[0];
-            if (bestCandidate.score > 30) { // Minimum threshold for confidence
-                results.logo = bestCandidate.src;
+            if (logoUrlCandidates.length > 0) {
+                results.logo = logoUrlCandidates[0].src;
             }
         }
         
-        // Collect all notable images that might be logos for fallback
-        const allImages = document.querySelectorAll('img');
+        // 4. STRUCTURAL LOGO DETECTION - Most reliable DOM patterns
+        if (!results.logo) {
+            const structuralLogoSelectors = [
+                // Highest confidence: explicit logo classes
+                '.logo img[src]',
+                '.brand img[src]',
+                '.site-logo img[src]',
+                '.brand-logo img[src]',
+                '.company-logo img[src]',
+                
+                // High confidence: header/nav logo areas
+                'header .logo img[src]',
+                'nav .logo img[src]',
+                '.header .logo img[src]',
+                '.navbar .logo img[src]',
+                '.navbar-brand img[src]',
+                '.masthead .logo img[src]',
+                
+                // Medium confidence: semantic alt text
+                'header img[alt*="logo" i][src]',
+                'nav img[alt*="logo" i][src]',
+                '.navbar img[alt*="logo" i][src]',
+                
+                // Lower confidence but still useful
+                'img[alt*="logo" i][src]',
+                '[class*="logo"] img[src]'
+            ];
+            
+            for (const selector of structuralLogoSelectors) {
+                const element = document.querySelector(selector);
+                if (element && element.src && isValidImageUrl(element.src)) {
+                    const rect = element.getBoundingClientRect();
+                    const width = element.width || rect.width;
+                    const height = element.height || rect.height;
+                    
+                    // Quality checks: reasonable position and size
+                    const isReasonablePosition = rect.top < 400; // Not too far down the page
+                    const isReasonableSize = width > 20 && width < 500 && height > 15 && height < 300;
+                    const isVisible = rect.width > 0 && rect.height > 0;
+                    
+                    if (isReasonablePosition && isReasonableSize && isVisible) {
+                        results.logo = element.src;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // 5. FALLBACK TO HIGH-QUALITY FAVICON
+        if (!results.logo && results.favicon) {
+            // Use favicon as logo if it's high quality
+            const favicon = results.favicon.toLowerCase();
+            if (favicon.includes('192') || favicon.includes('180') || favicon.includes('apple-touch-icon')) {
+                results.logo = results.favicon;
+            }
+        }
+        
+        // 6. COLLECT ALL POTENTIAL LOGO CANDIDATES
+        const allImages = document.querySelectorAll('img[src]');
         allImages.forEach(img => {
-            if (img.src && isValidImageUrl(img.src) && (
-                img.alt?.toLowerCase().includes('logo') ||
-                img.className?.toLowerCase().includes('logo') ||
-                img.id?.toLowerCase().includes('logo') ||
-                (img.width <= 200 && img.height <= 100 && img.width > 30 && img.height > 20)
-            )) {
-                results.icons.push({
-                    src: img.src,
-                    alt: img.alt,
-                    width: img.width,
-                    height: img.height
-                });
+            if (img.src && isValidImageUrl(img.src)) {
+                const alt = (img.alt || '').toLowerCase();
+                const className = (img.className || '').toLowerCase();
+                const src = img.src.toLowerCase();
+                
+                // Only collect images that have clear logo indicators
+                if (alt.includes('logo') || 
+                    className.includes('logo') || 
+                    src.includes('logo') ||
+                    src.includes('brand')) {
+                    
+                    results.icons.push({
+                        src: img.src,
+                        alt: img.alt || '',
+                        width: img.width,
+                        height: img.height
+                    });
+                }
             }
         });
         
@@ -421,8 +435,8 @@
         log('info', 'Starting website styling analysis...');
         
         try {
-            // Extract logos and icons
-            const logos = extractLogosAndIcons();
+                    // Extract logos and icons
+        const logos = extractLogosAndIcons();
             
             // Extract font family
             const fontFamily = extractFontFamilies();
