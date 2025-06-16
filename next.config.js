@@ -50,7 +50,7 @@ const nextConfig = {
       },
       // Asset headers for images, logos, etc.
       {
-        source: '/(.*\\.(png|jpg|jpeg|gif|svg|ico))',
+        source: '/:path*\\.(png|jpg|jpeg|gif|svg|ico)',
         headers: [
           {
             key: 'Access-Control-Allow-Origin',
