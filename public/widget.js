@@ -4855,18 +4855,18 @@ Instructions:
             const duration = ttsState.currentAudio.duration;
             const wordsPerSecond = ttsState.words.length / duration;
             
-            // Highlight words progressively
+            // Scale words progressively
             const highlightInterval = setInterval(() => {
                 if (!ttsState.isPlaying || ttsState.currentWordIndex >= ttsState.words.length) {
                     clearInterval(highlightInterval);
                     return;
                 }
                 
-                // Remove previous highlights
+                // Reset previous word scaling
                 clearTextHighlights();
                 
-                // Highlight current word on the page
-                highlightWordOnPage(ttsState.words[ttsState.currentWordIndex]);
+                // Scale current word on the page
+                scaleWordOnPage(ttsState.words[ttsState.currentWordIndex]);
                 
                 ttsState.currentWordIndex++;
             }, 1000 / wordsPerSecond);
@@ -4875,27 +4875,26 @@ Instructions:
             ttsState.highlightInterval = highlightInterval;
         }
         
-        function highlightWordOnPage(word) {
-            // Clear previous highlights first
+        function scaleWordOnPage(word) {
+            // Clear previous scaling first
             clearTextHighlights();
             
-            // Find the word in the page and get its position
-            const range = findWordInPage(word);
-            if (range) {
-                createOverlayHighlight(range);
-                
-                // Scroll to the highlighted word
-                range.startContainer.parentElement.scrollIntoView({ 
+            // Find and scale the word
+            const element = findAndScaleWord(word);
+            if (element) {
+                // Scroll to the scaled word
+                element.scrollIntoView({ 
                     behavior: 'smooth', 
-                    block: 'center' 
+                    block: 'center',
+                    inline: 'center'
                 });
             }
         }
         
-        function findWordInPage(word) {
+        function findAndScaleWord(word) {
             // Clean the word for better matching
-            const cleanWord = word.trim().toLowerCase();
-            if (!cleanWord || cleanWord.length < 2) {
+            const cleanWord = word.trim();
+            if (!cleanWord || cleanWord.length < 1) {
                 return null;
             }
             
@@ -4905,7 +4904,7 @@ Instructions:
                 NodeFilter.SHOW_TEXT,
                 {
                     acceptNode: function(node) {
-                        // Skip widget, script, style elements, and hidden elements
+                        // Skip widget, script, style elements
                         const parent = node.parentElement;
                         if (!parent) return NodeFilter.FILTER_REJECT;
                         
@@ -4918,12 +4917,12 @@ Instructions:
                         
                         // Skip if parent is hidden
                         const style = window.getComputedStyle(parent);
-                        if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') {
+                        if (style.display === 'none' || style.visibility === 'hidden') {
                             return NodeFilter.FILTER_REJECT;
                         }
                         
                         // Only process nodes with meaningful text
-                        if (node.textContent.trim().length < 2) {
+                        if (node.textContent.trim().length < 1) {
                             return NodeFilter.FILTER_REJECT;
                         }
                         
@@ -4936,8 +4935,6 @@ Instructions:
             let textNode;
             while (textNode = walker.nextNode()) {
                 const text = textNode.textContent;
-                
-                // Try exact word boundary match first
                 const wordRegex = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
                 const match = text.match(wordRegex);
                 
@@ -4945,90 +4942,96 @@ Instructions:
                     const matchedWord = match[0];
                     const startIndex = text.indexOf(matchedWord);
                     
-                    // Ensure we found a valid match
                     if (startIndex >= 0) {
-                        const range = document.createRange();
-                        const endIndex = startIndex + matchedWord.length;
+                        // Split the text node and wrap the word in a span
+                        const beforeText = text.substring(0, startIndex);
+                        const afterText = text.substring(startIndex + matchedWord.length);
                         
-                        try {
-                            range.setStart(textNode, startIndex);
-                            range.setEnd(textNode, endIndex);
-                            
-                            // Validate the range produces a reasonable rectangle
-                            const testRect = range.getBoundingClientRect();
-                            if (testRect.width > 0 && testRect.width < 200 && testRect.height > 0 && testRect.height < 50) {
-                                return range;
-                            }
-                        } catch (e) {
-                            // Skip invalid ranges
-                            continue;
+                        const parent = textNode.parentNode;
+                        
+                        // Create the scaled word span
+                        const wordSpan = document.createElement('span');
+                        wordSpan.className = 'gist-tts-scaled-word';
+                        wordSpan.textContent = matchedWord;
+                        wordSpan.style.cssText = `
+                            display: inline-block !important;
+                            transform: scale(1.15) !important;
+                            transition: transform 0.3s ease !important;
+                            color: #1565C0 !important;
+                            font-weight: 600 !important;
+                            text-shadow: 0 0 2px rgba(21, 101, 192, 0.3) !important;
+                        `;
+                        
+                        // Replace the text node with the new structure
+                        if (beforeText) {
+                            const beforeNode = document.createTextNode(beforeText);
+                            parent.insertBefore(beforeNode, textNode);
                         }
+                        
+                        parent.insertBefore(wordSpan, textNode);
+                        
+                        if (afterText) {
+                            textNode.textContent = afterText;
+                        } else {
+                            parent.removeChild(textNode);
+                        }
+                        
+                        // Store for cleanup
+                        ttsState.highlights.push({
+                            type: 'scaled',
+                            element: wordSpan,
+                            originalText: matchedWord,
+                            parent: parent,
+                            beforeText: beforeText,
+                            afterText: afterText
+                        });
+                        
+                        // Auto-reset after delay
+                        setTimeout(() => {
+                            resetWordScaling(wordSpan, matchedWord, parent, beforeText, afterText);
+                        }, 1000);
+                        
+                        return wordSpan;
                     }
                 }
             }
             return null;
         }
         
-        function createOverlayHighlight(range) {
-            // Get the bounding rectangle of the word
-            const rect = range.getBoundingClientRect();
-            
-            // Skip if the rectangle is too large (likely not a single word)
-            if (rect.width > 200 || rect.height > 50) {
-                return;
-            }
-            
-            // Skip if rectangle is too small or has no dimensions
-            if (rect.width < 5 || rect.height < 10) {
-                return;
-            }
-            
-            // Account for page scroll
-            const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
-            const scrollY = window.pageYOffset || document.documentElement.scrollTop;
-            
-            // Create overlay highlight box
-            const overlay = document.createElement('div');
-            overlay.className = 'gist-tts-word-highlight';
-            overlay.style.cssText = `
-                position: absolute !important;
-                left: ${rect.left + scrollX}px !important;
-                top: ${rect.top + scrollY}px !important;
-                width: ${rect.width}px !important;
-                height: ${rect.height}px !important;
-                background-color: rgba(255, 235, 59, 0.6) !important;
-                border: 1px solid rgba(255, 193, 7, 0.8) !important;
-                border-radius: 2px !important;
-                pointer-events: none !important;
-                z-index: 999999 !important;
-                transition: opacity 0.3s ease !important;
-                box-shadow: 0 0 4px rgba(255, 193, 7, 0.3) !important;
-            `;
-            
-            // Add to page
-            document.body.appendChild(overlay);
-            
-            // Store for cleanup
-            ttsState.highlights.push(overlay);
-            
-            // Auto-remove after a shorter delay to prevent buildup
-            setTimeout(() => {
-                if (overlay.parentNode) {
-                    overlay.style.opacity = '0';
-                    setTimeout(() => {
-                        if (overlay.parentNode) {
-                            overlay.parentNode.removeChild(overlay);
-                        }
-                    }, 300);
+        function resetWordScaling(wordSpan, originalText, parent, beforeText, afterText) {
+            if (wordSpan && wordSpan.parentNode) {
+                // Create a single text node with all the text
+                const fullText = (beforeText || '') + originalText + (afterText || '');
+                const newTextNode = document.createTextNode(fullText);
+                
+                // Remove the beforeText node if it exists
+                const beforeNode = wordSpan.previousSibling;
+                if (beforeNode && beforeNode.nodeType === Node.TEXT_NODE && beforeNode.textContent === beforeText) {
+                    parent.removeChild(beforeNode);
                 }
-            }, 800); // Reduced to 0.8 seconds with fade out
+                
+                // Remove the afterText node if it exists
+                const afterNode = wordSpan.nextSibling;
+                if (afterNode && afterNode.nodeType === Node.TEXT_NODE && afterNode.textContent === afterText) {
+                    parent.removeChild(afterNode);
+                }
+                
+                // Replace the span with the complete text node
+                parent.replaceChild(newTextNode, wordSpan);
+            }
         }
         
         function clearTextHighlights() {
-            // Remove all overlay highlights
-            ttsState.highlights.forEach(overlay => {
-                if (overlay && overlay.parentNode) {
-                    overlay.parentNode.removeChild(overlay);
+            // Reset all scaled words
+            ttsState.highlights.forEach(highlight => {
+                if (highlight.type === 'scaled' && highlight.element && highlight.element.parentNode) {
+                    resetWordScaling(
+                        highlight.element, 
+                        highlight.originalText, 
+                        highlight.parent, 
+                        highlight.beforeText, 
+                        highlight.afterText
+                    );
                 }
             });
             ttsState.highlights = [];
