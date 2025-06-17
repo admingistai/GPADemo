@@ -223,7 +223,7 @@
             ];
             
             for (const selector of structuralLogoSelectors) {
-                const element = document.querySelector(selector);
+            const element = document.querySelector(selector);
                 if (element && element.src && isValidImageUrl(element.src)) {
                     const rect = element.getBoundingClientRect();
                     const width = element.width || rect.width;
@@ -235,8 +235,8 @@
                     const isVisible = rect.width > 0 && rect.height > 0;
                     
                     if (isReasonablePosition && isReasonableSize && isVisible) {
-                        results.logo = element.src;
-                        break;
+                results.logo = element.src;
+                break;
                     }
                 }
             }
@@ -265,12 +265,12 @@
                     src.includes('logo') ||
                     src.includes('brand')) {
                     
-                    results.icons.push({
-                        src: img.src,
+                results.icons.push({
+                    src: img.src,
                         alt: img.alt || '',
-                        width: img.width,
-                        height: img.height
-                    });
+                    width: img.width,
+                    height: img.height
+                });
                 }
             }
         });
@@ -435,8 +435,8 @@
         log('info', 'Starting website styling analysis...');
         
         try {
-                    // Extract logos and icons
-        const logos = extractLogosAndIcons();
+            // Extract logos and icons
+            const logos = extractLogosAndIcons();
             
             // Extract font family
             const fontFamily = extractFontFamilies();
@@ -857,6 +857,151 @@
             p,
             h1, h2, h3, h4, h5, h6 {
                 font-family: ${widgetFont} !important;
+            }
+            
+            /* Remix Interface Styles */
+            .gist-remix-interface {
+                padding: 24px;
+                color: ${styling.textColor};
+            }
+            
+            .gist-tts-section {
+                margin-bottom: 24px;
+            }
+            
+            .gist-tts-header h3 {
+                margin: 0 0 8px 0;
+                font-size: 18px;
+                font-weight: 600;
+                color: ${styling.textColor};
+            }
+            
+            .gist-tts-header p {
+                margin: 0 0 16px 0;
+                font-size: 14px;
+                color: ${styling.textColor}80;
+            }
+            
+            .gist-section-divider {
+                height: 1px;
+                background: ${styling.primaryColor}20;
+                margin: 24px 0;
+            }
+            
+            .gist-remix-section {
+                margin-top: 24px;
+            }
+            
+            .gist-remix-header h3 {
+                margin: 0 0 8px 0;
+                font-size: 18px;
+                font-weight: 600;
+                color: ${styling.textColor};
+            }
+            
+            .gist-remix-header p {
+                margin: 0 0 20px 0;
+                font-size: 14px;
+                color: ${styling.textColor}80;
+            }
+            
+            .gist-remix-formats {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 12px;
+                margin-bottom: 24px;
+            }
+            
+            .gist-remix-format {
+                background: ${styling.backgroundColor};
+                border: 1px solid ${styling.primaryColor}20;
+                border-radius: 12px;
+                padding: 16px;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-family: ${widgetFont};
+                min-height: 100px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            
+            .gist-remix-format:hover {
+                border-color: ${styling.primaryColor}40;
+                background: ${styling.primaryColor}05;
+                transform: translateY(-2px);
+            }
+            
+            .gist-remix-format[data-format="text"]:hover {
+                border-color: ${styling.primaryColor};
+                background: ${styling.primaryColor}10;
+            }
+            
+            .gist-remix-format-icon {
+                font-size: 24px;
+                margin-bottom: 8px;
+            }
+            
+            .gist-remix-format-label {
+                font-weight: 600;
+                font-size: 14px;
+                color: ${styling.textColor};
+                margin-bottom: 4px;
+            }
+            
+            .gist-remix-format-desc {
+                font-size: 12px;
+                color: ${styling.textColor}60;
+            }
+            
+            .gist-remix-format[data-format="text"] .gist-remix-format-desc {
+                color: ${styling.primaryColor};
+            }
+            
+            .gist-remix-custom {
+                border-top: 1px solid ${styling.primaryColor}20;
+                padding-top: 20px;
+            }
+            
+            .gist-remix-prompt {
+                width: 100%;
+                padding: 12px;
+                border: 1px solid ${styling.primaryColor}30;
+                border-radius: 8px;
+                background: ${styling.backgroundColor};
+                color: ${styling.textColor};
+                font-family: ${widgetFont};
+                font-size: 14px;
+                resize: vertical;
+                margin-bottom: 12px;
+            }
+            
+            .gist-remix-prompt:focus {
+                outline: none;
+                border-color: ${styling.primaryColor};
+            }
+            
+            .gist-remix-prompt::placeholder {
+                color: ${styling.textColor}60;
+            }
+            
+            .gist-remix-generate {
+                background: ${styling.primaryColor};
+                color: white;
+                border: none;
+                border-radius: 8px;
+                padding: 12px 24px;
+                font-family: ${widgetFont};
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            
+            .gist-remix-generate:hover {
+                background: ${styling.secondaryColor};
+                transform: translateY(-1px);
             }
                  `;
      }
@@ -2952,9 +3097,9 @@
                                 <div class="gist-widget minimized" id="gist-widget">
                 <div class="gist-pill" id="gist-pill">
                     <div class="gist-pill-content">
-                                        ${enhancedStyling.logoUrl ?
+                        ${enhancedStyling.logoUrl ? 
                 `<img src="${enhancedStyling.logoUrl}" class="gist-pill-logo" alt="Website Logo" onerror="this.src='${BACKEND_BASE_URL}/gist-logo.png'; this.alt='Gist Logo';">` :
-                enhancedStyling.faviconUrl ?
+                            enhancedStyling.faviconUrl ?
                 `<img src="${enhancedStyling.faviconUrl}" class="gist-pill-logo" alt="Website Icon" onerror="this.src='${BACKEND_BASE_URL}/gist-logo.png'; this.alt='Gist Logo';">` :
                 `<img src="${BACKEND_BASE_URL}/gist-logo.png" class="gist-pill-logo" alt="Gist Logo">`
                         }
@@ -3298,11 +3443,11 @@
             }
             
             if (placeholderText) {
-                answerContent.innerHTML = `
-                    <div class="gist-answer-placeholder gist-content-entering">
-                        ${placeholderText}
-                    </div>
-                `;
+            answerContent.innerHTML = `
+                <div class="gist-answer-placeholder gist-content-entering">
+                    ${placeholderText}
+        </div>
+            `;
             } else {
                 // For empty tools like remix, just clear the content
                 answerContent.innerHTML = '';
@@ -4260,6 +4405,7 @@ Instructions:
         function showRemixInterface() {
             let html = `
                 <div class="gist-remix-interface gist-content-entering">
+                    <!-- TTS Section at the top -->
                     <div class="gist-tts-section">
                         <div class="gist-tts-header">
                             <h3>🎧 Text to Speech</h3>
@@ -4275,6 +4421,50 @@ Instructions:
                             <button class="gist-tts-control" id="tts-stop">⏹️ Stop</button>
                         </div>
                         <div class="gist-tts-status" id="tts-status"></div>
+                    </div>
+                    
+                    <!-- Divider -->
+                    <div class="gist-section-divider"></div>
+                    
+                    <!-- Remix Options Section -->
+                    <div class="gist-remix-section">
+                        <div class="gist-remix-header">
+                            <h3>🎨 Remix Content</h3>
+                            <p>Transform this page into different formats</p>
+                        </div>
+                        
+                        <div class="gist-remix-formats">
+                            <button class="gist-remix-format" data-format="video">
+                                <div class="gist-remix-format-icon">🎥</div>
+                                <div class="gist-remix-format-label">Video Script</div>
+                                <div class="gist-remix-format-desc">Coming Soon</div>
+                            </button>
+                            
+                            <button class="gist-remix-format" data-format="image">
+                                <div class="gist-remix-format-icon">🖼️</div>
+                                <div class="gist-remix-format-label">Image Prompt</div>
+                                <div class="gist-remix-format-desc">Coming Soon</div>
+                            </button>
+                            
+                            <button class="gist-remix-format" data-format="meme">
+                                <div class="gist-remix-format-icon">😂</div>
+                                <div class="gist-remix-format-label">Meme</div>
+                                <div class="gist-remix-format-desc">Coming Soon</div>
+                            </button>
+                            
+                            <button class="gist-remix-format" data-format="text" onclick="generateRemix('text')">
+                                <div class="gist-remix-format-icon">📝</div>
+                                <div class="gist-remix-format-label">Text Summary</div>
+                                <div class="gist-remix-format-desc">Key points and insights</div>
+                            </button>
+                        </div>
+                        
+                        <div class="gist-remix-custom">
+                            <textarea class="gist-remix-prompt" placeholder="Or describe what you want to create..." rows="3"></textarea>
+                            <button class="gist-remix-generate" onclick="generateRemix('custom')">
+                                Generate
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -4306,6 +4496,15 @@ Instructions:
                 stopTextToSpeech(ttsButton, ttsControls, ttsStatus);
             });
             
+            // Add event listeners for remix format buttons (coming soon functionality)
+            const remixButtons = answerContent.querySelectorAll('.gist-remix-format[data-format]:not([data-format="text"])');
+            remixButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Show coming soon message
+                    showComingSoonMessage(button.dataset.format);
+                });
+            });
+            
             // Trigger animation
             setTimeout(() => {
                 const elements = answerContent.querySelectorAll('.gist-content-entering');
@@ -4314,6 +4513,38 @@ Instructions:
                     el.classList.add('gist-content-entered');
                 });
             }, 50);
+        }
+        
+        function showComingSoonMessage(format) {
+            // Create a temporary message
+            const message = document.createElement('div');
+            message.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 20px;
+                border-radius: 8px;
+                z-index: 10000;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                text-align: center;
+            `;
+            message.innerHTML = `
+                <div style="font-size: 18px; margin-bottom: 10px;">🚧</div>
+                <div style="font-weight: 600; margin-bottom: 5px;">${format.charAt(0).toUpperCase() + format.slice(1)} Coming Soon</div>
+                <div style="font-size: 14px; opacity: 0.8;">This feature is in development</div>
+            `;
+            
+            document.body.appendChild(message);
+            
+            // Remove after 2 seconds
+            setTimeout(() => {
+                if (message.parentNode) {
+                    message.parentNode.removeChild(message);
+                }
+            }, 2000);
         }
         
         function showShareInterface() {
@@ -4497,7 +4728,7 @@ Instructions:
                 }
                 
                 // Generate text remix only
-                await generateRemixText(customPrompt, context);
+                    await generateRemixText(customPrompt, context);
                 
             } catch (error) {
                 log('error', 'Remix generation failed', { error: error.message });
@@ -5006,138 +5237,16 @@ Instructions:
         }
         
         function startTextHighlighting() {
-            if (!ttsState.currentAudio || !ttsState.isPlaying) return;
-            
-            // Reset to start of our pre-mapped queue
-            ttsState.currentQueueIndex = 0;
-            
-            const duration = ttsState.currentAudio.duration;
-            const wordsPerSecond = ttsState.words.length / duration;
-            
-            console.log(`Starting TTS highlighting: ${ttsState.words.length} TTS words, ${ttsState.wordQueue.length} mapped words`);
-            console.log(`Audio duration: ${duration}s = ${wordsPerSecond.toFixed(2)} words/sec`);
-            
-            // Simple sequential highlighting - just advance through the queue
-            const highlightInterval = setInterval(() => {
-                if (!ttsState.isPlaying || ttsState.currentQueueIndex >= ttsState.words.length) {
-                    clearInterval(highlightInterval);
-                    return;
-                }
-                
-                // Clear previous underline
-                clearTextHighlights();
-                
-                // Get the current mapped word location
-                const wordLocation = ttsState.wordQueue[ttsState.currentQueueIndex];
-                
-                if (wordLocation) {
-                    underlineWordAtLocation(wordLocation);
-                    console.log(`Highlighted word ${ttsState.currentQueueIndex + 1}/${ttsState.words.length}: "${wordLocation.word}"`);
-                } else {
-                    console.log(`Skipping unmapped word at index ${ttsState.currentQueueIndex}`);
-                }
-                
-                // Always advance - no searching, no backtracking
-                ttsState.currentQueueIndex++;
-                
-            }, 1000 / wordsPerSecond);
-            
-            ttsState.highlightInterval = highlightInterval;
+            // Highlighting disabled - TTS will play without visual highlighting
+            console.log('TTS playing without highlighting');
         }
         
         function underlineWordAtLocation(wordLocation) {
-            if (!wordLocation || !wordLocation.textNode || !wordLocation.textNode.parentElement) {
-                return;
-            }
-            
-            // Verify the text node still exists and contains our word
-            const currentText = wordLocation.textNode.textContent;
-            if (!currentText || wordLocation.startIndex >= currentText.length) {
-                console.log('Text node content has changed, skipping highlight');
-                return;
-            }
-            
-            const parent = wordLocation.textNode.parentElement;
-            const beforeText = currentText.substring(0, wordLocation.startIndex);
-            const wordText = currentText.substring(wordLocation.startIndex, wordLocation.endIndex);
-            const afterText = currentText.substring(wordLocation.endIndex);
-            
-            // Create the highlighted span
-            const highlightSpan = document.createElement('span');
-            highlightSpan.textContent = wordText;
-            highlightSpan.style.cssText = `
-                text-decoration: underline !important;
-                text-decoration-color: #1565C0 !important;
-                text-decoration-thickness: 2px !important;
-                text-underline-offset: 2px !important;
-                transition: all 0.3s ease !important;
-            `;
-            highlightSpan.setAttribute('data-tts-highlight', 'true');
-            
-            // Replace the text node with before text + span + after text
-            const fragment = document.createDocumentFragment();
-            
-            if (beforeText) {
-                fragment.appendChild(document.createTextNode(beforeText));
-            }
-            
-            fragment.appendChild(highlightSpan);
-            
-            if (afterText) {
-                fragment.appendChild(document.createTextNode(afterText));
-            }
-            
-            parent.replaceChild(fragment, wordLocation.textNode);
-            
-            // Store for cleanup
-            ttsState.lastHighlightedElement = highlightSpan;
-            
-            // Scroll to the highlighted word
-            setTimeout(() => {
-                highlightSpan.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center',
-                    inline: 'nearest'
-                });
-            }, 50);
+            // Highlighting disabled
         }
         
         function clearTextHighlights() {
-            // Remove all highlighted spans and restore original text
-            const highlightedElements = document.querySelectorAll('[data-tts-highlight="true"]');
-            
-            highlightedElements.forEach(span => {
-                const parent = span.parentElement;
-                if (!parent) return;
-                
-                // Collect all text content from this parent
-                let fullText = '';
-                const nodesToRemove = [];
-                
-                for (let child of parent.childNodes) {
-                    if (child.nodeType === Node.TEXT_NODE) {
-                        fullText += child.textContent;
-                        nodesToRemove.push(child);
-                    } else if (child === span) {
-                        fullText += span.textContent;
-                        nodesToRemove.push(child);
-                    }
-                }
-                
-                // Remove all the nodes we collected
-                nodesToRemove.forEach(node => {
-                    if (node.parentNode === parent) {
-                        parent.removeChild(node);
-                    }
-                });
-                
-                // Add back as a single text node
-                if (fullText) {
-                    parent.appendChild(document.createTextNode(fullText));
-                }
-            });
-            
-            ttsState.lastHighlightedElement = null;
+            // Highlighting disabled - no cleanup needed
         }
         
         function pauseTextToSpeech() {
@@ -5795,20 +5904,20 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             if (!adsContainer) return;
             
             try {
-                // Show the ads container
-                adsContainer.classList.add('visible');
+            // Show the ads container
+            adsContainer.classList.add('visible');
                 
                 // Generate and insert ads HTML with question context
                 const adsHTML = await createMockAdsHTML(questionContext);
                 adsContainer.innerHTML = adsHTML;
-                
-                // Animate the ads with a delay
-                setTimeout(() => {
-                    const mockAds = adsContainer.querySelector('.gist-mock-ads');
-                    if (mockAds) {
-                        mockAds.classList.add('visible');
-                    }
-                }, 200);
+            
+            // Animate the ads with a delay
+            setTimeout(() => {
+                const mockAds = adsContainer.querySelector('.gist-mock-ads');
+                if (mockAds) {
+                    mockAds.classList.add('visible');
+                }
+            }, 200);
                 
             } catch (error) {
                 console.error('Failed to generate ads:', error);
