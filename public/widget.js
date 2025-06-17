@@ -4857,50 +4857,76 @@ Instructions:
         }
         
         function highlightWordOnPage(word) {
-            // Find and highlight the word in the page content
-            const walker = document.createTreeWalker(
-                document.body,
-                NodeFilter.SHOW_TEXT,
-                null,
-                false
-            );
+            // Clear previous highlights first
+            clearTextHighlights();
             
-            let textNode;
-            while (textNode = walker.nextNode()) {
-                const text = textNode.textContent;
-                const wordRegex = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
-                
-                if (wordRegex.test(text)) {
-                    const parent = textNode.parentNode;
-                    if (parent && !parent.classList.contains('gist-tts-highlight')) {
-                        // Create highlighted span
-                        const span = document.createElement('span');
-                        span.className = 'gist-tts-highlight';
-                        span.textContent = word;
-                        
-                        // Replace the word in the text node
-                        const newText = text.replace(wordRegex, '');
-                        textNode.textContent = newText;
-                        parent.insertBefore(span, textNode);
-                        
-                        // Store for cleanup
-                        ttsState.highlights.push(span);
-                        
-                        // Scroll to highlighted word
-                        span.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        
-                        break; // Only highlight first occurrence
+            // Use a simpler approach: find all text elements and add temporary highlighting
+            const allElements = document.querySelectorAll('*:not(script):not(style):not(#gist-widget):not(#gist-widget *)');
+            
+            for (const element of allElements) {
+                // Only process elements with direct text content (not just child elements)
+                if (element.childNodes.length > 0) {
+                    for (const node of element.childNodes) {
+                        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                            const text = node.textContent;
+                            const wordRegex = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+                            
+                            if (wordRegex.test(text)) {
+                                // Create a temporary span wrapper around the parent element
+                                const wrapper = document.createElement('span');
+                                wrapper.className = 'gist-tts-highlight-wrapper';
+                                wrapper.style.cssText = `
+                                    background-color: #fef3c7 !important;
+                                    color: #92400e !important;
+                                    border-radius: 2px !important;
+                                    padding: 1px 2px !important;
+                                    transition: all 0.3s ease !important;
+                                    display: inline !important;
+                                `;
+                                
+                                // Store original styles
+                                const originalStyles = {
+                                    backgroundColor: element.style.backgroundColor,
+                                    color: element.style.color,
+                                    borderRadius: element.style.borderRadius,
+                                    padding: element.style.padding
+                                };
+                                
+                                // Apply highlight styles directly to the element
+                                element.style.backgroundColor = '#fef3c7';
+                                element.style.color = '#92400e';
+                                element.style.borderRadius = '2px';
+                                element.style.transition = 'all 0.3s ease';
+                                
+                                // Store for cleanup
+                                ttsState.highlights.push({
+                                    element: element,
+                                    originalStyles: originalStyles
+                                });
+                                
+                                // Scroll to highlighted element
+                                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                
+                                return; // Only highlight first occurrence
+                            }
+                        }
                     }
                 }
             }
         }
         
         function clearTextHighlights() {
-            ttsState.highlights.forEach(span => {
-                if (span.parentNode) {
-                    const text = span.textContent;
-                    span.parentNode.insertBefore(document.createTextNode(text), span);
-                    span.parentNode.removeChild(span);
+            ttsState.highlights.forEach(highlight => {
+                if (highlight.element) {
+                    // Restore original styles
+                    const element = highlight.element;
+                    const original = highlight.originalStyles;
+                    
+                    element.style.backgroundColor = original.backgroundColor || '';
+                    element.style.color = original.color || '';
+                    element.style.borderRadius = original.borderRadius || '';
+                    element.style.padding = original.padding || '';
+                    element.style.transition = '';
                 }
             });
             ttsState.highlights = [];
