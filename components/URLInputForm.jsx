@@ -77,10 +77,7 @@ export default function URLInputForm({ onSubmit, loading, error }) {
         )}
       </div>
 
-      <div className="help-text">
-        <p>Enter a website URL (protocol will be added automatically if missing)</p>
-        <p>Examples: example.com, https://blog.example.com/page, subdomain.site.com</p>
-      </div>
+
 
       <style jsx>{`
         .url-form {
@@ -191,16 +188,6 @@ export default function URLInputForm({ onSubmit, loading, error }) {
           content: "⚠️";
         }
 
-        .help-text {
-          text-align: center;
-          color: #666;
-          font-size: 0.9rem;
-        }
-
-        .help-text p {
-          margin: 0.25rem 0;
-        }
-
         @media (max-width: 640px) {
           .input-wrapper {
             flex-direction: column;
@@ -209,10 +196,6 @@ export default function URLInputForm({ onSubmit, loading, error }) {
           button {
             width: 100%;
             justify-content: center;
-          }
-
-          .help-text {
-            text-align: left;
           }
         }
       `}</style>

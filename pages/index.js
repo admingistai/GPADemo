@@ -231,11 +231,11 @@ export default function Home() {
          }
 
          .logo-section {
-           margin-bottom: 2rem;
+           margin-bottom: 3rem;
          }
 
          .hero-logo {
-           height: 60px;
+           height: 120px;
            width: auto;
          }
 
@@ -490,10 +490,14 @@ export default function Home() {
             padding: 0 1rem;
           }
 
-          .hero {
-            padding: 3rem 1rem;
-          }
-        }
+                     .hero {
+             padding: 3rem 1rem;
+           }
+
+           .hero-logo {
+             height: 80px;
+           }
+         }
       `}</style>
     </div>
   );
