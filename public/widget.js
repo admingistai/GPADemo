@@ -3248,8 +3248,8 @@
                 case 'remix':
                     // Clear Ask-specific answer flag when switching away from Ask
                     hasAskAnswer = false;
-                    // Show coming soon placeholder
-                    showPlaceholderForTool('remix');
+                    // Show remix interface with TTS functionality
+                    showRemixInterface();
                     break;
                 case 'share':
                     // Clear hasAnswer when switching away from Ask
