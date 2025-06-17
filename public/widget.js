@@ -2226,6 +2226,99 @@
                     transform: none;
                 }
                 
+                /* Text to Speech Styles */
+                .gist-tts-section {
+                    padding: 20px;
+                    text-align: center;
+                }
+                
+                .gist-tts-header h3 {
+                    margin: 0 0 8px 0;
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #1f2937;
+                }
+                
+                .gist-tts-header p {
+                    margin: 0 0 20px 0;
+                    font-size: 14px;
+                    color: #6b7280;
+                }
+                
+                .gist-tts-button {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
+                    padding: 12px 24px;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 16px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    margin: 0 auto 16px auto;
+                    min-width: 140px;
+                }
+                
+                .gist-tts-button:hover {
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+                }
+                
+                .gist-tts-button:active {
+                    transform: translateY(0);
+                }
+                
+                .gist-tts-button:disabled {
+                    background: #9ca3af;
+                    cursor: not-allowed;
+                    transform: none;
+                    box-shadow: none;
+                }
+                
+                .gist-tts-icon {
+                    font-size: 18px;
+                }
+                
+                .gist-tts-controls {
+                    display: flex;
+                    gap: 8px;
+                    justify-content: center;
+                    margin-bottom: 16px;
+                }
+                
+                .gist-tts-control {
+                    padding: 8px 12px;
+                    background: #f3f4f6;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 6px;
+                    font-size: 12px;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                }
+                
+                .gist-tts-control:hover {
+                    background: #e5e7eb;
+                }
+                
+                .gist-tts-status {
+                    font-size: 12px;
+                    color: #6b7280;
+                    font-style: italic;
+                }
+                
+                /* Text highlighting for TTS */
+                .gist-tts-highlight {
+                    background-color: #fef3c7 !important;
+                    color: #92400e !important;
+                    transition: all 0.3s ease;
+                    border-radius: 2px;
+                    padding: 1px 2px;
+                }
+                
 
                 
                 /* Share Interface Styles */
@@ -4154,100 +4247,52 @@ Instructions:
         };
         
         function showRemixInterface() {
-            const remixOptions = {
-                tone: [
-                    { id: 'gist', label: '"The Gist"', icon: '≡' },
-                    { id: 'funny', label: 'Funny', icon: '😊' },
-                    { id: 'professional', label: 'Professional', icon: '💼' }
-                ],
-                style: [
-                    { id: 'ugc', label: 'UGC', icon: '📱' },
-                    { id: 'newscast', label: 'Newscast', icon: '📺' },
-                    { id: 'text-focused', label: 'Text-focused', icon: '📝' },
-                    { id: 'narrative', label: 'Narrative', icon: '📖' }
-                ],
-                format: [
-                    { id: 'video', label: 'Video', icon: '🎥' },
-                    { id: 'carousel', label: 'Carousel', icon: '🎠' },
-                    { id: 'pdf', label: 'PDF', icon: '📄' },
-                    { id: 'audio', label: 'Audio', icon: '🎵' }
-                ]
-            };
-            
             let html = `
                 <div class="gist-remix-interface gist-content-entering">
-                    <div class="gist-remix-prompt">
-                        <textarea 
-                            class="gist-remix-prompt-input" 
-                            placeholder="Describe your change"
-                            rows="3"
-                            id="remix-prompt"
-                        ></textarea>
-                    </div>
-            `;
-            
-            // Add sections for Tone, Style, Format
-            for (const [sectionKey, sectionOptions] of Object.entries(remixOptions)) {
-                const sectionTitle = sectionKey.charAt(0).toUpperCase() + sectionKey.slice(1);
-                html += `
-                    <div class="gist-remix-section">
-                        <div class="gist-remix-section-title">${sectionTitle}</div>
-                        <div class="gist-remix-options" data-section="${sectionKey}">
-                `;
-                
-                for (const option of sectionOptions) {
-                    const isSelected = remixSelections[sectionKey] === option.id;
-                    html += `
-                        <div class="gist-remix-option ${isSelected ? 'selected' : ''}" 
-                             data-section="${sectionKey}" 
-                             data-value="${option.id}">
-                            <span class="gist-remix-option-icon">${option.icon}</span>
-                            <span>${option.label}</span>
+                    <div class="gist-tts-section">
+                        <div class="gist-tts-header">
+                            <h3>🎧 Text to Speech</h3>
+                            <p>Listen to this webpage with AI-generated voice</p>
                         </div>
-                    `;
-                }
-                
-                html += `
+                        <button class="gist-tts-button" id="tts-button">
+                            <span class="gist-tts-icon">🎵</span>
+                            <span class="gist-tts-text">Start Reading</span>
+                        </button>
+                        <div class="gist-tts-controls" id="tts-controls" style="display: none;">
+                            <button class="gist-tts-control" id="tts-pause">⏸️ Pause</button>
+                            <button class="gist-tts-control" id="tts-resume">▶️ Resume</button>
+                            <button class="gist-tts-control" id="tts-stop">⏹️ Stop</button>
                         </div>
+                        <div class="gist-tts-status" id="tts-status"></div>
                     </div>
-                `;
-            }
-            
-            html += `
-                    <button class="gist-remix-button" id="remix-generate">
-                        Remix
-                    </button>
                 </div>
             `;
             
             answerContent.innerHTML = html;
             hasAnswer = false;
             
-            // Add event listeners for option selection
-            const options = answerContent.querySelectorAll('.gist-remix-option');
-            options.forEach(option => {
-                option.addEventListener('click', () => {
-                    const section = option.dataset.section;
-                    const value = option.dataset.value;
-                    
-                    // Remove selected class from other options in the same section
-                    const sectionOptions = answerContent.querySelectorAll(`[data-section="${section}"]`);
-                    sectionOptions.forEach(opt => opt.classList.remove('selected'));
-                    
-                    // Add selected class to clicked option
-                    option.classList.add('selected');
-                    
-                    // Update selections
-                    remixSelections[section] = value;
-                    
-                    log('debug', 'Remix option selected', { section, value, selections: remixSelections });
-                });
+            // Add event listeners for TTS controls
+            const ttsButton = answerContent.querySelector('#tts-button');
+            const ttsControls = answerContent.querySelector('#tts-controls');
+            const ttsStatus = answerContent.querySelector('#tts-status');
+            const pauseBtn = answerContent.querySelector('#tts-pause');
+            const resumeBtn = answerContent.querySelector('#tts-resume');
+            const stopBtn = answerContent.querySelector('#tts-stop');
+            
+            ttsButton.addEventListener('click', () => {
+                startTextToSpeech(ttsButton, ttsControls, ttsStatus);
             });
             
-            // Add event listener for remix button
-            const remixButton = answerContent.querySelector('#remix-generate');
-            remixButton.addEventListener('click', () => {
-                generateRemix();
+            pauseBtn.addEventListener('click', () => {
+                pauseTextToSpeech();
+            });
+            
+            resumeBtn.addEventListener('click', () => {
+                resumeTextToSpeech();
+            });
+            
+            stopBtn.addEventListener('click', () => {
+                stopTextToSpeech(ttsButton, ttsControls, ttsStatus);
             });
             
             // Trigger animation
@@ -4648,6 +4693,267 @@ Instructions:
                     showExternalAds();
                 }, 200);
             }, 50);
+        }
+        
+        // Text-to-Speech functionality
+        let ttsState = {
+            isPlaying: false,
+            isPaused: false,
+            currentAudio: null,
+            currentWordIndex: 0,
+            words: [],
+            highlights: []
+        };
+        
+        async function startTextToSpeech(button, controls, status) {
+            try {
+                // Update UI
+                button.disabled = true;
+                button.querySelector('.gist-tts-text').textContent = 'Generating...';
+                status.textContent = 'Extracting webpage content...';
+                
+                // Extract webpage content
+                const context = extractPageContext();
+                if (!context || !context.content || context.content.length < 50) {
+                    throw new Error('No readable content found on this page');
+                }
+                
+                // Clean and prepare text for TTS
+                const textToRead = prepareTextForTTS(context.content);
+                if (textToRead.length > 4000) {
+                    // Truncate if too long
+                    textToRead = textToRead.substring(0, 4000) + '...';
+                }
+                
+                status.textContent = 'Generating speech with ElevenLabs...';
+                
+                // Generate speech with ElevenLabs
+                const audioUrl = await generateSpeechWithElevenLabs(textToRead);
+                
+                // Prepare text for highlighting
+                ttsState.words = textToRead.split(/\s+/);
+                ttsState.currentWordIndex = 0;
+                
+                // Create audio element
+                ttsState.currentAudio = new Audio(audioUrl);
+                
+                // Set up audio event listeners
+                setupAudioEventListeners(button, controls, status);
+                
+                // Start playback
+                await ttsState.currentAudio.play();
+                ttsState.isPlaying = true;
+                ttsState.isPaused = false;
+                
+                // Update UI
+                button.style.display = 'none';
+                controls.style.display = 'flex';
+                status.textContent = 'Reading webpage...';
+                
+                // Start highlighting text
+                startTextHighlighting();
+                
+            } catch (error) {
+                log('error', 'TTS generation failed', { error: error.message });
+                
+                // Reset UI
+                button.disabled = false;
+                button.querySelector('.gist-tts-text').textContent = 'Start Reading';
+                status.textContent = `Error: ${error.message}`;
+                
+                // Hide controls
+                controls.style.display = 'none';
+            }
+        }
+        
+        function prepareTextForTTS(content) {
+            // Remove HTML tags and clean up text
+            let text = content.replace(/<[^>]*>/g, ' ');
+            
+            // Replace multiple spaces with single space
+            text = text.replace(/\s+/g, ' ');
+            
+            // Remove special characters that might cause issues
+            text = text.replace(/[^\w\s.,!?;:'"()-]/g, ' ');
+            
+            // Trim and return
+            return text.trim();
+        }
+        
+        async function generateSpeechWithElevenLabs(text) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+            
+            try {
+                const response = await fetch(`${BACKEND_BASE_URL}/api/tts`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        voice_id: 'EXAVITQu4vr4xnSDxMaL' // Default Bella voice
+                    }),
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.audioUrl) {
+                    return data.audioUrl;
+                } else {
+                    throw new Error('Invalid response format from TTS API');
+                }
+                
+            } catch (error) {
+                clearTimeout(timeoutId);
+                throw error;
+            }
+        }
+        
+        function setupAudioEventListeners(button, controls, status) {
+            ttsState.currentAudio.addEventListener('ended', () => {
+                stopTextToSpeech(button, controls, status);
+            });
+            
+            ttsState.currentAudio.addEventListener('error', (e) => {
+                log('error', 'Audio playback error', { error: e });
+                status.textContent = 'Audio playback error';
+                stopTextToSpeech(button, controls, status);
+            });
+        }
+        
+        function startTextHighlighting() {
+            if (!ttsState.currentAudio || !ttsState.isPlaying) return;
+            
+            const duration = ttsState.currentAudio.duration;
+            const wordsPerSecond = ttsState.words.length / duration;
+            
+            // Highlight words progressively
+            const highlightInterval = setInterval(() => {
+                if (!ttsState.isPlaying || ttsState.currentWordIndex >= ttsState.words.length) {
+                    clearInterval(highlightInterval);
+                    return;
+                }
+                
+                // Remove previous highlights
+                clearTextHighlights();
+                
+                // Highlight current word on the page
+                highlightWordOnPage(ttsState.words[ttsState.currentWordIndex]);
+                
+                ttsState.currentWordIndex++;
+            }, 1000 / wordsPerSecond);
+            
+            // Store interval for cleanup
+            ttsState.highlightInterval = highlightInterval;
+        }
+        
+        function highlightWordOnPage(word) {
+            // Find and highlight the word in the page content
+            const walker = document.createTreeWalker(
+                document.body,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+            
+            let textNode;
+            while (textNode = walker.nextNode()) {
+                const text = textNode.textContent;
+                const wordRegex = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+                
+                if (wordRegex.test(text)) {
+                    const parent = textNode.parentNode;
+                    if (parent && !parent.classList.contains('gist-tts-highlight')) {
+                        // Create highlighted span
+                        const span = document.createElement('span');
+                        span.className = 'gist-tts-highlight';
+                        span.textContent = word;
+                        
+                        // Replace the word in the text node
+                        const newText = text.replace(wordRegex, '');
+                        textNode.textContent = newText;
+                        parent.insertBefore(span, textNode);
+                        
+                        // Store for cleanup
+                        ttsState.highlights.push(span);
+                        
+                        // Scroll to highlighted word
+                        span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        
+                        break; // Only highlight first occurrence
+                    }
+                }
+            }
+        }
+        
+        function clearTextHighlights() {
+            ttsState.highlights.forEach(span => {
+                if (span.parentNode) {
+                    const text = span.textContent;
+                    span.parentNode.insertBefore(document.createTextNode(text), span);
+                    span.parentNode.removeChild(span);
+                }
+            });
+            ttsState.highlights = [];
+        }
+        
+        function pauseTextToSpeech() {
+            if (ttsState.currentAudio && ttsState.isPlaying) {
+                ttsState.currentAudio.pause();
+                ttsState.isPaused = true;
+                ttsState.isPlaying = false;
+                
+                if (ttsState.highlightInterval) {
+                    clearInterval(ttsState.highlightInterval);
+                }
+            }
+        }
+        
+        function resumeTextToSpeech() {
+            if (ttsState.currentAudio && ttsState.isPaused) {
+                ttsState.currentAudio.play();
+                ttsState.isPaused = false;
+                ttsState.isPlaying = true;
+                
+                // Resume highlighting
+                startTextHighlighting();
+            }
+        }
+        
+        function stopTextToSpeech(button, controls, status) {
+            // Stop audio
+            if (ttsState.currentAudio) {
+                ttsState.currentAudio.pause();
+                ttsState.currentAudio = null;
+            }
+            
+            // Clear highlighting
+            if (ttsState.highlightInterval) {
+                clearInterval(ttsState.highlightInterval);
+            }
+            clearTextHighlights();
+            
+            // Reset state
+            ttsState.isPlaying = false;
+            ttsState.isPaused = false;
+            ttsState.currentWordIndex = 0;
+            ttsState.words = [];
+            
+            // Reset UI
+            button.style.display = 'flex';
+            button.disabled = false;
+            button.querySelector('.gist-tts-text').textContent = 'Start Reading';
+            controls.style.display = 'none';
+            status.textContent = '';
         }
         
         // Extract page content for context
