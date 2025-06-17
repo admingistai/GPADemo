@@ -13,7 +13,7 @@ describe('URLInputForm', () => {
     render(<URLInputForm onSubmit={mockOnSubmit} loading={false} />);
     
     expect(screen.getByLabelText('Enter Website URL:')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('https://example.com')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('example.com')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Add Widget' })).toBeInTheDocument();
   });
 
@@ -39,13 +39,13 @@ describe('URLInputForm', () => {
     const user = userEvent.setup();
     render(<URLInputForm onSubmit={mockOnSubmit} loading={false} />);
     
-    const input = screen.getByPlaceholderText('https://example.com');
+    const input = screen.getByPlaceholderText('example.com');
     await user.type(input, 'not-a-url');
     
     const submitButton = screen.getByRole('button', { name: 'Add Widget' });
     await user.click(submitButton);
     
-    expect(screen.getByRole('alert')).toHaveTextContent(/must start with http/i);
+    expect(screen.getByRole('alert')).toHaveTextContent(/valid URL format/i);
     expect(mockOnSubmit).not.toHaveBeenCalled();
   });
 
@@ -53,8 +53,23 @@ describe('URLInputForm', () => {
     const user = userEvent.setup();
     render(<URLInputForm onSubmit={mockOnSubmit} loading={false} />);
     
-    const input = screen.getByPlaceholderText('https://example.com');
+    const input = screen.getByPlaceholderText('example.com');
     await user.type(input, 'https://example.com');
+    
+    const submitButton = screen.getByRole('button', { name: 'Add Widget' });
+    await user.click(submitButton);
+    
+    await waitFor(() => {
+      expect(mockOnSubmit).toHaveBeenCalledWith('https://example.com');
+    });
+  });
+
+  test('auto-adds https protocol to URLs without protocol', async () => {
+    const user = userEvent.setup();
+    render(<URLInputForm onSubmit={mockOnSubmit} loading={false} />);
+    
+    const input = screen.getByPlaceholderText('example.com');
+    await user.type(input, 'example.com');
     
     const submitButton = screen.getByRole('button', { name: 'Add Widget' });
     await user.click(submitButton);
@@ -68,7 +83,7 @@ describe('URLInputForm', () => {
     const user = userEvent.setup();
     render(<URLInputForm onSubmit={mockOnSubmit} loading={false} />);
     
-    const input = screen.getByPlaceholderText('https://example.com');
+    const input = screen.getByPlaceholderText('example.com');
     await user.type(input, 'invalid');
     
     const submitButton = screen.getByRole('button', { name: 'Add Widget' });
@@ -87,14 +102,14 @@ describe('URLInputForm', () => {
   test('disables input when loading', () => {
     render(<URLInputForm onSubmit={mockOnSubmit} loading={true} />);
     
-    const input = screen.getByPlaceholderText('https://example.com');
+    const input = screen.getByPlaceholderText('example.com');
     expect(input).toBeDisabled();
   });
 
   test('enforces max length', () => {
     render(<URLInputForm onSubmit={mockOnSubmit} loading={false} />);
     
-    const input = screen.getByPlaceholderText('https://example.com');
+    const input = screen.getByPlaceholderText('example.com');
     expect(input).toHaveAttribute('maxLength', '2048');
   });
 

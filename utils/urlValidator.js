@@ -3,14 +3,15 @@ import validator from 'validator';
 /**
  * Validate URL with comprehensive checks
  * @param {string} url - URL to validate
- * @returns {Object} Validation result with isValid and error message
+ * @returns {Object} Validation result with isValid, normalizedUrl, and error message
  */
 export function validateUrl(url) {
   // Check if URL is provided
   if (!url || typeof url !== 'string') {
     return {
       isValid: false,
-      error: 'Please enter a URL'
+      error: 'Please enter a URL',
+      normalizedUrl: null
     };
   }
 
@@ -21,23 +22,24 @@ export function validateUrl(url) {
   if (!url) {
     return {
       isValid: false,
-      error: 'Please enter a URL'
+      error: 'Please enter a URL',
+      normalizedUrl: null
     };
   }
 
-  // Check URL length
-  if (url.length > 2048) {
-    return {
-      isValid: false,
-      error: 'URL is too long (maximum 2048 characters)'
-    };
-  }
-
-  // Check if URL has protocol
+  // Auto-add protocol if missing
+  let normalizedUrl = url;
   if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    // Try HTTPS first (more secure)
+    normalizedUrl = `https://${url}`;
+  }
+
+  // Check URL length after normalization
+  if (normalizedUrl.length > 2048) {
     return {
       isValid: false,
-      error: 'URL must start with http:// or https://'
+      error: 'URL is too long (maximum 2048 characters)',
+      normalizedUrl: null
     };
   }
 
@@ -54,15 +56,16 @@ export function validateUrl(url) {
     validate_length: true
   };
 
-  if (!validator.isURL(url, validatorOptions)) {
+  if (!validator.isURL(normalizedUrl, validatorOptions)) {
     return {
       isValid: false,
-      error: 'Please enter a valid URL format'
+      error: 'Please enter a valid URL format',
+      normalizedUrl: null
     };
   }
 
   try {
-    const parsedUrl = new URL(url);
+    const parsedUrl = new URL(normalizedUrl);
 
     // Check for localhost and local IPs
     const hostname = parsedUrl.hostname.toLowerCase();
@@ -77,7 +80,8 @@ export function validateUrl(url) {
     if (localPatterns.includes(hostname)) {
       return {
         isValid: false,
-        error: 'Local addresses are not allowed for security reasons'
+        error: 'Local addresses are not allowed for security reasons',
+        normalizedUrl: null
       };
     }
 
@@ -85,7 +89,8 @@ export function validateUrl(url) {
     if (isPrivateIP(hostname)) {
       return {
         isValid: false,
-        error: 'Private IP addresses are not allowed for security reasons'
+        error: 'Private IP addresses are not allowed for security reasons',
+        normalizedUrl: null
       };
     }
 
@@ -96,7 +101,8 @@ export function validateUrl(url) {
       if (portNum < 1 || portNum > 65535) {
         return {
           isValid: false,
-          error: 'Invalid port number'
+          error: 'Invalid port number',
+          normalizedUrl: null
         };
       }
 
@@ -105,29 +111,33 @@ export function validateUrl(url) {
       if (blockedPorts.includes(portNum)) {
         return {
           isValid: false,
-          error: 'This port is not allowed for security reasons'
+          error: 'This port is not allowed for security reasons',
+          normalizedUrl: null
         };
       }
     }
 
     // Check for suspicious patterns
-    if (containsSuspiciousPatterns(url)) {
+    if (containsSuspiciousPatterns(normalizedUrl)) {
       return {
         isValid: false,
-        error: 'URL contains suspicious patterns'
+        error: 'URL contains suspicious patterns',
+        normalizedUrl: null
       };
     }
 
     // All checks passed
     return {
       isValid: true,
-      error: null
+      error: null,
+      normalizedUrl: normalizedUrl
     };
 
   } catch (error) {
     return {
       isValid: false,
-      error: 'Invalid URL format'
+      error: 'Invalid URL format',
+      normalizedUrl: null
     };
   }
 }

@@ -16,6 +16,7 @@ describe('URL Validator', () => {
         const result = validateUrl(url);
         expect(result.isValid).toBe(true);
         expect(result.error).toBe(null);
+        expect(result.normalizedUrl).toBe(url);
       });
     });
 
@@ -23,7 +24,6 @@ describe('URL Validator', () => {
       const invalidUrls = [
         '',
         'not-a-url',
-        'example.com',
         'ftp://example.com',
         'javascript:alert(1)',
         'https://localhost',
@@ -36,13 +36,25 @@ describe('URL Validator', () => {
         const result = validateUrl(url);
         expect(result.isValid).toBe(false);
         expect(result.error).toBeTruthy();
+        expect(result.normalizedUrl).toBe(null);
       });
     });
 
-    test('rejects URLs without protocol', () => {
-      const result = validateUrl('example.com');
-      expect(result.isValid).toBe(false);
-      expect(result.error).toContain('http://');
+    test('auto-adds protocol to URLs without protocol', () => {
+      const testCases = [
+        { input: 'example.com', expected: 'https://example.com' },
+        { input: 'subdomain.example.com', expected: 'https://subdomain.example.com' },
+        { input: 'example.com/path', expected: 'https://example.com/path' },
+        { input: 'example.com/path?query=value', expected: 'https://example.com/path?query=value' },
+        { input: 'example.com:8080', expected: 'https://example.com:8080' }
+      ];
+
+      testCases.forEach(({ input, expected }) => {
+        const result = validateUrl(input);
+        expect(result.isValid).toBe(true);
+        expect(result.error).toBe(null);
+        expect(result.normalizedUrl).toBe(expected);
+      });
     });
 
     test('rejects local addresses', () => {

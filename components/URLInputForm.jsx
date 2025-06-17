@@ -18,8 +18,8 @@ export default function URLInputForm({ onSubmit, loading, error }) {
       return;
     }
 
-    // Submit valid URL
-    await onSubmit(url);
+    // Submit the normalized URL (which includes auto-added protocol)
+    await onSubmit(validation.normalizedUrl);
   };
 
   const handleInputChange = (e) => {
@@ -40,9 +40,9 @@ export default function URLInputForm({ onSubmit, loading, error }) {
             id="urlInput"
             value={url}
             onChange={handleInputChange}
-            placeholder="https://example.com"
+            placeholder="example.com"
             required
-            pattern="https?://.+"
+            pattern=".*"
             maxLength={2048}
             aria-describedby="urlError"
             aria-invalid={!!validationError || !!error}
@@ -72,8 +72,8 @@ export default function URLInputForm({ onSubmit, loading, error }) {
       </div>
 
       <div className="help-text">
-        <p>Enter the complete URL including http:// or https://</p>
-        <p>Examples: https://example.com, https://blog.example.com/page</p>
+        <p>Enter a website URL (protocol will be added automatically if missing)</p>
+        <p>Examples: example.com, https://blog.example.com/page, subdomain.site.com</p>
       </div>
 
       <style jsx>{`
