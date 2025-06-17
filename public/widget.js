@@ -4119,9 +4119,9 @@ Instructions:
                     applyTextRevealAnimation(answerText);
                 }
                 
-                // Show external ads with delay
+                // Show external ads with context based on page summary
                 setTimeout(() => {
-                    showExternalAds();
+                    showExternalAds('page summary and key insights');
                 }, 200);
 
             }, 50);
@@ -4243,9 +4243,9 @@ Instructions:
                     el.classList.add('gist-content-entered');
                 });
                 
-                // Show external ads with delay
+                // Show external ads with context based on error type
                 setTimeout(() => {
-                    showExternalAds();
+                    showExternalAds('error recovery and troubleshooting');
                 }, 200);
             }, 50);
         }
