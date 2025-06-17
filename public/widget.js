@@ -1041,7 +1041,7 @@
 
                 
                 .gist-widget.minimized .gist-pill {
-                    width: 120px;
+                    width: 240px;
                     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 }
                 
@@ -1689,6 +1689,9 @@
                     border-radius: 4px;
                     object-fit: contain;
                     flex-shrink: 0;
+                    display: block !important;
+                    opacity: 1 !important;
+                    visibility: visible !important;
                 }
                 
                 .gist-pill-input {
