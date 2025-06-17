@@ -4854,12 +4854,41 @@ Instructions:
             });
         }
         
-        function buildWordQueue(words) {
-            // Build a sequential queue of all word locations in reading order
+        function buildWordQueue(ttsWords) {
+            // Create a direct mapping from TTS words to DOM locations
             ttsState.wordQueue = [];
             ttsState.currentQueueIndex = 0;
             
-            // Find all text nodes in document order
+            // Get all text from the page in reading order
+            const allPageText = extractAllPageText();
+            
+            // Map each TTS word to its exact position in the page text
+            let searchPosition = 0;
+            
+            for (let i = 0; i < ttsWords.length; i++) {
+                const ttsWord = ttsWords[i].toLowerCase().replace(/[^\w]/g, ''); // Clean word
+                
+                // Find this word in the page text starting from our current position
+                const wordLocation = findWordInPageText(allPageText, ttsWord, searchPosition);
+                
+                if (wordLocation) {
+                    ttsState.wordQueue.push(wordLocation);
+                    searchPosition = wordLocation.endPosition + 1; // Move past this word
+                } else {
+                    // If we can't find the word, create a placeholder
+                    ttsState.wordQueue.push(null);
+                    console.log(`Could not map TTS word "${ttsWords[i]}" to page text`);
+                }
+            }
+            
+            console.log(`Mapped ${ttsState.wordQueue.filter(item => item !== null).length} of ${ttsWords.length} TTS words to DOM locations`);
+        }
+        
+        function extractAllPageText() {
+            // Build complete page text with position mapping
+            const textData = [];
+            let cumulativePosition = 0;
+            
             const walker = document.createTreeWalker(
                 document.body,
                 NodeFilter.SHOW_TEXT,
@@ -4877,10 +4906,6 @@ Instructions:
                         
                         const style = window.getComputedStyle(parent);
                         if (style.display === 'none' || style.visibility === 'hidden') {
-                            return NodeFilter.FILTER_REJECT;
-                        }
-                        
-                        if (node.textContent.trim().length < 1) {
                             return NodeFilter.FILTER_REJECT;
                         }
                         
@@ -4893,248 +4918,226 @@ Instructions:
             let textNode;
             while (textNode = walker.nextNode()) {
                 const text = textNode.textContent;
+                const cleanText = text.replace(/\s+/g, ' ').trim();
                 
-                // Find all words in this text node
-                const wordRegex = /\b\w+\b/g;
-                let match;
-                
-                while ((match = wordRegex.exec(text)) !== null) {
-                    ttsState.wordQueue.push({
-                        word: match[0],
+                if (cleanText.length > 0) {
+                    textData.push({
                         textNode: textNode,
-                        startIndex: match.index,
-                        endIndex: match.index + match[0].length
+                        text: cleanText,
+                        startPosition: cumulativePosition,
+                        endPosition: cumulativePosition + cleanText.length
                     });
+                    
+                    cumulativePosition += cleanText.length + 1; // +1 for space between nodes
                 }
             }
             
-            console.log(`Built word queue with ${ttsState.wordQueue.length} words`);
+            return textData;
+        }
+        
+        function findWordInPageText(pageTextData, ttsWord, fromPosition) {
+            // Find the TTS word in the page text starting from the given position
+            const cleanTtsWord = ttsWord.toLowerCase().replace(/[^\w]/g, '');
+            
+            for (const textSegment of pageTextData) {
+                if (textSegment.endPosition < fromPosition) continue; // Skip past segments
+                
+                const segmentText = textSegment.text.toLowerCase();
+                const wordRegex = new RegExp(`\\b${cleanTtsWord}\\b`, 'g');
+                let match;
+                
+                while ((match = wordRegex.exec(segmentText)) !== null) {
+                    const absolutePosition = textSegment.startPosition + match.index;
+                    
+                    if (absolutePosition >= fromPosition) {
+                        // Found the word! Calculate its position in the original text node
+                        const relativePosition = match.index;
+                        const originalText = textSegment.textNode.textContent;
+                        
+                        // Find the actual position in the original (uncleaned) text
+                        const actualMatch = findActualWordPosition(originalText, cleanTtsWord, relativePosition);
+                        
+                        if (actualMatch) {
+                            return {
+                                textNode: textSegment.textNode,
+                                word: actualMatch.word,
+                                startIndex: actualMatch.startIndex,
+                                endIndex: actualMatch.endIndex,
+                                endPosition: absolutePosition + cleanTtsWord.length
+                            };
+                        }
+                    }
+                }
+            }
+            
+            return null;
+        }
+        
+        function findActualWordPosition(originalText, cleanWord, approximatePosition) {
+            // Find the actual word position in the original text
+            const wordRegex = new RegExp(`\\b${cleanWord}\\b`, 'gi');
+            let match;
+            let matchCount = 0;
+            
+            while ((match = wordRegex.exec(originalText)) !== null) {
+                // Use the first match that's reasonable close to our approximate position
+                if (Math.abs(match.index - approximatePosition) < 10) {
+                    return {
+                        word: match[0],
+                        startIndex: match.index,
+                        endIndex: match.index + match[0].length
+                    };
+                }
+                matchCount++;
+            }
+            
+            // If no close match, just use the first occurrence
+            wordRegex.lastIndex = 0; // Reset regex
+            const firstMatch = wordRegex.exec(originalText);
+            if (firstMatch) {
+                return {
+                    word: firstMatch[0],
+                    startIndex: firstMatch.index,
+                    endIndex: firstMatch.index + firstMatch[0].length
+                };
+            }
+            
+            return null;
         }
         
         function startTextHighlighting() {
             if (!ttsState.currentAudio || !ttsState.isPlaying) return;
             
-            // Reset queue position
+            // Reset to start of our pre-mapped queue
             ttsState.currentQueueIndex = 0;
             
             const duration = ttsState.currentAudio.duration;
             const wordsPerSecond = ttsState.words.length / duration;
             
-            console.log(`Starting TTS highlighting: ${ttsState.words.length} words over ${duration}s = ${wordsPerSecond} words/sec`);
+            console.log(`Starting TTS highlighting: ${ttsState.words.length} TTS words, ${ttsState.wordQueue.length} mapped words`);
+            console.log(`Audio duration: ${duration}s = ${wordsPerSecond.toFixed(2)} words/sec`);
             
-            // Underline words progressively
+            // Simple sequential highlighting - just advance through the queue
             const highlightInterval = setInterval(() => {
-                if (!ttsState.isPlaying || ttsState.currentWordIndex >= ttsState.words.length) {
+                if (!ttsState.isPlaying || ttsState.currentQueueIndex >= ttsState.words.length) {
                     clearInterval(highlightInterval);
-                    clearTextHighlights(); // Clear final underline
                     return;
                 }
                 
-                // Clear previous highlights
+                // Clear previous underline
                 clearTextHighlights();
                 
-                // Underline current word on the page
-                const currentWord = ttsState.words[ttsState.currentWordIndex];
-                const success = highlightNextWord(currentWord);
+                // Get the current mapped word location
+                const wordLocation = ttsState.wordQueue[ttsState.currentQueueIndex];
                 
-                if (!success) {
-                    console.log(`Failed to highlight word "${currentWord}" at index ${ttsState.currentWordIndex}`);
-                    // Try to find it with more flexible matching
-                    findWordFlexibly(currentWord);
+                if (wordLocation) {
+                    underlineWordAtLocation(wordLocation);
+                    console.log(`Highlighted word ${ttsState.currentQueueIndex + 1}/${ttsState.words.length}: "${wordLocation.word}"`);
+                } else {
+                    console.log(`Skipping unmapped word at index ${ttsState.currentQueueIndex}`);
                 }
                 
-                ttsState.currentWordIndex++;
+                // Always advance - no searching, no backtracking
+                ttsState.currentQueueIndex++;
+                
             }, 1000 / wordsPerSecond);
             
-            // Store interval for cleanup
             ttsState.highlightInterval = highlightInterval;
         }
         
-        function highlightNextWord(targetWord) {
-            // Find the next matching word in our pre-built queue
-            const cleanTarget = targetWord.trim().toLowerCase();
-            
-            // Try exact match first (from current position forward)
-            for (let i = ttsState.currentQueueIndex; i < ttsState.wordQueue.length; i++) {
-                const queueItem = ttsState.wordQueue[i];
-                
-                if (queueItem.word.toLowerCase() === cleanTarget) {
-                    ttsState.currentQueueIndex = i + 1; // Move past this word
-                    underlineWordAtLocation(queueItem);
-                    return true;
-                }
+        function underlineWordAtLocation(wordLocation) {
+            if (!wordLocation || !wordLocation.textNode || !wordLocation.textNode.parentElement) {
+                return;
             }
             
-            // If exact match fails, try partial/fuzzy matching within a reasonable window
-            const searchWindow = Math.min(50, ttsState.wordQueue.length - ttsState.currentQueueIndex);
-            for (let i = ttsState.currentQueueIndex; i < ttsState.currentQueueIndex + searchWindow; i++) {
-                if (i >= ttsState.wordQueue.length) break;
-                
-                const queueItem = ttsState.wordQueue[i];
-                const queueWord = queueItem.word.toLowerCase();
-                
-                // Try fuzzy matching
-                if (queueWord.includes(cleanTarget) || cleanTarget.includes(queueWord)) {
-                    console.log(`Fuzzy match: "${targetWord}" matched with "${queueItem.word}"`);
-                    ttsState.currentQueueIndex = i + 1;
-                    underlineWordAtLocation(queueItem);
-                    return true;
-                }
+            // Verify the text node still exists and contains our word
+            const currentText = wordLocation.textNode.textContent;
+            if (!currentText || wordLocation.startIndex >= currentText.length) {
+                console.log('Text node content has changed, skipping highlight');
+                return;
             }
             
-            // Word not found - advance queue slightly to avoid getting stuck
-            ttsState.currentQueueIndex = Math.min(ttsState.currentQueueIndex + 1, ttsState.wordQueue.length);
-            console.log(`Word "${targetWord}" not found, advancing queue to ${ttsState.currentQueueIndex}`);
-            return false;
-        }
-        
-        function findWordFlexibly(word) {
-            // Fallback: search for the word anywhere in visible text nodes
-            const walker = document.createTreeWalker(
-                document.body,
-                NodeFilter.SHOW_TEXT,
-                {
-                    acceptNode: function(node) {
-                        const parent = node.parentElement;
-                        if (!parent) return NodeFilter.FILTER_REJECT;
-                        
-                        if (parent.closest('#gist-widget') || 
-                            parent.closest('script') || 
-                            parent.closest('style') ||
-                            parent.closest('noscript')) {
-                            return NodeFilter.FILTER_REJECT;
-                        }
-                        
-                        const style = window.getComputedStyle(parent);
-                        if (style.display === 'none' || style.visibility === 'hidden') {
-                            return NodeFilter.FILTER_REJECT;
-                        }
-                        
-                        return NodeFilter.FILTER_ACCEPT;
-                    }
-                },
-                false
-            );
+            const parent = wordLocation.textNode.parentElement;
+            const beforeText = currentText.substring(0, wordLocation.startIndex);
+            const wordText = currentText.substring(wordLocation.startIndex, wordLocation.endIndex);
+            const afterText = currentText.substring(wordLocation.endIndex);
             
-            const cleanWord = word.trim().toLowerCase();
-            let textNode;
-            
-            while (textNode = walker.nextNode()) {
-                const text = textNode.textContent.toLowerCase();
-                const wordIndex = text.indexOf(cleanWord);
-                
-                if (wordIndex >= 0) {
-                    // Found the word, create a queue item and underline it
-                    const queueItem = {
-                        word: word,
-                        textNode: textNode,
-                        startIndex: wordIndex,
-                        endIndex: wordIndex + word.length
-                    };
-                    
-                    console.log(`Flexible match found for "${word}"`);
-                    underlineWordAtLocation(queueItem);
-                    return true;
-                }
-            }
-            
-            return false;
-        }
-        
-        function underlineWordAtLocation(queueItem) {
-            const { word, textNode, startIndex } = queueItem;
-            const text = textNode.textContent;
-            const beforeText = text.substring(0, startIndex);
-            const afterText = text.substring(startIndex + word.length);
-            
-            const parent = textNode.parentNode;
-            
-            // Create the underlined word span
-            const wordSpan = document.createElement('span');
-            wordSpan.className = 'gist-tts-underlined-word';
-            wordSpan.textContent = word;
-            wordSpan.style.cssText = `
+            // Create the highlighted span
+            const highlightSpan = document.createElement('span');
+            highlightSpan.textContent = wordText;
+            highlightSpan.style.cssText = `
                 text-decoration: underline !important;
                 text-decoration-color: #1565C0 !important;
                 text-decoration-thickness: 2px !important;
                 text-underline-offset: 2px !important;
                 transition: all 0.3s ease !important;
             `;
+            highlightSpan.setAttribute('data-tts-highlight', 'true');
             
-            // Replace the text node with the new structure
+            // Replace the text node with before text + span + after text
+            const fragment = document.createDocumentFragment();
+            
             if (beforeText) {
-                const beforeNode = document.createTextNode(beforeText);
-                parent.insertBefore(beforeNode, textNode);
+                fragment.appendChild(document.createTextNode(beforeText));
             }
             
-            parent.insertBefore(wordSpan, textNode);
+            fragment.appendChild(highlightSpan);
             
             if (afterText) {
-                textNode.textContent = afterText;
-            } else {
-                parent.removeChild(textNode);
+                fragment.appendChild(document.createTextNode(afterText));
             }
+            
+            parent.replaceChild(fragment, wordLocation.textNode);
             
             // Store for cleanup
-            ttsState.highlights.push({
-                type: 'underlined',
-                element: wordSpan,
-                originalText: word,
-                parent: parent,
-                beforeText: beforeText,
-                afterText: afterText
-            });
+            ttsState.lastHighlightedElement = highlightSpan;
             
-            // Scroll to the word
-            wordSpan.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'center',
-                inline: 'center'
-            });
-            
-            // Don't auto-reset - let the next word clear it
-            // This prevents flickering and ensures continuous underlining
-            
-            return wordSpan;
-        }
-        
-        function resetWordUnderline(wordSpan, originalText, parent, beforeText, afterText) {
-            if (wordSpan && wordSpan.parentNode) {
-                // Create a single text node with all the text
-                const fullText = (beforeText || '') + originalText + (afterText || '');
-                const newTextNode = document.createTextNode(fullText);
-                
-                // Remove the beforeText node if it exists
-                const beforeNode = wordSpan.previousSibling;
-                if (beforeNode && beforeNode.nodeType === Node.TEXT_NODE && beforeNode.textContent === beforeText) {
-                    parent.removeChild(beforeNode);
-                }
-                
-                // Remove the afterText node if it exists
-                const afterNode = wordSpan.nextSibling;
-                if (afterNode && afterNode.nodeType === Node.TEXT_NODE && afterNode.textContent === afterText) {
-                    parent.removeChild(afterNode);
-                }
-                
-                // Replace the span with the complete text node
-                parent.replaceChild(newTextNode, wordSpan);
-            }
+            // Scroll to the highlighted word
+            setTimeout(() => {
+                highlightSpan.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                    inline: 'nearest'
+                });
+            }, 50);
         }
         
         function clearTextHighlights() {
-            // Reset all underlined words
-            ttsState.highlights.forEach(highlight => {
-                if (highlight.type === 'underlined' && highlight.element && highlight.element.parentNode) {
-                    resetWordUnderline(
-                        highlight.element, 
-                        highlight.originalText, 
-                        highlight.parent, 
-                        highlight.beforeText, 
-                        highlight.afterText
-                    );
+            // Remove all highlighted spans and restore original text
+            const highlightedElements = document.querySelectorAll('[data-tts-highlight="true"]');
+            
+            highlightedElements.forEach(span => {
+                const parent = span.parentElement;
+                if (!parent) return;
+                
+                // Collect all text content from this parent
+                let fullText = '';
+                const nodesToRemove = [];
+                
+                for (let child of parent.childNodes) {
+                    if (child.nodeType === Node.TEXT_NODE) {
+                        fullText += child.textContent;
+                        nodesToRemove.push(child);
+                    } else if (child === span) {
+                        fullText += span.textContent;
+                        nodesToRemove.push(child);
+                    }
+                }
+                
+                // Remove all the nodes we collected
+                nodesToRemove.forEach(node => {
+                    if (node.parentNode === parent) {
+                        parent.removeChild(node);
+                    }
+                });
+                
+                // Add back as a single text node
+                if (fullText) {
+                    parent.appendChild(document.createTextNode(fullText));
                 }
             });
-            ttsState.highlights = [];
+            
+            ttsState.lastHighlightedElement = null;
         }
         
         function pauseTextToSpeech() {
@@ -5177,8 +5180,8 @@ Instructions:
             ttsState.isPlaying = false;
             ttsState.isPaused = false;
             ttsState.isGenerating = false;
-            ttsState.currentWordIndex = 0;
             ttsState.words = [];
+            ttsState.wordQueue = [];
             ttsState.currentQueueIndex = 0;
             
             // Reset UI
