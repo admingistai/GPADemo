@@ -406,9 +406,21 @@
         }
 
         render() {
-            const target = document.querySelector(this.options.targetElement);
-            if (!target) {
-                throw new Error(`Target element ${this.options.targetElement} not found`);
+            let target;
+            
+            if (this.options.targetElement) {
+                target = document.querySelector(this.options.targetElement);
+                if (!target) {
+                    throw new Error(`Target element ${this.options.targetElement} not found`);
+                }
+            } else {
+                // Default behavior: try to find a good place to insert the widget
+                // Look for article, main, or body elements
+                target = document.querySelector('article') || 
+                         document.querySelector('main') || 
+                         document.querySelector('.content') ||
+                         document.querySelector('#content') ||
+                         document.body;
             }
             
             const widget = document.createElement('div');
