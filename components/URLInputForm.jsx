@@ -8,8 +8,25 @@ export default function URLInputForm({ onSubmit, loading, error }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Redirect to Vercel app homepage
-    window.open('https://gpademo.vercel.app', '_blank');
+    // Clear previous validation error
+    setValidationError('');
+
+    // Debug logging
+    console.log('URLInputForm: Submitting URL:', url);
+    console.log('URLInputForm: URL trimmed:', url.trim());
+    console.log('URLInputForm: URL length:', url.length);
+
+    // Validate URL
+    const validation = validateUrl(url);
+    console.log('URLInputForm: Validation result:', validation);
+    
+    if (!validation.isValid) {
+      setValidationError(validation.error);
+      return;
+    }
+
+    // Submit the normalized URL (which includes auto-added protocol)
+    await onSubmit(validation.normalizedUrl);
   };
 
   const handleInputChange = (e) => {
@@ -40,7 +57,7 @@ export default function URLInputForm({ onSubmit, loading, error }) {
           />
           <button 
             type="submit" 
-            disabled={loading}
+            disabled={loading || !url.trim()}
             aria-busy={loading}
           >
             {loading ? (
@@ -49,7 +66,7 @@ export default function URLInputForm({ onSubmit, loading, error }) {
                 Loading...
               </>
             ) : (
-              'Generate My AI Companion →'
+              'Add Widget'
             )}
           </button>
         </div>

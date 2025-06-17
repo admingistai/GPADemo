@@ -3061,7 +3061,7 @@
                             <img src="${BACKEND_BASE_URL}/gist-logo.png" alt="Gist Logo" class="gist-footer-logo">
                             <span class="gist-powered-text">Powered by Gist</span>
                         </div>
-                        <a href="https://gist.ai" target="_blank" class="gist-add-to-site">Add to your site</a>
+                        <a href="/" target="_blank" class="gist-add-to-site">Add to your site</a>
                     </div>
                 </div>
             </div>
@@ -4354,7 +4354,7 @@ Instructions:
                                 <button class="gist-voice-test" id="voice-preview" title="Test voice">
                                     ▶️
                                 </button>
-                            </div>
+                    </div>
                             
                             <button class="gist-play-button" id="tts-button">
                                 <div class="gist-play-icon">▶️</div>
@@ -4365,8 +4365,8 @@ Instructions:
                                 <button class="gist-control-btn" id="tts-pause">⏸️</button>
                                 <button class="gist-control-btn" id="tts-resume">▶️</button>
                                 <button class="gist-control-btn" id="tts-stop">⏹️</button>
-                            </div>
-                            
+                        </div>
+                
                             <div class="gist-tts-status" id="tts-status"></div>
                         </div>
                     </div>
