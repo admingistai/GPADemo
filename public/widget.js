@@ -2088,6 +2088,41 @@
                     font-size: 8px;
                 }
                 
+                /* Contextual Ad Theme */
+                .contextual-ad {
+                    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+                    border: 1px solid #e2e8f0;
+                    border-radius: 12px;
+                    padding: 12px 16px;
+                    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.1);
+                    transition: all 0.3s ease;
+                }
+                
+                .contextual-ad:hover {
+                    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+                    border-color: #cbd5e1;
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15);
+                }
+                
+                .contextual-ad::before {
+                    content: 'Contextual Ad';
+                    color: #6b7280;
+                    background: rgba(255, 255, 255, 0.9);
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    font-size: 8px;
+                    font-weight: 500;
+                }
+                
+                .gist-ads-loading {
+                    text-align: center;
+                    padding: 12px;
+                    color: #6b7280;
+                    font-size: 11px;
+                    font-style: italic;
+                }
+                
                 .gist-mock-ad-icon {
                     width: 24px;
                     height: 24px;
@@ -5378,8 +5413,78 @@ Instructions:
             }, 50);
         }
         
-        function generateMockAds() {
-            const summerReadingAds = [
+        async function generateContextualAds() {
+            try {
+                const context = extractPageContext();
+                
+                // If no meaningful content, fall back to default ads
+                if (!context.content || context.content.length < 100) {
+                    return getDefaultAds();
+                }
+                
+                // Create a prompt to generate contextually relevant ads
+                const adPrompt = `Based on the following article content, generate ONE relevant advertisement that would appeal to readers of this content. The ad should be for a real or plausible product/service that relates to the article topic.
+
+Article Title: ${context.title}
+Article Content: ${context.content.substring(0, 1500)}...
+
+Please respond with a JSON object in this exact format:
+{
+  "icon": "single emoji that represents the product/service",
+  "title": "compelling ad title (max 50 characters)",
+  "description": "engaging description (max 90 characters)",
+  "cta": "call-to-action button text (max 15 characters)",
+  "category": "product category (e.g., books, tech, travel, food, etc.)",
+  "brand": "plausible brand name"
+}
+
+Make the ad relevant to the article topic but appealing and professional. Use emojis that represent the product category.`;
+
+                // Call the chat API to generate contextual ad
+                const response = await createChatCompletionForAd(adPrompt);
+                
+                // Parse the AI response
+                let adData;
+                try {
+                    // Try to extract JSON from the response
+                    const jsonMatch = response.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        adData = JSON.parse(jsonMatch[0]);
+                    } else {
+                        throw new Error('No JSON found in response');
+                    }
+                } catch (parseError) {
+                    console.warn('Failed to parse AI ad response:', parseError);
+                    return getDefaultAds();
+                }
+                
+                // Validate and format the ad
+                if (adData && adData.title && adData.description) {
+                    const contextualAd = {
+                        icon: adData.icon || '🛍️',
+                        iconBg: getCategoryColor(adData.category),
+                        title: adData.title.substring(0, 50),
+                        description: adData.description.substring(0, 90),
+                        cta: adData.cta?.substring(0, 15) || 'Learn More',
+                        url: '#',
+                        brand: adData.brand || 'Sponsored',
+                        brandColor: getCategoryColor(adData.category, true)
+                    };
+                    
+                    log('info', 'Generated contextual ad', { adData, context: context.title });
+                    return [contextualAd];
+                } else {
+                    throw new Error('Invalid ad data structure');
+                }
+                
+            } catch (error) {
+                console.warn('Failed to generate contextual ad:', error);
+                return getDefaultAds();
+            }
+        }
+        
+        function getDefaultAds() {
+            const defaultAds = [
                 {
                     icon: '🏖️',
                     iconBg: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
@@ -5403,12 +5508,83 @@ Instructions:
             ];
             
             // Return only one ad (randomly selected)
-            const shuffled = summerReadingAds.sort(() => 0.5 - Math.random());
+            const shuffled = defaultAds.sort(() => 0.5 - Math.random());
             return shuffled.slice(0, 1);
         }
         
-        function createMockAdsHTML() {
-            const ads = generateMockAds();
+        function getCategoryColor(category, isBrandColor = false) {
+            const colors = {
+                tech: isBrandColor ? '#3b82f6' : 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                books: isBrandColor ? '#8b5cf6' : 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                travel: isBrandColor ? '#10b981' : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                food: isBrandColor ? '#f59e0b' : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                finance: isBrandColor ? '#06b6d4' : 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)',
+                health: isBrandColor ? '#ef4444' : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                fashion: isBrandColor ? '#ec4899' : 'linear-gradient(135deg, #ec4899 0%, #db2777 100%)',
+                education: isBrandColor ? '#8b5cf6' : 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                business: isBrandColor ? '#374151' : 'linear-gradient(135deg, #374151 0%, #1f2937 100%)',
+                entertainment: isBrandColor ? '#f59e0b' : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
+            };
+            
+            return colors[category?.toLowerCase()] || (isBrandColor ? '#6366f1' : 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)');
+        }
+        
+        async function createChatCompletionForAd(prompt) {
+            const requestBody = {
+                model: 'gpt-3.5-turbo',
+                messages: [
+                    {
+                        role: 'system',
+                        content: 'You are an expert advertising copywriter. Generate relevant, compelling ads based on article content. Always respond with valid JSON only.'
+                    },
+                    {
+                        role: 'user',
+                        content: prompt
+                    }
+                ],
+                max_tokens: 300,
+                temperature: 0.7
+            };
+            
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+            
+            try {
+                const response = await fetch(WIDGET_CONFIG.CHAT_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody),
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                // Handle both OpenAI direct format and our backend format
+                if (data.response) {
+                    return data.response;
+                } else if (data.choices && data.choices[0] && data.choices[0].message) {
+                    return data.choices[0].message.content;
+                } else {
+                    throw new Error('Invalid response format from API');
+                }
+            } catch (error) {
+                console.error('Ad generation API error:', error);
+                throw error;
+            } finally {
+                clearTimeout(timeoutId);
+            }
+        }
+        
+        async function createMockAdsHTML() {
+            const ads = await generateContextualAds();
             
             let html = `
                 <div class="gist-mock-ads">
@@ -5417,7 +5593,7 @@ Instructions:
             
             ads.forEach(ad => {
                 html += `
-                    <div class="gist-mock-ad summer-reading-ad" onclick="window.open('${ad.url}', '_blank')">
+                    <div class="gist-mock-ad contextual-ad" onclick="window.open('${ad.url}', '_blank')">
                         <div class="gist-mock-ad-icon" style="background: ${ad.iconBg};">
                             ${ad.icon}
                         </div>
@@ -5439,7 +5615,7 @@ Instructions:
             return html;
         }
         
-        function showExternalAds() {
+        async function showExternalAds() {
             // Only show ads if we're in Ask or Gist tool AND have actual content
             const shouldShowAds = (currentTool === 'ask' || currentTool === 'gist') && hasAnswer;
             
@@ -5450,19 +5626,69 @@ Instructions:
             const adsContainer = shadowRoot.getElementById('gist-ads-container');
             if (!adsContainer) return;
             
-            // Generate and insert ads HTML
-            adsContainer.innerHTML = createMockAdsHTML();
-            
-            // Show the ads container
-            adsContainer.classList.add('visible');
-            
-            // Animate the ads with a delay
-            setTimeout(() => {
-                const mockAds = adsContainer.querySelector('.gist-mock-ads');
-                if (mockAds) {
-                    mockAds.classList.add('visible');
+            try {
+                // Show loading state briefly
+                adsContainer.innerHTML = '<div class="gist-ads-loading">Generating relevant ad...</div>';
+                adsContainer.classList.add('visible');
+                
+                // Generate and insert ads HTML
+                const adsHTML = await createMockAdsHTML();
+                adsContainer.innerHTML = adsHTML;
+                
+                // Animate the ads with a delay
+                setTimeout(() => {
+                    const mockAds = adsContainer.querySelector('.gist-mock-ads');
+                    if (mockAds) {
+                        mockAds.classList.add('visible');
+                    }
+                }, 200);
+                
+            } catch (error) {
+                console.error('Failed to generate ads:', error);
+                // Fall back to showing default ads without AI generation
+                try {
+                    const defaultAds = getDefaultAds();
+                    let fallbackHTML = `
+                        <div class="gist-mock-ads">
+                            <div class="gist-mock-ads-container">
+                    `;
+                    
+                    defaultAds.forEach(ad => {
+                        fallbackHTML += `
+                            <div class="gist-mock-ad summer-reading-ad" onclick="window.open('${ad.url}', '_blank')">
+                                <div class="gist-mock-ad-icon" style="background: ${ad.iconBg};">
+                                    ${ad.icon}
+                                </div>
+                                <div class="gist-mock-ad-content">
+                                    <div class="gist-mock-ad-title">${ad.title}</div>
+                                    <div class="gist-mock-ad-description">${ad.description}</div>
+                                    ${ad.brand ? `<div class="gist-mock-ad-brand" style="color: ${ad.brandColor};">${ad.brand}</div>` : ''}
+                                </div>
+                                <button class="gist-mock-ad-cta" style="background: ${ad.brandColor || '#3b82f6'};">${ad.cta}</button>
+                            </div>
+                        `;
+                    });
+                    
+                    fallbackHTML += `
+                            </div>
+                        </div>
+                    `;
+                    
+                    adsContainer.innerHTML = fallbackHTML;
+                    
+                    setTimeout(() => {
+                        const mockAds = adsContainer.querySelector('.gist-mock-ads');
+                        if (mockAds) {
+                            mockAds.classList.add('visible');
+                        }
+                    }, 200);
+                    
+                } catch (fallbackError) {
+                    console.error('Fallback ad generation also failed:', fallbackError);
+                    adsContainer.innerHTML = '';
+                    adsContainer.classList.remove('visible');
                 }
-            }, 200);
+            }
         }
         
         function hideExternalAds() {
