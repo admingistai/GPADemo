@@ -5583,7 +5583,7 @@ Instructions:
                 };
                 
                 html += `
-                    <div class="gist-source-preview" style="--source-color: ${attribution.color};">
+                    <div class="gist-source-preview" style="--source-color: ${attribution.color};" data-url="${attribution.url}">
                         <div class="gist-source-preview-image">
                             <div class="gist-source-preview-icon">${attribution.icon}</div>
                         </div>
@@ -5607,6 +5607,19 @@ Instructions:
             
             answerContent.innerHTML = html;
             hasAnswer = true;
+            
+            // Add click handlers to source preview cards
+            setTimeout(() => {
+                const sourcePreviewCards = answerContent.querySelectorAll('.gist-source-preview[data-url]');
+                sourcePreviewCards.forEach(card => {
+                    card.addEventListener('click', () => {
+                        const url = card.dataset.url;
+                        if (url) {
+                            window.open(url, '_blank', 'noopener,noreferrer');
+                        }
+                    });
+                });
+            }, 100);
             
             // Trigger animations after a brief delay to ensure DOM is updated
             setTimeout(() => {
@@ -5953,6 +5966,7 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 { 
                     name: 'Wikipedia', 
                     icon: 'W',
+                    url: 'https://en.wikipedia.org',
                     titles: [
                         'Stock market',
                         'Financial markets',
@@ -5971,6 +5985,7 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 { 
                     name: 'Stanford Research', 
                     icon: 'S',
+                    url: 'https://www.stanford.edu',
                     titles: [
                         'Market Efficiency and Information Theory',
                         'Behavioral Finance in Modern Markets',
@@ -5989,6 +6004,7 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 { 
                     name: 'MIT OpenCourseWare', 
                     icon: 'M',
+                    url: 'https://ocw.mit.edu',
                     titles: [
                         'Financial Theory I',
                         'Introduction to Financial Markets',
@@ -6007,6 +6023,7 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 { 
                     name: 'Nature Journal', 
                     icon: 'N',
+                    url: 'https://www.nature.com',
                     titles: [
                         'Network analysis of financial markets',
                         'Complexity science in economics',
@@ -6025,6 +6042,7 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 { 
                     name: 'Scientific American', 
                     icon: 'SA',
+                    url: 'https://www.scientificamerican.com',
                     titles: [
                         'The Psychology of Market Bubbles',
                         'How AI is Reshaping Finance',
@@ -6043,6 +6061,7 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 { 
                     name: 'MoneyWeek', 
                     icon: 'MW',
+                    url: 'https://moneyweek.com',
                     titles: [
                         'How to navigate the financial markets',
                         'Investment strategies for beginners',
@@ -6061,6 +6080,7 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 { 
                     name: 'Prospect Magazine', 
                     icon: 'P',
+                    url: 'https://www.prospectmagazine.co.uk',
                     titles: [
                         'Making banks boring again',
                         'The future of financial regulation',
@@ -6079,6 +6099,7 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 { 
                     name: 'Harvard Business Review', 
                     icon: 'H',
+                    url: 'https://hbr.org',
                     titles: [
                         'Strategic Asset Allocation',
                         'ESG Investing Trends',
@@ -6133,6 +6154,7 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 selectedSources.push({
                     source: sourceData.name,
                     icon: sourceData.icon,
+                    url: sourceData.url,
                     title: sourceData.titles[titleIndex],
                     description: sourceData.descriptions[descIndex],
                     date: randomDate,
