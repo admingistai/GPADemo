@@ -3251,6 +3251,11 @@
                     // Check if TTS is currently active or generating
                     if (ttsState.isPlaying || ttsState.isPaused || ttsState.isGenerating) {
                         // Keep current TTS interface if audio is active or generating
+                        // But ensure the remix interface exists in the DOM
+                        const existingInterface = answerContent.querySelector('.gist-remix-interface');
+                        if (!existingInterface) {
+                            showRemixInterface();
+                        }
                         return;
                     } else {
                         // Show remix interface with TTS functionality
@@ -4888,16 +4893,40 @@ Instructions:
         }
         
         function findWordInPage(word) {
+            // Clean the word for better matching
+            const cleanWord = word.trim().toLowerCase();
+            if (!cleanWord || cleanWord.length < 2) {
+                return null;
+            }
+            
             // Create a TreeWalker to find text nodes
             const walker = document.createTreeWalker(
                 document.body,
                 NodeFilter.SHOW_TEXT,
                 {
                     acceptNode: function(node) {
-                        // Skip widget and script/style elements
-                        if (node.parentElement && node.parentElement.closest('#gist-widget')) {
+                        // Skip widget, script, style elements, and hidden elements
+                        const parent = node.parentElement;
+                        if (!parent) return NodeFilter.FILTER_REJECT;
+                        
+                        if (parent.closest('#gist-widget') || 
+                            parent.closest('script') || 
+                            parent.closest('style') ||
+                            parent.closest('noscript')) {
                             return NodeFilter.FILTER_REJECT;
                         }
+                        
+                        // Skip if parent is hidden
+                        const style = window.getComputedStyle(parent);
+                        if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        
+                        // Only process nodes with meaningful text
+                        if (node.textContent.trim().length < 2) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        
                         return NodeFilter.FILTER_ACCEPT;
                     }
                 },
@@ -4907,19 +4936,34 @@ Instructions:
             let textNode;
             while (textNode = walker.nextNode()) {
                 const text = textNode.textContent;
+                
+                // Try exact word boundary match first
                 const wordRegex = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
                 const match = text.match(wordRegex);
                 
                 if (match) {
-                    // Create a range for the matched word
-                    const range = document.createRange();
-                    const startIndex = text.indexOf(match[0]);
-                    const endIndex = startIndex + match[0].length;
+                    const matchedWord = match[0];
+                    const startIndex = text.indexOf(matchedWord);
                     
-                    range.setStart(textNode, startIndex);
-                    range.setEnd(textNode, endIndex);
-                    
-                    return range;
+                    // Ensure we found a valid match
+                    if (startIndex >= 0) {
+                        const range = document.createRange();
+                        const endIndex = startIndex + matchedWord.length;
+                        
+                        try {
+                            range.setStart(textNode, startIndex);
+                            range.setEnd(textNode, endIndex);
+                            
+                            // Validate the range produces a reasonable rectangle
+                            const testRect = range.getBoundingClientRect();
+                            if (testRect.width > 0 && testRect.width < 200 && testRect.height > 0 && testRect.height < 50) {
+                                return range;
+                            }
+                        } catch (e) {
+                            // Skip invalid ranges
+                            continue;
+                        }
+                    }
                 }
             }
             return null;
@@ -4928,6 +4972,16 @@ Instructions:
         function createOverlayHighlight(range) {
             // Get the bounding rectangle of the word
             const rect = range.getBoundingClientRect();
+            
+            // Skip if the rectangle is too large (likely not a single word)
+            if (rect.width > 200 || rect.height > 50) {
+                return;
+            }
+            
+            // Skip if rectangle is too small or has no dimensions
+            if (rect.width < 5 || rect.height < 10) {
+                return;
+            }
             
             // Account for page scroll
             const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
@@ -4942,13 +4996,13 @@ Instructions:
                 top: ${rect.top + scrollY}px !important;
                 width: ${rect.width}px !important;
                 height: ${rect.height}px !important;
-                background-color: rgba(254, 243, 199, 0.8) !important;
-                border: 2px solid rgba(146, 64, 14, 0.3) !important;
-                border-radius: 3px !important;
+                background-color: rgba(255, 235, 59, 0.6) !important;
+                border: 1px solid rgba(255, 193, 7, 0.8) !important;
+                border-radius: 2px !important;
                 pointer-events: none !important;
                 z-index: 999999 !important;
-                transition: all 0.2s ease !important;
-                box-shadow: 0 0 10px rgba(146, 64, 14, 0.2) !important;
+                transition: opacity 0.3s ease !important;
+                box-shadow: 0 0 4px rgba(255, 193, 7, 0.3) !important;
             `;
             
             // Add to page
@@ -4957,12 +5011,17 @@ Instructions:
             // Store for cleanup
             ttsState.highlights.push(overlay);
             
-            // Auto-remove after a short delay to prevent buildup
+            // Auto-remove after a shorter delay to prevent buildup
             setTimeout(() => {
                 if (overlay.parentNode) {
-                    overlay.parentNode.removeChild(overlay);
+                    overlay.style.opacity = '0';
+                    setTimeout(() => {
+                        if (overlay.parentNode) {
+                            overlay.parentNode.removeChild(overlay);
+                        }
+                    }, 300);
                 }
-            }, 1500); // Increased to 1.5 seconds for better visibility
+            }, 800); // Reduced to 0.8 seconds with fade out
         }
         
         function clearTextHighlights() {
