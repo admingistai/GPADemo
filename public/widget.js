@@ -3248,8 +3248,14 @@
                 case 'remix':
                     // Clear Ask-specific answer flag when switching away from Ask
                     hasAskAnswer = false;
-                    // Show remix interface with TTS functionality
-                    showRemixInterface();
+                    // Check if TTS is currently active
+                    if (ttsState.isPlaying || ttsState.isPaused) {
+                        // Keep current TTS interface if audio is active
+                        return;
+                    } else {
+                        // Show remix interface with TTS functionality
+                        showRemixInterface();
+                    }
                     break;
                 case 'share':
                     // Clear hasAnswer when switching away from Ask
@@ -4860,73 +4866,98 @@ Instructions:
             // Clear previous highlights first
             clearTextHighlights();
             
-            // Use a simpler approach: find all text elements and add temporary highlighting
-            const allElements = document.querySelectorAll('*:not(script):not(style):not(#gist-widget):not(#gist-widget *)');
-            
-            for (const element of allElements) {
-                // Only process elements with direct text content (not just child elements)
-                if (element.childNodes.length > 0) {
-                    for (const node of element.childNodes) {
-                        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
-                            const text = node.textContent;
-                            const wordRegex = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
-                            
-                            if (wordRegex.test(text)) {
-                                // Create a temporary span wrapper around the parent element
-                                const wrapper = document.createElement('span');
-                                wrapper.className = 'gist-tts-highlight-wrapper';
-                                wrapper.style.cssText = `
-                                    background-color: #fef3c7 !important;
-                                    color: #92400e !important;
-                                    border-radius: 2px !important;
-                                    padding: 1px 2px !important;
-                                    transition: all 0.3s ease !important;
-                                    display: inline !important;
-                                `;
-                                
-                                // Store original styles
-                                const originalStyles = {
-                                    backgroundColor: element.style.backgroundColor,
-                                    color: element.style.color,
-                                    borderRadius: element.style.borderRadius,
-                                    padding: element.style.padding
-                                };
-                                
-                                // Apply highlight styles directly to the element
-                                element.style.backgroundColor = '#fef3c7';
-                                element.style.color = '#92400e';
-                                element.style.borderRadius = '2px';
-                                element.style.transition = 'all 0.3s ease';
-                                
-                                // Store for cleanup
-                                ttsState.highlights.push({
-                                    element: element,
-                                    originalStyles: originalStyles
-                                });
-                                
-                                // Scroll to highlighted element
-                                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                
-                                return; // Only highlight first occurrence
-                            }
-                        }
-                    }
-                }
+            // Find the word in the page and get its position
+            const range = findWordInPage(word);
+            if (range) {
+                createOverlayHighlight(range);
+                
+                // Scroll to the highlighted word
+                range.startContainer.parentElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
             }
         }
         
-        function clearTextHighlights() {
-            ttsState.highlights.forEach(highlight => {
-                if (highlight.element) {
-                    // Restore original styles
-                    const element = highlight.element;
-                    const original = highlight.originalStyles;
+        function findWordInPage(word) {
+            // Create a TreeWalker to find text nodes
+            const walker = document.createTreeWalker(
+                document.body,
+                NodeFilter.SHOW_TEXT,
+                {
+                    acceptNode: function(node) {
+                        // Skip widget and script/style elements
+                        if (node.parentElement && node.parentElement.closest('#gist-widget')) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        return NodeFilter.FILTER_ACCEPT;
+                    }
+                },
+                false
+            );
+            
+            let textNode;
+            while (textNode = walker.nextNode()) {
+                const text = textNode.textContent;
+                const wordRegex = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+                const match = text.match(wordRegex);
+                
+                if (match) {
+                    // Create a range for the matched word
+                    const range = document.createRange();
+                    const startIndex = text.indexOf(match[0]);
+                    const endIndex = startIndex + match[0].length;
                     
-                    element.style.backgroundColor = original.backgroundColor || '';
-                    element.style.color = original.color || '';
-                    element.style.borderRadius = original.borderRadius || '';
-                    element.style.padding = original.padding || '';
-                    element.style.transition = '';
+                    range.setStart(textNode, startIndex);
+                    range.setEnd(textNode, endIndex);
+                    
+                    return range;
+                }
+            }
+            return null;
+        }
+        
+        function createOverlayHighlight(range) {
+            // Get the bounding rectangle of the word
+            const rect = range.getBoundingClientRect();
+            
+            // Create overlay highlight box
+            const overlay = document.createElement('div');
+            overlay.className = 'gist-tts-word-highlight';
+            overlay.style.cssText = `
+                position: fixed !important;
+                left: ${rect.left}px !important;
+                top: ${rect.top}px !important;
+                width: ${rect.width}px !important;
+                height: ${rect.height}px !important;
+                background-color: rgba(254, 243, 199, 0.8) !important;
+                border: 2px solid rgba(146, 64, 14, 0.3) !important;
+                border-radius: 3px !important;
+                pointer-events: none !important;
+                z-index: 999999 !important;
+                transition: all 0.2s ease !important;
+                box-shadow: 0 0 10px rgba(146, 64, 14, 0.2) !important;
+            `;
+            
+            // Add to page
+            document.body.appendChild(overlay);
+            
+            // Store for cleanup
+            ttsState.highlights.push(overlay);
+            
+            // Auto-remove after a short delay to prevent buildup
+            setTimeout(() => {
+                if (overlay.parentNode) {
+                    overlay.parentNode.removeChild(overlay);
+                }
+            }, 1000);
+        }
+        
+        function clearTextHighlights() {
+            // Remove all overlay highlights
+            ttsState.highlights.forEach(overlay => {
+                if (overlay && overlay.parentNode) {
+                    overlay.parentNode.removeChild(overlay);
                 }
             });
             ttsState.highlights = [];
