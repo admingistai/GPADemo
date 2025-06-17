@@ -9,7 +9,7 @@ export default function URLInputForm({ onSubmit, loading, error }) {
     e.preventDefault();
     
     // Redirect to Vercel app homepage
-    window.open('https://gpa-topaz.vercel.app', '_blank');
+    window.open('https://gpademo.vercel.app', '_blank');
   };
 
   const handleInputChange = (e) => {
