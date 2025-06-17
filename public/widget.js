@@ -1064,16 +1064,16 @@
                     pointer-events: none;
                     text-align: left;
                     color: #6b7280;
-                    margin-left: 18px;
+                    margin-left: 14px;
                     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-                    width: calc(100% - 30px);
+                    width: calc(100% - 28px);
                     min-width: 95px;
                 }
                 
                 .gist-widget.minimized .gist-pill-content {
                     width: 155px;
                     justify-content: flex-start;
-                    padding-left: 10px;
+                    padding-left: 12px;
                     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 }
                 
