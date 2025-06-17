@@ -2238,8 +2238,8 @@
                 
                 .gist-tts-card {
                     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-                    border-radius: 20px;
-                    padding: 24px;
+                    border-radius: 16px;
+                    padding: 16px;
                     text-align: center;
                     width: 100%;
                     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -2247,56 +2247,56 @@
                 }
                 
                 .gist-tts-icon-large {
-                    font-size: 48px;
-                    margin-bottom: 12px;
+                    font-size: 32px;
+                    margin-bottom: 8px;
                     filter: grayscale(0.3);
                 }
                 
                 .gist-tts-card h3 {
-                    margin: 0 0 20px 0;
-                    font-size: 18px;
+                    margin: 0 0 12px 0;
+                    font-size: 16px;
                     font-weight: 600;
                     color: #1e293b;
                 }
                 
                 .gist-voice-row {
                     display: flex;
-                    gap: 8px;
-                    margin-bottom: 20px;
+                    gap: 6px;
+                    margin-bottom: 12px;
                     align-items: center;
                 }
                 
                 .gist-voice-select-modern {
                     flex: 1;
-                    padding: 12px 16px;
+                    padding: 8px 12px;
                     border: 2px solid #e2e8f0;
-                    border-radius: 12px;
+                    border-radius: 10px;
                     background: white;
-                    font-size: 14px;
+                    font-size: 13px;
                     color: #374151;
                     cursor: pointer;
                     transition: all 0.2s ease;
                     appearance: none;
                     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-                    background-position: right 12px center;
+                    background-position: right 10px center;
                     background-repeat: no-repeat;
-                    background-size: 16px;
-                    padding-right: 40px;
+                    background-size: 14px;
+                    padding-right: 32px;
                 }
                 
                 .gist-voice-select-modern:focus {
                     outline: none;
                     border-color: #6366f1;
-                    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+                    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
                 }
                 
                 .gist-voice-test {
-                    width: 48px;
-                    height: 48px;
+                    width: 36px;
+                    height: 36px;
                     border: 2px solid #e2e8f0;
-                    border-radius: 12px;
+                    border-radius: 10px;
                     background: white;
-                    font-size: 16px;
+                    font-size: 14px;
                     cursor: pointer;
                     transition: all 0.2s ease;
                     display: flex;
@@ -2316,26 +2316,26 @@
                 
                 .gist-play-button {
                     width: 100%;
-                    padding: 16px 24px;
+                    padding: 12px 20px;
                     background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
                     color: white;
                     border: none;
-                    border-radius: 16px;
-                    font-size: 16px;
+                    border-radius: 12px;
+                    font-size: 15px;
                     font-weight: 600;
                     cursor: pointer;
                     transition: all 0.2s ease;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    gap: 12px;
-                    margin-bottom: 16px;
-                    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+                    gap: 8px;
+                    margin-bottom: 10px;
+                    box-shadow: 0 3px 8px rgba(99, 102, 241, 0.2);
                 }
                 
                 .gist-play-button:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+                    transform: translateY(-1px);
+                    box-shadow: 0 5px 12px rgba(99, 102, 241, 0.3);
                 }
                 
                 .gist-play-button:active {
@@ -2343,30 +2343,30 @@
                 }
                 
                 .gist-play-icon {
-                    width: 24px;
-                    height: 24px;
+                    width: 20px;
+                    height: 20px;
                     background: rgba(255, 255, 255, 0.2);
                     border-radius: 50%;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 12px;
+                    font-size: 10px;
                 }
                 
                 .gist-audio-controls {
                     display: flex;
-                    gap: 8px;
+                    gap: 6px;
                     justify-content: center;
-                    margin-bottom: 12px;
+                    margin-bottom: 8px;
                 }
                 
                 .gist-control-btn {
-                    width: 40px;
-                    height: 40px;
+                    width: 32px;
+                    height: 32px;
                     border: 2px solid #e2e8f0;
                     border-radius: 50%;
                     background: white;
-                    font-size: 14px;
+                    font-size: 12px;
                     cursor: pointer;
                     transition: all 0.2s ease;
                     display: flex;
@@ -2377,15 +2377,15 @@
                 .gist-control-btn:hover {
                     border-color: #6366f1;
                     background: #f8fafc;
-                    transform: scale(1.1);
+                    transform: scale(1.05);
                 }
                 
                 .gist-tts-status {
-                    font-size: 12px;
+                    font-size: 11px;
                     color: #64748b;
                     font-style: italic;
-                    min-height: 18px;
-                    line-height: 1.4;
+                    min-height: 14px;
+                    line-height: 1.3;
                 }
                 
                 /* Text highlighting for TTS */
