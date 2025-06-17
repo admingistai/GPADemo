@@ -1073,7 +1073,7 @@
                 .gist-widget.minimized .gist-pill-content {
                     width: 155px;
                     justify-content: flex-start;
-                    padding-left: 18px;
+                    padding-left: 21px;
                     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 }
                 
