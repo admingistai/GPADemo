@@ -4920,19 +4920,28 @@ Instructions:
             const duration = ttsState.currentAudio.duration;
             const wordsPerSecond = ttsState.words.length / duration;
             
-            // Scale words progressively
+            console.log(`Starting TTS highlighting: ${ttsState.words.length} words over ${duration}s = ${wordsPerSecond} words/sec`);
+            
+            // Underline words progressively
             const highlightInterval = setInterval(() => {
                 if (!ttsState.isPlaying || ttsState.currentWordIndex >= ttsState.words.length) {
                     clearInterval(highlightInterval);
+                    clearTextHighlights(); // Clear final underline
                     return;
                 }
                 
                 // Clear previous highlights
                 clearTextHighlights();
                 
-                // Scale current word on the page
+                // Underline current word on the page
                 const currentWord = ttsState.words[ttsState.currentWordIndex];
-                highlightNextWord(currentWord);
+                const success = highlightNextWord(currentWord);
+                
+                if (!success) {
+                    console.log(`Failed to highlight word "${currentWord}" at index ${ttsState.currentWordIndex}`);
+                    // Try to find it with more flexible matching
+                    findWordFlexibly(currentWord);
+                }
                 
                 ttsState.currentWordIndex++;
             }, 1000 / wordsPerSecond);
@@ -4945,20 +4954,90 @@ Instructions:
             // Find the next matching word in our pre-built queue
             const cleanTarget = targetWord.trim().toLowerCase();
             
-            // Search forward from current position in queue
+            // Try exact match first (from current position forward)
             for (let i = ttsState.currentQueueIndex; i < ttsState.wordQueue.length; i++) {
                 const queueItem = ttsState.wordQueue[i];
                 
                 if (queueItem.word.toLowerCase() === cleanTarget) {
-                    // Found the word! Underline it and advance queue position
                     ttsState.currentQueueIndex = i + 1; // Move past this word
                     underlineWordAtLocation(queueItem);
                     return true;
                 }
             }
             
-            // Word not found in remaining queue
-            console.log(`Word "${targetWord}" not found in remaining queue`);
+            // If exact match fails, try partial/fuzzy matching within a reasonable window
+            const searchWindow = Math.min(50, ttsState.wordQueue.length - ttsState.currentQueueIndex);
+            for (let i = ttsState.currentQueueIndex; i < ttsState.currentQueueIndex + searchWindow; i++) {
+                if (i >= ttsState.wordQueue.length) break;
+                
+                const queueItem = ttsState.wordQueue[i];
+                const queueWord = queueItem.word.toLowerCase();
+                
+                // Try fuzzy matching
+                if (queueWord.includes(cleanTarget) || cleanTarget.includes(queueWord)) {
+                    console.log(`Fuzzy match: "${targetWord}" matched with "${queueItem.word}"`);
+                    ttsState.currentQueueIndex = i + 1;
+                    underlineWordAtLocation(queueItem);
+                    return true;
+                }
+            }
+            
+            // Word not found - advance queue slightly to avoid getting stuck
+            ttsState.currentQueueIndex = Math.min(ttsState.currentQueueIndex + 1, ttsState.wordQueue.length);
+            console.log(`Word "${targetWord}" not found, advancing queue to ${ttsState.currentQueueIndex}`);
+            return false;
+        }
+        
+        function findWordFlexibly(word) {
+            // Fallback: search for the word anywhere in visible text nodes
+            const walker = document.createTreeWalker(
+                document.body,
+                NodeFilter.SHOW_TEXT,
+                {
+                    acceptNode: function(node) {
+                        const parent = node.parentElement;
+                        if (!parent) return NodeFilter.FILTER_REJECT;
+                        
+                        if (parent.closest('#gist-widget') || 
+                            parent.closest('script') || 
+                            parent.closest('style') ||
+                            parent.closest('noscript')) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        
+                        const style = window.getComputedStyle(parent);
+                        if (style.display === 'none' || style.visibility === 'hidden') {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        
+                        return NodeFilter.FILTER_ACCEPT;
+                    }
+                },
+                false
+            );
+            
+            const cleanWord = word.trim().toLowerCase();
+            let textNode;
+            
+            while (textNode = walker.nextNode()) {
+                const text = textNode.textContent.toLowerCase();
+                const wordIndex = text.indexOf(cleanWord);
+                
+                if (wordIndex >= 0) {
+                    // Found the word, create a queue item and underline it
+                    const queueItem = {
+                        word: word,
+                        textNode: textNode,
+                        startIndex: wordIndex,
+                        endIndex: wordIndex + word.length
+                    };
+                    
+                    console.log(`Flexible match found for "${word}"`);
+                    underlineWordAtLocation(queueItem);
+                    return true;
+                }
+            }
+            
             return false;
         }
         
@@ -5013,10 +5092,8 @@ Instructions:
                 inline: 'center'
             });
             
-            // Auto-reset after delay
-            setTimeout(() => {
-                resetWordUnderline(wordSpan, word, parent, beforeText, afterText);
-            }, 800);
+            // Don't auto-reset - let the next word clear it
+            // This prevents flickering and ensures continuous underlining
             
             return wordSpan;
         }
