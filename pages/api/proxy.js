@@ -67,30 +67,60 @@ export default async function handler(req, res) {
       try {
         // Do a HEAD request to check if URL is reachable
         await axios.head(targetUrl, { 
-          timeout: 5000,
-          validateStatus: status => status < 500
+          timeout: 8000, // Increased timeout for slow websites
+          validateStatus: status => status < 500,
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+          }
         });
         return res.status(200).json({ success: true });
       } catch (error) {
+        console.error('Test request failed for:', targetUrl, error.message);
+        
+        // Provide more specific error messages
+        if (error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT') {
+          return res.status(408).json({ 
+            error: 'Website is taking too long to respond. It may be slow or have restrictions.',
+            details: 'Connection timeout',
+            suggestion: 'Try a different website or check if the URL is correct.'
+          });
+        }
+        
+        if (error.code === 'ECONNREFUSED') {
+          return res.status(503).json({ 
+            error: 'Website refused the connection.',
+            details: 'Connection refused',
+            suggestion: 'The website may be down or blocking automated requests.'
+          });
+        }
+        
         return res.status(400).json({ 
           error: 'Unable to reach the specified website',
-          details: error.message
+          details: error.message,
+          code: error.code,
+          suggestion: 'Please verify the URL is correct and accessible.'
         });
       }
     }
 
     // Fetch the target website
     const response = await axios.get(targetUrl, {
-      timeout: 25000, // 25 seconds
+      timeout: 30000, // 30 seconds for main request
       maxRedirects: 5,
       validateStatus: status => status < 500,
       responseType: 'text',
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Accept-Encoding': 'gzip, deflate, br',
         'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache'
+        'Pragma': 'no-cache',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'none',
+        'Upgrade-Insecure-Requests': '1'
       }
     });
 
