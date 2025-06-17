@@ -3061,7 +3061,7 @@
                             <img src="${BACKEND_BASE_URL}/gist-logo.png" alt="Gist Logo" class="gist-footer-logo">
                             <span class="gist-powered-text">Powered by Gist</span>
                         </div>
-                        <a href="/" target="_blank" class="gist-add-to-site">Add to your site</a>
+                        <a href="https://gpademo.vercel.app" target="_blank" class="gist-add-to-site">Add to your site</a>
                     </div>
                 </div>
             </div>
