@@ -4908,10 +4908,19 @@ Instructions:
             
             // Find the next occurrence of this word in our original text starting from our last position
             const wordRegex = new RegExp(`\\b${cleanWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
-            const match = ttsState.originalText.substring(ttsState.lastFoundPosition).match(wordRegex);
+            const remainingText = ttsState.originalText.substring(ttsState.lastFoundPosition);
+            const match = remainingText.match(wordRegex);
             
             if (!match) {
-                return null; // Word not found in remaining text
+                // Word not found in remaining text - try searching from the beginning as fallback
+                console.log(`Word "${cleanWord}" not found in remaining text, trying fallback search`);
+                const fallbackMatch = ttsState.originalText.match(wordRegex);
+                if (fallbackMatch) {
+                    // Reset position tracking and use the first occurrence
+                    ttsState.lastFoundPosition = fallbackMatch.index + fallbackMatch[0].length;
+                    return findWordInDOM(fallbackMatch[0], fallbackMatch.index);
+                }
+                return null;
             }
             
             // Calculate the actual position in the full text
@@ -4924,7 +4933,54 @@ Instructions:
             // Now find this specific occurrence in the DOM
             const element = findWordInDOM(matchedWord, matchPosition);
             
+            // If we couldn't find it at the expected position, try a more flexible search
+            if (!element) {
+                console.log(`Word "${matchedWord}" not found at position ${matchPosition}, trying flexible search`);
+                return findWordFlexibly(matchedWord);
+            }
+            
             return element;
+        }
+        
+        function findWordFlexibly(word) {
+            // Simple fallback: just find the word anywhere in the visible DOM
+            const walker = document.createTreeWalker(
+                document.body,
+                NodeFilter.SHOW_TEXT,
+                {
+                    acceptNode: function(node) {
+                        const parent = node.parentElement;
+                        if (!parent) return NodeFilter.FILTER_REJECT;
+                        
+                        if (parent.closest('#gist-widget') || 
+                            parent.closest('script') || 
+                            parent.closest('style') ||
+                            parent.closest('noscript')) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        
+                        const style = window.getComputedStyle(parent);
+                        if (style.display === 'none' || style.visibility === 'hidden') {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        
+                        if (node.textContent.trim().length < 1) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        
+                        return NodeFilter.FILTER_ACCEPT;
+                    }
+                },
+                false
+            );
+            
+            let textNode;
+            while (textNode = walker.nextNode()) {
+                const result = tryFindWordInNode(textNode, word, -1);
+                if (result) return result;
+            }
+            
+            return null;
         }
         
         function findWordInDOM(word, targetPosition) {
@@ -4964,35 +5020,78 @@ Instructions:
             
             // Build a map of text content and find the word at the target position
             let cumulativeText = '';
+            let textNodes = [];
             let currentTextNode;
             
+            // First pass: collect all text and build position map
             while (currentTextNode = walker.nextNode()) {
                 const nodeText = currentTextNode.textContent;
-                const nodeStartPos = cumulativeText.length;
-                const nodeEndPos = nodeStartPos + nodeText.length;
+                const cleanNodeText = nodeText.replace(/\s+/g, ' ').trim(); // Normalize spaces
                 
-                // Check if our target position falls within this text node
-                if (targetPosition >= nodeStartPos && targetPosition < nodeEndPos) {
-                    const relativePos = targetPosition - nodeStartPos;
-                    
-                    // Find the word at this position within the node
-                    const wordRegex = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
-                    let match;
-                    
-                    while ((match = wordRegex.exec(nodeText)) !== null) {
-                        const matchStart = match.index;
-                        const matchEnd = matchStart + match[0].length;
-                        
-                        // Check if this match contains our target position
-                        if (relativePos >= matchStart && relativePos < matchEnd) {
-                            // Found our target word! Scale it.
-                            return scaleWordInTextNode(currentTextNode, match[0], matchStart);
-                        }
-                    }
+                textNodes.push({
+                    node: currentTextNode,
+                    text: nodeText,
+                    cleanText: cleanNodeText,
+                    startPos: cumulativeText.length,
+                    endPos: cumulativeText.length + cleanNodeText.length
+                });
+                
+                cumulativeText += cleanNodeText + ' ';
+            }
+            
+            // Clean the cumulative text the same way as our TTS text
+            const cleanCumulativeText = cumulativeText.replace(/\s+/g, ' ').trim();
+            
+            // Try exact position first
+            for (const nodeInfo of textNodes) {
+                if (targetPosition >= nodeInfo.startPos && targetPosition < nodeInfo.endPos) {
+                    const relativePos = targetPosition - nodeInfo.startPos;
+                    const result = tryFindWordInNode(nodeInfo.node, word, relativePos);
+                    if (result) return result;
                 }
+            }
+            
+            // If exact position fails, try finding the word near the target position
+            const searchWindow = 100; // Look within 100 characters
+            for (const nodeInfo of textNodes) {
+                const distance = Math.min(
+                    Math.abs(nodeInfo.startPos - targetPosition),
+                    Math.abs(nodeInfo.endPos - targetPosition)
+                );
                 
-                // Add this node's text to our cumulative text (with spaces for word boundaries)
-                cumulativeText += nodeText + ' ';
+                if (distance <= searchWindow) {
+                    const result = tryFindWordInNode(nodeInfo.node, word, -1); // -1 means find any occurrence
+                    if (result) return result;
+                }
+            }
+            
+            // Last resort: just find the word anywhere in visible text
+            for (const nodeInfo of textNodes) {
+                const result = tryFindWordInNode(nodeInfo.node, word, -1);
+                if (result) return result;
+            }
+            
+            return null;
+        }
+        
+        function tryFindWordInNode(textNode, word, targetRelativePos) {
+            const nodeText = textNode.textContent;
+            const wordRegex = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+            let match;
+            
+            while ((match = wordRegex.exec(nodeText)) !== null) {
+                const matchStart = match.index;
+                const matchEnd = matchStart + match[0].length;
+                
+                // If we have a target position, check if this match is at that position
+                if (targetRelativePos >= 0) {
+                    if (targetRelativePos >= matchStart && targetRelativePos < matchEnd) {
+                        return scaleWordInTextNode(textNode, match[0], matchStart);
+                    }
+                } else {
+                    // No specific position - just use the first match
+                    return scaleWordInTextNode(textNode, match[0], matchStart);
+                }
             }
             
             return null;
