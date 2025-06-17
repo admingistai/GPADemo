@@ -1,5 +1,5 @@
 (function() {
-  'use strict';
+    'use strict';
 
     // ================================
     // CONFIGURATION - Add your API key here
@@ -389,7 +389,7 @@
             }
         });
         
-        return {
+            return {
             backgrounds: Array.from(colors.backgrounds),
             textColors: Array.from(colors.textColors),
             borderColors: Array.from(colors.borderColors),
@@ -648,7 +648,7 @@
             }));
             
             return websiteStyling;
-        } catch (error) {
+            } catch (error) {
             log('error', 'Failed to analyze website styling', { error: error.message });
             return websiteStyling; // Return defaults
         }
@@ -2679,7 +2679,7 @@
                 
                 .gist-follow-up-header h4 {
                     margin: 0;
-                    font-size: 16px;
+                        font-size: 16px;
                     font-weight: 600;
                     color: #1f2937;
                 }
@@ -2811,7 +2811,7 @@
                 
                 .gist-questions-loading-subtitle {
                     margin: 0;
-                    font-size: 14px;
+                        font-size: 14px;
                     color: #6b7280;
                     line-height: 1.5;
                 }
@@ -3665,12 +3665,12 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
                     <div class="gist-attribution-source">
                         <div class="gist-attribution-dot" style="background-color: ${attribution.color};"></div>
                         <span>${attribution.source} (${(attribution.percentage * 100).toFixed(1)}%)</span>
-                    </div>
+                </div>
                 `;
             }
             
             html += `
-                    </div>
+                </div>
                 </div>
             `;
             
@@ -3681,7 +3681,7 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
                         <h4>Explore Further</h4>
                         <div class="gist-loading-dots">
                             <span></span><span></span><span></span>
-                        </div>
+                </div>
                     </div>
                 </div>
             `;
@@ -4075,7 +4075,7 @@ Instructions:
                 } else if (data.choices && data.choices[0] && data.choices[0].message) {
                     // Direct OpenAI format
                     responseText = data.choices[0].message.content;
-                } else {
+                        } else {
                     throw new Error('Invalid response format from API');
                 }
                 
@@ -4757,10 +4757,10 @@ Instructions:
                     <div class="gist-attribution-segment" 
                          style="width: ${width}%; background-color: ${attribution.color};"
                          title="${attribution.source}: ${(attribution.percentage * 100).toFixed(1)}%">
-                    </div>
-                `;
-            }
-            
+                </div>
+            `;
+        }
+
             html += `
                     </div>
                     <div class="gist-attribution-sources">
@@ -4772,10 +4772,10 @@ Instructions:
                     <div class="gist-attribution-source">
                         <div class="gist-attribution-dot" style="background-color: ${attribution.color};"></div>
                         <span>${attribution.source} (${(attribution.percentage * 100).toFixed(1)}%)</span>
-                    </div>
-                `;
-            }
-            
+                </div>
+            `;
+        }
+
             html += `
                     </div>
                     <div class="gist-source-previews">
@@ -4905,7 +4905,7 @@ Instructions:
                 try {
                     textToRead = extractContentForTTS();
                     console.log('Successfully extracted content for TTS:', textToRead.length, 'characters');
-                } catch (error) {
+            } catch (error) {
                     console.warn('TTS content extraction failed, falling back to basic extraction:', error.message);
                     // Fallback to basic extraction
                     const context = extractPageContext();
@@ -5436,7 +5436,7 @@ Instructions:
                 throw error;
             }
         }
-        
+
         function showLoading() {
             // Ensure answer container and toolbox are visible
             answerContainer.classList.add('visible');
@@ -6485,7 +6485,7 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             Object.keys(toolsConfig).forEach(tool => {
                 if (TOOLS_CONFIG.hasOwnProperty(tool)) {
                     TOOLS_CONFIG[tool] = Boolean(toolsConfig[tool]);
-                } else {
+            } else {
                     console.warn(`[GistWidget] Unknown tool '${tool}' ignored.`);
                 }
             });

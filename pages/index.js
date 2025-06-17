@@ -24,8 +24,9 @@ export default function Home() {
         throw new Error(testResult.error || 'Unable to reach the specified website');
       }
 
-      setTargetUrl(url);
-      setShowWebsite(true);
+      // Instead of showing preview, redirect directly to the website with widget
+      const proxyUrl = `/api/proxy?url=${encodeURIComponent(url)}`;
+      window.open(proxyUrl, '_blank', 'noopener,noreferrer');
     } catch (err) {
       setError(err.message);
     } finally {
