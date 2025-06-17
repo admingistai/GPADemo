@@ -56,10 +56,10 @@
     // Configure which tools are enabled/disabled
     // Can be modified via console: TOOLS_CONFIG.remix = false
     const TOOLS_CONFIG = {
-        ask: false,     // Ask tool UI - DISABLED (keeping textbox functionality only)
-        gist: false,    // Summary tool - DISABLED
-        remix: false,   // Content remix tool - DISABLED
-        share: false    // Share functionality - DISABLED
+        ask: true,      // Always enabled - core functionality
+        gist: true,     // Summary tool
+        remix: true,    // Content remix tool  
+        share: true     // Share functionality
     };
     
     // Expose TOOLS_CONFIG globally for console access
@@ -2399,7 +2399,147 @@
                 
 
                 
-                /* Share functionality removed */
+                /* Share Interface Styles */
+                .gist-share-interface {
+        padding: 0;
+                    opacity: 0;
+                    transform: translateY(10px);
+                    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+                }
+                
+                .gist-share-interface.gist-content-entered {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+                
+                .gist-share-header {
+                    text-align: center;
+                    margin-bottom: 20px;
+                    padding-bottom: 15px;
+                    border-bottom: 1px solid #e5e7eb;
+                }
+                
+                .gist-share-header h3 {
+                    margin: 0 0 8px 0;
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #1f2937;
+                }
+                
+                .gist-share-title {
+                    margin: 0;
+                    font-size: 14px;
+                    color: #6b7280;
+                    font-style: italic;
+                    max-width: 280px;
+                    margin: 0 auto;
+                    line-height: 1.4;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+                
+                .gist-share-options {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                }
+                
+                .gist-share-option {
+                    display: flex;
+                    align-items: center;
+                    padding: 12px 16px;
+                    background: #f8fafc;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    font-family: inherit;
+                    font-size: 14px;
+                    color: #374151;
+                    width: 100%;
+                    text-align: left;
+                }
+                
+                .gist-share-option:hover {
+                    background: #f1f5f9;
+                    border-color: #cbd5e1;
+                    transform: translateY(-1px);
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                }
+                
+                .gist-share-option:hover svg {
+                    color: #1f2937;
+                }
+                
+                .gist-share-option[data-action="copy-link"]:hover svg {
+                    color: #059669;
+                }
+                
+                .gist-share-option[data-action="imessage"]:hover svg {
+                    color: #007aff;
+                }
+                
+                .gist-share-option[data-action="instagram"]:hover svg {
+                    color: #e4405f;
+                }
+                
+                .gist-share-option[data-action="x"]:hover svg {
+                    color: #000000;
+                }
+                
+                .gist-share-option[data-action="facebook"]:hover svg {
+                    color: #1877f2;
+                }
+                
+                .gist-share-option:active {
+                    transform: translateY(0);
+                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                }
+                
+                .gist-share-option-icon {
+                    margin-right: 12px;
+                    width: 20px;
+                    height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+                    flex-shrink: 0;
+                }
+                
+                .gist-share-option-icon svg {
+                    width: 20px;
+                    height: 20px;
+                    color: #374151;
+                    transition: color 0.2s ease;
+                }
+                
+                .gist-share-option-label {
+                    font-weight: 500;
+                    flex: 1;
+                }
+                
+                .gist-share-feedback {
+                    margin-top: 16px;
+        padding: 8px 12px;
+                    border-radius: 6px;
+        font-size: 12px;
+                    text-align: center;
+                    font-weight: 500;
+                    transition: all 0.3s ease;
+                }
+                
+                .gist-share-feedback.success {
+                    background: #dcfce7;
+                    color: #166534;
+                    border: 1px solid #bbf7d0;
+                }
+                
+                .gist-share-feedback.error {
+                    background: #fee2e2;
+                    color: #dc2626;
+                    border: 1px solid #fecaca;
+                }
                 
                 /* Suggested Questions Styles */
                 .gist-suggested-questions {
@@ -2936,28 +3076,19 @@
         // Generate toolbox tabs dynamically based on TOOLS_CONFIG
         function generateToolboxTabs() {
             const toolboxTabsContainer = shadowRoot.getElementById('gist-toolbox-tabs');
-            const toolbox = shadowRoot.getElementById('gist-toolbox');
             const toolLabels = {
-                ask: 'Ask'
+                ask: 'Ask',
+                gist: 'The Gist', 
+                remix: 'Remix',
+                share: 'Share'
             };
             
             // Clear existing tabs
             toolboxTabsContainer.innerHTML = '';
             
             // Get enabled tools in the desired order
-            const toolOrder = ['ask'];
+            const toolOrder = ['ask', 'gist', 'remix', 'share'];
             const enabledTools = toolOrder.filter(tool => TOOLS_CONFIG[tool]);
-            
-            // Hide toolbox if no tools are enabled
-            if (enabledTools.length === 0) {
-                toolbox.style.display = 'none';
-                currentTool = 'none'; // No tool is active
-                console.log('[GistWidget] No tools enabled, hiding toolbox');
-                return;
-            }
-            
-            // Show toolbox if tools are enabled
-            toolbox.style.display = 'block';
             
             // Generate tabs for enabled tools
             enabledTools.forEach((tool, index) => {
@@ -2980,9 +3111,6 @@
         
         // Generate the tabs
         generateToolboxTabs();
-        
-        // Initialize content based on current tool
-        updateContentForTool(currentTool);
         
         // Get elements for event handling
         const pill = shadowRoot.getElementById('gist-pill');
@@ -3177,31 +3305,6 @@
         }
         
         function updateContentForTool(tool) {
-            // When no tools are enabled, always show basic placeholder
-            if (tool === 'none' || !TOOLS_CONFIG[tool]) {
-                const context = extractPageContext();
-                const hasContext = context && context.content && context.content.length > 50;
-                const placeholderText = hasContext ? 
-                    'Ask anything about this article or any other topic!' : 
-                    'Ask a question to see the answer here!';
-                
-                answerContent.innerHTML = `
-                    <div class="gist-answer-placeholder gist-content-entering">
-                        ${placeholderText}
-                    </div>
-                `;
-                
-                // Trigger animation
-                setTimeout(() => {
-                    const elements = answerContent.querySelectorAll('.gist-content-entering');
-                    elements.forEach(el => {
-                        el.classList.remove('gist-content-entering');
-                        el.classList.add('gist-content-entered');
-                    });
-                }, 50);
-                return;
-            }
-            
             switch (tool) {
                 case 'ask':
                     // If we have an Ask-specific answer, keep it. Otherwise show suggested questions
@@ -3214,9 +3317,35 @@
                         showSuggestedQuestions();
                     }
                     break;
-                // Gist tool has been removed
-                // Remix tool has been removed
-                // Share tool has been removed
+                case 'gist':
+                    // Clear Ask-specific answer flag when switching away from Ask
+                    hasAskAnswer = false;
+                    // Generate summary automatically
+                    generateGist();
+                    break;
+                case 'remix':
+                    // Clear Ask-specific answer flag when switching away from Ask
+                    hasAskAnswer = false;
+                    // Check if TTS is currently active or generating
+                    if (ttsState.isPlaying || ttsState.isPaused || ttsState.isGenerating) {
+                        // Keep current TTS interface if audio is active or generating
+                        // But ensure the remix interface exists in the DOM
+                        const existingInterface = answerContent.querySelector('.gist-remix-interface');
+                        if (!existingInterface) {
+                            showRemixInterface();
+                        }
+                        return;
+                    } else {
+                        // Show remix interface with TTS functionality
+                        showRemixInterface();
+                    }
+                    break;
+                case 'share':
+                    // Clear hasAnswer when switching away from Ask
+                    hasAnswer = false;
+                    hasAskAnswer = false;
+                    showShareInterface();
+                    break;
                 default:
                     showPlaceholderForTool('ask');
             }
@@ -3233,9 +3362,15 @@
                         'Ask anything about this article or any other topic!' : 
                         'Ask a question to see the answer here!';
                     break;
-                // Gist tool has been removed
-                // Remix tool has been removed
-                // Share tool has been removed
+                case 'gist':
+                    placeholderText = 'Get a summary of this page. Feature coming soon!';
+                    break;
+                case 'remix':
+                    placeholderText = '';
+                    break;
+                case 'share':
+                    placeholderText = 'Share insights from this page. Feature coming soon!';
+                    break;
                 default:
                     placeholderText = 'Select a tool to get started!';
             }
@@ -3317,7 +3452,7 @@
                 const questions = await generateSuggestedQuestions(previousQuestion, previousAnswer);
                 
                 // Only show questions if user is still on ask tool
-                if (currentTool !== 'ask' && currentTool !== 'none') return;
+                if (currentTool !== 'ask') return;
                 
                 let html = `
                     <div class="gist-suggested-questions gist-content-entering">
@@ -3585,7 +3720,7 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
                 const followUpQuestions = await generateSuggestedQuestions(question, answer);
                 
                 // Only update if user is still on ask tool and has this answer visible
-                if ((currentTool !== 'ask' && currentTool !== 'none') || !hasAnswer) return;
+                if (currentTool !== 'ask' || !hasAnswer) return;
                 
                 const followUpSection = answerContent.querySelector('.gist-follow-up-section');
                 if (!followUpSection) return;
@@ -3837,7 +3972,761 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
             });
         }
         
-        // Gist functionality has been removed
+        // Generate Gist functionality
+        async function generateGist() {
+            try {
+                // Show loading state
+                showLoading();
+                
+                // Get page context
+                const context = extractPageContext();
+                if (!context || !context.content || context.content.length < 50) {
+                    showGistError('No article content found to summarize.');
+                    return;
+                }
+                
+                // Create a specific prompt for summarization
+                const gistPrompt = `Please summarize the following article into exactly 3 bullet points or fewer. Each bullet point should be concise and capture the main ideas. Focus on the most important information.
+
+Article Title: ${context.title}
+
+Article Content:
+${context.content}
+
+Instructions:
+- Provide exactly 3 bullet points or fewer
+- Each bullet point should be one clear, concise sentence
+- Cover the most important aspects of the article
+- Do not include introductory text, just the bullet points
+- Start each bullet point with a bullet (•) character`;
+
+                // Use Gist API to generate summary
+                const startTime = Date.now();
+                const response = await createChatCompletionForGist(gistPrompt);
+                const responseTime = Date.now() - startTime;
+                
+                // Show the gist summary only if user is still on gist tool
+                if (currentTool === 'gist') {
+                showGistSummary(response.response);
+                }
+                
+                // Emit analytics event
+                window.dispatchEvent(new CustomEvent('gist-gist-generated', {
+                    detail: {
+                        title: context.title,
+                        contentLength: context.content.length,
+                        summary: response.response,
+                        responseTime: responseTime,
+                        usage: response.usage
+                    }
+                }));
+                
+            } catch (error) {
+                log('error', 'Gist generation failed', { error: error.message });
+                if (currentTool === 'gist') {
+                showGistError(error.message);
+                }
+                
+                // Emit error event
+                window.dispatchEvent(new CustomEvent('gist-gist-error', {
+                    detail: {
+                        error: error.message,
+                        type: 'gist_generation'
+                    }
+                }));
+            }
+        }
+        
+        // Special API call for gist that doesn't affect conversation history
+        async function createChatCompletionForGist(prompt) {
+            const requestBody = {
+                model: WIDGET_CONFIG.MODEL,
+                messages: [{ role: 'user', content: prompt }],
+                max_tokens: 300 // Shorter limit for concise summaries
+            };
+            
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), WIDGET_CONFIG.TIMEOUT_MS);
+            
+            try {
+                const response = await fetch(WIDGET_CONFIG.CHAT_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody),
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                // Handle both OpenAI direct format and our backend format
+                let responseText;
+                if (data.response) {
+                    // Our backend format
+                    responseText = data.response;
+                } else if (data.choices && data.choices[0] && data.choices[0].message) {
+                    // Direct OpenAI format
+                    responseText = data.choices[0].message.content;
+                } else {
+                    throw new Error('Invalid response format from API');
+                }
+                
+                return {
+                    response: responseText,
+                    usage: data.usage
+                };
+                
+            } catch (error) {
+                clearTimeout(timeoutId);
+                throw error;
+            }
+        }
+        
+        function showGistSummary(summary) {
+            const mockAttributions = generateMockAttributions();
+            
+            let html = `
+                <div class="gist-answer-text gist-content-entering">
+                    ${summary.replace(/\n/g, '<br>')}
+                </div>
+            `;
+            
+            // Add attribution section
+            html += `
+                <div class="gist-attributions gist-content-entering gist-stagger-2">
+                    <div class="gist-attributions-title">Sources</div>
+                    <div class="gist-attribution-bar">
+            `;
+            
+            // Add attribution segments
+            for (const attribution of mockAttributions) {
+                const width = attribution.percentage * 100;
+                html += `
+                    <div class="gist-attribution-segment" 
+                         style="width: ${width}%; background-color: ${attribution.color};"
+                         title="${attribution.source}: ${(attribution.percentage * 100).toFixed(1)}%">
+                    </div>
+                `;
+            }
+            
+            html += `
+                    </div>
+                    <div class="gist-attribution-sources">
+            `;
+            
+            // Add source labels
+            for (const attribution of mockAttributions) {
+                html += `
+                    <div class="gist-attribution-source">
+                        <div class="gist-attribution-dot" style="background-color: ${attribution.color};"></div>
+                        <span>${attribution.source} (${(attribution.percentage * 100).toFixed(1)}%)</span>
+                    </div>
+                `;
+            }
+            
+            html += `
+                    </div>
+                    <div class="gist-source-previews">
+            `;
+            
+            // Add source preview cards
+            for (const attribution of mockAttributions) {
+                const formatDate = (date) => {
+                    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+                };
+                
+                html += `
+                    <div class="gist-source-preview" style="--source-color: ${attribution.color};">
+                        <div class="gist-source-preview-image">
+                            <div class="gist-source-preview-icon">${attribution.icon}</div>
+                        </div>
+                        <div class="gist-source-preview-content">
+                            <div class="gist-source-preview-header">
+                                <div class="gist-source-preview-source">${attribution.source}</div>
+                                <div class="gist-source-preview-date">${formatDate(attribution.date)}</div>
+                            </div>
+                            <div class="gist-source-preview-title">${attribution.title}</div>
+                            <div class="gist-source-preview-description">${attribution.description}</div>
+                        </div>
+                        <div class="gist-source-preview-percentage">${(attribution.percentage * 100).toFixed(0)}%</div>
+                    </div>
+                `;
+            }
+            
+            html += `
+                    </div>
+                </div>
+            `;
+            
+            // Add suggested questions section
+            html += `
+                <div class="gist-follow-up-section gist-content-entering gist-stagger-3">
+                    <div class="gist-follow-up-header">
+                        <h4>Explore Further</h4>
+                        <div class="gist-loading-dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            answerContent.innerHTML = html;
+            hasAnswer = true;
+            
+            // Trigger animations after a brief delay to ensure DOM is updated
+    setTimeout(() => {
+                const elements = answerContent.querySelectorAll('.gist-content-entering');
+                elements.forEach(el => {
+                    el.classList.remove('gist-content-entering');
+                    el.classList.add('gist-content-entered');
+                });
+                
+                // Apply text reveal animation to gist text
+                const answerText = answerContent.querySelector('.gist-answer-text');
+                if (answerText) {
+                    applyTextRevealAnimation(answerText);
+                }
+                
+                // Show external ads with context based on page summary
+                setTimeout(() => {
+                    showExternalAds('page summary and key insights');
+                }, 200);
+
+            }, 50);
+            
+            // Generate suggested questions for the gist
+            generateGistQuestions();
+        }
+        
+        // Generate and show suggested questions for the Gist tool
+        async function generateGistQuestions() {
+            try {
+                const questions = await generateSuggestedQuestions();
+                
+                // Only update if user is still on gist tool and has this gist visible
+                if (currentTool !== 'gist' || !hasAnswer) return;
+                
+                const followUpSection = answerContent.querySelector('.gist-follow-up-section');
+                if (!followUpSection) return;
+                
+                let followUpHTML = `
+                    <div class="gist-follow-up-header">
+                        <h4>Explore Further</h4>
+                    </div>
+                    <div class="gist-follow-up-questions">
+                `;
+                
+                questions.forEach((question, index) => {
+                    followUpHTML += `
+                        <button class="gist-follow-up-question" data-question="${question.replace(/"/g, '&quot;')}">
+                            <span class="gist-follow-up-question-icon">${index + 1}</span>
+                            <span class="gist-follow-up-question-text">${question}</span>
+                        </button>
+                    `;
+                });
+                
+                followUpHTML += `</div>`;
+                
+                followUpSection.innerHTML = followUpHTML;
+                
+                // Add click handlers for gist questions
+                const followUpButtons = followUpSection.querySelectorAll('.gist-follow-up-question');
+                followUpButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const question = button.dataset.question;
+                        askGistQuestion(question);
+                    });
+                });
+                
+            } catch (error) {
+                log('error', 'Failed to generate gist questions', { error: error.message });
+                
+                // Hide the follow-up section if it failed
+                const followUpSection = answerContent.querySelector('.gist-follow-up-section');
+                if (followUpSection) {
+                    followUpSection.style.display = 'none';
+                }
+            }
+        }
+        
+        // Handle clicking on a gist question - switch to Ask tool and ask the question
+        async function askGistQuestion(question) {
+            try {
+                            // Switch to Ask tool
+            switchTool('ask');
+            
+            // Set the input field to show the question
+            input.value = question;
+            
+            // Show loading state
+            showLoading();
+            
+            // Get answer from Gist
+                const startTime = Date.now();
+                const chatResponse = await createChatCompletion(question);
+                const responseTime = Date.now() - startTime;
+                
+                // Display the answer only if user is still on ask tool
+                if (currentTool === 'ask') {
+                    showAnswerWithFollowUps(chatResponse.response, question);
+                }
+                
+                // Clear input
+                input.value = '';
+                
+                // Emit analytics event
+                window.dispatchEvent(new CustomEvent('gist-gist-question', {
+                    detail: {
+                        question: question,
+                        response: chatResponse.response,
+                        responseTime: responseTime,
+                        usage: chatResponse.usage
+                    }
+                }));
+                
+            } catch (error) {
+                log('error', 'Failed to process gist question', { error: error.message });
+                if (currentTool === 'ask') {
+                    showError(error.message);
+                }
+            }
+        }
+        
+        function showGistError(errorMessage) {
+            // Build HTML with error content (ads will be shown externally)
+            let html = `
+                <div class="gist-error-content gist-content-entering">
+                    <div class="gist-error-title">Unable to Generate Summary</div>
+                    <div class="gist-error-message">${errorMessage}</div>
+                </div>
+            `;
+            
+            answerContent.innerHTML = html;
+            
+            // Trigger animation
+            setTimeout(() => {
+                const elements = answerContent.querySelectorAll('.gist-content-entering');
+                elements.forEach(el => {
+                    el.classList.remove('gist-content-entering');
+                    el.classList.add('gist-content-entered');
+                });
+                
+                // Show external ads with context based on error type
+                setTimeout(() => {
+                    showExternalAds('error recovery and troubleshooting');
+                }, 200);
+            }, 50);
+        }
+        
+        // Remix functionality
+        let remixSelections = {
+            tone: null,
+            style: null,
+            format: null
+        };
+        
+        function showRemixInterface() {
+            let html = `
+                <div class="gist-remix-interface gist-content-entering">
+                    <div class="gist-tts-section">
+                        <div class="gist-tts-card">
+                            <div class="gist-tts-icon-large">🎧</div>
+                            <h3>Listen to this page</h3>
+                            
+                            <div class="gist-voice-row">
+                                <select class="gist-voice-select-modern" id="voice-select">
+                                    ${AVAILABLE_VOICES.map(voice => 
+                                        `<option value="${voice.id}" ${voice.id === ttsState.selectedVoiceId ? 'selected' : ''}>
+                                            ${voice.name}
+                                        </option>`
+                                    ).join('')}
+                                </select>
+                                <button class="gist-voice-test" id="voice-preview" title="Test voice">
+                                    ▶️
+                                </button>
+                    </div>
+                            
+                            <button class="gist-play-button" id="tts-button">
+                                <div class="gist-play-icon">▶️</div>
+                                <span>Start Reading</span>
+                            </button>
+                            
+                            <div class="gist-audio-controls" id="tts-controls" style="display: none;">
+                                <button class="gist-control-btn" id="tts-pause">⏸️</button>
+                                <button class="gist-control-btn" id="tts-resume">▶️</button>
+                                <button class="gist-control-btn" id="tts-stop">⏹️</button>
+                        </div>
+                
+                            <div class="gist-tts-status" id="tts-status"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            answerContent.innerHTML = html;
+            hasAnswer = false;
+            
+            // Add event listeners for TTS controls
+            const ttsButton = answerContent.querySelector('#tts-button');
+            const ttsControls = answerContent.querySelector('#tts-controls');
+            const ttsStatus = answerContent.querySelector('#tts-status');
+            const voiceSelect = answerContent.querySelector('#voice-select');
+            const voicePreview = answerContent.querySelector('#voice-preview');
+            const pauseBtn = answerContent.querySelector('#tts-pause');
+            const resumeBtn = answerContent.querySelector('#tts-resume');
+            const stopBtn = answerContent.querySelector('#tts-stop');
+            
+            // Voice selection handler
+            voiceSelect.addEventListener('change', (e) => {
+                ttsState.selectedVoiceId = e.target.value;
+                const selectedVoice = AVAILABLE_VOICES.find(voice => voice.id === e.target.value);
+                console.log(`Voice changed to: ${selectedVoice.name}`);
+                
+                // If currently playing, inform user they need to restart for voice change
+                if (ttsState.isPlaying) {
+                    ttsStatus.textContent = `Voice changed to ${selectedVoice.name}. Stop and restart to apply.`;
+                }
+            });
+            
+            // Voice preview handler
+            voicePreview.addEventListener('click', async () => {
+                if (voicePreview.disabled) return;
+                
+                const selectedVoice = AVAILABLE_VOICES.find(voice => voice.id === ttsState.selectedVoiceId);
+                const sampleText = `Hello, I'm ${selectedVoice.name}. This is how I sound when reading your content.`;
+                
+                try {
+                    voicePreview.disabled = true;
+                    voicePreview.textContent = '⏳';
+                    ttsStatus.textContent = `Generating ${selectedVoice.name} voice preview...`;
+                    
+                    const audioUrl = await generateSpeechWithElevenLabs(sampleText);
+                    const previewAudio = new Audio(audioUrl);
+                    
+                    previewAudio.play();
+                    voicePreview.textContent = '▶️';
+                    ttsStatus.textContent = `Playing ${selectedVoice.name} preview...`;
+                    
+                    previewAudio.addEventListener('ended', () => {
+                        voicePreview.disabled = false;
+                        voicePreview.textContent = '🔊';
+                        ttsStatus.textContent = '';
+                    });
+                    
+                    previewAudio.addEventListener('error', () => {
+                        voicePreview.disabled = false;
+                        voicePreview.textContent = '🔊';
+                        ttsStatus.textContent = 'Preview failed';
+                    });
+                    
+                } catch (error) {
+                    voicePreview.disabled = false;
+                    voicePreview.textContent = '🔊';
+                    ttsStatus.textContent = 'Preview failed';
+                    console.error('Voice preview failed:', error);
+                }
+            });
+            
+            ttsButton.addEventListener('click', () => {
+                console.log('TTS button clicked!');
+                console.log('Button:', ttsButton);
+                console.log('Controls:', ttsControls);
+                console.log('Status:', ttsStatus);
+                startTextToSpeech(ttsButton, ttsControls, ttsStatus);
+            });
+            
+            pauseBtn.addEventListener('click', () => {
+                pauseTextToSpeech();
+            });
+            
+            resumeBtn.addEventListener('click', () => {
+                resumeTextToSpeech();
+            });
+            
+            stopBtn.addEventListener('click', () => {
+                stopTextToSpeech(ttsButton, ttsControls, ttsStatus);
+            });
+            
+            // Trigger animation
+            setTimeout(() => {
+                const elements = answerContent.querySelectorAll('.gist-content-entering');
+                elements.forEach(el => {
+                    el.classList.remove('gist-content-entering');
+                    el.classList.add('gist-content-entered');
+                });
+            }, 50);
+        }
+        
+        function showShareInterface() {
+            const shareOptions = [
+                { 
+                    id: 'copy-link', 
+                    label: 'Copy Link', 
+                    icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>`,
+                    action: copyPageLink
+                },
+                { 
+                    id: 'imessage', 
+                    label: 'iMessage', 
+                    icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.99.57 3.85 1.57 5.43L2 22l4.57-1.57C8.15 21.43 10.01 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.5 0-2.91-.41-4.12-1.12L4 20l1.12-3.88C4.41 14.91 4 13.5 4 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8z"/><circle cx="8.5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="15.5" cy="12" r="1.5"/></svg>`,
+                    action: shareViaIMessage
+                },
+                { 
+                    id: 'instagram', 
+                    label: 'Instagram', 
+                    icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>`,
+                    action: shareViaInstagram
+                },
+                { 
+                    id: 'x', 
+                    label: 'X (Twitter)', 
+                    icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
+                    action: shareViaX
+                },
+                { 
+                    id: 'facebook', 
+                    label: 'Facebook', 
+                    icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>`,
+                    action: shareViaFacebook
+                }
+            ];
+
+            const context = extractPageContext();
+            const pageTitle = context?.title || document.title || 'Interesting Article';
+            const pageUrl = window.location.href;
+
+            let html = `
+                <div class="gist-share-interface gist-content-entering">
+                    <div class="gist-share-header">
+                        <h3>Share this article</h3>
+                        <p class="gist-share-title">"${pageTitle}"</p>
+                    </div>
+                    <div class="gist-share-options">
+            `;
+
+            for (const option of shareOptions) {
+                html += `
+                    <button class="gist-share-option" data-action="${option.id}">
+                        <span class="gist-share-option-icon">${option.icon}</span>
+                        <span class="gist-share-option-label">${option.label}</span>
+                    </button>
+                `;
+            }
+
+            html += `
+                    </div>
+                    <div class="gist-share-feedback" id="share-feedback" style="display: none;"></div>
+                </div>
+            `;
+
+            answerContent.innerHTML = html;
+            hasAnswer = false;
+
+            // Add event listeners for share options
+            const shareButtons = answerContent.querySelectorAll('.gist-share-option');
+            shareButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const actionId = button.dataset.action;
+                    const shareOption = shareOptions.find(opt => opt.id === actionId);
+                    if (shareOption && shareOption.action) {
+                        shareOption.action(pageTitle, pageUrl, context);
+                    }
+                });
+            });
+
+            // Trigger animation
+            setTimeout(() => {
+                const elements = answerContent.querySelectorAll('.gist-content-entering');
+                elements.forEach(el => {
+                    el.classList.remove('gist-content-entering');
+                    el.classList.add('gist-content-entered');
+                });
+            }, 50);
+        }
+
+        // Share action functions
+        function copyPageLink(title, url, context) {
+            navigator.clipboard.writeText(url).then(() => {
+                showShareFeedback('Link copied to clipboard!', 'success');
+                log('info', 'Link copied to clipboard', { url });
+            }).catch(err => {
+                showShareFeedback('Failed to copy link', 'error');
+                log('error', 'Failed to copy link', { error: err.message });
+            });
+        }
+
+        function shareViaIMessage(title, url, context) {
+            const message = `Check out this article: "${title}" - ${url}`;
+            const encodedMessage = encodeURIComponent(message);
+            const iMessageUrl = `sms:&body=${encodedMessage}`;
+            
+            try {
+                window.open(iMessageUrl, '_blank');
+                showShareFeedback('Opening iMessage...', 'success');
+                log('info', 'Shared via iMessage', { title, url });
+            } catch (err) {
+                showShareFeedback('Unable to open iMessage', 'error');
+                log('error', 'iMessage share failed', { error: err.message });
+            }
+        }
+
+        function shareViaInstagram(title, url, context) {
+            // Instagram doesn't support direct URL sharing, so we copy text with instructions
+            const message = `"${title}"\n\nRead more at: ${url}\n\n#article #interesting`;
+            navigator.clipboard.writeText(message).then(() => {
+                showShareFeedback('Caption copied! Open Instagram to paste and share.', 'success');
+                log('info', 'Instagram content copied', { title, url });
+            }).catch(err => {
+                showShareFeedback('Failed to copy Instagram content', 'error');
+                log('error', 'Instagram share failed', { error: err.message });
+            });
+        }
+
+        function shareViaX(title, url, context) {
+            const text = `"${title}" ${url}`;
+            const encodedText = encodeURIComponent(text);
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodedText}`;
+            
+            try {
+                window.open(twitterUrl, '_blank', 'width=550,height=420');
+                showShareFeedback('Opening X (Twitter)...', 'success');
+                log('info', 'Shared via X', { title, url });
+            } catch (err) {
+                showShareFeedback('Unable to open X', 'error');
+                log('error', 'X share failed', { error: err.message });
+            }
+        }
+
+        function shareViaFacebook(title, url, context) {
+            const encodedUrl = encodeURIComponent(url);
+            const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+            
+            try {
+                window.open(facebookUrl, '_blank', 'width=550,height=420');
+                showShareFeedback('Opening Facebook...', 'success');
+                log('info', 'Shared via Facebook', { title, url });
+            } catch (err) {
+                showShareFeedback('Unable to open Facebook', 'error');
+                log('error', 'Facebook share failed', { error: err.message });
+            }
+        }
+
+        function showShareFeedback(message, type) {
+            const feedback = answerContent.querySelector('#share-feedback');
+            if (feedback) {
+                feedback.textContent = message;
+                feedback.className = `gist-share-feedback ${type}`;
+                feedback.style.display = 'block';
+                
+                // Hide feedback after 3 seconds
+                setTimeout(() => {
+                    feedback.style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        async function generateRemix() {
+            try {
+                // Get custom prompt
+                const customPrompt = answerContent.querySelector('#remix-prompt').value.trim();
+                
+                // Get page context
+                const context = extractPageContext();
+                if (!context || !context.content || context.content.length < 50) {
+                    showRemixError('No article content found to remix.');
+                    return;
+                }
+                
+                // Generate text remix only
+                    await generateRemixText(customPrompt, context);
+                
+            } catch (error) {
+                log('error', 'Remix generation failed', { error: error.message });
+                showRemixError(error.message);
+                
+                // Emit error event
+                window.dispatchEvent(new CustomEvent('gist-remix-error', {
+                    detail: {
+                        error: error.message,
+                        type: 'remix_generation'
+                    }
+                }));
+            }
+        }
+        
+        async function generateRemixText(customPrompt, context) {
+            // Build remix instructions
+            let remixInstructions = 'Transform this article with the following specifications:\n\n';
+            
+            if (customPrompt) {
+                remixInstructions += `Custom requirements: ${customPrompt}\n\n`;
+            }
+            
+            if (remixSelections.tone) {
+                const toneMap = {
+                    'gist': 'concise and summarized',
+                    'funny': 'humorous and entertaining',
+                    'professional': 'formal and business-oriented'
+                };
+                remixInstructions += `Tone: Make it ${toneMap[remixSelections.tone]}\n`;
+            }
+            
+            if (remixSelections.style) {
+                const styleMap = {
+                    'ugc': 'user-generated content style (casual, personal)',
+                    'newscast': 'news broadcast style (formal, structured)',
+                    'text-focused': 'text-heavy format with detailed explanations',
+                    'narrative': 'storytelling format with engaging narrative flow'
+                };
+                remixInstructions += `Style: Use ${styleMap[remixSelections.style]}\n`;
+            }
+            
+            if (remixSelections.format) {
+                const formatMap = {
+                    'video': 'video script format with scene descriptions',
+                    'carousel': 'carousel post format with multiple slides',
+                    'pdf': 'structured document format suitable for PDF',
+                    'audio': 'audio script format for podcast or narration'
+                };
+                remixInstructions += `Format: Structure as ${formatMap[remixSelections.format]}\n`;
+            }
+            
+            const fullPrompt = `${remixInstructions}\n\nOriginal Article Title: ${context.title}\n\nOriginal Article Content:\n${context.content}\n\nPlease provide a creative remix that follows the specified requirements while maintaining the core information from the original article.`;
+            
+            // Show loading state
+            showLoading();
+            
+            // Use Gist API to generate remix
+            const startTime = Date.now();
+            const response = await createChatCompletionForGist(fullPrompt);
+            const responseTime = Date.now() - startTime;
+            
+            // Show the remix result
+            showRemixResult(response.response);
+            
+            // Emit analytics event
+            window.dispatchEvent(new CustomEvent('openai-remix-generated', {
+                detail: {
+                    title: context.title,
+                    customPrompt: customPrompt,
+                    selections: remixSelections,
+                    result: response.response,
+                    responseTime: responseTime,
+                    usage: response.usage,
+                    type: 'text'
+                }
+            }));
+        }
         
 
         
@@ -3845,11 +4734,128 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
         
 
         
-
+        function showRemixResult(result) {
+            const mockAttributions = generateMockAttributions();
+            
+            let html = `
+                <div class="gist-answer-text gist-content-entering">
+                    ${result.replace(/\n/g, '<br>')}
+                </div>
+            `;
+            
+            // Add attribution section (same as gist)
+            html += `
+                <div class="gist-attributions gist-content-entering gist-stagger-2">
+                    <div class="gist-attributions-title">Sources</div>
+                    <div class="gist-attribution-bar">
+            `;
+            
+            // Add attribution segments
+            for (const attribution of mockAttributions) {
+                const width = attribution.percentage * 100;
+                html += `
+                    <div class="gist-attribution-segment" 
+                         style="width: ${width}%; background-color: ${attribution.color};"
+                         title="${attribution.source}: ${(attribution.percentage * 100).toFixed(1)}%">
+                    </div>
+                `;
+            }
+            
+            html += `
+                    </div>
+                    <div class="gist-attribution-sources">
+            `;
+            
+            // Add source labels
+            for (const attribution of mockAttributions) {
+                html += `
+                    <div class="gist-attribution-source">
+                        <div class="gist-attribution-dot" style="background-color: ${attribution.color};"></div>
+                        <span>${attribution.source} (${(attribution.percentage * 100).toFixed(1)}%)</span>
+                    </div>
+                `;
+            }
+            
+            html += `
+                    </div>
+                    <div class="gist-source-previews">
+            `;
+            
+            // Add source preview cards
+            for (const attribution of mockAttributions) {
+                const formatDate = (date) => {
+                    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+                };
+                
+                html += `
+                    <div class="gist-source-preview" style="--source-color: ${attribution.color};">
+                        <div class="gist-source-preview-image">
+                            <div class="gist-source-preview-icon">${attribution.icon}</div>
+                        </div>
+                        <div class="gist-source-preview-content">
+                            <div class="gist-source-preview-header">
+                                <div class="gist-source-preview-source">${attribution.source}</div>
+                                <div class="gist-source-preview-date">${formatDate(attribution.date)}</div>
+                            </div>
+                            <div class="gist-source-preview-title">${attribution.title}</div>
+                            <div class="gist-source-preview-description">${attribution.description}</div>
+                        </div>
+                        <div class="gist-source-preview-percentage">${(attribution.percentage * 100).toFixed(0)}%</div>
+                    </div>
+                `;
+            }
+            
+            html += `
+                    </div>
+                </div>
+            `;
+            
+            answerContent.innerHTML = html;
+            hasAnswer = true;
+            
+            // Trigger animations
+            setTimeout(() => {
+                const elements = answerContent.querySelectorAll('.gist-content-entering');
+                elements.forEach(el => {
+                    el.classList.remove('gist-content-entering');
+                    el.classList.add('gist-content-entered');
+                });
+                
+                // Apply text reveal animation to remix result text
+                const answerText = answerContent.querySelector('.gist-answer-text');
+                if (answerText) {
+                    applyTextRevealAnimation(answerText);
+                }
+            }, 50);
+        }
         
-
-        
-        // Remix functionality has been removed
+        function showRemixError(errorMessage) {
+            // Build HTML with error content (ads will be shown externally)
+            let html = `
+                <div class="gist-error-content gist-content-entering">
+                    <div class="gist-error-title">Unable to Generate Remix</div>
+                    <div class="gist-error-message">${errorMessage}</div>
+                </div>
+            `;
+            
+            answerContent.innerHTML = html;
+            
+            // Trigger animation
+            setTimeout(() => {
+                const elements = answerContent.querySelectorAll('.gist-content-entering');
+                elements.forEach(el => {
+                    el.classList.remove('gist-content-entering');
+                    el.classList.add('gist-content-entered');
+                });
+                
+                // Show external ads with delay
+                setTimeout(() => {
+                    showExternalAds();
+                }, 200);
+            }, 50);
+        }
         
         // Text-to-Speech functionality
         let ttsState = {
@@ -4463,7 +5469,7 @@ Instructions:
         
         function showErrorContent(errorMessage) {
             // Check if we're in Ask or Gist tool to show ads
-            const shouldShowAds = currentTool === 'ask';
+            const shouldShowAds = currentTool === 'ask' || currentTool === 'gist';
             
             let html = `
                 <div class="gist-error gist-content-entering">
@@ -5177,7 +6183,11 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             const query = input.value.trim();
             if (!query) return;
             
-            // Process queries regardless of tool mode since we're keeping textbox functionality
+            // Only process queries when in "Ask" mode
+            if (currentTool !== 'ask') {
+                // Switch to Ask tool if user submits a query
+                switchTool('ask');
+            }
             
             // Clear any existing timeout
             if (submitTimeout) {
@@ -5202,8 +6212,10 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                     const chatResponse = await createChatCompletion(query);
                     const responseTime = Date.now() - startTime;
                     
-                    // Display the answer (no tool restrictions since toolbox is hidden)
+                    // Display the answer only if user is still on ask tool
+                    if (currentTool === 'ask') {
                     showAnswer(chatResponse.response, query);
+                    }
                     
                     // Clear input
                     input.value = '';
@@ -5222,10 +6234,12 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 } catch (error) {
                     log('error', 'Gist API request failed', { error: error.message, query });
                     
-                    // Show error in answer container
+                    // Show error in answer container only if user is still on ask tool
+                    if (currentTool === 'ask') {
                     showError(error.message);
                     showAnswerContainer();
                     hasAnswer = true;
+                    }
                     
                     // Emit error event for host analytics
                     window.dispatchEvent(new CustomEvent('gist-error', {
@@ -5249,12 +6263,9 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             expandWidget();
             input.focus();
             
-            // Ensure content is shown if no answer exists
-            if ((currentTool === 'ask' || currentTool === 'none') && !hasAskAnswer) {
-                // Only show suggested questions if currentTool is not 'none' (toolbox hidden)
-                if (currentTool !== 'none') {
-                    showSuggestedQuestions();
-                }
+            // Ensure Ask tool content is shown if no other tool is active
+            if (currentTool === 'ask' && !hasAskAnswer) {
+                showSuggestedQuestions();
             }
         });
         
@@ -5265,12 +6276,9 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             expandWidget();
             showAnswerContainer();
             
-            // Show content if no answer exists
-            if ((currentTool === 'ask' || currentTool === 'none') && !hasAskAnswer) {
-                // Only show suggested questions if currentTool is not 'none' (toolbox hidden)
-                if (currentTool !== 'none') {
-                    showSuggestedQuestions();
-                }
+            // Show Ask tool content if no answer exists
+            if (currentTool === 'ask' && !hasAskAnswer) {
+                showSuggestedQuestions();
             }
         });
         
@@ -5469,14 +6477,17 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                     // Get the generate function from the widget's scope
                     // We need to regenerate tabs based on new config
                     const toolLabels = {
-                        ask: 'Ask'
+                        ask: 'Ask',
+                        gist: 'The Gist', 
+                        remix: 'Remix',
+                        share: 'Share'
                     };
                     
                     // Clear existing tabs
                     toolboxTabsContainer.innerHTML = '';
                     
                     // Get enabled tools in the desired order
-                    const toolOrder = ['ask'];
+                    const toolOrder = ['ask', 'gist', 'remix', 'share'];
                     const enabledTools = toolOrder.filter(tool => TOOLS_CONFIG[tool]);
                     
                     if (enabledTools.length === 0) {
