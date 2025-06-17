@@ -15,12 +15,7 @@ export default function Home() {
       setError(null);
       setShowWebsite(false);
       
-      // Validate URL on client side first
-      const urlPattern = /^https?:\/\/.+/;
-      if (!urlPattern.test(url)) {
-        throw new Error('Please enter a valid URL including http:// or https://');
-      }
-
+      // URL validation is now handled by URLInputForm component with auto-protocol addition
       // Test if the proxy endpoint can reach the URL
       const testResponse = await fetch(`/api/proxy?url=${encodeURIComponent(url)}&test=true`);
       const testResult = await testResponse.json();
