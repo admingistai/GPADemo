@@ -1024,7 +1024,7 @@
                 /* Minimized state - start collapsed */
                 .gist-widget.minimized {
                     gap: 0;
-                    transition: gap 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                    transition: gap 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 }
                 
                 .gist-widget.minimized .gist-answer-container,
@@ -1033,7 +1033,7 @@
                     opacity: 0;
                     transform: translateY(10px) scale(0.98);
                     pointer-events: none;
-                    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+                    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
                     max-height: 0;
                     overflow: hidden;
                 }
@@ -1042,14 +1042,14 @@
                 
                 .gist-widget.minimized .gist-pill {
                     width: 155px;
-                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
                 }
                 
                 .gist-widget.minimized .gist-pill-submit {
                     opacity: 0;
                     transform: scale(0) translateX(8px);
                     pointer-events: none;
-                    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                    transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
                 }
                 
                 .gist-widget.minimized .gist-pill-logo {
@@ -1057,7 +1057,7 @@
                     transform: scale(1) translateX(0) !important;
                     display: block !important;
                     visibility: visible !important;
-                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
                 }
                 
                 .gist-widget.minimized .gist-pill-input {
@@ -1065,7 +1065,7 @@
                     text-align: left;
                     color: #6b7280;
                     margin-left: 6px;
-                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
                     width: calc(100% - 22px);
                     min-width: 95px;
                 }
@@ -1074,34 +1074,34 @@
                     width: 155px;
                     justify-content: flex-start;
                     padding-left: 30px;
-                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
                 }
                 
                 /* Expanded state - smooth transitions back */
                 .gist-widget:not(.minimized) {
                     gap: 6px;
-                    transition: gap 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.05s;
+                    transition: gap 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.08s;
                 }
                 
                 .gist-widget:not(.minimized) .gist-answer-container,
                 .gist-widget:not(.minimized) .gist-toolbox,
                 .gist-widget:not(.minimized) .gist-ads-container {
-                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+                    transition: all 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
                 }
                 
                 .gist-widget:not(.minimized) .gist-pill {
-                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
                 }
                 
                 .gist-widget:not(.minimized) .gist-pill-submit {
                     opacity: 1;
                     transform: scale(1) translateX(0);
                     pointer-events: auto;
-                    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+                    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
                 }
                 
                 .gist-widget:not(.minimized) .gist-pill-logo {
-                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
                 }
                 
                 .gist-widget:not(.minimized) .gist-pill-input {
@@ -1109,14 +1109,14 @@
                     color: #374151;
                     margin-left: 0;
                     width: auto;
-                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
                 }
                 
                 .gist-widget:not(.minimized) .gist-pill-content {
                     width: 380px;
         justify-content: space-between;
                     padding-left: 4px;
-                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
                 }
                 
 
