@@ -2849,79 +2849,7 @@
                     }
                 }
                 
-                .remix-coming-soon-wrapper {
-                    position: relative;
-                    width: 100%;
-                    height: 100%;
-                    min-height: 180px;
-                    display: flex;
-                    align-items: flex-end;
-                    justify-content: center;
-                }
-                .remix-coming-soon-img {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    border-radius: 16px;
-                    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
-                    z-index: 1;
-                    background: #222;
-                    transition: box-shadow 0.3s;
-                }
-                .remix-coming-soon-text {
-                    position: relative;
-                    z-index: 2;
-                    width: 100%;
-                    text-align: center;
-                    color: #8b8fa7;
-                    font-size: 1.35rem;
-                    font-weight: 500;
-                    margin-bottom: 18px;
-                    text-shadow: 0 2px 8px rgba(0,0,0,0.18);
-                    background: rgba(255,255,255,0.0);
-                }
-                .gist-answer-placeholder {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    text-align: center;
-                    width: 100%;
-                    height: 100%;
-                    min-height: 180px;
-                    padding: 0;
-                }
-                .gist-answer-placeholder {
-                    position: relative;
-                    width: 100%;
-                    height: 100%;
-                    min-height: 0 !important;
-                    min-width: 0 !important;
-                    padding: 0 !important;
-                    margin: 0 !important;
-                    border-radius: 16px;
-                    overflow: hidden;
-                    background: none;
-                    display: block;
-                }
-                .remix-coming-soon-img {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    border-radius: 16px;
-                    background: #222;
-                    z-index: 1;
-                    box-shadow: none;
-                    margin: 0;
-                    padding: 0;
-                    display: block;
-                }
+
             </style>
         `;
         
@@ -3256,7 +3184,7 @@
                     placeholderText = 'Get a summary of this page. Feature coming soon!';
                     break;
                 case 'remix':
-                    placeholderText = `<img src=\"${BACKEND_BASE_URL}/remix-coming-soon.png\" alt=\"Remix Coming Soon\" class=\"remix-coming-soon-img\" />`;
+                    placeholderText = '';
                     break;
                 case 'share':
                     placeholderText = 'Share insights from this page. Feature coming soon!';
@@ -3265,11 +3193,16 @@
                     placeholderText = 'Select a tool to get started!';
             }
             
-            answerContent.innerHTML = `
-                <div class="gist-answer-placeholder gist-content-entering">
-                    ${placeholderText}
-        </div>
-            `;
+            if (placeholderText) {
+                answerContent.innerHTML = `
+                    <div class="gist-answer-placeholder gist-content-entering">
+                        ${placeholderText}
+                    </div>
+                `;
+            } else {
+                // For empty tools like remix, just clear the content
+                answerContent.innerHTML = '';
+            }
             
             // Trigger animation
             setTimeout(() => {
@@ -3280,46 +3213,7 @@
                 });
             }, 50);
             
-            // Add CSS for the image if not already present
-            const styleId = 'remix-coming-soon-style';
-            if (!shadowRoot.getElementById(styleId)) {
-                const style = document.createElement('style');
-                style.id = styleId;
-                style.textContent = `
-                    .gist-answer-placeholder {
-                        position: relative;
-                        width: 100%;
-                        height: 180px;
-                        padding: 0;
-                        margin: 0;
-                        border-radius: 16px;
-                        overflow: hidden;
-                        background: none;
-                        display: block;
-                    }
-                    .remix-coming-soon-img {
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        object-fit: cover;
-                        border-radius: 16px;
-                        background: #222;
-                        z-index: 1;
-                        box-shadow: none;
-                        margin: 0;
-                        padding: 0;
-                        display: block;
-                    }
-                    
-                    /* Compact mode adjustments for Remix placeholder */
-                    .gist-answer-container.remix-compact .gist-answer-placeholder {
-                        height: calc(300px - 24px); /* Account for reduced padding */
-                    }
-                `;
-                shadowRoot.appendChild(style);
-            }
+
         }
         
         // Show loading state for question generation
