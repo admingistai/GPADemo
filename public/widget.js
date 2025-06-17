@@ -4716,7 +4716,9 @@ Instructions:
             words: [],
             highlights: [],
             originalText: '', // Store the original text for position tracking
-            lastFoundPosition: 0 // Track our position in the text
+            lastFoundPosition: 0, // Track our position in the text
+            processedElements: new Set(), // Track DOM elements that have been highlighted
+            furthestScrollPosition: 0 // Track the furthest we've scrolled to prevent going back
         };
         
         async function startTextToSpeech(button, controls, status) {
@@ -4856,8 +4858,10 @@ Instructions:
         function startTextHighlighting() {
             if (!ttsState.currentAudio || !ttsState.isPlaying) return;
             
-            // Reset position tracking
+            // Reset all tracking
             ttsState.lastFoundPosition = 0;
+            ttsState.processedElements.clear();
+            ttsState.furthestScrollPosition = 0;
             
             const duration = ttsState.currentAudio.duration;
             const wordsPerSecond = ttsState.words.length / duration;
@@ -5075,6 +5079,21 @@ Instructions:
         }
         
         function tryFindWordInNode(textNode, word, targetRelativePos) {
+            // Check if this element or its ancestors have already been processed
+            const elementKey = getElementKey(textNode);
+            if (ttsState.processedElements.has(elementKey)) {
+                return null; // Skip already processed elements
+            }
+            
+            // Check scroll position to prevent going backward
+            const rect = textNode.parentElement.getBoundingClientRect();
+            const elementY = rect.top + (window.pageYOffset || document.documentElement.scrollTop);
+            
+            // Only process elements that are at or after our furthest scroll position
+            if (elementY < ttsState.furthestScrollPosition - 100) { // 100px tolerance
+                return null;
+            }
+            
             const nodeText = textNode.textContent;
             const wordRegex = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
             let match;
@@ -5097,12 +5116,33 @@ Instructions:
             return null;
         }
         
+        function getElementKey(textNode) {
+            // Create a unique key for this text node based on its position in the DOM
+            const parent = textNode.parentElement;
+            if (!parent) return Math.random().toString();
+            
+            // Use the parent element's position and the text content
+            const parentRect = parent.getBoundingClientRect();
+            const textContent = textNode.textContent.trim().substring(0, 50); // First 50 chars
+            
+            return `${Math.round(parentRect.top)}_${Math.round(parentRect.left)}_${textContent}`;
+        }
+        
         function scaleWordInTextNode(textNode, matchedWord, startIndex) {
             const text = textNode.textContent;
             const beforeText = text.substring(0, startIndex);
             const afterText = text.substring(startIndex + matchedWord.length);
             
             const parent = textNode.parentNode;
+            
+            // Mark this element as processed
+            const elementKey = getElementKey(textNode);
+            ttsState.processedElements.add(elementKey);
+            
+            // Update furthest scroll position
+            const rect = parent.getBoundingClientRect();
+            const elementY = rect.top + (window.pageYOffset || document.documentElement.scrollTop);
+            ttsState.furthestScrollPosition = Math.max(ttsState.furthestScrollPosition, elementY);
             
             // Create the scaled word span with padding
             const wordSpan = document.createElement('span');
@@ -5140,7 +5180,8 @@ Instructions:
                 originalText: matchedWord,
                 parent: parent,
                 beforeText: beforeText,
-                afterText: afterText
+                afterText: afterText,
+                elementKey: elementKey
             });
             
             // Auto-reset after delay
@@ -5233,6 +5274,8 @@ Instructions:
             ttsState.currentWordIndex = 0;
             ttsState.words = [];
             ttsState.lastFoundPosition = 0;
+            ttsState.processedElements.clear();
+            ttsState.furthestScrollPosition = 0;
             
             // Reset UI
             button.style.display = 'flex';
