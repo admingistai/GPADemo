@@ -4900,14 +4900,23 @@ Instructions:
                 status.textContent = 'Extracting webpage content...';
                 console.log('UI updated, extracting page context...');
                 
-                // Extract webpage content
-                const context = extractPageContext();
-                if (!context || !context.content || context.content.length < 50) {
-                    throw new Error('No readable content found on this page');
+                // Extract webpage content specifically optimized for TTS
+                let textToRead;
+                try {
+                    textToRead = extractContentForTTS();
+                    console.log('Successfully extracted content for TTS:', textToRead.length, 'characters');
+                } catch (error) {
+                    console.warn('TTS content extraction failed, falling back to basic extraction:', error.message);
+                    // Fallback to basic extraction
+                    const context = extractPageContext();
+                    if (!context || !context.content || context.content.length < 50) {
+                        throw new Error('No readable content found on this page');
+                    }
+                    textToRead = context.content;
                 }
                 
                 // Clean and prepare text for TTS
-                let textToRead = prepareTextForTTS(context.content);
+                textToRead = prepareTextForTTS(textToRead);
                 if (textToRead.length > 4000) {
                     // Truncate if too long
                     textToRead = textToRead.substring(0, 4000) + '...';
@@ -4956,18 +4965,215 @@ Instructions:
             }
         }
         
+        function extractContentForTTS() {
+            console.log('Extracting content specifically for TTS...');
+            
+            // Step 1: Try to find the main article content using priority selectors
+            const articleSelectors = [
+                'article',
+                '[role="main"] article',
+                'main article',
+                '.article-content',
+                '.post-content',
+                '.entry-content',
+                '.article-body',
+                '.story-body',
+                '.content-body',
+                '.article-text',
+                '.post-body',
+                '.text-content',
+                'main .content',
+                '[data-article-body]',
+                '.article',
+                '#article',
+                '.post',
+                'main',
+                '[role="main"]'
+            ];
+            
+            let contentElement = null;
+            for (const selector of articleSelectors) {
+                const elements = document.querySelectorAll(selector);
+                if (elements.length > 0) {
+                    // Pick the element with the most text content
+                    contentElement = Array.from(elements).reduce((prev, current) => {
+                        const prevText = prev.textContent || '';
+                        const currentText = current.textContent || '';
+                        return currentText.length > prevText.length ? current : prev;
+                    });
+                    if (contentElement && contentElement.textContent.trim().length > 200) {
+                        console.log('Found main content using selector:', selector);
+                        break;
+                    }
+                }
+            }
+            
+            // Step 2: If no main content found, fall back to body but with aggressive filtering
+            if (!contentElement || contentElement.textContent.trim().length < 200) {
+                console.log('No specific article content found, falling back to body with filtering');
+                contentElement = document.body;
+            }
+            
+            if (!contentElement) {
+                throw new Error('No readable content found on this page');
+            }
+            
+            // Step 3: Clone the element to avoid modifying the original
+            const clone = contentElement.cloneNode(true);
+            
+            // Step 4: Remove unwanted elements (navigation, ads, widgets, etc.)
+            const unwantedSelectors = [
+                // Scripts and styles
+                'script', 'style', 'noscript',
+                
+                // Navigation and menus
+                'nav', 'header', 'footer', '.nav', '.navigation', '.menu', '.navbar',
+                '.header', '.footer', '.site-header', '.site-footer', '.page-header',
+                '.main-nav', '.primary-nav', '.secondary-nav', '.breadcrumb', '.breadcrumbs',
+                
+                // Sidebars and asides
+                'aside', '.sidebar', '.aside', '.widget', '.widgets',
+                
+                // Ads and promotional content
+                '.ad', '.ads', '.advertisement', '.banner', '.promo', '.promotion',
+                '.sponsored', '.affiliate', '.marketing', '[data-ad]', '.ad-container',
+                '.google-ad', '.adsense', '.adsbygoogle',
+                
+                // Social and sharing
+                '.social', '.share', '.sharing', '.social-share', '.social-media',
+                '.facebook', '.twitter', '.instagram', '.linkedin',
+                
+                // Comments and related
+                '.comments', '.comment', '.disqus', '.livefyre', '#comments',
+                '.related', '.related-posts', '.recommended', '.more-stories',
+                
+                // Forms and inputs (unless in article)
+                'form:not(article form)', 'input:not(article input)', 'button:not(article button)',
+                
+                // Meta information that's not content
+                '.byline', '.author-info', '.publish-date', '.tags', '.categories',
+                '.meta', '.metadata', '.article-meta:not(.article-meta p)',
+                
+                // Our own widget
+                '#gist-widget-container', '.gist-widget',
+                
+                // Common CMS elements
+                '.wp-caption-text', '.caption', '.image-caption',
+                '.newsletter', '.subscription', '.subscribe',
+                '.popup', '.modal', '.overlay',
+                
+                // Cookie and privacy notices
+                '.cookie', '.gdpr', '.privacy-notice',
+                
+                // Video players and embeds (keep the content but remove controls)
+                '.video-controls', '.player-controls'
+            ];
+            
+            // Remove unwanted elements
+            unwantedSelectors.forEach(selector => {
+                const elements = clone.querySelectorAll(selector);
+                elements.forEach(el => el.remove());
+            });
+            
+            // Step 5: Remove elements with low text-to-HTML ratio (likely navigational)
+            const allElements = clone.querySelectorAll('*');
+            allElements.forEach(el => {
+                const text = el.textContent || '';
+                const html = el.innerHTML || '';
+                const textLength = text.trim().length;
+                const htmlLength = html.length;
+                
+                // If element has very little text compared to HTML, likely navigational
+                if (htmlLength > 100 && textLength < htmlLength * 0.1 && textLength < 50) {
+                    // But don't remove if it contains article content indicators
+                    const articleIndicators = ['paragraph', 'sentence', 'story', 'article'];
+                    const hasArticleIndicator = articleIndicators.some(indicator => 
+                        el.className.toLowerCase().includes(indicator) ||
+                        el.tagName.toLowerCase() === 'p'
+                    );
+                    
+                    if (!hasArticleIndicator) {
+                        el.remove();
+                    }
+                }
+            });
+            
+            // Step 6: Extract and prioritize meaningful text content
+            let textContent = '';
+            
+            // Try to find paragraphs first (main article content)
+            const paragraphs = clone.querySelectorAll('p, .paragraph, .text-block');
+            if (paragraphs.length > 0) {
+                const paragraphTexts = Array.from(paragraphs)
+                    .map(p => p.textContent.trim())
+                    .filter(text => text.length > 20); // Filter out short, likely non-content paragraphs
+                
+                if (paragraphTexts.length > 0) {
+                    textContent = paragraphTexts.join('\n\n');
+                    console.log('Extracted content from paragraphs:', paragraphTexts.length, 'paragraphs');
+                }
+            }
+            
+            // If no substantial paragraph content, fall back to all text
+            if (textContent.length < 200) {
+                textContent = clone.textContent || '';
+                console.log('Falling back to all text content');
+            }
+            
+            // Step 7: Clean up the text
+            textContent = textContent
+                // Remove multiple whitespace
+                .replace(/\s+/g, ' ')
+                // Remove excessive line breaks
+                .replace(/\n\s*\n\s*\n/g, '\n\n')
+                // Remove common navigational text patterns
+                .replace(/\b(Home|About|Contact|Privacy|Terms|Login|Sign up|Subscribe|Newsletter)\b\s*\|?\s*/gi, '')
+                // Remove "Read more" type links
+                .replace(/\b(Read more|Continue reading|Learn more|See more)\b[\s.]*$/gi, '')
+                // Remove social sharing text
+                .replace(/\b(Share on|Follow us|Like us|Tweet this)\b[^.!?]*[.!?]?/gi, '')
+                // Remove common ads text
+                .replace(/\b(Advertisement|Sponsored|Ad|Promote)\b\s*/gi, '')
+                .trim();
+            
+            // Step 8: Validate content quality
+            if (textContent.length < 100) {
+                throw new Error('Insufficient readable content found for text-to-speech');
+            }
+            
+            // Step 9: Add title if available and meaningful
+            const pageTitle = document.title?.trim();
+            if (pageTitle && !textContent.toLowerCase().includes(pageTitle.toLowerCase().substring(0, 20))) {
+                textContent = `${pageTitle}.\n\n${textContent}`;
+            }
+            
+            console.log('TTS content extraction complete:', {
+                originalLength: contentElement.textContent.length,
+                extractedLength: textContent.length,
+                reduction: Math.round((1 - textContent.length / contentElement.textContent.length) * 100) + '%'
+            });
+            
+            return textContent;
+        }
+
         function prepareTextForTTS(content) {
-            // Remove HTML tags and clean up text
+            // Remove any remaining HTML tags
             let text = content.replace(/<[^>]*>/g, ' ');
             
-            // Replace multiple spaces with single space
-            text = text.replace(/\s+/g, ' ');
+            // Additional cleanup for TTS
+            text = text
+                // Replace multiple spaces with single space
+                .replace(/\s+/g, ' ')
+                // Remove special characters that might cause TTS issues
+                .replace(/[^\w\s.,!?;:'"()-]/g, ' ')
+                // Normalize quotes
+                .replace(/[""]/g, '"')
+                .replace(/['']/g, "'")
+                // Add pauses after sentences for better TTS flow
+                .replace(/([.!?])\s+/g, '$1 ')
+                .trim();
             
-            // Remove special characters that might cause issues
-            text = text.replace(/[^\w\s.,!?;:'"()-]/g, ' ');
-            
-            // Trim and return
-            return text.trim();
+            return text;
         }
         
         async function generateSpeechWithElevenLabs(text) {
