@@ -3248,9 +3248,9 @@
                 case 'remix':
                     // Clear Ask-specific answer flag when switching away from Ask
                     hasAskAnswer = false;
-                    // Check if TTS is currently active
-                    if (ttsState.isPlaying || ttsState.isPaused) {
-                        // Keep current TTS interface if audio is active
+                    // Check if TTS is currently active or generating
+                    if (ttsState.isPlaying || ttsState.isPaused || ttsState.isGenerating) {
+                        // Keep current TTS interface if audio is active or generating
                         return;
                     } else {
                         // Show remix interface with TTS functionality
@@ -4705,6 +4705,7 @@ Instructions:
         let ttsState = {
             isPlaying: false,
             isPaused: false,
+            isGenerating: false,
             currentAudio: null,
             currentWordIndex: 0,
             words: [],
@@ -4713,6 +4714,9 @@ Instructions:
         
         async function startTextToSpeech(button, controls, status) {
             try {
+                // Set generating state
+                ttsState.isGenerating = true;
+                
                 // Update UI
                 button.disabled = true;
                 button.querySelector('.gist-tts-text').textContent = 'Generating...';
@@ -4750,6 +4754,7 @@ Instructions:
                 await ttsState.currentAudio.play();
                 ttsState.isPlaying = true;
                 ttsState.isPaused = false;
+                ttsState.isGenerating = false; // Generation complete
                 
                 // Update UI
                 button.style.display = 'none';
@@ -4761,6 +4766,9 @@ Instructions:
                 
             } catch (error) {
                 log('error', 'TTS generation failed', { error: error.message });
+                
+                // Reset state
+                ttsState.isGenerating = false;
                 
                 // Reset UI
                 button.disabled = false;
@@ -4921,13 +4929,17 @@ Instructions:
             // Get the bounding rectangle of the word
             const rect = range.getBoundingClientRect();
             
+            // Account for page scroll
+            const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
+            const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+            
             // Create overlay highlight box
             const overlay = document.createElement('div');
             overlay.className = 'gist-tts-word-highlight';
             overlay.style.cssText = `
-                position: fixed !important;
-                left: ${rect.left}px !important;
-                top: ${rect.top}px !important;
+                position: absolute !important;
+                left: ${rect.left + scrollX}px !important;
+                top: ${rect.top + scrollY}px !important;
                 width: ${rect.width}px !important;
                 height: ${rect.height}px !important;
                 background-color: rgba(254, 243, 199, 0.8) !important;
@@ -4950,7 +4962,7 @@ Instructions:
                 if (overlay.parentNode) {
                     overlay.parentNode.removeChild(overlay);
                 }
-            }, 1000);
+            }, 1500); // Increased to 1.5 seconds for better visibility
         }
         
         function clearTextHighlights() {
@@ -5002,6 +5014,7 @@ Instructions:
             // Reset state
             ttsState.isPlaying = false;
             ttsState.isPaused = false;
+            ttsState.isGenerating = false;
             ttsState.currentWordIndex = 0;
             ttsState.words = [];
             
