@@ -1,4 +1,4 @@
-import validator from 'validator';
+// URL validation utility functions
 
 /**
  * Validate URL with comprehensive checks
@@ -43,20 +43,26 @@ export function validateUrl(url) {
     };
   }
 
-  // Use validator library for URL validation
-  const validatorOptions = {
-    protocols: ['http', 'https'],
-    require_protocol: true,
-    require_valid_protocol: true,
-    require_host: true,
-    require_port: false,
-    allow_protocol_relative_urls: false,
-    allow_fragments: true,
-    allow_query_components: true,
-    validate_length: true
-  };
-
-  if (!validator.isURL(normalizedUrl, validatorOptions)) {
+  // Basic URL validation using built-in URL constructor
+  // This replaces the validator library to avoid potential import issues
+  try {
+    const testUrl = new URL(normalizedUrl);
+    // Check if it has a valid protocol and hostname
+    if (!['http:', 'https:'].includes(testUrl.protocol)) {
+      return {
+        isValid: false,
+        error: 'Only HTTP and HTTPS protocols are supported',
+        normalizedUrl: null
+      };
+    }
+    if (!testUrl.hostname) {
+      return {
+        isValid: false,
+        error: 'Please enter a valid URL format',
+        normalizedUrl: null
+      };
+    }
+  } catch (urlError) {
     return {
       isValid: false,
       error: 'Please enter a valid URL format',
