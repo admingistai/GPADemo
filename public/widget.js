@@ -1064,9 +1064,9 @@
                     pointer-events: none;
                     text-align: left;
                     color: #6b7280;
-                    margin-left: 28px;
+                    margin-left: 20px;
                     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-                    width: calc(100% - 50px);
+                    width: calc(100% - 42px);
                     min-width: 100px;
                 }
                 
