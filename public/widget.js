@@ -4715,10 +4715,8 @@ Instructions:
             currentWordIndex: 0,
             words: [],
             highlights: [],
-            originalText: '', // Store the original text for position tracking
-            lastFoundPosition: 0, // Track our position in the text
-            processedElements: new Set(), // Track DOM elements that have been highlighted
-            furthestScrollPosition: 0 // Track the furthest we've scrolled to prevent going back
+            wordQueue: [], // Pre-built queue of word locations
+            currentQueueIndex: 0 // Current position in the queue
         };
         
         async function startTextToSpeech(button, controls, status) {
@@ -4751,9 +4749,10 @@ Instructions:
                 
                 // Prepare text for highlighting
                 ttsState.words = textToRead.split(/\s+/);
-                ttsState.originalText = textToRead;
                 ttsState.currentWordIndex = 0;
-                ttsState.lastFoundPosition = 0;
+                
+                // Build word queue on initialization
+                buildWordQueue(ttsState.words);
                 
                 // Create audio element
                 ttsState.currentAudio = new Audio(audioUrl);
@@ -4855,99 +4854,12 @@ Instructions:
             });
         }
         
-        function startTextHighlighting() {
-            if (!ttsState.currentAudio || !ttsState.isPlaying) return;
+        function buildWordQueue(words) {
+            // Build a sequential queue of all word locations in reading order
+            ttsState.wordQueue = [];
+            ttsState.currentQueueIndex = 0;
             
-            // Reset all tracking
-            ttsState.lastFoundPosition = 0;
-            ttsState.processedElements.clear();
-            ttsState.furthestScrollPosition = 0;
-            
-            const duration = ttsState.currentAudio.duration;
-            const wordsPerSecond = ttsState.words.length / duration;
-            
-            // Scale words progressively
-            const highlightInterval = setInterval(() => {
-                if (!ttsState.isPlaying || ttsState.currentWordIndex >= ttsState.words.length) {
-                    clearInterval(highlightInterval);
-                    return;
-                }
-                
-                // Clear previous highlights
-                clearTextHighlights();
-                
-                // Scale current word on the page
-                const currentWord = ttsState.words[ttsState.currentWordIndex];
-                scaleWordOnPage(currentWord);
-                
-                ttsState.currentWordIndex++;
-            }, 1000 / wordsPerSecond);
-            
-            // Store interval for cleanup
-            ttsState.highlightInterval = highlightInterval;
-        }
-        
-        function scaleWordOnPage(word) {
-            // Clear previous scaling first
-            clearTextHighlights();
-            
-            // Find and scale the word
-            const element = findAndScaleWord(word);
-            if (element) {
-                // Scroll to the scaled word
-                element.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'center',
-                    inline: 'center'
-                });
-            }
-        }
-        
-        function findAndScaleWord(word) {
-            // Clean the word for better matching
-            const cleanWord = word.trim();
-            if (!cleanWord || cleanWord.length < 1) {
-                return null;
-            }
-            
-            // Find the next occurrence of this word in our original text starting from our last position
-            const wordRegex = new RegExp(`\\b${cleanWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
-            const remainingText = ttsState.originalText.substring(ttsState.lastFoundPosition);
-            const match = remainingText.match(wordRegex);
-            
-            if (!match) {
-                // Word not found in remaining text - try searching from the beginning as fallback
-                console.log(`Word "${cleanWord}" not found in remaining text, trying fallback search`);
-                const fallbackMatch = ttsState.originalText.match(wordRegex);
-                if (fallbackMatch) {
-                    // Reset position tracking and use the first occurrence
-                    ttsState.lastFoundPosition = fallbackMatch.index + fallbackMatch[0].length;
-                    return findWordInDOM(fallbackMatch[0], fallbackMatch.index);
-                }
-                return null;
-            }
-            
-            // Calculate the actual position in the full text
-            const matchPosition = ttsState.lastFoundPosition + match.index;
-            const matchedWord = match[0];
-            
-            // Update our position for next search (after this word)
-            ttsState.lastFoundPosition = matchPosition + matchedWord.length;
-            
-            // Now find this specific occurrence in the DOM
-            const element = findWordInDOM(matchedWord, matchPosition);
-            
-            // If we couldn't find it at the expected position, try a more flexible search
-            if (!element) {
-                console.log(`Word "${matchedWord}" not found at position ${matchPosition}, trying flexible search`);
-                return findWordFlexibly(matchedWord);
-            }
-            
-            return element;
-        }
-        
-        function findWordFlexibly(word) {
-            // Simple fallback: just find the word anywhere in the visible DOM
+            // Find all text nodes in document order
             const walker = document.createTreeWalker(
                 document.body,
                 NodeFilter.SHOW_TEXT,
@@ -4980,174 +4892,88 @@ Instructions:
             
             let textNode;
             while (textNode = walker.nextNode()) {
-                const result = tryFindWordInNode(textNode, word, -1);
-                if (result) return result;
-            }
-            
-            return null;
-        }
-        
-        function findWordInDOM(word, targetPosition) {
-            // Create a TreeWalker to find text nodes
-            const walker = document.createTreeWalker(
-                document.body,
-                NodeFilter.SHOW_TEXT,
-                {
-                    acceptNode: function(node) {
-                        // Skip widget, script, style elements
-                        const parent = node.parentElement;
-                        if (!parent) return NodeFilter.FILTER_REJECT;
-                        
-                        if (parent.closest('#gist-widget') || 
-                            parent.closest('script') || 
-                            parent.closest('style') ||
-                            parent.closest('noscript')) {
-                            return NodeFilter.FILTER_REJECT;
-                        }
-                        
-                        // Skip if parent is hidden
-                        const style = window.getComputedStyle(parent);
-                        if (style.display === 'none' || style.visibility === 'hidden') {
-                            return NodeFilter.FILTER_REJECT;
-                        }
-                        
-                        // Only process nodes with meaningful text
-                        if (node.textContent.trim().length < 1) {
-                            return NodeFilter.FILTER_REJECT;
-                        }
-                        
-                        return NodeFilter.FILTER_ACCEPT;
-                    }
-                },
-                false
-            );
-            
-            // Build a map of text content and find the word at the target position
-            let cumulativeText = '';
-            let textNodes = [];
-            let currentTextNode;
-            
-            // First pass: collect all text and build position map
-            while (currentTextNode = walker.nextNode()) {
-                const nodeText = currentTextNode.textContent;
-                const cleanNodeText = nodeText.replace(/\s+/g, ' ').trim(); // Normalize spaces
+                const text = textNode.textContent;
                 
-                textNodes.push({
-                    node: currentTextNode,
-                    text: nodeText,
-                    cleanText: cleanNodeText,
-                    startPos: cumulativeText.length,
-                    endPos: cumulativeText.length + cleanNodeText.length
-                });
+                // Find all words in this text node
+                const wordRegex = /\b\w+\b/g;
+                let match;
                 
-                cumulativeText += cleanNodeText + ' ';
-            }
-            
-            // Clean the cumulative text the same way as our TTS text
-            const cleanCumulativeText = cumulativeText.replace(/\s+/g, ' ').trim();
-            
-            // Try exact position first
-            for (const nodeInfo of textNodes) {
-                if (targetPosition >= nodeInfo.startPos && targetPosition < nodeInfo.endPos) {
-                    const relativePos = targetPosition - nodeInfo.startPos;
-                    const result = tryFindWordInNode(nodeInfo.node, word, relativePos);
-                    if (result) return result;
+                while ((match = wordRegex.exec(text)) !== null) {
+                    ttsState.wordQueue.push({
+                        word: match[0],
+                        textNode: textNode,
+                        startIndex: match.index,
+                        endIndex: match.index + match[0].length
+                    });
                 }
             }
             
-            // If exact position fails, try finding the word near the target position
-            const searchWindow = 100; // Look within 100 characters
-            for (const nodeInfo of textNodes) {
-                const distance = Math.min(
-                    Math.abs(nodeInfo.startPos - targetPosition),
-                    Math.abs(nodeInfo.endPos - targetPosition)
-                );
+            console.log(`Built word queue with ${ttsState.wordQueue.length} words`);
+        }
+        
+        function startTextHighlighting() {
+            if (!ttsState.currentAudio || !ttsState.isPlaying) return;
+            
+            // Reset queue position
+            ttsState.currentQueueIndex = 0;
+            
+            const duration = ttsState.currentAudio.duration;
+            const wordsPerSecond = ttsState.words.length / duration;
+            
+            // Scale words progressively
+            const highlightInterval = setInterval(() => {
+                if (!ttsState.isPlaying || ttsState.currentWordIndex >= ttsState.words.length) {
+                    clearInterval(highlightInterval);
+                    return;
+                }
                 
-                if (distance <= searchWindow) {
-                    const result = tryFindWordInNode(nodeInfo.node, word, -1); // -1 means find any occurrence
-                    if (result) return result;
+                // Clear previous highlights
+                clearTextHighlights();
+                
+                // Scale current word on the page
+                const currentWord = ttsState.words[ttsState.currentWordIndex];
+                highlightNextWord(currentWord);
+                
+                ttsState.currentWordIndex++;
+            }, 1000 / wordsPerSecond);
+            
+            // Store interval for cleanup
+            ttsState.highlightInterval = highlightInterval;
+        }
+        
+        function highlightNextWord(targetWord) {
+            // Find the next matching word in our pre-built queue
+            const cleanTarget = targetWord.trim().toLowerCase();
+            
+            // Search forward from current position in queue
+            for (let i = ttsState.currentQueueIndex; i < ttsState.wordQueue.length; i++) {
+                const queueItem = ttsState.wordQueue[i];
+                
+                if (queueItem.word.toLowerCase() === cleanTarget) {
+                    // Found the word! Highlight it and advance queue position
+                    ttsState.currentQueueIndex = i + 1; // Move past this word
+                    scaleWordAtLocation(queueItem);
+                    return true;
                 }
             }
             
-            // Last resort: just find the word anywhere in visible text
-            for (const nodeInfo of textNodes) {
-                const result = tryFindWordInNode(nodeInfo.node, word, -1);
-                if (result) return result;
-            }
-            
-            return null;
+            // Word not found in remaining queue
+            console.log(`Word "${targetWord}" not found in remaining queue`);
+            return false;
         }
         
-        function tryFindWordInNode(textNode, word, targetRelativePos) {
-            // Check if this element or its ancestors have already been processed
-            const elementKey = getElementKey(textNode);
-            if (ttsState.processedElements.has(elementKey)) {
-                return null; // Skip already processed elements
-            }
-            
-            // Check scroll position to prevent going backward
-            const rect = textNode.parentElement.getBoundingClientRect();
-            const elementY = rect.top + (window.pageYOffset || document.documentElement.scrollTop);
-            
-            // Only process elements that are at or after our furthest scroll position
-            if (elementY < ttsState.furthestScrollPosition - 100) { // 100px tolerance
-                return null;
-            }
-            
-            const nodeText = textNode.textContent;
-            const wordRegex = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
-            let match;
-            
-            while ((match = wordRegex.exec(nodeText)) !== null) {
-                const matchStart = match.index;
-                const matchEnd = matchStart + match[0].length;
-                
-                // If we have a target position, check if this match is at that position
-                if (targetRelativePos >= 0) {
-                    if (targetRelativePos >= matchStart && targetRelativePos < matchEnd) {
-                        return scaleWordInTextNode(textNode, match[0], matchStart);
-                    }
-                } else {
-                    // No specific position - just use the first match
-                    return scaleWordInTextNode(textNode, match[0], matchStart);
-                }
-            }
-            
-            return null;
-        }
-        
-        function getElementKey(textNode) {
-            // Create a unique key for this text node based on its position in the DOM
-            const parent = textNode.parentElement;
-            if (!parent) return Math.random().toString();
-            
-            // Use the parent element's position and the text content
-            const parentRect = parent.getBoundingClientRect();
-            const textContent = textNode.textContent.trim().substring(0, 50); // First 50 chars
-            
-            return `${Math.round(parentRect.top)}_${Math.round(parentRect.left)}_${textContent}`;
-        }
-        
-        function scaleWordInTextNode(textNode, matchedWord, startIndex) {
+        function scaleWordAtLocation(queueItem) {
+            const { word, textNode, startIndex } = queueItem;
             const text = textNode.textContent;
             const beforeText = text.substring(0, startIndex);
-            const afterText = text.substring(startIndex + matchedWord.length);
+            const afterText = text.substring(startIndex + word.length);
             
             const parent = textNode.parentNode;
             
-            // Mark this element as processed
-            const elementKey = getElementKey(textNode);
-            ttsState.processedElements.add(elementKey);
-            
-            // Update furthest scroll position
-            const rect = parent.getBoundingClientRect();
-            const elementY = rect.top + (window.pageYOffset || document.documentElement.scrollTop);
-            ttsState.furthestScrollPosition = Math.max(ttsState.furthestScrollPosition, elementY);
-            
-            // Create the scaled word span with padding
+            // Create the scaled word span
             const wordSpan = document.createElement('span');
             wordSpan.className = 'gist-tts-scaled-word';
-            wordSpan.textContent = matchedWord;
+            wordSpan.textContent = word;
             wordSpan.style.cssText = `
                 display: inline-block !important;
                 transform: scale(1.15) !important;
@@ -5177,16 +5003,22 @@ Instructions:
             ttsState.highlights.push({
                 type: 'scaled',
                 element: wordSpan,
-                originalText: matchedWord,
+                originalText: word,
                 parent: parent,
                 beforeText: beforeText,
-                afterText: afterText,
-                elementKey: elementKey
+                afterText: afterText
+            });
+            
+            // Scroll to the word
+            wordSpan.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center',
+                inline: 'center'
             });
             
             // Auto-reset after delay
             setTimeout(() => {
-                resetWordScaling(wordSpan, matchedWord, parent, beforeText, afterText);
+                resetWordScaling(wordSpan, word, parent, beforeText, afterText);
             }, 1000);
             
             return wordSpan;
@@ -5273,9 +5105,7 @@ Instructions:
             ttsState.isGenerating = false;
             ttsState.currentWordIndex = 0;
             ttsState.words = [];
-            ttsState.lastFoundPosition = 0;
-            ttsState.processedElements.clear();
-            ttsState.furthestScrollPosition = 0;
+            ttsState.currentQueueIndex = 0;
             
             // Reset UI
             button.style.display = 'flex';
