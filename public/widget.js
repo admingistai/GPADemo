@@ -2227,262 +2227,165 @@
                     transform: none;
                 }
                 
-                /* Text to Speech Styles */
+                /* Modern TTS Interface */
                 .gist-tts-section {
-                    padding: 16px;
-                    text-align: center;
-                }
-                
-                .gist-tts-header h3 {
-                    margin: 0 0 6px 0;
-                    font-size: 16px;
-                    font-weight: 600;
-                    color: #1f2937;
-                }
-                
-                .gist-tts-header p {
-                    margin: 0 0 16px 0;
-                    font-size: 13px;
-                    color: #6b7280;
-                    line-height: 1.4;
-                }
-                
-                .gist-tts-controls-wrapper {
-                    margin-bottom: 12px;
-                }
-
-                .gist-tts-button {
+                    padding: 0;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    gap: 6px;
-                    padding: 10px 20px;
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    font-size: 14px;
-                    font-weight: 500;
-                    cursor: pointer;
-                    transition: all 0.2s ease;
-                    margin: 0 auto 12px auto;
-                    min-width: 120px;
+                    min-height: 100%;
                 }
                 
-                .gist-tts-button:hover {
-                    transform: translateY(-1px);
-                    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+                .gist-tts-card {
+                    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+                    border-radius: 20px;
+                    padding: 24px;
+                    text-align: center;
+                    width: 100%;
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+                    border: 1px solid #e2e8f0;
                 }
                 
-                .gist-tts-button:active {
-                    transform: translateY(0);
+                .gist-tts-icon-large {
+                    font-size: 48px;
+                    margin-bottom: 12px;
+                    filter: grayscale(0.3);
                 }
                 
-                .gist-tts-button:disabled {
-                    background: #9ca3af;
-                    cursor: not-allowed;
-                    transform: none;
-                    box-shadow: none;
-                }
-                
-                .gist-tts-icon {
+                .gist-tts-card h3 {
+                    margin: 0 0 20px 0;
                     font-size: 18px;
+                    font-weight: 600;
+                    color: #1e293b;
                 }
                 
-                .gist-tts-controls {
-                    display: flex;
-                    gap: 6px;
-                    justify-content: center;
-                    margin-bottom: 8px;
-                }
-                
-                .gist-tts-control {
-                    padding: 6px 10px;
-                    background: #f3f4f6;
-                    border: 1px solid #e5e7eb;
-                    border-radius: 6px;
-                    font-size: 11px;
-                    cursor: pointer;
-                    transition: all 0.2s ease;
-                    font-weight: 500;
-                }
-                
-                .gist-tts-control:hover {
-                    background: #e5e7eb;
-                }
-                
-                .gist-tts-status {
-                    font-size: 11px;
-                    color: #6b7280;
-                    font-style: italic;
-                    min-height: 16px;
-                    line-height: 1.3;
-                }
-
-                /* Mobile responsive styles for TTS interface */
-                @media (max-height: 600px) {
-                    .gist-tts-section {
-                        padding: 12px;
-                    }
-                    
-                    .gist-tts-header h3 {
-                        font-size: 15px;
-                        margin-bottom: 4px;
-                    }
-                    
-                    .gist-tts-header p {
-                        font-size: 12px;
-                        margin-bottom: 12px;
-                    }
-                    
-                    .gist-voice-selector {
-                        margin-bottom: 12px;
-                    }
-                    
-                    .gist-tts-button {
-                        padding: 8px 16px;
-                        font-size: 13px;
-                        min-width: 100px;
-                        margin-bottom: 8px;
-                    }
-                    
-                    .gist-tts-controls {
-                        margin-bottom: 6px;
-                    }
-                    
-                    .gist-tts-control {
-                        padding: 5px 8px;
-                        font-size: 10px;
-                    }
-                    
-                    .gist-voice-select {
-                        font-size: 12px;
-                        padding: 6px 8px;
-                    }
-                    
-                    .gist-voice-preview {
-                        min-width: 32px;
-                        height: 30px;
-                        font-size: 13px;
-                        padding: 6px 8px;
-                    }
-                    
-                    /* For very constrained heights, allow taller containers */
-                    .gist-answer-container.remix-compact {
-                        max-height: 280px;
-                    }
-                    
-                    .gist-answer-container.remix-compact .gist-answer-content {
-                        max-height: calc(280px - 40px);
-                    }
-                }
-                
-                /* Extra compact styles for very small heights */
-                @media (max-height: 480px) {
-                    .gist-answer-container.remix-compact {
-                        max-height: 240px;
-                    }
-                    
-                    .gist-answer-container.remix-compact .gist-answer-content {
-                        max-height: calc(240px - 40px);
-                    }
-                    
-                    .gist-tts-section {
-                        padding: 8px;
-                    }
-                    
-                    .gist-tts-header h3 {
-                        font-size: 14px;
-                        margin-bottom: 3px;
-                    }
-                    
-                    .gist-tts-header p {
-                        font-size: 11px;
-                        margin-bottom: 8px;
-                    }
-                    
-                    .gist-voice-selector {
-                        margin-bottom: 8px;
-                        gap: 4px;
-                    }
-                    
-                    .gist-tts-controls-wrapper {
-                        margin-bottom: 6px;
-                    }
-                }
-                
-                .gist-voice-selector {
-                    margin: 0 0 16px 0;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 6px;
-                }
-                
-                .gist-voice-label {
-                    font-size: 13px;
-                    font-weight: 500;
-                    color: #374151;
-                    margin-bottom: 2px;
-                    text-align: left;
-                }
-                
-                .gist-voice-controls {
+                .gist-voice-row {
                     display: flex;
                     gap: 8px;
+                    margin-bottom: 20px;
                     align-items: center;
                 }
                 
-                .gist-voice-select {
+                .gist-voice-select-modern {
                     flex: 1;
-                    padding: 7px 10px;
-                    border: 1px solid #d1d5db;
-                    border-radius: 6px;
+                    padding: 12px 16px;
+                    border: 2px solid #e2e8f0;
+                    border-radius: 12px;
                     background: white;
-                    font-size: 13px;
+                    font-size: 14px;
                     color: #374151;
                     cursor: pointer;
                     transition: all 0.2s ease;
+                    appearance: none;
+                    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+                    background-position: right 12px center;
+                    background-repeat: no-repeat;
+                    background-size: 16px;
+                    padding-right: 40px;
                 }
                 
-                .gist-voice-select:focus {
+                .gist-voice-select-modern:focus {
                     outline: none;
-                    border-color: #667eea;
-                    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+                    border-color: #6366f1;
+                    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
                 }
                 
-                .gist-voice-select:hover {
-                    border-color: #9ca3af;
-                }
-                
-                .gist-voice-preview {
-                    padding: 7px 10px;
-                    background: #f3f4f6;
-                    border: 1px solid #d1d5db;
-                    border-radius: 6px;
-                    font-size: 14px;
+                .gist-voice-test {
+                    width: 48px;
+                    height: 48px;
+                    border: 2px solid #e2e8f0;
+                    border-radius: 12px;
+                    background: white;
+                    font-size: 16px;
                     cursor: pointer;
                     transition: all 0.2s ease;
-                    min-width: 36px;
-                    height: 34px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
                 }
                 
-                .gist-voice-preview:hover {
-                    background: #e5e7eb;
+                .gist-voice-test:hover {
+                    border-color: #6366f1;
+                    background: #f8fafc;
                     transform: scale(1.05);
                 }
                 
-                .gist-voice-preview:active {
+                .gist-voice-test:active {
                     transform: scale(0.95);
                 }
                 
-                .gist-voice-preview:disabled {
-                    background: #f9fafb;
-                    color: #9ca3af;
-                    cursor: not-allowed;
-                    transform: none;
+                .gist-play-button {
+                    width: 100%;
+                    padding: 16px 24px;
+                    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 16px;
+                    font-size: 16px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 12px;
+                    margin-bottom: 16px;
+                    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+                }
+                
+                .gist-play-button:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+                }
+                
+                .gist-play-button:active {
+                    transform: translateY(0);
+                }
+                
+                .gist-play-icon {
+                    width: 24px;
+                    height: 24px;
+                    background: rgba(255, 255, 255, 0.2);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 12px;
+                }
+                
+                .gist-audio-controls {
+                    display: flex;
+                    gap: 8px;
+                    justify-content: center;
+                    margin-bottom: 12px;
+                }
+                
+                .gist-control-btn {
+                    width: 40px;
+                    height: 40px;
+                    border: 2px solid #e2e8f0;
+                    border-radius: 50%;
+                    background: white;
+                    font-size: 14px;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                
+                .gist-control-btn:hover {
+                    border-color: #6366f1;
+                    background: #f8fafc;
+                    transform: scale(1.1);
+                }
+                
+                .gist-tts-status {
+                    font-size: 12px;
+                    color: #64748b;
+                    font-style: italic;
+                    min-height: 18px;
+                    line-height: 1.4;
                 }
                 
                 /* Text highlighting for TTS */
@@ -3377,21 +3280,11 @@
                 }
             });
             
-            // Handle compact mode for Remix tool and auto-enable desktop mode for better space
+            // Handle compact mode for Remix tool
             if (tool === 'remix') {
                 answerContainer.classList.add('remix-compact');
-                // Auto-enable desktop mode for remix tool to provide more space for TTS interface
-                if (!isDesktopMode && isDesktopDevice()) {
-                    enableDesktopMode();
-                    hasAutoSwitchedToDesktop = true;
-                }
             } else {
                 answerContainer.classList.remove('remix-compact');
-                // Auto-disable desktop mode if we enabled it automatically for remix
-                if (hasAutoSwitchedToDesktop && isDesktopMode) {
-                    disableDesktopMode();
-                    hasAutoSwitchedToDesktop = false;
-                }
             }
             
 
@@ -4446,39 +4339,36 @@ Instructions:
             let html = `
                 <div class="gist-remix-interface gist-content-entering">
                     <div class="gist-tts-section">
-                        <div class="gist-tts-header">
-                            <h3>🎧 Text to Speech</h3>
-                            <p>Listen to this webpage with AI-generated voice</p>
-                        </div>
-                        
-                        <div class="gist-voice-selector">
-                            <label class="gist-voice-label">Voice:</label>
-                            <div class="gist-voice-controls">
-                                <select class="gist-voice-select" id="voice-select">
+                        <div class="gist-tts-card">
+                            <div class="gist-tts-icon-large">🎧</div>
+                            <h3>Listen to this page</h3>
+                            
+                            <div class="gist-voice-row">
+                                <select class="gist-voice-select-modern" id="voice-select">
                                     ${AVAILABLE_VOICES.map(voice => 
                                         `<option value="${voice.id}" ${voice.id === ttsState.selectedVoiceId ? 'selected' : ''}>
-                                            ${voice.name} - ${voice.description}
+                                            ${voice.name}
                                         </option>`
                                     ).join('')}
                                 </select>
-                                <button class="gist-voice-preview" id="voice-preview" title="Preview voice">
-                                    🔊
+                                <button class="gist-voice-test" id="voice-preview" title="Test voice">
+                                    ▶️
                                 </button>
                             </div>
-                        </div>
-                        
-                        <div class="gist-tts-controls-wrapper">
-                            <button class="gist-tts-button" id="tts-button">
-                                <span class="gist-tts-icon">🎵</span>
-                                <span class="gist-tts-text">Start Reading</span>
+                            
+                            <button class="gist-play-button" id="tts-button">
+                                <div class="gist-play-icon">▶️</div>
+                                <span>Start Reading</span>
                             </button>
-                            <div class="gist-tts-controls" id="tts-controls" style="display: none;">
-                                <button class="gist-tts-control" id="tts-pause">⏸️ Pause</button>
-                                <button class="gist-tts-control" id="tts-resume">▶️ Resume</button>
-                                <button class="gist-tts-control" id="tts-stop">⏹️ Stop</button>
+                            
+                            <div class="gist-audio-controls" id="tts-controls" style="display: none;">
+                                <button class="gist-control-btn" id="tts-pause">⏸️</button>
+                                <button class="gist-control-btn" id="tts-resume">▶️</button>
+                                <button class="gist-control-btn" id="tts-stop">⏹️</button>
                             </div>
+                            
+                            <div class="gist-tts-status" id="tts-status"></div>
                         </div>
-                        <div class="gist-tts-status" id="tts-status"></div>
                     </div>
                 </div>
             `;
