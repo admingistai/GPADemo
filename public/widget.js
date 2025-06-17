@@ -1041,7 +1041,7 @@
 
                 
                 .gist-widget.minimized .gist-pill {
-                    width: 180px;
+                    width: 165px;
                     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 }
                 
@@ -1066,14 +1066,14 @@
                     color: #6b7280;
                     margin-left: 20px;
                     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-                    width: calc(100% - 42px);
+                    width: calc(100% - 35px);
                     min-width: 100px;
                 }
                 
                 .gist-widget.minimized .gist-pill-content {
-                    width: 180px;
+                    width: 165px;
                     justify-content: flex-start;
-                    padding-left: 10px;
+                    padding-left: 8px;
                     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 }
                 
