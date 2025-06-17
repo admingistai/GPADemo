@@ -2310,6 +2310,79 @@
                     font-style: italic;
                 }
                 
+                .gist-voice-selector {
+                    margin: 0 0 20px 0;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                }
+                
+                .gist-voice-label {
+                    font-size: 14px;
+                    font-weight: 500;
+                    color: #374151;
+                    margin-bottom: 4px;
+                }
+                
+                .gist-voice-controls {
+                    display: flex;
+                    gap: 8px;
+                    align-items: center;
+                }
+                
+                .gist-voice-select {
+                    flex: 1;
+                    padding: 8px 12px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                    background: white;
+                    font-size: 14px;
+                    color: #374151;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                }
+                
+                .gist-voice-select:focus {
+                    outline: none;
+                    border-color: #667eea;
+                    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+                }
+                
+                .gist-voice-select:hover {
+                    border-color: #9ca3af;
+                }
+                
+                .gist-voice-preview {
+                    padding: 8px 12px;
+                    background: #f3f4f6;
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                    font-size: 16px;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    min-width: 44px;
+                    height: 40px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                
+                .gist-voice-preview:hover {
+                    background: #e5e7eb;
+                    transform: scale(1.05);
+                }
+                
+                .gist-voice-preview:active {
+                    transform: scale(0.95);
+                }
+                
+                .gist-voice-preview:disabled {
+                    background: #f9fafb;
+                    color: #9ca3af;
+                    cursor: not-allowed;
+                    transform: none;
+                }
+                
                 /* Text highlighting for TTS */
                 .gist-tts-highlight {
                     background-color: #fef3c7 !important;
@@ -4264,7 +4337,24 @@ Instructions:
                         <div class="gist-tts-header">
                             <h3>🎧 Text to Speech</h3>
                             <p>Listen to this webpage with AI-generated voice</p>
-                    </div>
+                        </div>
+                        
+                        <div class="gist-voice-selector">
+                            <label class="gist-voice-label">Choose Voice:</label>
+                            <div class="gist-voice-controls">
+                                <select class="gist-voice-select" id="voice-select">
+                                    ${AVAILABLE_VOICES.map(voice => 
+                                        `<option value="${voice.id}" ${voice.id === ttsState.selectedVoiceId ? 'selected' : ''}>
+                                            ${voice.name} - ${voice.description}
+                                        </option>`
+                                    ).join('')}
+                                </select>
+                                <button class="gist-voice-preview" id="voice-preview" title="Preview voice">
+                                    🔊
+                                </button>
+                            </div>
+                        </div>
+                        
                         <button class="gist-tts-button" id="tts-button">
                             <span class="gist-tts-icon">🎵</span>
                             <span class="gist-tts-text">Start Reading</span>
@@ -4275,7 +4365,7 @@ Instructions:
                             <button class="gist-tts-control" id="tts-stop">⏹️ Stop</button>
                         </div>
                         <div class="gist-tts-status" id="tts-status"></div>
-                        </div>
+                    </div>
                 </div>
             `;
             
@@ -4286,9 +4376,62 @@ Instructions:
             const ttsButton = answerContent.querySelector('#tts-button');
             const ttsControls = answerContent.querySelector('#tts-controls');
             const ttsStatus = answerContent.querySelector('#tts-status');
+            const voiceSelect = answerContent.querySelector('#voice-select');
+            const voicePreview = answerContent.querySelector('#voice-preview');
             const pauseBtn = answerContent.querySelector('#tts-pause');
             const resumeBtn = answerContent.querySelector('#tts-resume');
             const stopBtn = answerContent.querySelector('#tts-stop');
+            
+            // Voice selection handler
+            voiceSelect.addEventListener('change', (e) => {
+                ttsState.selectedVoiceId = e.target.value;
+                const selectedVoice = AVAILABLE_VOICES.find(voice => voice.id === e.target.value);
+                console.log(`Voice changed to: ${selectedVoice.name}`);
+                
+                // If currently playing, inform user they need to restart for voice change
+                if (ttsState.isPlaying) {
+                    ttsStatus.textContent = `Voice changed to ${selectedVoice.name}. Stop and restart to apply.`;
+                }
+            });
+            
+            // Voice preview handler
+            voicePreview.addEventListener('click', async () => {
+                if (voicePreview.disabled) return;
+                
+                const selectedVoice = AVAILABLE_VOICES.find(voice => voice.id === ttsState.selectedVoiceId);
+                const sampleText = `Hello, I'm ${selectedVoice.name}. This is how I sound when reading your content.`;
+                
+                try {
+                    voicePreview.disabled = true;
+                    voicePreview.textContent = '⏳';
+                    ttsStatus.textContent = `Generating ${selectedVoice.name} voice preview...`;
+                    
+                    const audioUrl = await generateSpeechWithElevenLabs(sampleText);
+                    const previewAudio = new Audio(audioUrl);
+                    
+                    previewAudio.play();
+                    voicePreview.textContent = '▶️';
+                    ttsStatus.textContent = `Playing ${selectedVoice.name} preview...`;
+                    
+                    previewAudio.addEventListener('ended', () => {
+                        voicePreview.disabled = false;
+                        voicePreview.textContent = '🔊';
+                        ttsStatus.textContent = '';
+                    });
+                    
+                    previewAudio.addEventListener('error', () => {
+                        voicePreview.disabled = false;
+                        voicePreview.textContent = '🔊';
+                        ttsStatus.textContent = 'Preview failed';
+                    });
+                    
+                } catch (error) {
+                    voicePreview.disabled = false;
+                    voicePreview.textContent = '🔊';
+                    ttsStatus.textContent = 'Preview failed';
+                    console.error('Voice preview failed:', error);
+                }
+            });
             
             ttsButton.addEventListener('click', () => {
                 startTextToSpeech(ttsButton, ttsControls, ttsStatus);
@@ -4716,8 +4859,21 @@ Instructions:
             words: [],
             highlights: [],
             wordQueue: [], // Pre-built queue of word locations
-            currentQueueIndex: 0 // Current position in the queue
+            currentQueueIndex: 0, // Current position in the queue
+            selectedVoiceId: 'EXAVITQu4vr4xnSDxMaL' // Default to Bella
         };
+
+        // Available ElevenLabs voices
+        const AVAILABLE_VOICES = [
+            { id: 'EXAVITQu4vr4xnSDxMaL', name: 'Bella', description: 'Warm, friendly female voice', gender: 'female' },
+            { id: 'pNInz6obpgDQGcFmaJgB', name: 'Adam', description: 'Deep, authoritative male voice', gender: 'male' },
+            { id: 'TxGEqnHWrfWFTfGW9XjX', name: 'Josh', description: 'Young, energetic male voice', gender: 'male' },
+            { id: 'VR6AewLTigWG4xSOukaG', name: 'Arnold', description: 'Mature, professional male voice', gender: 'male' },
+            { id: 'ErXwobaYiN019PkySvjV', name: 'Antoni', description: 'Smooth, sophisticated male voice', gender: 'male' },
+            { id: 'MF3mGyEYCl7XYWbV9V6O', name: 'Elli', description: 'Clear, articulate female voice', gender: 'female' },
+            { id: 'AZnzlk1XvdvUeBnXmlld', name: 'Domi', description: 'Confident, strong female voice', gender: 'female' },
+            { id: 'CYw3kZ02Hs0563khs1Fj', name: 'Dave', description: 'Casual, conversational male voice', gender: 'male' }
+        ];
         
         async function startTextToSpeech(button, controls, status) {
             try {
@@ -4742,7 +4898,8 @@ Instructions:
                     textToRead = textToRead.substring(0, 4000) + '...';
                 }
                 
-                status.textContent = 'Generating speech with ElevenLabs...';
+                const selectedVoice = AVAILABLE_VOICES.find(voice => voice.id === ttsState.selectedVoiceId);
+                status.textContent = `Generating speech with ${selectedVoice.name} voice...`;
                 
                 // Generate speech with ElevenLabs
                 const audioUrl = await generateSpeechWithElevenLabs(textToRead);
@@ -4764,7 +4921,7 @@ Instructions:
                 // Update UI
                 button.style.display = 'none';
                 controls.style.display = 'flex';
-                status.textContent = 'Reading webpage...';
+                status.textContent = `Reading with ${selectedVoice.name} voice...`;
                 
 
                 
@@ -4810,7 +4967,7 @@ Instructions:
                     },
                     body: JSON.stringify({
                         text: text,
-                        voice_id: 'EXAVITQu4vr4xnSDxMaL' // Default Bella voice
+                        voice_id: ttsState.selectedVoiceId
                     }),
                     signal: controller.signal
                 });
