@@ -1064,12 +1064,12 @@
                     color: #6b7280;
                     margin-left: 8px;
                     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-                    width: calc(100% - 60px);
-                    min-width: 200px;
+                    width: calc(100% - 50px);
+                    min-width: 120px;
                 }
                 
                 .gist-widget.minimized .gist-pill-content {
-                    width: 300px;
+                    width: 180px;
                     justify-content: flex-start;
                     padding-left: 8px;
                     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
