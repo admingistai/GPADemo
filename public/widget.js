@@ -1068,7 +1068,7 @@
                 }
                 
                 .gist-widget.minimized .gist-pill-content {
-                    width: 130px;
+                    width: 160px;
                     justify-content: flex-start;
                     padding-left: 8px;
                     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -3199,7 +3199,8 @@
         
         let isActive = false;
         let hasAnswer = false;
-        let hasAskAnswer = false; // Track if we have an answer specifically from Ask tool
+        let hasAskAnswer = false;
+        let currentQuestion = null; // Track if we have an answer specifically from Ask tool
         let submitTimeout = null;
         let conversationHistory = []; // Store conversation history for Gist
         let pageContext = null; // Store extracted page content for context
@@ -3694,6 +3695,11 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
                 if (answerText) {
                     applyTextRevealAnimation(answerText);
                 }
+                
+                // Show external ads with question context
+                setTimeout(() => {
+                    showExternalAds(question);
+                }, 200);
             }, 50);
             
             // Generate follow-up questions
@@ -5289,9 +5295,14 @@ Instructions:
             }, 50);
         }
         
-        function showAnswer(answer) {
+        function showAnswer(answer, question = null) {
             // Mark that we have an Ask-specific answer
             hasAskAnswer = true;
+            
+            // Store the current question for ad generation
+            if (question) {
+                currentQuestion = question;
+            }
             
             // Ensure answer container and toolbox are visible
             answerContainer.classList.add('visible');
@@ -5302,16 +5313,21 @@ Instructions:
             if (existingLoading) {
                 existingLoading.classList.add('fade-out');
                 setTimeout(() => {
-                    showAnswerContent(answer);
+                    showAnswerContent(answer, question);
                 }, 300); // Wait for fade out to complete
             } else {
-                showAnswerContent(answer);
+                showAnswerContent(answer, question);
             }
         }
         
-        function showAnswerContent(answer) {
+        function showAnswerContent(answer, question = null) {
             // Format the answer with line breaks for better readability
             const formattedAnswer = answer.replace(/\n/g, '<br>');
+            
+            // Store the current question for ad generation
+            if (question) {
+                currentQuestion = question;
+            }
             
             // Generate mock attribution data
             const mockAttributions = generateMockAttributions();
@@ -5407,23 +5423,45 @@ Instructions:
                 
                 // Show external ads with delay
                 setTimeout(() => {
-                    showExternalAds();
+                    showExternalAds(question || currentQuestion);
                 }, 200);
 
             }, 50);
         }
         
-        async function generateContextualAds() {
+        async function generateContextualAds(questionContext = null) {
             try {
                 const context = extractPageContext();
                 
-                // If no meaningful content, fall back to default ads
-                if (!context.content || context.content.length < 100) {
-                    return getDefaultAds();
-                }
-                
                 // Create a prompt to generate contextually relevant ads
-                const adPrompt = `Based on the following article content, generate ONE relevant advertisement that would appeal to readers of this content. The ad should be for a real or plausible product/service that relates to the article topic.
+                let adPrompt;
+                
+                if (questionContext) {
+                    // If we have a specific question, generate ads relevant to that question
+                    adPrompt = `Based on the following user question, generate ONE relevant advertisement that would appeal to someone interested in this topic. The ad should be for a real or plausible product/service that relates to the question.
+
+User Question: "${questionContext}"
+${context.title ? `Page Context: ${context.title}` : ''}
+
+Please respond with a JSON object in this exact format:
+{
+  "icon": "single emoji that represents the product/service",
+  "title": "compelling ad title (max 50 characters)",
+  "description": "engaging description (max 90 characters)",
+  "cta": "call-to-action button text (max 15 characters)",
+  "category": "product category (e.g., books, tech, travel, food, etc.)",
+  "brand": "plausible brand name"
+}
+
+Make the ad relevant to the user's question but appealing and professional. Use emojis that represent the product category.`;
+                } else {
+                    // If no meaningful content, fall back to default ads
+                    if (!context.content || context.content.length < 100) {
+                        return getDefaultAds();
+                    }
+                    
+                    // Fall back to page-based ads
+                    adPrompt = `Based on the following article content, generate ONE relevant advertisement that would appeal to readers of this content. The ad should be for a real or plausible product/service that relates to the article topic.
 
 Article Title: ${context.title}
 Article Content: ${context.content.substring(0, 1500)}...
@@ -5439,6 +5477,7 @@ Please respond with a JSON object in this exact format:
 }
 
 Make the ad relevant to the article topic but appealing and professional. Use emojis that represent the product category.`;
+                }
 
                 // Call the chat API to generate contextual ad
                 const response = await createChatCompletionForAd(adPrompt);
@@ -5583,8 +5622,8 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             }
         }
         
-        async function createMockAdsHTML() {
-            const ads = await generateContextualAds();
+        async function createMockAdsHTML(questionContext = null) {
+            const ads = await generateContextualAds(questionContext);
             
             let html = `
                 <div class="gist-mock-ads">
@@ -5615,7 +5654,7 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             return html;
         }
         
-        async function showExternalAds() {
+        async function showExternalAds(questionContext = null) {
             // Only show ads if we're in Ask or Gist tool AND have actual content
             const shouldShowAds = hasAnswer;
             
@@ -5630,8 +5669,8 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 // Show the ads container
                 adsContainer.classList.add('visible');
                 
-                // Generate and insert ads HTML
-                const adsHTML = await createMockAdsHTML();
+                // Generate and insert ads HTML with question context
+                const adsHTML = await createMockAdsHTML(questionContext);
                 adsContainer.innerHTML = adsHTML;
                 
                 // Animate the ads with a delay
@@ -5959,6 +5998,9 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 try {
                     log('info', 'User submitted query', { query });
                     
+                    // Store the current question for ad generation
+                    currentQuestion = query;
+                    
                     // Ensure answer container and toolbox are visible and show loading state immediately
                     answerContainer.classList.add('visible');
                     toolbox.classList.add('visible');
@@ -5971,7 +6013,7 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                     
                     // Display the answer only if user is still on ask tool
                     if (currentTool === 'ask') {
-                    showAnswer(chatResponse.response);
+                    showAnswer(chatResponse.response, query);
                     }
                     
                     // Clear input
