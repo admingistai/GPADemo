@@ -3005,7 +3005,7 @@
                 `<img src="${enhancedStyling.faviconUrl}" class="gist-pill-logo" alt="Website Icon" onerror="this.src='${BACKEND_BASE_URL}/gist-logo.png'; this.alt='Gist Logo';">` :
                 `<img src="${BACKEND_BASE_URL}/gist-logo.png" class="gist-pill-logo" alt="Gist Logo">`
                         }
-                        <input type="text" class="gist-pill-input" placeholder="Ask..." id="gist-input">
+                        <input type="text" class="gist-pill-input" placeholder="Ask Anything" id="gist-input">
                         <button class="gist-desktop-mode-btn" id="gist-desktop-mode-btn" title="Desktop Mode">⊞</button>
                         <button class="gist-pill-submit" id="gist-submit">➤</button>
                     </div>
@@ -3792,7 +3792,7 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
             isMinimized = true;
             
             // Change placeholder immediately for smooth transition
-            input.placeholder = 'Ask...';
+                            input.placeholder = 'Ask Anything';
             input.blur(); // Remove focus
             
             // Hide answer container and toolbox immediately
@@ -5627,8 +5627,7 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             if (!adsContainer) return;
             
             try {
-                // Show loading state briefly
-                adsContainer.innerHTML = '<div class="gist-ads-loading">Generating relevant ad...</div>';
+                // Show the ads container
                 adsContainer.classList.add('visible');
                 
                 // Generate and insert ads HTML
