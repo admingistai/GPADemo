@@ -4898,6 +4898,14 @@ Instructions:
                 return null;
             }
             
+            // Track which words we've already scaled to avoid repeats
+            const alreadyScaledElements = new Set();
+            ttsState.highlights.forEach(h => {
+                if (h.type === 'scaled' && h.element) {
+                    alreadyScaledElements.add(h.element);
+                }
+            });
+            
             // Create a TreeWalker to find text nodes
             const walker = document.createTreeWalker(
                 document.body,
@@ -4926,75 +4934,116 @@ Instructions:
                             return NodeFilter.FILTER_REJECT;
                         }
                         
+                        // Skip nodes that are already scaled
+                        if (parent.querySelector('.gist-tts-scaled-word')) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        
                         return NodeFilter.FILTER_ACCEPT;
                     }
                 },
                 false
             );
             
+            let bestMatch = null;
+            let bestDistance = Infinity;
+            const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
+            
             let textNode;
             while (textNode = walker.nextNode()) {
                 const text = textNode.textContent;
-                const wordRegex = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
-                const match = text.match(wordRegex);
+                const wordRegex = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+                let match;
                 
-                if (match) {
+                // Find all matches in this text node
+                while ((match = wordRegex.exec(text)) !== null) {
                     const matchedWord = match[0];
-                    const startIndex = text.indexOf(matchedWord);
+                    const startIndex = match.index;
                     
-                    if (startIndex >= 0) {
-                        // Split the text node and wrap the word in a span
-                        const beforeText = text.substring(0, startIndex);
-                        const afterText = text.substring(startIndex + matchedWord.length);
+                    // Create a temporary range to get position
+                    const range = document.createRange();
+                    try {
+                        range.setStart(textNode, startIndex);
+                        range.setEnd(textNode, startIndex + matchedWord.length);
+                        const rect = range.getBoundingClientRect();
                         
-                        const parent = textNode.parentNode;
+                        // Prefer words that are closer to current scroll position (reading flow)
+                        const elementY = rect.top + currentScrollY;
+                        const distance = Math.abs(elementY - currentScrollY);
                         
-                        // Create the scaled word span
-                        const wordSpan = document.createElement('span');
-                        wordSpan.className = 'gist-tts-scaled-word';
-                        wordSpan.textContent = matchedWord;
-                        wordSpan.style.cssText = `
-                            display: inline-block !important;
-                            transform: scale(1.15) !important;
-                            transition: transform 0.3s ease !important;
-                            color: #1565C0 !important;
-                            font-weight: 600 !important;
-                            text-shadow: 0 0 2px rgba(21, 101, 192, 0.3) !important;
-                        `;
-                        
-                        // Replace the text node with the new structure
-                        if (beforeText) {
-                            const beforeNode = document.createTextNode(beforeText);
-                            parent.insertBefore(beforeNode, textNode);
+                        // Prefer words that are visible and closer to the top of viewport
+                        if (rect.height > 0 && rect.width > 0 && distance < bestDistance) {
+                            bestMatch = {
+                                textNode: textNode,
+                                matchedWord: matchedWord,
+                                startIndex: startIndex,
+                                distance: distance
+                            };
+                            bestDistance = distance;
                         }
-                        
-                        parent.insertBefore(wordSpan, textNode);
-                        
-                        if (afterText) {
-                            textNode.textContent = afterText;
-                        } else {
-                            parent.removeChild(textNode);
-                        }
-                        
-                        // Store for cleanup
-                        ttsState.highlights.push({
-                            type: 'scaled',
-                            element: wordSpan,
-                            originalText: matchedWord,
-                            parent: parent,
-                            beforeText: beforeText,
-                            afterText: afterText
-                        });
-                        
-                        // Auto-reset after delay
-                        setTimeout(() => {
-                            resetWordScaling(wordSpan, matchedWord, parent, beforeText, afterText);
-                        }, 1000);
-                        
-                        return wordSpan;
+                    } catch (e) {
+                        // Skip invalid ranges
+                        continue;
                     }
                 }
             }
+            
+            // Scale the best match if found
+            if (bestMatch) {
+                const { textNode, matchedWord, startIndex } = bestMatch;
+                const text = textNode.textContent;
+                const beforeText = text.substring(0, startIndex);
+                const afterText = text.substring(startIndex + matchedWord.length);
+                
+                const parent = textNode.parentNode;
+                
+                // Create the scaled word span with padding
+                const wordSpan = document.createElement('span');
+                wordSpan.className = 'gist-tts-scaled-word';
+                wordSpan.textContent = matchedWord;
+                wordSpan.style.cssText = `
+                    display: inline-block !important;
+                    transform: scale(1.15) !important;
+                    transition: transform 0.3s ease !important;
+                    color: #1565C0 !important;
+                    font-weight: 600 !important;
+                    text-shadow: 0 0 2px rgba(21, 101, 192, 0.3) !important;
+                    margin: 0 3px !important;
+                    padding: 0 2px !important;
+                `;
+                
+                // Replace the text node with the new structure
+                if (beforeText) {
+                    const beforeNode = document.createTextNode(beforeText);
+                    parent.insertBefore(beforeNode, textNode);
+                }
+                
+                parent.insertBefore(wordSpan, textNode);
+                
+                if (afterText) {
+                    textNode.textContent = afterText;
+                } else {
+                    parent.removeChild(textNode);
+                }
+                
+                // Store for cleanup
+                ttsState.highlights.push({
+                    type: 'scaled',
+                    element: wordSpan,
+                    originalText: matchedWord,
+                    parent: parent,
+                    beforeText: beforeText,
+                    afterText: afterText
+                });
+                
+                // Auto-reset after delay
+                setTimeout(() => {
+                    resetWordScaling(wordSpan, matchedWord, parent, beforeText, afterText);
+                }, 1000);
+                
+                return wordSpan;
+            }
+            
             return null;
         }
         
