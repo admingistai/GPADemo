@@ -4950,9 +4950,9 @@ Instructions:
                 const queueItem = ttsState.wordQueue[i];
                 
                 if (queueItem.word.toLowerCase() === cleanTarget) {
-                    // Found the word! Highlight it and advance queue position
+                    // Found the word! Underline it and advance queue position
                     ttsState.currentQueueIndex = i + 1; // Move past this word
-                    scaleWordAtLocation(queueItem);
+                    underlineWordAtLocation(queueItem);
                     return true;
                 }
             }
@@ -4962,7 +4962,7 @@ Instructions:
             return false;
         }
         
-        function scaleWordAtLocation(queueItem) {
+        function underlineWordAtLocation(queueItem) {
             const { word, textNode, startIndex } = queueItem;
             const text = textNode.textContent;
             const beforeText = text.substring(0, startIndex);
@@ -4970,19 +4970,16 @@ Instructions:
             
             const parent = textNode.parentNode;
             
-            // Create the scaled word span
+            // Create the underlined word span
             const wordSpan = document.createElement('span');
-            wordSpan.className = 'gist-tts-scaled-word';
+            wordSpan.className = 'gist-tts-underlined-word';
             wordSpan.textContent = word;
             wordSpan.style.cssText = `
-                display: inline-block !important;
-                transform: scale(1.15) !important;
-                transition: transform 0.3s ease !important;
-                color: #1565C0 !important;
-                font-weight: 600 !important;
-                text-shadow: 0 0 2px rgba(21, 101, 192, 0.3) !important;
-                margin: 0 3px !important;
-                padding: 0 2px !important;
+                text-decoration: underline !important;
+                text-decoration-color: #1565C0 !important;
+                text-decoration-thickness: 2px !important;
+                text-underline-offset: 2px !important;
+                transition: all 0.3s ease !important;
             `;
             
             // Replace the text node with the new structure
@@ -5001,7 +4998,7 @@ Instructions:
             
             // Store for cleanup
             ttsState.highlights.push({
-                type: 'scaled',
+                type: 'underlined',
                 element: wordSpan,
                 originalText: word,
                 parent: parent,
@@ -5018,13 +5015,13 @@ Instructions:
             
             // Auto-reset after delay
             setTimeout(() => {
-                resetWordScaling(wordSpan, word, parent, beforeText, afterText);
-            }, 1000);
+                resetWordUnderline(wordSpan, word, parent, beforeText, afterText);
+            }, 800);
             
             return wordSpan;
         }
         
-        function resetWordScaling(wordSpan, originalText, parent, beforeText, afterText) {
+        function resetWordUnderline(wordSpan, originalText, parent, beforeText, afterText) {
             if (wordSpan && wordSpan.parentNode) {
                 // Create a single text node with all the text
                 const fullText = (beforeText || '') + originalText + (afterText || '');
@@ -5048,10 +5045,10 @@ Instructions:
         }
         
         function clearTextHighlights() {
-            // Reset all scaled words
+            // Reset all underlined words
             ttsState.highlights.forEach(highlight => {
-                if (highlight.type === 'scaled' && highlight.element && highlight.element.parentNode) {
-                    resetWordScaling(
+                if (highlight.type === 'underlined' && highlight.element && highlight.element.parentNode) {
+                    resetWordUnderline(
                         highlight.element, 
                         highlight.originalText, 
                         highlight.parent, 
