@@ -46,6 +46,9 @@ export default function Home() {
           {/* Hero Section */}
           <section className="hero">
             <div className="hero-content">
+              <div className="logo-section">
+                <img src="/gist-logo.png" alt="Gist Logo" className="hero-logo" />
+              </div>
               <h1>Create an AI Companion for Your Content—in Seconds</h1>
               <p className="hero-subtitle">
                 <strong>Paste any article, blog, or homepage URL below.</strong><br />
@@ -222,26 +225,36 @@ export default function Home() {
           justify-content: center;
         }
 
-        .hero-content {
-          max-width: 800px;
-          width: 100%;
-        }
+                 .hero-content {
+           max-width: 800px;
+           width: 100%;
+         }
 
-        .hero h1 {
-          font-size: 3.5rem;
-          font-weight: 700;
-          margin: 0 0 1.5rem 0;
-          letter-spacing: -0.02em;
-        }
+         .logo-section {
+           margin-bottom: 2rem;
+         }
 
-        .hero-subtitle {
-          font-size: 1.25rem;
-          margin: 0 0 3rem 0;
-          opacity: 0.95;
-          max-width: 600px;
-          margin-left: auto;
-          margin-right: auto;
-        }
+         .hero-logo {
+           height: 60px;
+           width: auto;
+         }
+
+         .hero h1 {
+           font-size: 3.5rem;
+           font-weight: 700;
+           margin: 0 0 1.5rem 0;
+           letter-spacing: -0.02em;
+         }
+
+         .hero-subtitle {
+           font-size: 1.25rem;
+           margin: 0 0 3rem 0;
+           opacity: 0.98;
+           max-width: 600px;
+           margin-left: auto;
+           margin-right: auto;
+           color: #ffffff;
+         }
 
         .url-input-section {
           margin-top: 2rem;
@@ -317,24 +330,25 @@ export default function Home() {
           color: #1a202c;
         }
 
-        blockquote {
-          font-size: 1.5rem;
-          font-style: italic;
-          text-align: center;
-          margin: 0;
-          color: #4a5568;
-          max-width: 800px;
-          margin: 0 auto;
-          line-height: 1.7;
-        }
+                 blockquote {
+           font-size: 1.5rem;
+           font-style: italic;
+           text-align: center;
+           margin: 0;
+           color: #1a202c;
+           max-width: 800px;
+           margin: 0 auto;
+           line-height: 1.7;
+         }
 
-        cite {
-          display: block;
-          margin-top: 1.5rem;
-          font-style: normal;
-          color: #2d3748;
-          font-size: 1.1rem;
-        }
+         cite {
+           display: block;
+           margin-top: 1.5rem;
+           font-style: normal;
+           color: #4B66FF;
+           font-size: 1.1rem;
+           font-weight: 600;
+         }
 
         /* How It Works Section */
         .how-it-works {
@@ -387,41 +401,42 @@ export default function Home() {
           font-size: 1.25rem;
         }
 
-        .step-content p {
-          margin: 0;
-          color: #4a5568;
-        }
+                 .step-content p {
+           margin: 0;
+           color: #2d3748;
+         }
 
-        /* CTA Section */
-        .cta {
-          padding: 4rem 0;
-          background: white;
-          text-align: center;
-        }
+         /* CTA Section */
+         .cta {
+           padding: 4rem 0;
+           background: white;
+           text-align: center;
+         }
 
-        .cta h2 {
-          font-size: 2.5rem;
-          margin: 0 0 1rem 0;
-          color: #1a202c;
-        }
+         .cta h2 {
+           font-size: 2.5rem;
+           margin: 0 0 1rem 0;
+           color: #1a202c;
+         }
 
-        .cta p {
-          font-size: 1.25rem;
-          margin: 0;
-          color: #4a5568;
-        }
+         .cta p {
+           font-size: 1.25rem;
+           margin: 0;
+           color: #2d3748;
+         }
 
-        /* Footer */
-        .footer {
-          background: #2d3748;
-          color: #a0aec0;
-          padding: 2rem 0;
-          text-align: center;
-        }
+                 /* Footer */
+         .footer {
+           background: #1a202c;
+           color: #e2e8f0;
+           padding: 2rem 0;
+           text-align: center;
+         }
 
-        .footer p {
-          margin: 0;
-        }
+         .footer p {
+           margin: 0;
+           font-size: 0.95rem;
+         }
 
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
