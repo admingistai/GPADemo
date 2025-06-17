@@ -43,13 +43,12 @@ export default function URLInputForm({ onSubmit, loading, error }) {
         <label htmlFor="urlInput">Enter Website URL:</label>
         <div className="input-wrapper">
           <input
-            type="url"
+            type="text"
             id="urlInput"
             value={url}
             onChange={handleInputChange}
             placeholder="example.com"
             required
-            pattern=".*"
             maxLength={2048}
             aria-describedby="urlError"
             aria-invalid={!!validationError || !!error}
