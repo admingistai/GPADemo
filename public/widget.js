@@ -2226,81 +2226,7 @@
                     transform: none;
                 }
                 
-                .gist-remix-image-result {
-                    text-align: center;
-                    padding: 20px;
-                    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-                }
-                
-                .gist-remix-image {
-                    max-width: 100%;
-                    border-radius: 12px;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                    margin-bottom: 16px;
-                    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-                }
-                
-                .gist-remix-image-prompt {
-                    font-size: 12px;
-                    color: #6b7280;
-                    font-style: italic;
-                    margin-bottom: 16px;
-                    text-align: left;
-                    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-                }
-                
-                .gist-remix-image-actions {
-                    display: flex;
-                    gap: 8px;
-                    justify-content: center;
-                    margin-bottom: 16px;
-                    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-                }
-                
-                .gist-remix-image-action {
-                    padding: 6px 12px;
-                    background: #f3f4f6;
-                    border: 1px solid #e5e7eb;
-                    border-radius: 6px;
-                    font-size: 12px;
-                    color: #374151;
-                    text-decoration: none;
-                    transition: all 0.2s ease;
-                }
-                
-                .gist-remix-image-action:hover {
-                    background: #e5e7eb;
-                    color: #1f2937;
-                }
-                
-                /* Compact mode adjustments for Remix image result */
-                .gist-answer-container.remix-compact .gist-remix-image-result {
-                    padding: 8px;
-                }
-                
-                .gist-answer-container.remix-compact .gist-remix-image {
-                    border-radius: 8px;
-                    margin-bottom: 6px;
-                    max-height: calc(300px - 70px); /* Leave space for prompt and actions */
-                    width: 100%;
-                    object-fit: cover;
-                }
-                
-                .gist-answer-container.remix-compact .gist-remix-image-prompt {
-                    font-size: 10px;
-                    margin-bottom: 6px;
-                    line-height: 1.2;
-                }
-                
-                .gist-answer-container.remix-compact .gist-remix-image-actions {
-                    gap: 4px;
-                    margin-bottom: 4px;
-                }
-                
-                .gist-answer-container.remix-compact .gist-remix-image-action {
-                    padding: 4px 8px;
-                    font-size: 10px;
-                }
+
                 
                 /* Share Interface Styles */
                 .gist-share-interface {
@@ -4348,9 +4274,7 @@ Instructions:
                 ],
                 format: [
                     { id: 'video', label: 'Video', icon: '🎥' },
-                    { id: 'thumbnail', label: 'Thumbnail', icon: '🖼️' },
                     { id: 'carousel', label: 'Carousel', icon: '🎠' },
-                    { id: 'meme', label: 'Meme', icon: '😂' },
                     { id: 'pdf', label: 'PDF', icon: '📄' },
                     { id: 'audio', label: 'Audio', icon: '🎵' }
                 ]
@@ -4622,14 +4546,8 @@ Instructions:
                     return;
                 }
                 
-                // Check if we need to generate an image
-                const isImageFormat = remixSelections.format === 'meme' || remixSelections.format === 'thumbnail';
-                
-                if (isImageFormat) {
-                    await generateRemixImage(customPrompt, context);
-                } else {
-                    await generateRemixText(customPrompt, context);
-                }
+                // Generate text remix only
+                await generateRemixText(customPrompt, context);
                 
             } catch (error) {
                 log('error', 'Remix generation failed', { error: error.message });
@@ -4709,242 +4627,11 @@ Instructions:
             }));
         }
         
-        async function generateRemixImage(customPrompt, context) {
-            // Build image prompt based on article content and user selections
-            let imagePrompt = '';
-            
-            if (remixSelections.format === 'meme') {
-                imagePrompt = `Create a meme about: ${context.title}. `;
-                
-                // Add tone-specific instructions for memes
-                if (remixSelections.tone === 'funny') {
-                    imagePrompt += 'Make it humorous and entertaining. ';
-                } else if (remixSelections.tone === 'professional') {
-                    imagePrompt += 'Keep it professional but engaging. ';
-                }
-                
-                // Add key points from article (first 200 chars)
-                const shortSummary = context.content.substring(0, 200);
-                imagePrompt += `Key context: ${shortSummary}... `;
-                
-                imagePrompt += 'Style: popular internet meme format, bold text overlay, clear and readable font, high contrast colors.';
-                
-            } else if (remixSelections.format === 'thumbnail') {
-                imagePrompt = `Create a thumbnail image for: ${context.title}. `;
-                
-                // Add tone-specific instructions for thumbnails
-                if (remixSelections.tone === 'funny') {
-                    imagePrompt += 'Make it eye-catching and fun. ';
-                } else if (remixSelections.tone === 'professional') {
-                    imagePrompt += 'Make it professional and polished. ';
-                } else if (remixSelections.tone === 'gist') {
-                    imagePrompt += 'Make it clean and informative. ';
-                }
-                
-                // Add style-specific instructions
-                if (remixSelections.style === 'ugc') {
-                    imagePrompt += 'User-generated content style, casual and authentic. ';
-                } else if (remixSelections.style === 'newscast') {
-                    imagePrompt += 'News broadcast style, formal and structured. ';
-                }
-                
-                const shortSummary = context.content.substring(0, 200);
-                imagePrompt += `Content focus: ${shortSummary}... `;
-                
-                imagePrompt += 'Style: YouTube thumbnail style, vibrant colors, compelling visual elements, professional design.';
-            }
-            
-            // Add custom prompt if provided
-            if (customPrompt) {
-                imagePrompt += ` Additional requirements: ${customPrompt}`;
-            }
-            
-            // Show loading state
-            showLoading();
-            
-            try {
-                // Use DALL-E API to generate image
-                const startTime = Date.now();
-                const imageResponse = await createImageWithDALLE(imagePrompt);
-                const responseTime = Date.now() - startTime;
-                
-                // Show the image result
-                showRemixImageResult(imageResponse.imageUrl, imagePrompt);
-                
-                // Emit analytics event
-                window.dispatchEvent(new CustomEvent('gist-remix-generated', {
-                    detail: {
-                        title: context.title,
-                        customPrompt: customPrompt,
-                        selections: remixSelections,
-                        imageUrl: imageResponse.imageUrl,
-                        prompt: imagePrompt,
-                        responseTime: responseTime,
-                        type: 'image'
-                    }
-                }));
-                
-            } catch (error) {
-                // If image generation fails, fall back to text description
-                log('warn', 'Image generation failed, falling back to text', { error: error.message });
-                
-                const fallbackPrompt = `Describe in detail how to create a ${remixSelections.format} for this article: ${context.title}. Include specific visual elements, text content, and design recommendations.${customPrompt ? ` Additional requirements: ${customPrompt}` : ''}`;
-                
-                const response = await createChatCompletionForGist(fallbackPrompt);
-                showRemixResult(`[Image generation unavailable - here's a detailed description instead]\n\n${response.response}`);
-            }
-        }
+
         
-        async function createImageWithDALLE(prompt) {
-            const requestBody = {
-                prompt: prompt,
-                size: "1024x1024",
-                quality: "standard"
-            };
-            
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), WIDGET_CONFIG.TIMEOUT_MS * 2); // Longer timeout for image generation
-            
-            try {
-                const response = await fetch(WIDGET_CONFIG.IMAGE_API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(requestBody),
-                    signal: controller.signal
-                });
-                
-                clearTimeout(timeoutId);
-                
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
-                }
-                
-                const data = await response.json();
-                
-                // Handle our backend format
-                if (data.imageUrl) {
-                    return {
-                        imageUrl: data.imageUrl
-                    };
-                } else if (data.data && data.data[0] && data.data[0].url) {
-                    // Handle direct OpenAI format (fallback)
-                    return {
-                        imageUrl: data.data[0].url
-                    };
-                } else {
-                    throw new Error('Invalid response format from image API');
-                }
-                
-            } catch (error) {
-                clearTimeout(timeoutId);
-                throw error;
-            }
-        }
+
         
-        function showRemixImageResult(imageUrl, prompt) {
-            const mockAttributions = generateMockAttributions();
-            
-            let html = `
-                <div class="gist-remix-image-result gist-content-entering">
-                    <img src="${imageUrl}" alt="Generated ${remixSelections.format}" class="gist-remix-image" />
-                    <div class="gist-remix-image-prompt">Generated with prompt: "${prompt}"</div>
-                    <div class="gist-remix-image-actions">
-                        <a href="${imageUrl}" target="_blank" class="gist-remix-image-action">View Full Size</a>
-                        <a href="${imageUrl}" download class="gist-remix-image-action">Download</a>
-                    </div>
-                </div>
-            `;
-            
-            // Add attribution section
-            html += `
-                <div class="gist-attributions gist-content-entering gist-stagger-2">
-                    <div class="gist-attributions-title">Sources</div>
-                    <div class="gist-attribution-bar">
-            `;
-            
-            // Add attribution segments
-            for (const attribution of mockAttributions) {
-                const width = attribution.percentage * 100;
-                html += `
-                    <div class="gist-attribution-segment" 
-                         style="width: ${width}%; background-color: ${attribution.color};"
-                         title="${attribution.source}: ${(attribution.percentage * 100).toFixed(1)}%">
-                    </div>
-                `;
-            }
-            
-            html += `
-                    </div>
-                    <div class="gist-attribution-sources">
-            `;
-            
-            // Add source labels
-            for (const attribution of mockAttributions) {
-                html += `
-                    <div class="gist-attribution-source">
-                        <div class="gist-attribution-dot" style="background-color: ${attribution.color};"></div>
-                        <span>${attribution.source} (${(attribution.percentage * 100).toFixed(1)}%)</span>
-                    </div>
-                `;
-            }
-            
-            html += `
-                    </div>
-                    <div class="gist-source-previews">
-            `;
-            
-            // Add source preview cards
-            for (const attribution of mockAttributions) {
-                const formatDate = (date) => {
-                    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                    return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-                };
-                
-                html += `
-                    <div class="gist-source-preview" style="--source-color: ${attribution.color};">
-                        <div class="gist-source-preview-image">
-                            <div class="gist-source-preview-icon">${attribution.icon}</div>
-                        </div>
-                        <div class="gist-source-preview-content">
-                            <div class="gist-source-preview-header">
-                                <div class="gist-source-preview-source">${attribution.source}</div>
-                                <div class="gist-source-preview-date">${formatDate(attribution.date)}</div>
-                            </div>
-                            <div class="gist-source-preview-title">${attribution.title}</div>
-                            <div class="gist-source-preview-description">${attribution.description}</div>
-                        </div>
-                        <div class="gist-source-preview-percentage">${(attribution.percentage * 100).toFixed(0)}%</div>
-                    </div>
-                `;
-            }
-            
-            html += `
-                    </div>
-                </div>
-            `;
-            
-            answerContent.innerHTML = html;
-            hasAnswer = true;
-            
-            // Trigger animations
-            setTimeout(() => {
-                const elements = answerContent.querySelectorAll('.gist-content-entering');
-                elements.forEach(el => {
-                    el.classList.remove('gist-content-entering');
-                    el.classList.add('gist-content-entered');
-                });
-                
-                // Apply text reveal animation to image prompt text
-                const promptText = answerContent.querySelector('.gist-remix-image-prompt');
-                if (promptText) {
-                    applyTextRevealAnimation(promptText);
-                }
-            }, 50);
-        }
+
         
         function showRemixResult(result) {
             const mockAttributions = generateMockAttributions();
