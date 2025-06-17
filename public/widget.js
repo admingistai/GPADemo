@@ -1053,8 +1053,10 @@
                 }
                 
                 .gist-widget.minimized .gist-pill-logo {
-                    opacity: 1;
-                    transform: scale(1) translateX(0);
+                    opacity: 1 !important;
+                    transform: scale(1) translateX(0) !important;
+                    display: block !important;
+                    visibility: visible !important;
                     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 }
                 
@@ -1069,9 +1071,9 @@
                 }
                 
                 .gist-widget.minimized .gist-pill-content {
-                    width: 200px;
+                    width: 240px;
                     justify-content: flex-start;
-                    padding-left: 8px;
+                    padding-left: 12px;
                     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 }
                 
