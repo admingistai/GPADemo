@@ -92,38 +92,38 @@
                     position: fixed;
                     top: 20px;
                     right: 20px;
-                    width: 320px;
+                    width: 240px;
                     font-family: var(--prorata-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
                     background: var(--prorata-bg-color, #ffffff);
-                    border-radius: 16px;
-                    padding: 20px;
-                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+                    border-radius: 12px;
+                    padding: 12px;
+                    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
                     z-index: 9999;
                     max-height: calc(100vh - 40px);
                     overflow-y: auto;
                 }
                 
                 .prorata-widget__header {
-                    font-size: 18px;
+                    font-size: 14px;
                     font-weight: 600;
-                    margin-bottom: 16px;
+                    margin-bottom: 10px;
                     color: var(--prorata-primary-color, #dc2626);
                     text-align: left;
                 }
                 
                 .prorata-widget__questions {
-                    margin-bottom: 20px;
+                    margin-bottom: 12px;
                 }
                 
                 .prorata-widget__question {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    padding: 12px 0;
+                    padding: 8px 0;
                     border-bottom: 1px solid var(--prorata-border-color, #e5e7eb);
                     cursor: pointer;
                     transition: all 0.2s ease;
-                    font-size: 14px;
+                    font-size: 12px;
                     color: var(--prorata-text-color, #374151);
                 }
                 
@@ -137,27 +137,27 @@
                 
                 .prorata-widget__question-text {
                     flex: 1;
-                    line-height: 1.4;
+                    line-height: 1.3;
                 }
                 
                 .prorata-widget__question-arrow {
                     color: #9ca3af;
-                    font-size: 16px;
-                    margin-left: 8px;
+                    font-size: 12px;
+                    margin-left: 6px;
                     flex-shrink: 0;
                 }
                 
                 .prorata-widget__search {
                     position: relative;
-                    margin-bottom: 20px;
+                    margin-bottom: 12px;
                 }
                 
                 .prorata-widget__search-input {
                     width: 100%;
-                    padding: 12px 48px 12px 16px;
+                    padding: 8px 36px 8px 12px;
                     border: 2px solid transparent;
-                    border-radius: 25px;
-                    font-size: 14px;
+                    border-radius: 20px;
+                    font-size: 12px;
                     background: linear-gradient(white, white) padding-box,
                                linear-gradient(90deg, #f59e0b 0%, #8b5cf6 100%) border-box;
                     transition: all 0.2s ease;
@@ -170,26 +170,26 @@
                 }
                 
                 .prorata-widget__search-input:focus {
-                    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+                    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.1);
                 }
                 
                 .prorata-widget__search-button {
                     position: absolute;
-                    right: 6px;
+                    right: 4px;
                     top: 50%;
                     transform: translateY(-50%);
                     background: #000;
                     color: white;
                     border: none;
                     border-radius: 50%;
-                    width: 32px;
-                    height: 32px;
+                    width: 24px;
+                    height: 24px;
                     cursor: pointer;
                     transition: all 0.2s ease;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 16px;
+                    font-size: 12px;
                 }
                 
                 .prorata-widget__search-button:hover {
@@ -199,39 +199,39 @@
                 
                 .prorata-widget__ad {
                     background: var(--prorata-ad-bg, #f9fafb);
-                    border-radius: 12px;
-                    padding: 16px;
+                    border-radius: 8px;
+                    padding: 10px;
                     position: relative;
                 }
                 
                 .prorata-widget__ad-label {
                     position: absolute;
-                    top: 8px;
-                    right: 12px;
-                    font-size: 10px;
+                    top: 6px;
+                    right: 8px;
+                    font-size: 8px;
                     color: #9ca3af;
                     font-weight: 500;
                 }
                 
                 .prorata-widget__ad-content h4 {
-                    font-size: 16px;
+                    font-size: 12px;
                     font-weight: 600;
-                    margin-bottom: 8px;
+                    margin-bottom: 6px;
                     color: var(--prorata-text-color, #111827);
-                    line-height: 1.3;
+                    line-height: 1.2;
                 }
                 
                 .prorata-widget__ad-content p {
-                    font-size: 13px;
+                    font-size: 10px;
                     color: var(--prorata-text-color, #374151);
-                    margin-bottom: 12px;
-                    line-height: 1.4;
+                    margin-bottom: 8px;
+                    line-height: 1.3;
                 }
                 
                 .prorata-widget__ad-content a {
                     color: var(--prorata-text-color, #111827);
                     text-decoration: underline;
-                    font-size: 13px;
+                    font-size: 10px;
                     font-weight: 500;
                 }
                 
@@ -240,23 +240,23 @@
                 }
                 
                 .prorata-widget__answer {
-                    padding: 16px;
+                    padding: 10px;
                     background: var(--prorata-answer-bg, #f0f9ff);
                     border: 1px solid var(--prorata-answer-border, #0ea5e9);
-                    border-radius: 12px;
-                    margin-bottom: 16px;
+                    border-radius: 8px;
+                    margin-bottom: 10px;
                 }
                 
                 .prorata-widget__answer h3 {
-                    font-size: 14px;
+                    font-size: 11px;
                     font-weight: 600;
-                    margin-bottom: 8px;
+                    margin-bottom: 6px;
                     color: var(--prorata-primary-color, #0ea5e9);
                 }
                 
                 .prorata-widget__answer p {
-                    font-size: 13px;
-                    line-height: 1.5;
+                    font-size: 10px;
+                    line-height: 1.4;
                     color: var(--prorata-text-color, #374151);
                 }
                 
@@ -264,18 +264,18 @@
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    padding: 20px;
+                    padding: 12px;
                     color: #9ca3af;
-                    font-size: 13px;
+                    font-size: 10px;
                 }
                 
                 .prorata-widget__error {
-                    padding: 16px;
+                    padding: 10px;
                     background: #fef2f2;
                     border: 1px solid #fca5a5;
-                    border-radius: 12px;
+                    border-radius: 8px;
                     color: #dc2626;
-                    font-size: 13px;
+                    font-size: 10px;
                     text-align: center;
                 }
                 
