@@ -858,151 +858,6 @@
             h1, h2, h3, h4, h5, h6 {
                 font-family: ${widgetFont} !important;
             }
-            
-            /* Remix Interface Styles */
-            .gist-remix-interface {
-                padding: 24px;
-                color: ${styling.textColor};
-            }
-            
-            .gist-tts-section {
-                margin-bottom: 24px;
-            }
-            
-            .gist-tts-header h3 {
-                margin: 0 0 8px 0;
-                font-size: 18px;
-                font-weight: 600;
-                color: ${styling.textColor};
-            }
-            
-            .gist-tts-header p {
-                margin: 0 0 16px 0;
-                font-size: 14px;
-                color: ${styling.textColor}80;
-            }
-            
-            .gist-section-divider {
-                height: 1px;
-                background: ${styling.primaryColor}20;
-                margin: 24px 0;
-            }
-            
-            .gist-remix-section {
-                margin-top: 24px;
-            }
-            
-            .gist-remix-header h3 {
-                margin: 0 0 8px 0;
-                font-size: 18px;
-                font-weight: 600;
-                color: ${styling.textColor};
-            }
-            
-            .gist-remix-header p {
-                margin: 0 0 20px 0;
-                font-size: 14px;
-                color: ${styling.textColor}80;
-            }
-            
-            .gist-remix-formats {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-                gap: 12px;
-                margin-bottom: 24px;
-            }
-            
-            .gist-remix-format {
-                background: ${styling.backgroundColor};
-                border: 1px solid ${styling.primaryColor}20;
-                border-radius: 12px;
-                padding: 16px;
-                text-align: center;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                font-family: ${widgetFont};
-                min-height: 100px;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-            }
-            
-            .gist-remix-format:hover {
-                border-color: ${styling.primaryColor}40;
-                background: ${styling.primaryColor}05;
-                transform: translateY(-2px);
-            }
-            
-            .gist-remix-format[data-format="text"]:hover {
-                border-color: ${styling.primaryColor};
-                background: ${styling.primaryColor}10;
-            }
-            
-            .gist-remix-format-icon {
-                font-size: 24px;
-                margin-bottom: 8px;
-            }
-            
-            .gist-remix-format-label {
-                font-weight: 600;
-                font-size: 14px;
-                color: ${styling.textColor};
-                margin-bottom: 4px;
-            }
-            
-            .gist-remix-format-desc {
-                font-size: 12px;
-                color: ${styling.textColor}60;
-            }
-            
-            .gist-remix-format[data-format="text"] .gist-remix-format-desc {
-                color: ${styling.primaryColor};
-            }
-            
-            .gist-remix-custom {
-                border-top: 1px solid ${styling.primaryColor}20;
-                padding-top: 20px;
-            }
-            
-            .gist-remix-prompt {
-                width: 100%;
-                padding: 12px;
-                border: 1px solid ${styling.primaryColor}30;
-                border-radius: 8px;
-                background: ${styling.backgroundColor};
-                color: ${styling.textColor};
-                font-family: ${widgetFont};
-                font-size: 14px;
-                resize: vertical;
-                margin-bottom: 12px;
-            }
-            
-            .gist-remix-prompt:focus {
-                outline: none;
-                border-color: ${styling.primaryColor};
-            }
-            
-            .gist-remix-prompt::placeholder {
-                color: ${styling.textColor}60;
-            }
-            
-            .gist-remix-generate {
-                background: ${styling.primaryColor};
-                color: white;
-                border: none;
-                border-radius: 8px;
-                padding: 12px 24px;
-                font-family: ${widgetFont};
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.2s ease;
-            }
-            
-            .gist-remix-generate:hover {
-                background: ${styling.secondaryColor};
-                transform: translateY(-1px);
-            }
                  `;
      }
      
@@ -4405,12 +4260,11 @@ Instructions:
         function showRemixInterface() {
             let html = `
                 <div class="gist-remix-interface gist-content-entering">
-                    <!-- TTS Section at the top -->
                     <div class="gist-tts-section">
                         <div class="gist-tts-header">
                             <h3>🎧 Text to Speech</h3>
                             <p>Listen to this webpage with AI-generated voice</p>
-                        </div>
+                    </div>
                         <button class="gist-tts-button" id="tts-button">
                             <span class="gist-tts-icon">🎵</span>
                             <span class="gist-tts-text">Start Reading</span>
@@ -4421,51 +4275,7 @@ Instructions:
                             <button class="gist-tts-control" id="tts-stop">⏹️ Stop</button>
                         </div>
                         <div class="gist-tts-status" id="tts-status"></div>
-                    </div>
-                    
-                    <!-- Divider -->
-                    <div class="gist-section-divider"></div>
-                    
-                    <!-- Remix Options Section -->
-                    <div class="gist-remix-section">
-                        <div class="gist-remix-header">
-                            <h3>🎨 Remix Content</h3>
-                            <p>Transform this page into different formats</p>
                         </div>
-                        
-                        <div class="gist-remix-formats">
-                            <button class="gist-remix-format" data-format="video">
-                                <div class="gist-remix-format-icon">🎥</div>
-                                <div class="gist-remix-format-label">Video Script</div>
-                                <div class="gist-remix-format-desc">Coming Soon</div>
-                            </button>
-                            
-                            <button class="gist-remix-format" data-format="image">
-                                <div class="gist-remix-format-icon">🖼️</div>
-                                <div class="gist-remix-format-label">Image Prompt</div>
-                                <div class="gist-remix-format-desc">Coming Soon</div>
-                            </button>
-                            
-                            <button class="gist-remix-format" data-format="meme">
-                                <div class="gist-remix-format-icon">😂</div>
-                                <div class="gist-remix-format-label">Meme</div>
-                                <div class="gist-remix-format-desc">Coming Soon</div>
-                            </button>
-                            
-                            <button class="gist-remix-format" data-format="text" onclick="generateRemix('text')">
-                                <div class="gist-remix-format-icon">📝</div>
-                                <div class="gist-remix-format-label">Text Summary</div>
-                                <div class="gist-remix-format-desc">Key points and insights</div>
-                            </button>
-                        </div>
-                        
-                        <div class="gist-remix-custom">
-                            <textarea class="gist-remix-prompt" placeholder="Or describe what you want to create..." rows="3"></textarea>
-                            <button class="gist-remix-generate" onclick="generateRemix('custom')">
-                                Generate
-                            </button>
-                        </div>
-                    </div>
                 </div>
             `;
             
@@ -4496,15 +4306,6 @@ Instructions:
                 stopTextToSpeech(ttsButton, ttsControls, ttsStatus);
             });
             
-            // Add event listeners for remix format buttons (coming soon functionality)
-            const remixButtons = answerContent.querySelectorAll('.gist-remix-format[data-format]:not([data-format="text"])');
-            remixButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    // Show coming soon message
-                    showComingSoonMessage(button.dataset.format);
-                });
-            });
-            
             // Trigger animation
             setTimeout(() => {
                 const elements = answerContent.querySelectorAll('.gist-content-entering');
@@ -4513,38 +4314,6 @@ Instructions:
                     el.classList.add('gist-content-entered');
                 });
             }, 50);
-        }
-        
-        function showComingSoonMessage(format) {
-            // Create a temporary message
-            const message = document.createElement('div');
-            message.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: rgba(0, 0, 0, 0.8);
-                color: white;
-                padding: 20px;
-                border-radius: 8px;
-                z-index: 10000;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                text-align: center;
-            `;
-            message.innerHTML = `
-                <div style="font-size: 18px; margin-bottom: 10px;">🚧</div>
-                <div style="font-weight: 600; margin-bottom: 5px;">${format.charAt(0).toUpperCase() + format.slice(1)} Coming Soon</div>
-                <div style="font-size: 14px; opacity: 0.8;">This feature is in development</div>
-            `;
-            
-            document.body.appendChild(message);
-            
-            // Remove after 2 seconds
-            setTimeout(() => {
-                if (message.parentNode) {
-                    message.parentNode.removeChild(message);
-                }
-            }, 2000);
         }
         
         function showShareInterface() {
@@ -4978,12 +4747,7 @@ Instructions:
                 // Generate speech with ElevenLabs
                 const audioUrl = await generateSpeechWithElevenLabs(textToRead);
                 
-                // Prepare text for highlighting
-                ttsState.words = textToRead.split(/\s+/);
-                ttsState.currentWordIndex = 0;
-                
-                // Build word queue on initialization
-                buildWordQueue(ttsState.words);
+
                 
                 // Create audio element
                 ttsState.currentAudio = new Audio(audioUrl);
@@ -5002,8 +4766,7 @@ Instructions:
                 controls.style.display = 'flex';
                 status.textContent = 'Reading webpage...';
                 
-                // Start highlighting text
-                startTextHighlighting();
+
                 
             } catch (error) {
                 log('error', 'TTS generation failed', { error: error.message });
@@ -5085,179 +4848,13 @@ Instructions:
             });
         }
         
-        function buildWordQueue(ttsWords) {
-            // Create a direct mapping from TTS words to DOM locations
-            ttsState.wordQueue = [];
-            ttsState.currentQueueIndex = 0;
-            
-            // Get all text from the page in reading order
-            const allPageText = extractAllPageText();
-            
-            // Map each TTS word to its exact position in the page text
-            let searchPosition = 0;
-            
-            for (let i = 0; i < ttsWords.length; i++) {
-                const ttsWord = ttsWords[i].toLowerCase().replace(/[^\w]/g, ''); // Clean word
-                
-                // Find this word in the page text starting from our current position
-                const wordLocation = findWordInPageText(allPageText, ttsWord, searchPosition);
-                
-                if (wordLocation) {
-                    ttsState.wordQueue.push(wordLocation);
-                    searchPosition = wordLocation.endPosition + 1; // Move past this word
-                } else {
-                    // If we can't find the word, create a placeholder
-                    ttsState.wordQueue.push(null);
-                    console.log(`Could not map TTS word "${ttsWords[i]}" to page text`);
-                }
-            }
-            
-            console.log(`Mapped ${ttsState.wordQueue.filter(item => item !== null).length} of ${ttsWords.length} TTS words to DOM locations`);
-        }
-        
-        function extractAllPageText() {
-            // Build complete page text with position mapping
-            const textData = [];
-            let cumulativePosition = 0;
-            
-            const walker = document.createTreeWalker(
-                document.body,
-                NodeFilter.SHOW_TEXT,
-                {
-                    acceptNode: function(node) {
-                        const parent = node.parentElement;
-                        if (!parent) return NodeFilter.FILTER_REJECT;
-                        
-                        if (parent.closest('#gist-widget') || 
-                            parent.closest('script') || 
-                            parent.closest('style') ||
-                            parent.closest('noscript')) {
-                            return NodeFilter.FILTER_REJECT;
-                        }
-                        
-                        const style = window.getComputedStyle(parent);
-                        if (style.display === 'none' || style.visibility === 'hidden') {
-                            return NodeFilter.FILTER_REJECT;
-                        }
-                        
-                        return NodeFilter.FILTER_ACCEPT;
-                    }
-                },
-                false
-            );
-            
-            let textNode;
-            while (textNode = walker.nextNode()) {
-                const text = textNode.textContent;
-                const cleanText = text.replace(/\s+/g, ' ').trim();
-                
-                if (cleanText.length > 0) {
-                    textData.push({
-                        textNode: textNode,
-                        text: cleanText,
-                        startPosition: cumulativePosition,
-                        endPosition: cumulativePosition + cleanText.length
-                    });
-                    
-                    cumulativePosition += cleanText.length + 1; // +1 for space between nodes
-                }
-            }
-            
-            return textData;
-        }
-        
-        function findWordInPageText(pageTextData, ttsWord, fromPosition) {
-            // Find the TTS word in the page text starting from the given position
-            const cleanTtsWord = ttsWord.toLowerCase().replace(/[^\w]/g, '');
-            
-            for (const textSegment of pageTextData) {
-                if (textSegment.endPosition < fromPosition) continue; // Skip past segments
-                
-                const segmentText = textSegment.text.toLowerCase();
-                const wordRegex = new RegExp(`\\b${cleanTtsWord}\\b`, 'g');
-                let match;
-                
-                while ((match = wordRegex.exec(segmentText)) !== null) {
-                    const absolutePosition = textSegment.startPosition + match.index;
-                    
-                    if (absolutePosition >= fromPosition) {
-                        // Found the word! Calculate its position in the original text node
-                        const relativePosition = match.index;
-                        const originalText = textSegment.textNode.textContent;
-                        
-                        // Find the actual position in the original (uncleaned) text
-                        const actualMatch = findActualWordPosition(originalText, cleanTtsWord, relativePosition);
-                        
-                        if (actualMatch) {
-                            return {
-                                textNode: textSegment.textNode,
-                                word: actualMatch.word,
-                                startIndex: actualMatch.startIndex,
-                                endIndex: actualMatch.endIndex,
-                                endPosition: absolutePosition + cleanTtsWord.length
-                            };
-                        }
-                    }
-                }
-            }
-            
-            return null;
-        }
-        
-        function findActualWordPosition(originalText, cleanWord, approximatePosition) {
-            // Find the actual word position in the original text
-            const wordRegex = new RegExp(`\\b${cleanWord}\\b`, 'gi');
-            let match;
-            let matchCount = 0;
-            
-            while ((match = wordRegex.exec(originalText)) !== null) {
-                // Use the first match that's reasonable close to our approximate position
-                if (Math.abs(match.index - approximatePosition) < 10) {
-                    return {
-                        word: match[0],
-                        startIndex: match.index,
-                        endIndex: match.index + match[0].length
-                    };
-                }
-                matchCount++;
-            }
-            
-            // If no close match, just use the first occurrence
-            wordRegex.lastIndex = 0; // Reset regex
-            const firstMatch = wordRegex.exec(originalText);
-            if (firstMatch) {
-                return {
-                    word: firstMatch[0],
-                    startIndex: firstMatch.index,
-                    endIndex: firstMatch.index + firstMatch[0].length
-                };
-            }
-            
-            return null;
-        }
-        
-        function startTextHighlighting() {
-            // Highlighting disabled - TTS will play without visual highlighting
-            console.log('TTS playing without highlighting');
-        }
-        
-        function underlineWordAtLocation(wordLocation) {
-            // Highlighting disabled
-        }
-        
-        function clearTextHighlights() {
-            // Highlighting disabled - no cleanup needed
-        }
+
         
         function pauseTextToSpeech() {
             if (ttsState.currentAudio && ttsState.isPlaying) {
                 ttsState.currentAudio.pause();
                 ttsState.isPaused = true;
                 ttsState.isPlaying = false;
-                
-                if (ttsState.highlightInterval) {
-                    clearInterval(ttsState.highlightInterval);
-                }
             }
         }
         
@@ -5266,9 +4863,6 @@ Instructions:
                 ttsState.currentAudio.play();
                 ttsState.isPaused = false;
                 ttsState.isPlaying = true;
-                
-                // Resume highlighting
-                startTextHighlighting();
             }
         }
         
@@ -5279,19 +4873,10 @@ Instructions:
                 ttsState.currentAudio = null;
             }
             
-            // Clear highlighting
-            if (ttsState.highlightInterval) {
-                clearInterval(ttsState.highlightInterval);
-            }
-            clearTextHighlights();
-            
             // Reset state
             ttsState.isPlaying = false;
             ttsState.isPaused = false;
             ttsState.isGenerating = false;
-            ttsState.words = [];
-            ttsState.wordQueue = [];
-            ttsState.currentQueueIndex = 0;
             
             // Reset UI
             button.style.display = 'flex';
