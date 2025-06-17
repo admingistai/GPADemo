@@ -1143,7 +1143,7 @@
                 /* Compact version for Remix tool */
                 .gist-answer-container.remix-compact {
                     width: 400px;
-                    max-height: 300px;
+                    max-height: 350px; /* Increased from 300px to accommodate TTS interface */
                     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 }
                 
@@ -1209,9 +1209,10 @@
                 
                 /* Compact version for Remix tool */
                 .gist-answer-container.remix-compact .gist-answer-content {
-                    max-height: calc(300px - 40px); /* Account for footer height */
+                    max-height: calc(350px - 40px); /* Account for footer height with increased container */
                     padding: 12px;
-                    overflow: hidden; /* Disable scrolling for Remix */
+                    overflow-y: auto; /* Enable scrolling if content is too tall */
+                    overflow-x: hidden;
                 }
                 
                 /* Custom scrollbar styling */
@@ -1914,7 +1915,7 @@
                 }
                 
                 .gist-remix-interface {
-                    padding: 20px;
+                    padding: 16px;
                     background: white;
                     border-radius: 14.5px;
                 }
@@ -2228,39 +2229,44 @@
                 
                 /* Text to Speech Styles */
                 .gist-tts-section {
-                    padding: 20px;
+                    padding: 16px;
                     text-align: center;
                 }
                 
                 .gist-tts-header h3 {
-                    margin: 0 0 8px 0;
-                    font-size: 18px;
+                    margin: 0 0 6px 0;
+                    font-size: 16px;
                     font-weight: 600;
                     color: #1f2937;
                 }
                 
                 .gist-tts-header p {
-                    margin: 0 0 20px 0;
-                    font-size: 14px;
+                    margin: 0 0 16px 0;
+                    font-size: 13px;
                     color: #6b7280;
+                    line-height: 1.4;
                 }
                 
+                .gist-tts-controls-wrapper {
+                    margin-bottom: 12px;
+                }
+
                 .gist-tts-button {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    gap: 8px;
-                    padding: 12px 24px;
+                    gap: 6px;
+                    padding: 10px 20px;
                     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                     color: white;
                     border: none;
                     border-radius: 8px;
-                    font-size: 16px;
+                    font-size: 14px;
                     font-weight: 500;
                     cursor: pointer;
                     transition: all 0.2s ease;
-                    margin: 0 auto 16px auto;
-                    min-width: 140px;
+                    margin: 0 auto 12px auto;
+                    min-width: 120px;
                 }
                 
                 .gist-tts-button:hover {
@@ -2285,19 +2291,20 @@
                 
                 .gist-tts-controls {
                     display: flex;
-                    gap: 8px;
+                    gap: 6px;
                     justify-content: center;
-                    margin-bottom: 16px;
+                    margin-bottom: 8px;
                 }
                 
                 .gist-tts-control {
-                    padding: 8px 12px;
+                    padding: 6px 10px;
                     background: #f3f4f6;
                     border: 1px solid #e5e7eb;
                     border-radius: 6px;
-                    font-size: 12px;
+                    font-size: 11px;
                     cursor: pointer;
                     transition: all 0.2s ease;
+                    font-weight: 500;
                 }
                 
                 .gist-tts-control:hover {
@@ -2305,23 +2312,118 @@
                 }
                 
                 .gist-tts-status {
-                    font-size: 12px;
+                    font-size: 11px;
                     color: #6b7280;
                     font-style: italic;
+                    min-height: 16px;
+                    line-height: 1.3;
+                }
+
+                /* Mobile responsive styles for TTS interface */
+                @media (max-height: 600px) {
+                    .gist-tts-section {
+                        padding: 12px;
+                    }
+                    
+                    .gist-tts-header h3 {
+                        font-size: 15px;
+                        margin-bottom: 4px;
+                    }
+                    
+                    .gist-tts-header p {
+                        font-size: 12px;
+                        margin-bottom: 12px;
+                    }
+                    
+                    .gist-voice-selector {
+                        margin-bottom: 12px;
+                    }
+                    
+                    .gist-tts-button {
+                        padding: 8px 16px;
+                        font-size: 13px;
+                        min-width: 100px;
+                        margin-bottom: 8px;
+                    }
+                    
+                    .gist-tts-controls {
+                        margin-bottom: 6px;
+                    }
+                    
+                    .gist-tts-control {
+                        padding: 5px 8px;
+                        font-size: 10px;
+                    }
+                    
+                    .gist-voice-select {
+                        font-size: 12px;
+                        padding: 6px 8px;
+                    }
+                    
+                    .gist-voice-preview {
+                        min-width: 32px;
+                        height: 30px;
+                        font-size: 13px;
+                        padding: 6px 8px;
+                    }
+                    
+                    /* For very constrained heights, allow taller containers */
+                    .gist-answer-container.remix-compact {
+                        max-height: 280px;
+                    }
+                    
+                    .gist-answer-container.remix-compact .gist-answer-content {
+                        max-height: calc(280px - 40px);
+                    }
+                }
+                
+                /* Extra compact styles for very small heights */
+                @media (max-height: 480px) {
+                    .gist-answer-container.remix-compact {
+                        max-height: 240px;
+                    }
+                    
+                    .gist-answer-container.remix-compact .gist-answer-content {
+                        max-height: calc(240px - 40px);
+                    }
+                    
+                    .gist-tts-section {
+                        padding: 8px;
+                    }
+                    
+                    .gist-tts-header h3 {
+                        font-size: 14px;
+                        margin-bottom: 3px;
+                    }
+                    
+                    .gist-tts-header p {
+                        font-size: 11px;
+                        margin-bottom: 8px;
+                    }
+                    
+                    .gist-voice-selector {
+                        margin-bottom: 8px;
+                        gap: 4px;
+                    }
+                    
+                    .gist-tts-controls-wrapper {
+                        margin-bottom: 6px;
+                    }
                 }
                 
                 .gist-voice-selector {
-                    margin: 0 0 20px 0;
+                    margin: 0 0 16px 0;
                     display: flex;
                     flex-direction: column;
-                    gap: 8px;
+                    gap: 6px;
                 }
                 
                 .gist-voice-label {
-                    font-size: 14px;
+                    font-size: 13px;
                     font-weight: 500;
                     color: #374151;
-                    margin-bottom: 4px;
+                    margin-bottom: 2px;
+                    text-align: left;
                 }
                 
                 .gist-voice-controls {
@@ -2332,11 +2434,11 @@
                 
                 .gist-voice-select {
                     flex: 1;
-                    padding: 8px 12px;
+                    padding: 7px 10px;
                     border: 1px solid #d1d5db;
                     border-radius: 6px;
                     background: white;
-                    font-size: 14px;
+                    font-size: 13px;
                     color: #374151;
                     cursor: pointer;
                     transition: all 0.2s ease;
@@ -2353,15 +2455,15 @@
                 }
                 
                 .gist-voice-preview {
-                    padding: 8px 12px;
+                    padding: 7px 10px;
                     background: #f3f4f6;
                     border: 1px solid #d1d5db;
                     border-radius: 6px;
-                    font-size: 16px;
+                    font-size: 14px;
                     cursor: pointer;
                     transition: all 0.2s ease;
-                    min-width: 44px;
-                    height: 40px;
+                    min-width: 36px;
+                    height: 34px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -3275,11 +3377,21 @@
                 }
             });
             
-            // Handle compact mode for Remix tool
+            // Handle compact mode for Remix tool and auto-enable desktop mode for better space
             if (tool === 'remix') {
                 answerContainer.classList.add('remix-compact');
+                // Auto-enable desktop mode for remix tool to provide more space for TTS interface
+                if (!isDesktopMode && isDesktopDevice()) {
+                    enableDesktopMode();
+                    hasAutoSwitchedToDesktop = true;
+                }
             } else {
                 answerContainer.classList.remove('remix-compact');
+                // Auto-disable desktop mode if we enabled it automatically for remix
+                if (hasAutoSwitchedToDesktop && isDesktopMode) {
+                    disableDesktopMode();
+                    hasAutoSwitchedToDesktop = false;
+                }
             }
             
 
@@ -4340,7 +4452,7 @@ Instructions:
                         </div>
                         
                         <div class="gist-voice-selector">
-                            <label class="gist-voice-label">Choose Voice:</label>
+                            <label class="gist-voice-label">Voice:</label>
                             <div class="gist-voice-controls">
                                 <select class="gist-voice-select" id="voice-select">
                                     ${AVAILABLE_VOICES.map(voice => 
@@ -4355,14 +4467,16 @@ Instructions:
                             </div>
                         </div>
                         
-                        <button class="gist-tts-button" id="tts-button">
-                            <span class="gist-tts-icon">🎵</span>
-                            <span class="gist-tts-text">Start Reading</span>
-                        </button>
-                        <div class="gist-tts-controls" id="tts-controls" style="display: none;">
-                            <button class="gist-tts-control" id="tts-pause">⏸️ Pause</button>
-                            <button class="gist-tts-control" id="tts-resume">▶️ Resume</button>
-                            <button class="gist-tts-control" id="tts-stop">⏹️ Stop</button>
+                        <div class="gist-tts-controls-wrapper">
+                            <button class="gist-tts-button" id="tts-button">
+                                <span class="gist-tts-icon">🎵</span>
+                                <span class="gist-tts-text">Start Reading</span>
+                            </button>
+                            <div class="gist-tts-controls" id="tts-controls" style="display: none;">
+                                <button class="gist-tts-control" id="tts-pause">⏸️ Pause</button>
+                                <button class="gist-tts-control" id="tts-resume">▶️ Resume</button>
+                                <button class="gist-tts-control" id="tts-stop">⏹️ Stop</button>
+                            </div>
                         </div>
                         <div class="gist-tts-status" id="tts-status"></div>
                     </div>
