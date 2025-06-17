@@ -1068,7 +1068,7 @@
                 }
                 
                 .gist-widget.minimized .gist-pill-content {
-                    width: 100px;
+                    width: 130px;
                     justify-content: flex-start;
                     padding-left: 8px;
                     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -5617,7 +5617,7 @@ Make the ad relevant to the article topic but appealing and professional. Use em
         
         async function showExternalAds() {
             // Only show ads if we're in Ask or Gist tool AND have actual content
-            const shouldShowAds = (currentTool === 'ask' || currentTool === 'gist') && hasAnswer;
+            const shouldShowAds = hasAnswer;
             
             if (!shouldShowAds) {
                 return;
