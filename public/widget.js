@@ -4438,6 +4438,10 @@ Instructions:
             });
             
             ttsButton.addEventListener('click', () => {
+                console.log('TTS button clicked!');
+                console.log('Button:', ttsButton);
+                console.log('Controls:', ttsControls);
+                console.log('Status:', ttsStatus);
                 startTextToSpeech(ttsButton, ttsControls, ttsStatus);
             });
             
@@ -4880,14 +4884,21 @@ Instructions:
         ];
         
         async function startTextToSpeech(button, controls, status) {
+            console.log('startTextToSpeech called with:', { button, controls, status });
             try {
                 // Set generating state
                 ttsState.isGenerating = true;
+                console.log('TTS state set to generating');
                 
                 // Update UI
                 button.disabled = true;
-                button.querySelector('.gist-tts-text').textContent = 'Generating...';
+                const buttonSpan = button.querySelector('span');
+                console.log('Button span found:', buttonSpan);
+                if (buttonSpan) {
+                    buttonSpan.textContent = 'Generating...';
+                }
                 status.textContent = 'Extracting webpage content...';
+                console.log('UI updated, extracting page context...');
                 
                 // Extract webpage content
                 const context = extractPageContext();
@@ -4937,7 +4948,7 @@ Instructions:
                 
                 // Reset UI
                 button.disabled = false;
-                button.querySelector('.gist-tts-text').textContent = 'Start Reading';
+                button.querySelector('span').textContent = 'Start Reading';
                 status.textContent = `Error: ${error.message}`;
                 
                 // Hide controls
@@ -5042,7 +5053,7 @@ Instructions:
             // Reset UI
             button.style.display = 'flex';
             button.disabled = false;
-            button.querySelector('.gist-tts-text').textContent = 'Start Reading';
+            button.querySelector('span').textContent = 'Start Reading';
             controls.style.display = 'none';
             status.textContent = '';
         }
