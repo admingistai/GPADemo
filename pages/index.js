@@ -1349,12 +1349,12 @@ export default function Home() {
 
         /* Loading Screen */
         .loading-screen {
-          min-height: 100vh;
+          height: 100vh;
           background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
           background-size: 400% 400%;
           animation: gradientShift 8s ease infinite;
           color: white;
-          padding: 2rem 1rem;
+          padding: 1rem;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1376,25 +1376,27 @@ export default function Home() {
         }
 
         .loading-content {
-          max-width: 500px;
+          max-width: 450px;
           width: 100%;
           text-align: center;
           position: relative;
           z-index: 2;
+          max-height: 90vh;
+          overflow: hidden;
         }
 
         .loading-logo {
-          height: 60px;
+          height: 50px;
           width: auto;
-          margin-bottom: 1.5rem;
+          margin-bottom: 1rem;
           filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
         }
 
         .loading-screen h1 {
           font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-          font-size: 2rem;
+          font-size: 1.8rem;
           font-weight: 700;
-          margin: 0 0 2rem 0;
+          margin: 0 0 1.5rem 0;
           letter-spacing: -0.02em;
           background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 50%, #dbeafe 100%);
           -webkit-background-clip: text;
@@ -1404,18 +1406,20 @@ export default function Home() {
         }
 
         .loading-steps {
-          margin-bottom: 2rem;
+          margin-bottom: 1.5rem;
+          max-height: 40vh;
+          overflow-y: auto;
         }
 
         .loading-step {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 0.8rem;
-          padding: 0.8rem;
-          margin-bottom: 0.4rem;
+          gap: 0.6rem;
+          padding: 0.6rem;
+          margin-bottom: 0.3rem;
           background: rgba(255, 255, 255, 0.1);
-          border-radius: 10px;
+          border-radius: 8px;
           backdrop-filter: blur(10px);
           animation: loadingPulse 2s ease-in-out infinite;
         }
@@ -1438,15 +1442,15 @@ export default function Home() {
         }
 
         .loading-step span {
-          font-size: 1rem;
+          font-size: 0.9rem;
           font-weight: 500;
         }
 
         .loading-bar {
           width: 100%;
-          height: 8px;
+          height: 6px;
           background: rgba(255, 255, 255, 0.2);
-          border-radius: 4px;
+          border-radius: 3px;
           overflow: hidden;
         }
 
@@ -1454,7 +1458,7 @@ export default function Home() {
           width: 100%;
           height: 100%;
           background: linear-gradient(135deg, #4B66FF 0%, #7C3AED 100%);
-          border-radius: 4px;
+          border-radius: 3px;
           animation: loadingProgress 7s ease-out;
         }
 
@@ -1556,11 +1560,12 @@ export default function Home() {
           }
 
                     .feature-selection, .loading-screen {
-            padding: 1.5rem 1rem;
+            padding: 1rem 0.5rem;
           }
 
           .feature-selection h1, .loading-screen h1 {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
           }
 
           .features-grid {
@@ -1612,7 +1617,27 @@ export default function Home() {
           }
 
           .feature-selection h1, .loading-screen h1 {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+          }
+
+          .loading-content {
+            max-height: 85vh;
+          }
+
+          .loading-steps {
+            max-height: 35vh;
+            margin-bottom: 1rem;
+          }
+
+          .loading-step {
+            padding: 0.5rem;
+            gap: 0.5rem;
+            margin-bottom: 0.2rem;
+          }
+
+          .loading-step span {
+            font-size: 0.8rem;
           }
 
           .feature-subtitle {
