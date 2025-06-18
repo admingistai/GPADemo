@@ -6,6 +6,7 @@ class ArticleWidget extends HTMLElement {
     this.response = '';
     this.question = '';
     this.relatedQuestions = [];
+    this.conversationHistory = [];
     this.render();
     this.attachEventListeners();
     this.generateRelatedQuestions();
@@ -137,6 +138,9 @@ class ArticleWidget extends HTMLElement {
           align-items: center;
           justify-content: center;
           font-size: 14px;
+          font-weight: 900;
+          line-height: 1;
+          padding: 0;
         }
 
         .ask-submit-btn:hover {
@@ -151,6 +155,7 @@ class ArticleWidget extends HTMLElement {
           font-size: 0.7rem;
           color: #666;
           padding: 4px 12px 8px 12px;
+          margin: 0 12px;
           border-bottom: 1px solid #d1d5db;
           margin-bottom: 0;
         }
@@ -256,7 +261,7 @@ class ArticleWidget extends HTMLElement {
               placeholder="✦ Ask The Harbor..."
               id="ask-input"
             />
-            <button class="ask-submit-btn" id="ask-submit-btn">↗</button>
+            <button class="ask-submit-btn" id="ask-submit-btn">🡩</button>
           </div>
         </div>
 
@@ -389,7 +394,7 @@ Article Content: ${context.content}`
       questionsList.innerHTML = this.relatedQuestions.map(question => `
         <div class="question-item" data-question="${question}">
           <span class="question-text">${question}</span>
-          <span class="arrow-icon">↗</span>
+          <span class="arrow-icon">→</span>
         </div>
       `).join('');
       
@@ -461,12 +466,15 @@ Instructions:
         responseText = 'Sorry, I couldn\'t process your question right now. Please try again.';
       }
       
-      // Update side panel with response
-      this.updateSidePanelContent(this.question, responseText);
+      // Update the first conversation item with the response (don't add new item)
+      this.conversationHistory[0].answer = responseText;
+      this.updateConversationDisplay();
+      this.updateFollowupSuggestions();
       
     } catch (error) {
       console.error('Error asking question:', error);
-      this.updateSidePanelContent(this.question, 'There was an error processing your question. Please try again.');
+      this.conversationHistory[0].answer = 'There was an error processing your question. Please try again.';
+      this.updateConversationDisplay();
     }
   }
 
@@ -556,6 +564,7 @@ Instructions:
           font-size: 0.9rem;
           line-height: 1.6;
           color: #333;
+          padding-bottom: 0;
         }
 
         .harbor-question-display {
@@ -563,6 +572,10 @@ Instructions:
           padding: 12px 16px;
           border-radius: 8px;
           margin-bottom: 20px;
+          margin-left: auto;
+          margin-right: 0;
+          max-width: 85%;
+          text-align: left;
         }
 
         .harbor-question-label {
@@ -580,23 +593,128 @@ Instructions:
           font-weight: 600;
         }
 
-        .harbor-answer-content {
-          font-family: Georgia, 'Times New Roman', serif;
-        }
+                 .harbor-answer-content {
+           font-family: Georgia, 'Times New Roman', serif;
+           text-align: left;
+           margin-left: 0;
+           margin-right: auto;
+           max-width: 85%;
+         }
 
-        @media (max-width: 1024px) {
-          #harbor-side-panel {
-            width: 50vw;
-            min-width: 350px;
-          }
-        }
+         .conversation-item {
+           margin-bottom: 24px;
+         }
 
-        @media (max-width: 768px) {
-          #harbor-side-panel {
-            width: 100vw;
-            min-width: 100vw;
-          }
-        }
+         .conversation-item:last-child {
+           margin-bottom: 0;
+         }
+
+         .harbor-followup-section {
+           border-top: 1px solid #e5e7eb;
+           padding: 20px;
+           background: #f9fafb;
+         }
+
+         .harbor-followup-input-wrapper {
+           position: relative;
+           display: flex;
+           align-items: center;
+           margin-top: 16px;
+         }
+
+         .harbor-followup-input {
+           width: 100%;
+           padding: 12px 16px;
+           padding-right: 50px;
+           border: 1px solid #d1d5db;
+           border-radius: 8px;
+           font-size: 0.9rem;
+           outline: none;
+           background: white;
+           font-family: Georgia, 'Times New Roman', serif;
+         }
+
+         .harbor-followup-input:focus {
+           border-color: #000;
+           box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+         }
+
+         .harbor-followup-input::placeholder {
+           color: #9ca3af;
+         }
+
+         .harbor-followup-submit {
+           position: absolute;
+           right: 8px;
+           width: 32px;
+           height: 32px;
+           background: #000;
+           border: none;
+           border-radius: 50%;
+           color: white;
+           cursor: pointer;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           font-size: 14px;
+           font-weight: 900;
+           line-height: 1;
+           padding: 0;
+         }
+
+         .harbor-followup-submit:hover {
+           background: #333;
+         }
+
+         .harbor-suggestion-item {
+           display: flex;
+           align-items: center;
+           gap: 12px;
+           padding: 12px 16px;
+           margin-bottom: 8px;
+           background: white;
+           border: 1px solid #e5e7eb;
+           border-radius: 8px;
+           cursor: pointer;
+           transition: background-color 0.2s;
+           text-decoration: none;
+           color: #374151;
+         }
+
+         .harbor-suggestion-item:hover {
+           background: #f3f4f6;
+         }
+
+         .harbor-suggestion-item:last-child {
+           margin-bottom: 0;
+         }
+
+         .harbor-suggestion-text {
+           font-size: 0.85rem;
+           line-height: 1.4;
+           flex: 1;
+           font-weight: 500;
+         }
+
+         .harbor-suggestion-arrow {
+           color: #9ca3af;
+           font-size: 16px;
+           margin-left: auto;
+         }
+
+         @media (max-width: 1024px) {
+           #harbor-side-panel {
+             width: 50vw;
+             min-width: 350px;
+           }
+         }
+
+         @media (max-width: 768px) {
+           #harbor-side-panel {
+             width: 100vw;
+             min-width: 100vw;
+           }
+         }
       </style>
       <div id="harbor-side-panel">
         <div class="harbor-panel-header">
@@ -605,6 +723,19 @@ Instructions:
         </div>
         <div class="harbor-panel-content" id="harbor-panel-content">
           <!-- Question and answer will appear here -->
+        </div>
+        <div class="harbor-followup-section" id="harbor-followup-section">
+          <div id="harbor-suggestions">
+            <!-- Suggestions will be populated here -->
+          </div>
+          <div class="harbor-followup-input-wrapper">
+            <input 
+              class="harbor-followup-input"
+              placeholder="Ask anything..."
+              id="harbor-followup-input"
+            />
+            <button class="harbor-followup-submit" id="harbor-followup-submit">🡩</button>
+          </div>
         </div>
       </div>
     `;
@@ -626,21 +757,31 @@ Instructions:
       }
     });
 
+    // Add followup input event listeners
+    const followupInput = document.getElementById('harbor-followup-input');
+    const followupSubmit = document.getElementById('harbor-followup-submit');
+    
+    followupInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        this.handleFollowupQuestion();
+      }
+    });
+    
+    followupSubmit.addEventListener('click', () => this.handleFollowupQuestion());
+
     return overlay;
   }
 
   openSidePanel(question, answer) {
     const overlay = this.createSidePanel();
     const panel = document.getElementById('harbor-side-panel');
-    const content = document.getElementById('harbor-panel-content');
     
-    content.innerHTML = `
-      <div class="harbor-question-display">
-        <div class="harbor-question-label">Your Question</div>
-        <div class="harbor-question-text-display">${question}</div>
-      </div>
-      <div class="harbor-answer-content">${answer}</div>
-    `;
+    // Initialize conversation history with the first Q&A
+    this.conversationHistory = [{ question, answer }];
+    this.updateConversationDisplay();
+    
+    // Populate suggestions with the first 2 related questions
+    this.updateFollowupSuggestions();
     
     // Force reflow to ensure element is rendered
     overlay.offsetHeight;
@@ -650,16 +791,27 @@ Instructions:
   }
 
   updateSidePanelContent(question, answer) {
+    // Add the new Q&A to conversation history
+    this.conversationHistory.push({ question, answer });
+    this.updateConversationDisplay();
+    
+    // Update suggestions with different questions
+    this.updateFollowupSuggestions();
+  }
+
+  updateConversationDisplay() {
     const content = document.getElementById('harbor-panel-content');
-    if (content) {
-      content.innerHTML = `
+    if (!content) return;
+    
+    content.innerHTML = this.conversationHistory.map((item, index) => `
+      <div class="conversation-item">
         <div class="harbor-question-display">
           <div class="harbor-question-label">Your Question</div>
-          <div class="harbor-question-text-display">${question}</div>
+          <div class="harbor-question-text-display">${item.question}</div>
         </div>
-        <div class="harbor-answer-content">${answer}</div>
-      `;
-    }
+        <div class="harbor-answer-content">${item.answer}</div>
+      </div>
+    `).join('');
   }
 
   closeSidePanel() {
@@ -676,6 +828,105 @@ Instructions:
           overlay.parentNode.removeChild(overlay);
         }
       }, 300);
+    }
+  }
+
+  updateFollowupSuggestions() {
+    const suggestionsContainer = document.getElementById('harbor-suggestions');
+    if (!suggestionsContainer) return;
+    
+    // Use the first 2 related questions as suggestions
+    const suggestions = this.relatedQuestions.slice(0, 2);
+    
+    suggestionsContainer.innerHTML = suggestions.map(question => `
+      <div class="harbor-suggestion-item" data-question="${question}">
+        <span class="harbor-suggestion-text">${question}</span>
+        <span class="harbor-suggestion-arrow">→</span>
+      </div>
+    `).join('');
+    
+    // Add click handlers to suggestions
+    suggestionsContainer.querySelectorAll('.harbor-suggestion-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const question = item.getAttribute('data-question');
+        this.askFollowupQuestion(question);
+      });
+    });
+  }
+
+  async handleFollowupQuestion() {
+    const followupInput = document.getElementById('harbor-followup-input');
+    const question = followupInput.value.trim();
+    
+    if (!question) return;
+    
+    // Clear input
+    followupInput.value = '';
+    
+    this.askFollowupQuestion(question);
+  }
+
+  async askFollowupQuestion(question) {
+    // Add loading state to conversation
+    this.conversationHistory.push({ question, answer: 'Loading...' });
+    this.updateConversationDisplay();
+    
+    try {
+      const context = this.getArticleContext();
+      
+      // Format the request in OpenAI-compatible format
+      const requestBody = {
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "system",
+            content: `You are a helpful AI assistant. You have access to the content of the current webpage the user is viewing. Use this context to provide relevant and accurate answers about the content, but you can also answer general questions beyond the page content.
+
+Page Title: ${context.title}
+
+Page Content:
+${context.content}
+
+Instructions:
+- When users ask questions related to the page content, reference it directly
+- For questions about specific details in the article, cite the relevant information
+- You can also answer general questions that go beyond the page content
+- Keep responses concise but informative
+- If asked about sources or citations, explain that you're drawing from the current webpage content`
+          },
+          {
+            role: "user",
+            content: question
+          }
+        ],
+        max_tokens: 500
+      };
+      
+      // Call the chat API
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      });
+      
+      let responseText;
+      if (response.ok) {
+        const data = await response.json();
+        responseText = data.response || data.message || data.choices?.[0]?.message?.content || 'I received your question but couldn\'t generate a response.';
+      } else {
+        responseText = 'Sorry, I couldn\'t process your question right now. Please try again.';
+      }
+      
+      // Update the last item in conversation history with the response
+      this.conversationHistory[this.conversationHistory.length - 1].answer = responseText;
+      this.updateConversationDisplay();
+      
+    } catch (error) {
+      console.error('Error asking followup question:', error);
+      this.conversationHistory[this.conversationHistory.length - 1].answer = 'There was an error processing your question. Please try again.';
+      this.updateConversationDisplay();
     }
   }
 
