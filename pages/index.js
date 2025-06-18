@@ -1489,11 +1489,20 @@ export default function Home() {
           overflow: hidden;
         }
 
+        .loading-screen .logo-section {
+          margin-bottom: 1rem;
+          animation: none;
+          opacity: 1;
+          transform: none;
+        }
+
         .loading-logo {
           height: 80px;
           width: auto;
           margin-bottom: 1rem;
           filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3)) drop-shadow(0 0 20px rgba(0,0,0,0.8)) drop-shadow(0 0 40px rgba(0,0,0,0.6));
+          display: block;
+          opacity: 1;
         }
 
         .loading-screen h1 {
