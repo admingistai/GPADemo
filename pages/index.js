@@ -118,14 +118,6 @@ export default function Home() {
                 className="publishers-image"
               />
             </div>
-            
-            <div className="bottom-cta">
-              <span className="cta-text">Go ahead. Ask Anything. We dare you.</span>
-              <button className="ask-anything-btn">
-                <span className="google-icon">G</span>
-                Ask Anything
-              </button>
-            </div>
           </footer>
         </div>
       )}
@@ -312,14 +304,21 @@ export default function Home() {
           max-width: 100%;
           height: auto;
           margin: 2rem 0;
+          display: block;
         }
 
         .publishers-message {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
           font-size: 1.5rem;
           font-weight: 400;
           color: white;
-          margin: 2rem 0;
           font-family: 'Inter', sans-serif;
+          z-index: 10;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+          white-space: nowrap;
         }
 
         .bottom-cta {
