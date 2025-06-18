@@ -14,6 +14,11 @@
             line-height: 1.6;
         }
         
+        .page-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
         .content-container {
             display: flex;
             gap: 40px;
@@ -26,7 +31,7 @@
         }
         
         .widget-panel {
-            flex: 0 0 400px;
+            flex: 0 0 300px;
             min-height: 500px;
             position: sticky;
             top: 160px;
@@ -138,9 +143,10 @@
     </header>
 
     <main class="article-page">
-        <a href="index.html" class="back-link">← Back to Front Page</a>
-        
-        <div class="content-container">
+        <div class="page-wrapper">
+            <a href="index.html" class="back-link">← Back to Front Page</a>
+            
+            <div class="content-container">
             <div class="article-main">
                 <article>
                     <header class="article-header">
@@ -173,6 +179,7 @@
                 <!-- Widget will be injected here by widget.js -->
             </div>
         </div>
+    </div>
     </main>
 
     <script src="script.js"></script>
