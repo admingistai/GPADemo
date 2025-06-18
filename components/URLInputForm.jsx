@@ -128,8 +128,9 @@ export default function URLInputForm({ onSubmit, loading, error }) {
           position: relative;
           overflow: hidden;
           border-radius: 12px;
-          background: rgba(255, 255, 255, 0.95);
-          backdrop-filter: blur(10px);
+          background: white;
+          border: 2px solid #e5e7eb;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
           transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
         }
 
@@ -152,27 +153,27 @@ export default function URLInputForm({ onSubmit, loading, error }) {
 
         .particle {
           position: absolute;
-          width: 4px;
-          height: 4px;
-          background: radial-gradient(circle, #60a5fa 0%, #3b82f6 50%, transparent 70%);
+          width: 3px;
+          height: 3px;
+          background: radial-gradient(circle, #3b82f6 0%, #1e40af 50%, transparent 70%);
           border-radius: 50%;
-          animation-duration: 3s;
-          animation-timing-function: linear;
+          animation-duration: 4s;
+          animation-timing-function: ease-in-out;
           animation-iteration-count: infinite;
         }
 
-        .particle-1 { animation: float1 3s linear infinite; }
-        .particle-2 { animation: float2 3.2s linear infinite; }
-        .particle-3 { animation: float3 2.8s linear infinite; }
-        .particle-4 { animation: float4 3.5s linear infinite; }
-        .particle-5 { animation: float5 2.9s linear infinite; }
-        .particle-6 { animation: float6 3.3s linear infinite; }
-        .particle-7 { animation: float7 3.1s linear infinite; }
-        .particle-8 { animation: float8 2.7s linear infinite; }
-        .particle-9 { animation: float9 3.4s linear infinite; }
-        .particle-10 { animation: float10 2.6s linear infinite; }
-        .particle-11 { animation: float11 3.6s linear infinite; }
-        .particle-12 { animation: float12 2.5s linear infinite; }
+        .particle-1 { animation: float1 4s ease-in-out infinite; }
+        .particle-2 { animation: float2 4.2s ease-in-out infinite; }
+        .particle-3 { animation: float3 3.8s ease-in-out infinite; }
+        .particle-4 { animation: float4 4.5s ease-in-out infinite; }
+        .particle-5 { animation: float5 3.9s ease-in-out infinite; }
+        .particle-6 { animation: float6 4.3s ease-in-out infinite; }
+        .particle-7 { animation: float7 4.1s ease-in-out infinite; }
+        .particle-8 { animation: float8 3.7s ease-in-out infinite; }
+        .particle-9 { animation: float9 4.4s ease-in-out infinite; }
+        .particle-10 { animation: float10 3.6s ease-in-out infinite; }
+        .particle-11 { animation: float11 4.6s ease-in-out infinite; }
+        .particle-12 { animation: float12 3.5s ease-in-out infinite; }
 
         @keyframes float1 {
           0% { transform: translateY(100%) translateX(10%); opacity: 0; }
@@ -258,71 +259,59 @@ export default function URLInputForm({ onSubmit, loading, error }) {
           100% { transform: translateY(-20%) translateX(10%); opacity: 0; }
         }
 
-        /* Border Glow Effect */
+        /* Subtle Border Glow Effect */
         .border-glow {
           position: absolute;
           top: -2px;
           left: -2px;
           right: -2px;
           bottom: -2px;
-          background: linear-gradient(45deg, #60a5fa, #a855f7, #ec4899, #f59e0b, #60a5fa);
-          background-size: 400% 400%;
+          background: linear-gradient(45deg, #3b82f6, #1d4ed8);
           border-radius: 14px;
           z-index: -1;
           opacity: 0;
-          animation: gradientShift 4s ease infinite;
           transition: opacity 0.3s ease;
         }
 
         .input-wrapper.focused .border-glow {
-          opacity: 0.6;
+          opacity: 0.4;
         }
 
         .input-wrapper.loading .border-glow {
-          opacity: 0.8;
-          animation: gradientShift 2s ease infinite, pulse 1.5s ease-in-out infinite;
+          opacity: 0.6;
+          animation: subtlePulse 2s ease-in-out infinite;
         }
 
-        @keyframes gradientShift {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
+        @keyframes subtlePulse {
+          0%, 100% { 
+            transform: scale(1);
+            opacity: 0.6;
+          }
+          50% { 
+            transform: scale(1.01);
+            opacity: 0.8;
+          }
         }
 
-        @keyframes pulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.02); }
-        }
-
-        /* Gradient Border Animation */
+        /* Ripple Effect */
         .gradient-border {
           position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: conic-gradient(
-            from 0deg,
-            transparent 0deg,
-            #60a5fa 90deg,
-            transparent 180deg,
-            #a855f7 270deg,
-            transparent 360deg
-          );
-          border-radius: 12px;
+          top: 50%;
+          left: 50%;
+          width: 0;
+          height: 0;
+          background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+          border-radius: 50%;
           z-index: -1;
           opacity: 0;
-          animation: rotate 3s linear infinite;
-          transition: opacity 0.3s ease;
+          transition: all 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+          transform: translate(-50%, -50%);
         }
 
         .input-wrapper.focused .gradient-border {
-          opacity: 0.3;
-        }
-
-        @keyframes rotate {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
+          width: 120%;
+          height: 120%;
+          opacity: 1;
         }
 
         /* Input and Button Styling */
@@ -455,23 +444,32 @@ export default function URLInputForm({ onSubmit, loading, error }) {
 
         /* Enhanced Focus State */
         .input-wrapper.focused {
-          transform: scale(1.02);
+          transform: translateY(-2px);
+          border-color: #3b82f6;
           box-shadow: 
-            0 10px 30px rgba(96, 165, 250, 0.2),
-            0 0 0 1px rgba(96, 165, 250, 0.3);
+            0 10px 25px rgba(59, 130, 246, 0.15),
+            0 20px 40px rgba(59, 130, 246, 0.1),
+            0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
         /* Loading State Enhancements */
         .input-wrapper.loading {
+          border-color: #3b82f6;
           animation: loadingPulse 2s ease-in-out infinite;
         }
 
         @keyframes loadingPulse {
           0%, 100% { 
-            box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
+            box-shadow: 
+              0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+              0 2px 4px -1px rgba(0, 0, 0, 0.06),
+              0 0 0 2px rgba(59, 130, 246, 0.3);
           }
           50% { 
-            box-shadow: 0 0 40px rgba(96, 165, 250, 0.6);
+            box-shadow: 
+              0 10px 15px -3px rgba(0, 0, 0, 0.1), 
+              0 4px 6px -2px rgba(0, 0, 0, 0.05),
+              0 0 0 4px rgba(59, 130, 246, 0.4);
           }
         }
 
