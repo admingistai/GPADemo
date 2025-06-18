@@ -253,11 +253,11 @@ export default function Home() {
           right: 0;
           bottom: 0;
           background-image: 
-            radial-gradient(circle at 25% 25%, rgba(255,255,255,0.03) 1px, transparent 1px),
-            radial-gradient(circle at 75% 75%, rgba(255,255,255,0.02) 1px, transparent 1px);
-          background-size: 60px 60px, 40px 40px;
-          background-position: 0 0, 30px 30px;
-          opacity: 0.4;
+            radial-gradient(circle at 25% 25%, rgba(255,255,255,0.08) 2px, transparent 2px),
+            radial-gradient(circle at 75% 75%, rgba(255,255,255,0.06) 1.5px, transparent 1.5px);
+          background-size: 40px 40px, 60px 60px;
+          background-position: 0 0, 20px 20px;
+          opacity: 0.7;
           pointer-events: none;
         }
 
@@ -370,13 +370,13 @@ export default function Home() {
           right: 0;
           bottom: 0;
           background-image: 
-            linear-gradient(45deg, rgba(99, 102, 241, 0.02) 25%, transparent 25%), 
-            linear-gradient(-45deg, rgba(99, 102, 241, 0.02) 25%, transparent 25%), 
-            linear-gradient(45deg, transparent 75%, rgba(139, 92, 246, 0.02) 75%), 
-            linear-gradient(-45deg, transparent 75%, rgba(139, 92, 246, 0.02) 75%);
-          background-size: 50px 50px;
-          background-position: 0 0, 0 25px, 25px -25px, -25px 0px;
-          opacity: 0.3;
+            linear-gradient(45deg, rgba(99, 102, 241, 0.06) 25%, transparent 25%), 
+            linear-gradient(-45deg, rgba(99, 102, 241, 0.06) 25%, transparent 25%), 
+            linear-gradient(45deg, transparent 75%, rgba(139, 92, 246, 0.06) 75%), 
+            linear-gradient(-45deg, transparent 75%, rgba(139, 92, 246, 0.06) 75%);
+          background-size: 30px 30px;
+          background-position: 0 0, 0 15px, 15px -15px, -15px 0px;
+          opacity: 0.6;
           pointer-events: none;
         }
 
@@ -501,11 +501,11 @@ export default function Home() {
           right: 0;
           bottom: 0;
           background-image: 
-            radial-gradient(circle at 40% 40%, rgba(99, 102, 241, 0.015) 2px, transparent 2px),
-            radial-gradient(circle at 60% 60%, rgba(139, 92, 246, 0.015) 1px, transparent 1px);
-          background-size: 70px 70px, 50px 50px;
-          background-position: 0 0, 35px 25px;
-          opacity: 0.5;
+            radial-gradient(circle at 40% 40%, rgba(99, 102, 241, 0.05) 2px, transparent 2px),
+            radial-gradient(circle at 60% 60%, rgba(139, 92, 246, 0.04) 1.5px, transparent 1.5px);
+          background-size: 50px 50px, 40px 40px;
+          background-position: 0 0, 25px 20px;
+          opacity: 0.8;
           pointer-events: none;
         }
 
