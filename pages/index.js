@@ -604,7 +604,7 @@ export default function Home() {
         .hero-logo {
           height: 150px;
           width: auto;
-          filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
+          filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3)) drop-shadow(0 0 20px rgba(0,0,0,0.8)) drop-shadow(0 0 40px rgba(0,0,0,0.6));
           transition: transform 0.3s ease;
         }
 
@@ -1297,7 +1297,7 @@ export default function Home() {
           height: 90px;
           width: auto;
           margin-bottom: 1rem;
-          filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
+          filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3)) drop-shadow(0 0 20px rgba(0,0,0,0.8)) drop-shadow(0 0 40px rgba(0,0,0,0.6));
         }
 
         .feature-selection h1 {
@@ -1493,7 +1493,7 @@ export default function Home() {
           height: 80px;
           width: auto;
           margin-bottom: 1rem;
-          filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
+          filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3)) drop-shadow(0 0 20px rgba(0,0,0,0.8)) drop-shadow(0 0 40px rgba(0,0,0,0.6));
         }
 
         .loading-screen h1 {
