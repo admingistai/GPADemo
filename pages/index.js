@@ -250,7 +250,7 @@ export default function Home() {
           display: flex;
           background: white;
           border-radius: 50px;
-          padding: 4px;
+          padding: 8px;
           margin-bottom: 1rem;
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
           position: relative;
@@ -275,7 +275,7 @@ export default function Home() {
             rgba(255, 0, 200, 0.4), 
             rgba(255, 0, 0, 0.4)
           );
-          border-radius: 54px;
+          border-radius: 58px;
           z-index: -1;
           background-size: 400% 400%;
           animation: rainbow 10s ease infinite;
@@ -293,12 +293,13 @@ export default function Home() {
         .url-input {
           flex: 1;
           border: none;
-          background: transparent;
+          background: white;
           padding: 1rem 1.5rem;
           font-size: 1rem;
           font-family: 'Inter', sans-serif;
           color: #333;
           outline: none;
+          border-radius: 42px;
         }
 
         .url-input::placeholder {
@@ -368,7 +369,25 @@ export default function Home() {
 
         .publishers-logos,
         .publishers-logos-bottom {
-          display: none;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: center;
+          gap: 2rem 3rem;
+          margin-bottom: 2rem;
+          opacity: 0.4;
+        }
+
+        .publishers-logos-bottom {
+          margin-bottom: 3rem;
+        }
+
+        .publisher-name {
+          font-size: 1rem;
+          font-weight: 400;
+          color: white;
+          font-family: 'Inter', sans-serif;
+          white-space: nowrap;
         }
 
         .publishers-message {
@@ -379,13 +398,7 @@ export default function Home() {
           font-family: 'Inter', sans-serif;
           position: relative;
           z-index: 2;
-          background: url('/publishers-logos.png') center center no-repeat;
-          background-size: contain;
           padding: 2rem;
-          min-height: 200px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
         }
 
         .bottom-cta {
