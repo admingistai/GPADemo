@@ -8,6 +8,14 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showWebsite, setShowWebsite] = useState(false);
+  const [showFeatureSelection, setShowFeatureSelection] = useState(false);
+  const [showLoadingScreen, setShowLoadingScreen] = useState(false);
+  const [selectedFeatures, setSelectedFeatures] = useState({
+    ask: true,
+    gist: true,
+    remix: false,
+    share: false
+  });
 
   const handleUrlSubmit = async (url) => {
     try {
@@ -24,9 +32,9 @@ export default function Home() {
         throw new Error(testResult.error || 'Unable to reach the specified website');
       }
 
-      // Instead of showing preview, redirect directly to the website with widget
-      const proxyUrl = `/api/proxy?url=${encodeURIComponent(url)}`;
-      window.open(proxyUrl, '_blank', 'noopener,noreferrer');
+      // Store URL and show feature selection instead of redirecting
+      setTargetUrl(url);
+      setShowFeatureSelection(true);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -37,12 +45,141 @@ export default function Home() {
   const handleRetry = () => {
     setError(null);
     setShowWebsite(false);
+    setShowFeatureSelection(false);
+    setShowLoadingScreen(false);
     setTargetUrl('');
+  };
+
+  const handleFeatureToggle = (feature) => {
+    setSelectedFeatures(prev => ({
+      ...prev,
+      [feature]: !prev[feature]
+    }));
+  };
+
+  const handleGenerateWidget = () => {
+    setShowFeatureSelection(false);
+    setShowLoadingScreen(true);
+    
+    // After 7 seconds, redirect to the actual website
+    setTimeout(() => {
+      const proxyUrl = `/api/proxy?url=${encodeURIComponent(targetUrl)}`;
+      window.open(proxyUrl, '_blank', 'noopener,noreferrer');
+      
+      // Reset state after a brief delay
+      setTimeout(() => {
+        setShowLoadingScreen(false);
+        setTargetUrl('');
+        setSelectedFeatures({
+          ask: true,
+          gist: true,
+          remix: false,
+          share: false
+        });
+      }, 1000);
+    }, 7000);
   };
 
   return (
     <div className="container">
-      {!showWebsite && (
+      {/* Feature Selection Screen */}
+      {showFeatureSelection && (
+        <section className="feature-selection">
+          <div className="feature-selection-content">
+            <div className="logo-section">
+              <img src="/gist-logo.png" alt="Gist Logo" className="feature-logo" />
+            </div>
+            <h1>Customize Your AI Companion</h1>
+            <p className="feature-subtitle">Select the features you'd like to include on your website:</p>
+            
+            <div className="features-grid">
+              <div className={`feature-card ${selectedFeatures.ask ? 'selected' : ''}`} 
+                   onClick={() => handleFeatureToggle('ask')}>
+                <div className="feature-icon">🤖</div>
+                <h3>Ask Anything</h3>
+                <p>Let visitors ask questions about your content and get instant AI-powered answers</p>
+                <div className="toggle-indicator">
+                  {selectedFeatures.ask ? '✓' : '+'}
+                </div>
+              </div>
+              
+              <div className={`feature-card ${selectedFeatures.gist ? 'selected' : ''}`} 
+                   onClick={() => handleFeatureToggle('gist')}>
+                <div className="feature-icon">📝</div>
+                <h3>The Gist</h3>
+                <p>Generate quick summaries and key takeaways from your articles</p>
+                <div className="toggle-indicator">
+                  {selectedFeatures.gist ? '✓' : '+'}
+                </div>
+              </div>
+              
+              <div className={`feature-card ${selectedFeatures.remix ? 'selected' : ''}`} 
+                   onClick={() => handleFeatureToggle('remix')}>
+                <div className="feature-icon">🎨</div>
+                <h3>Remix</h3>
+                <p>Transform content into different formats like social posts, summaries, and more</p>
+                <div className="toggle-indicator">
+                  {selectedFeatures.remix ? '✓' : '+'}
+                </div>
+              </div>
+              
+              <div className={`feature-card ${selectedFeatures.share ? 'selected' : ''}`} 
+                   onClick={() => handleFeatureToggle('share')}>
+                <div className="feature-icon">📤</div>
+                <h3>Share</h3>
+                <p>Enable easy sharing of content and AI-generated insights across platforms</p>
+                <div className="toggle-indicator">
+                  {selectedFeatures.share ? '✓' : '+'}
+                </div>
+              </div>
+            </div>
+            
+            <div className="feature-actions">
+              <button className="btn-secondary" onClick={handleRetry}>
+                ← Back
+              </button>
+              <button className="btn-primary" onClick={handleGenerateWidget}>
+                Generate Widget →
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Loading Screen */}
+      {showLoadingScreen && (
+        <section className="loading-screen">
+          <div className="loading-content">
+            <div className="logo-section">
+              <img src="/gist-logo.png" alt="Gist Logo" className="loading-logo" />
+            </div>
+            <h1>Building Your AI Companion</h1>
+            <div className="loading-steps">
+              <div className="loading-step">
+                <div className="step-icon">⚡</div>
+                <span>Adding Ask Anything...</span>
+              </div>
+              <div className="loading-step">
+                <div className="step-icon">📝</div>
+                <span>Adding The Gist...</span>
+              </div>
+              <div className="loading-step">
+                <div className="step-icon">🎨</div>
+                <span>Adding Remix...</span>
+              </div>
+              <div className="loading-step">
+                <div className="step-icon">🚀</div>
+                <span>Deploying to your website...</span>
+              </div>
+            </div>
+            <div className="loading-bar">
+              <div className="loading-progress"></div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {!showWebsite && !showFeatureSelection && !showLoadingScreen && (
         <>
           {/* Hero Section */}
           <section className="hero">
@@ -926,6 +1063,299 @@ export default function Home() {
            opacity: 0.8;
          }
 
+        /* Feature Selection Screen */
+        .feature-selection {
+          min-height: 100vh;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+          background-size: 400% 400%;
+          animation: gradientShift 8s ease infinite;
+          color: white;
+          padding: 4rem 2rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .feature-selection::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: 
+            radial-gradient(circle at 30% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+          pointer-events: none;
+        }
+
+        .feature-selection-content {
+          max-width: 1000px;
+          width: 100%;
+          text-align: center;
+          position: relative;
+          z-index: 2;
+        }
+
+        .feature-logo {
+          height: 80px;
+          width: auto;
+          margin-bottom: 2rem;
+          filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
+        }
+
+        .feature-selection h1 {
+          font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+          font-size: 2.8rem;
+          font-weight: 700;
+          margin: 0 0 1rem 0;
+          letter-spacing: -0.02em;
+          background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 50%, #dbeafe 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .feature-subtitle {
+          font-size: 1.2rem;
+          margin: 0 0 3rem 0;
+          opacity: 0.95;
+          color: #f8fafc;
+          line-height: 1.6;
+          text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .features-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 2rem;
+          margin-bottom: 3rem;
+        }
+
+        .feature-card {
+          background: rgba(255, 255, 255, 0.15);
+          backdrop-filter: blur(20px);
+          border-radius: 20px;
+          padding: 2rem;
+          text-align: center;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          border: 2px solid rgba(255, 255, 255, 0.2);
+          position: relative;
+        }
+
+        .feature-card:hover {
+          transform: translateY(-5px);
+          background: rgba(255, 255, 255, 0.2);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-card.selected {
+          background: rgba(255, 255, 255, 0.25);
+          border-color: rgba(255, 255, 255, 0.5);
+          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+          font-size: 3rem;
+          margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+          font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+          font-size: 1.4rem;
+          font-weight: 600;
+          margin: 0 0 1rem 0;
+          color: white;
+        }
+
+        .feature-card p {
+          font-size: 1rem;
+          color: rgba(255, 255, 255, 0.9);
+          line-height: 1.5;
+          margin: 0;
+        }
+
+        .toggle-indicator {
+          position: absolute;
+          top: 1rem;
+          right: 1rem;
+          width: 2rem;
+          height: 2rem;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.2);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          transition: all 0.3s ease;
+        }
+
+        .feature-card.selected .toggle-indicator {
+          background: rgba(34, 197, 94, 0.8);
+          color: white;
+        }
+
+        .feature-actions {
+          display: flex;
+          gap: 1.5rem;
+          justify-content: center;
+        }
+
+        .btn-primary, .btn-secondary {
+          padding: 1rem 2.5rem;
+          border-radius: 12px;
+          font-weight: 600;
+          font-size: 1.1rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          border: none;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .btn-primary {
+          background: linear-gradient(135deg, #4B66FF 0%, #7C3AED 100%);
+          color: white;
+          box-shadow: 0 10px 25px rgba(75, 102, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 15px 35px rgba(75, 102, 255, 0.4);
+        }
+
+        .btn-secondary {
+          background: rgba(255, 255, 255, 0.2);
+          color: white;
+          border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+          background: rgba(255, 255, 255, 0.3);
+          transform: translateY(-2px);
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+          min-height: 100vh;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+          background-size: 400% 400%;
+          animation: gradientShift 8s ease infinite;
+          color: white;
+          padding: 4rem 2rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .loading-screen::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: 
+            radial-gradient(circle at 30% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+          pointer-events: none;
+        }
+
+        .loading-content {
+          max-width: 600px;
+          width: 100%;
+          text-align: center;
+          position: relative;
+          z-index: 2;
+        }
+
+        .loading-logo {
+          height: 80px;
+          width: auto;
+          margin-bottom: 2rem;
+          filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
+        }
+
+        .loading-screen h1 {
+          font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+          font-size: 2.5rem;
+          font-weight: 700;
+          margin: 0 0 3rem 0;
+          letter-spacing: -0.02em;
+          background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 50%, #dbeafe 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .loading-steps {
+          margin-bottom: 3rem;
+        }
+
+        .loading-step {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 1rem;
+          padding: 1rem;
+          margin-bottom: 0.5rem;
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 12px;
+          backdrop-filter: blur(10px);
+          animation: loadingPulse 2s ease-in-out infinite;
+        }
+
+        .loading-step:nth-child(2) { animation-delay: 0.5s; }
+        .loading-step:nth-child(3) { animation-delay: 1s; }
+        .loading-step:nth-child(4) { animation-delay: 1.5s; }
+
+        @keyframes loadingPulse {
+          0%, 100% { 
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1);
+          }
+          50% { 
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.02);
+          }
+        }
+
+        .step-icon {
+          font-size: 1.5rem;
+        }
+
+        .loading-step span {
+          font-size: 1.1rem;
+          font-weight: 500;
+        }
+
+        .loading-bar {
+          width: 100%;
+          height: 8px;
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 4px;
+          overflow: hidden;
+        }
+
+        .loading-progress {
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(135deg, #4B66FF 0%, #7C3AED 100%);
+          border-radius: 4px;
+          animation: loadingProgress 7s ease-out;
+        }
+
+        @keyframes loadingProgress {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(0); }
+        }
+
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
           .hero {
@@ -1017,6 +1447,32 @@ export default function Home() {
           .hero-content {
             max-width: 100%;
           }
+
+          .feature-selection, .loading-screen {
+            padding: 3rem 1rem;
+          }
+
+          .feature-selection h1, .loading-screen h1 {
+            font-size: 2.2rem;
+          }
+
+          .features-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+          }
+
+          .feature-card {
+            padding: 1.5rem;
+          }
+
+          .feature-actions {
+            flex-direction: column;
+            gap: 1rem;
+          }
+
+          .btn-primary, .btn-secondary {
+            width: 100%;
+          }
         }
 
         @media (max-width: 480px) {
@@ -1046,6 +1502,26 @@ export default function Home() {
 
           .step-number {
             align-self: center;
+          }
+
+          .feature-selection h1, .loading-screen h1 {
+            font-size: 1.8rem;
+          }
+
+          .feature-subtitle {
+            font-size: 1rem;
+          }
+
+          .feature-icon {
+            font-size: 2.5rem;
+          }
+
+          .feature-card h3 {
+            font-size: 1.2rem;
+          }
+
+          .feature-card p {
+            font-size: 0.9rem;
           }
         }
       `}</style>
