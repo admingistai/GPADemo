@@ -253,12 +253,24 @@ export default function Home() {
           right: 0;
           bottom: 0;
           background-image: 
-            radial-gradient(circle at 25% 25%, rgba(255,255,255,0.08) 2px, transparent 2px),
-            radial-gradient(circle at 75% 75%, rgba(255,255,255,0.06) 1.5px, transparent 1.5px);
-          background-size: 40px 40px, 60px 60px;
-          background-position: 0 0, 20px 20px;
-          opacity: 0.7;
+            linear-gradient(30deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%),
+            linear-gradient(150deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%),
+            radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15) 1px, transparent 2px),
+            radial-gradient(circle at 80% 70%, rgba(255,255,255,0.12) 1px, transparent 2px);
+          background-size: 120px 120px, 80px 80px, 60px 60px, 40px 40px;
+          background-position: 0 0, 40px 40px, 0 0, 20px 20px;
+          opacity: 0.6;
           pointer-events: none;
+          animation: patternMove 20s ease-in-out infinite;
+        }
+
+        @keyframes patternMove {
+          0%, 100% { 
+            background-position: 0 0, 40px 40px, 0 0, 20px 20px; 
+          }
+          50% { 
+            background-position: 30px 30px, 70px 10px, 20px 20px, 40px 0px; 
+          }
         }
 
         @keyframes gradientShift {
@@ -370,14 +382,28 @@ export default function Home() {
           right: 0;
           bottom: 0;
           background-image: 
-            linear-gradient(45deg, rgba(99, 102, 241, 0.06) 25%, transparent 25%), 
-            linear-gradient(-45deg, rgba(99, 102, 241, 0.06) 25%, transparent 25%), 
-            linear-gradient(45deg, transparent 75%, rgba(139, 92, 246, 0.06) 75%), 
-            linear-gradient(-45deg, transparent 75%, rgba(139, 92, 246, 0.06) 75%);
-          background-size: 30px 30px;
-          background-position: 0 0, 0 15px, 15px -15px, -15px 0px;
-          opacity: 0.6;
+            linear-gradient(60deg, rgba(99, 102, 241, 0.08) 2px, transparent 2px),
+            linear-gradient(120deg, rgba(139, 92, 246, 0.06) 1px, transparent 1px),
+            conic-gradient(from 0deg at 50% 50%, 
+              transparent 0deg, 
+              rgba(99, 102, 241, 0.05) 30deg, 
+              transparent 60deg, 
+              rgba(139, 92, 246, 0.05) 90deg, 
+              transparent 120deg);
+          background-size: 80px 80px, 120px 120px, 200px 200px;
+          background-position: 0 0, 40px 40px, 0 0;
+          opacity: 0.7;
           pointer-events: none;
+          animation: featuresPattern 15s linear infinite;
+        }
+
+        @keyframes featuresPattern {
+          0% { 
+            background-position: 0 0, 40px 40px, 0 0; 
+          }
+          100% { 
+            background-position: 80px 80px, 160px 160px, 200px 200px; 
+          }
         }
 
         .features h2 {
@@ -501,12 +527,41 @@ export default function Home() {
           right: 0;
           bottom: 0;
           background-image: 
-            radial-gradient(circle at 40% 40%, rgba(99, 102, 241, 0.05) 2px, transparent 2px),
-            radial-gradient(circle at 60% 60%, rgba(139, 92, 246, 0.04) 1.5px, transparent 1.5px);
-          background-size: 50px 50px, 40px 40px;
-          background-position: 0 0, 25px 20px;
-          opacity: 0.8;
+            repeating-linear-gradient(
+              45deg,
+              transparent,
+              transparent 20px,
+              rgba(99, 102, 241, 0.03) 20px,
+              rgba(99, 102, 241, 0.03) 22px
+            ),
+            repeating-linear-gradient(
+              -45deg,
+              transparent,
+              transparent 30px,
+              rgba(139, 92, 246, 0.02) 30px,
+              rgba(139, 92, 246, 0.02) 31px
+            ),
+            radial-gradient(
+              ellipse at 30% 70%, 
+              rgba(99, 102, 241, 0.08) 0%, 
+              transparent 60%
+            );
+          background-size: 100px 100px, 150px 150px, 300px 200px;
+          opacity: 0.6;
           pointer-events: none;
+          animation: testimonialPattern 25s ease-in-out infinite;
+        }
+
+        @keyframes testimonialPattern {
+          0%, 100% { 
+            transform: translateX(0) translateY(0) rotate(0deg);
+          }
+          33% { 
+            transform: translateX(20px) translateY(-10px) rotate(1deg);
+          }
+          66% { 
+            transform: translateX(-15px) translateY(15px) rotate(-1deg);
+          }
         }
 
         .testimonial h2 {
