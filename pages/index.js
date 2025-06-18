@@ -602,7 +602,7 @@ export default function Home() {
         }
 
         .hero-logo {
-          height: 100px;
+          height: 150px;
           width: auto;
           filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
           transition: transform 0.3s ease;
@@ -1294,7 +1294,7 @@ export default function Home() {
         }
 
         .feature-logo {
-          height: 60px;
+          height: 90px;
           width: auto;
           margin-bottom: 1rem;
           filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
@@ -1490,7 +1490,7 @@ export default function Home() {
         }
 
         .loading-logo {
-          height: 50px;
+          height: 80px;
           width: auto;
           margin-bottom: 1rem;
           filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
@@ -1587,7 +1587,7 @@ export default function Home() {
           }
 
           .hero-logo {
-            height: 80px;
+            height: 120px;
           }
 
           .features h2, .testimonial h2, .how-it-works h2, .cta h2 {
