@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import URLInputForm from '../components/URLInputForm';
 import WebsiteDisplay from '../components/WebsiteDisplay';
 import ErrorDisplay from '../components/ErrorDisplay';
@@ -24,6 +24,77 @@ export default function Home() {
     customAgents: false,
     futureProofing: false
   });
+
+  // Scroll animation effects
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolled = window.pageYOffset;
+      const rate = scrolled * -0.3;
+      
+      // Parallax background effect for hero
+      const hero = document.querySelector('.hero');
+      if (hero) {
+        hero.style.transform = `translateY(${rate}px)`;
+      }
+
+      // Rotate and scale hero logo on scroll
+      const heroLogo = document.querySelector('.hero-logo');
+      if (heroLogo && scrolled < window.innerHeight) {
+        const rotateAmount = scrolled * 0.1;
+        const scaleAmount = 1 + (scrolled * 0.0005);
+        heroLogo.style.transform = `rotate(${rotateAmount}deg) scale(${scaleAmount})`;
+      }
+
+      // Animate elements on scroll
+      const animateOnScroll = document.querySelectorAll('.animate-on-scroll');
+      animateOnScroll.forEach((element) => {
+        const elementTop = element.getBoundingClientRect().top;
+        const elementVisible = 150;
+        
+        if (elementTop < window.innerHeight - elementVisible) {
+          element.classList.add('animate-visible');
+        }
+      });
+
+      // Floating parallax effect for table rows
+      const tableRows = document.querySelectorAll('.table-row');
+      tableRows.forEach((row, index) => {
+        const rowRate = scrolled * (-0.08 - index * 0.015);
+        const rotateRate = scrolled * (0.02 + index * 0.005);
+        row.style.transform = `translateY(${rowRate}px) rotate(${rotateRate}deg)`;
+      });
+
+      // Parallax background patterns
+      const sections = document.querySelectorAll('.features, .testimonial, .how-it-works, .cta');
+      sections.forEach((section, index) => {
+        const sectionRate = scrolled * (0.1 + index * 0.05);
+        if (section.querySelector('::before')) {
+          section.style.backgroundPosition = `${sectionRate}px ${sectionRate * 0.5}px`;
+        }
+      });
+    };
+
+    const handleMouseMove = (e) => {
+      const mouseX = e.clientX / window.innerWidth;
+      const mouseY = e.clientY / window.innerHeight;
+      
+      // Mouse parallax for hero background
+      const hero = document.querySelector('.hero');
+      if (hero) {
+        const moveX = (mouseX - 0.5) * 20;
+        const moveY = (mouseY - 0.5) * 20;
+        hero.style.backgroundPosition = `${50 + moveX}% ${50 + moveY}%`;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('mousemove', handleMouseMove);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [showWebsite, showFeatureSelection, showLoadingScreen]);
 
   const handleUrlSubmit = async (url) => {
     try {
@@ -316,9 +387,9 @@ export default function Home() {
           </section>
 
           {/* Features Section */}
-          <section className="features">
+          <section className="features animate-on-scroll">
             <div className="content-wrapper">
-              <h2>The Ethical AI Advantage That Publishers Are Winning With</h2>
+              <h2 className="animate-on-scroll">The Ethical AI Advantage That Publishers Are Winning With</h2>
               
               <div className="features-table">
                 <div className="table-header">
@@ -385,10 +456,10 @@ export default function Home() {
           </section>
 
           {/* Testimonial Section */}
-          <section className="testimonial">
+          <section className="testimonial animate-on-scroll">
             <div className="content-wrapper">
-              <h2>Publishers Are Already Winning</h2>
-              <blockquote>
+              <h2 className="animate-on-scroll">Publishers Are Already Winning</h2>
+              <blockquote className="animate-on-scroll">
                 "ProRata's ethical AI companion transformed how our readers engage with content. We're seeing 3x longer sessions and 40% more ad revenue—while actually supporting the journalism we depend on."
                 <cite>— <strong>Leading Media Executive</strong></cite>
               </blockquote>
@@ -396,25 +467,25 @@ export default function Home() {
           </section>
 
           {/* How It Works Section */}
-          <section className="how-it-works">
+          <section className="how-it-works animate-on-scroll">
             <div className="content-wrapper">
-              <h2>From Setup to Revenue in Under 5 Minutes</h2>
-              <div className="steps">
-                <div className="step">
+              <h2 className="animate-on-scroll">From Setup to Revenue in Under 5 Minutes</h2>
+              <div className="steps animate-on-scroll">
+                <div className="step animate-on-scroll">
                   <div className="step-number">1</div>
                   <div className="step-content">
                     <h3>Connect Your Content</h3>
                     <p>Upload your content or connect your CMS—we respect your permissions and licensing.</p>
                   </div>
                 </div>
-                <div className="step">
+                <div className="step animate-on-scroll">
                   <div className="step-number">2</div>
                   <div className="step-content">
                     <h3>Launch Your AI Companion</h3>
                     <p>Branded, ethical AI goes live on your site—matches your design, voice, and values.</p>
                   </div>
                 </div>
-                <div className="step">
+                <div className="step animate-on-scroll">
                   <div className="step-number">3</div>
                   <div className="step-content">
                     <h3>Watch Revenue Multiply</h3>
@@ -426,9 +497,9 @@ export default function Home() {
           </section>
 
           {/* CTA Section */}
-          <section className="cta">
+          <section className="cta animate-on-scroll">
             <div className="content-wrapper">
-              <h2>Stop Losing Revenue to AI—Start Earning From It</h2>
+              <h2 className="animate-on-scroll">Stop Losing Revenue to AI—Start Earning From It</h2>
               <p><strong>Test your site above and see the revenue potential</strong> or <strong>book a demo</strong> to see real publisher results.</p>
             </div>
           </section>
@@ -524,6 +595,98 @@ export default function Home() {
           0% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
           100% { background-position: 0% 50%; }
+        }
+
+        /* Scroll Animations */
+        .animate-on-scroll {
+          opacity: 0;
+          transform: translateY(60px) rotateX(10deg);
+          transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          transform-origin: center;
+        }
+
+        .animate-on-scroll.animate-visible {
+          opacity: 1;
+          transform: translateY(0) rotateX(0deg);
+        }
+
+        /* Staggered animation delays for multiple elements */
+        .animate-on-scroll:nth-child(1) { transition-delay: 0.1s; }
+        .animate-on-scroll:nth-child(2) { transition-delay: 0.2s; }
+        .animate-on-scroll:nth-child(3) { transition-delay: 0.3s; }
+        .animate-on-scroll:nth-child(4) { transition-delay: 0.4s; }
+        .animate-on-scroll:nth-child(5) { transition-delay: 0.5s; }
+        .animate-on-scroll:nth-child(6) { transition-delay: 0.6s; }
+        .animate-on-scroll:nth-child(7) { transition-delay: 0.7s; }
+        .animate-on-scroll:nth-child(8) { transition-delay: 0.8s; }
+        .animate-on-scroll:nth-child(9) { transition-delay: 0.9s; }
+
+        /* Parallax effect for hero */
+        .hero {
+          will-change: transform, background-position;
+          position: relative;
+          overflow: hidden;
+          transition: background-position 0.1s ease-out;
+        }
+
+        /* Floating animation for table rows */
+        .table-row {
+          will-change: transform;
+          transition: transform 0.2s ease-out;
+          transform-style: preserve-3d;
+        }
+
+        /* Enhanced hover effects with scroll */
+        .table-row:hover {
+          transform: translateY(-8px) scale(1.02) rotateY(2deg) !important;
+          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        /* Smooth scroll behavior */
+        html {
+          scroll-behavior: smooth;
+        }
+
+        /* 3D perspective for sections */
+        .features, .testimonial, .how-it-works, .cta {
+          perspective: 1000px;
+          transform-style: preserve-3d;
+        }
+
+        /* Logo rotation and scaling */
+        .hero-logo {
+          will-change: transform;
+          transition: transform 0.1s ease-out;
+        }
+
+        /* Background pattern animations */
+        .features::before, .testimonial::before, .how-it-works::before, .cta::before {
+          will-change: background-position;
+          transition: background-position 0.1s ease-out;
+        }
+
+        /* Blur effect on scroll for depth */
+        @media (prefers-reduced-motion: no-preference) {
+          .table-row {
+            filter: blur(0px);
+            transition: filter 0.3s ease;
+          }
+          
+          .table-row:not(:hover) {
+            filter: blur(0.5px);
+          }
+        }
+
+        /* Subtle glow effects */
+        .animate-on-scroll.animate-visible h2 {
+          text-shadow: 0 0 20px rgba(75, 102, 255, 0.3);
+          animation: glowPulse 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glowPulse {
+          from { text-shadow: 0 0 20px rgba(75, 102, 255, 0.3); }
+          to { text-shadow: 0 0 30px rgba(75, 102, 255, 0.5); }
         }
 
                  .hero-content {
@@ -1001,6 +1164,33 @@ export default function Home() {
           flex-shrink: 0;
           box-shadow: 0 8px 25px rgba(75, 102, 255, 0.3);
           position: relative;
+          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+          will-change: transform;
+        }
+
+        .step:hover .step-number {
+          transform: scale(1.15) rotate(10deg);
+          box-shadow: 0 15px 40px rgba(75, 102, 255, 0.5);
+          background: linear-gradient(135deg, #7C3AED 0%, #4B66FF 100%);
+        }
+
+        .step.animate-visible .step-number {
+          animation: bounceIn 0.8s ease-out, pulse 2s infinite 1s;
+        }
+
+        @keyframes bounceIn {
+          0% { 
+            opacity: 0;
+            transform: scale(0.1) rotate(-180deg);
+          }
+          60% { 
+            opacity: 1;
+            transform: scale(1.2) rotate(-10deg);
+          }
+          100% { 
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+          }
         }
 
         .step-number::before {
@@ -1587,7 +1777,7 @@ export default function Home() {
           }
         }
 
-        @media (max-width: 480px) {
+                @media (max-width: 480px) {
           .hero h1 {
             font-size: 2rem;
           }
@@ -1614,6 +1804,9 @@ export default function Home() {
 
           .step-number {
             align-self: center;
+            width: 3rem;
+            height: 3rem;
+            font-size: 1.1rem;
           }
 
           .feature-selection h1, .loading-screen h1 {
@@ -1658,8 +1851,28 @@ export default function Home() {
 
           .features-grid {
             grid-template-columns: 1fr;
-           }
-         }
+          }
+
+          /* Reduced motion for mobile performance */
+          .animate-on-scroll {
+            transform: translateY(30px);
+            transition-duration: 0.6s;
+          }
+
+          /* Simplified parallax on mobile */
+          .table-row:hover {
+            transform: translateY(-4px) scale(1.01) !important;
+          }
+
+          /* Disable complex animations on small screens */
+          @media (prefers-reduced-motion: reduce) {
+            .animate-on-scroll, .step-number, .table-row, .hero-logo {
+              animation: none;
+              transition: none;
+              transform: none !important;
+            }
+          }
+        }
       `}</style>
     </div>
   );
