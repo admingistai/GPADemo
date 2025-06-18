@@ -139,7 +139,7 @@ export default function Home() {
         .app {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           min-height: 100vh;
-          background: radial-gradient(ellipse at center, #2c3e75 0%, #1a252f 100%);
+          background: radial-gradient(ellipse at center, #3742fa 0%, #0c1426 100%);
         }
 
         .landing-page {
@@ -313,11 +313,11 @@ export default function Home() {
           left: 50%;
           transform: translate(-50%, -50%);
           font-size: 1.5rem;
-          font-weight: 400;
+          font-weight: 700;
           color: white;
           font-family: 'Inter', sans-serif;
           z-index: 10;
-          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+          text-shadow: 0 3px 8px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9);
           white-space: nowrap;
         }
 
