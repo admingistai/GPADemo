@@ -90,24 +90,24 @@ export default function Home() {
       const proxyUrl = `/api/proxy?url=${encodeURIComponent(targetUrl)}`;
       window.open(proxyUrl, '_blank', 'noopener,noreferrer');
       
-      setTimeout(() => {
-        setShowLoadingScreen(false);
-        setTargetUrl('');
-        setSelectedFeatures({
-          recommendedQuestions: true,
-          gist: true,
-          askAnything: true,
-          augmentedAnswers: false,
-          goDeeper: false,
-          ethicalAds: false,
-          customVoices: false,
-          remixing: false,
-          addToDaily: false,
-          augmentedSharing: false,
-          customAgents: false,
-          futureProofing: false
-        });
-      }, 1000);
+              setTimeout(() => {
+          setShowLoadingScreen(false);
+          setTargetUrl('');
+          setSelectedFeatures({
+            recommendedQuestions: true,
+            gist: true,
+            askAnything: true,
+            augmentedAnswers: false,
+            goDeeper: false,
+            ethicalAds: false,
+            customVoices: false,
+            remixing: false,
+            addToDaily: false,
+            augmentedSharing: false,
+            customAgents: false,
+            futureProofing: false
+          });
+        }, 1000);
     }, 7000);
   };
 
@@ -127,9 +127,9 @@ export default function Home() {
               {/* Available Features */}
               {[
                 { key: 'askAnything', icon: '🤖', title: 'Ask Anything', desc: 'Site-wide conversational box designed to match your brand, trained on your archive.' },
-                { key: 'gist', icon: '📝', title: 'The Gist', desc: 'One-sentence AI summary of any story; instant context for skimmers.' },
-                { key: 'remixing', icon: '🎨', title: 'Remixing', desc: 'Auto-converts articles into share-ready cards, reels, and threads.' },
-                { key: 'augmentedSharing', icon: '📤', title: 'Augmented Sharing', desc: 'Generates pre-written social posts with backlinks.' }
+                { key: 'gist', icon: '📝', title: 'The Gist', desc: 'One-sentence AI summary of any story; instant context for skimmers; proven to reduce bounce.' },
+                { key: 'remixing', icon: '🎨', title: 'Remixing', desc: 'Auto-converts articles into share-ready cards, reels, and threads; boosts organic reach without extra editing.' },
+                { key: 'augmentedSharing', icon: '📤', title: 'Augmented Sharing', desc: 'Generates pre-written social posts and on-scroll highlights with backlinks; simplifies promotion, tracks attribution.' }
               ].map(feature => (
                 <div key={feature.key} 
                      className={`feature-card ${selectedFeatures[feature.key] ? 'selected' : ''}`} 
@@ -145,10 +145,14 @@ export default function Home() {
 
               {/* Coming Soon Features */}
               {[
-                { key: 'recommendedQuestions', icon: '💡', title: 'Recommended Questions', desc: 'Auto-generates the most asked follow-ups; placed inline to guide exploration.', comingSoon: true },
-                { key: 'augmentedAnswers', icon: '🔗', title: 'Augmented Answers', desc: 'Enriches replies with fully-licensed partner sources; citations included.', comingSoon: true },
-                { key: 'goDeeper', icon: '🔍', title: 'Go Deeper', desc: 'Contextual related articles suggested based on user engagement.', comingSoon: true },
-                { key: 'ethicalAds', icon: '💰', title: 'Earn More with Ethical Ads', desc: 'Revenue-optimized ad placements that respect user privacy.', comingSoon: true }
+                { key: 'recommendedQuestions', icon: '💡', title: 'Recommended Questions', desc: 'Auto-generates the most asked follow-ups; placed inline to guide exploration; lifts page views per visit.', comingSoon: true },
+                { key: 'augmentedAnswers', icon: '🔗', title: 'Augmented Answers', desc: 'Enriches replies with fully-licensed partner sources; citations included; maintains editorial trust.', comingSoon: true },
+                { key: 'goDeeper', icon: '🔍', title: 'Go Deeper', desc: 'One-click expandable sidebars with related articles, data, and media; extends time-on-page.', comingSoon: true },
+                { key: 'ethicalAds', icon: '💰', title: 'Earn More with Ethical Ads', desc: 'Privacy-safe generative ad units matched to content intent; new revenue stream, no user tracking.', comingSoon: true },
+                { key: 'customVoices', icon: '🎭', title: 'Custom Voices & Avatars', desc: 'Branded TTS and 3-D presenter options; consistent tone across text, audio, and video.', comingSoon: true },
+                { key: 'addToDaily', icon: '📅', title: 'Add to "My Daily"', desc: 'Opt-in to a personalized site-wide or network-wide daily digest that pulls your latest pieces into readers\' personalized, customized news feed; drives habitual return traffic and incremental revenue.', comingSoon: true },
+                { key: 'customAgents', icon: '🤖', title: 'Custom Publisher Agents', desc: 'Build task-specific, goal-oriented AI companions (e.g., paywall support, live events); full control over scope, tone, and data.', comingSoon: true },
+                { key: 'futureProofing', icon: '🚀', title: 'Future Proofing', desc: 'One integration spins up an MCP server that: (1) exposes bot-friendly endpoints for GEO/AEO mention boosts, (2) surfaces structured answers search engines favor, and (3) lets trusted third-party AI agents transact safely on-site—opening additive revenue streams while you keep full data control.', comingSoon: true }
               ].map(feature => (
                 <div key={feature.key} 
                      className={`feature-card ${selectedFeatures[feature.key] ? 'selected' : ''} coming-soon`} 
@@ -186,14 +190,18 @@ export default function Home() {
                   .filter(([_, isSelected]) => isSelected)
                   .map(([key, _], index) => {
                     const featureNames = {
-                      askAnything: '🤖 Setting up Ask Anything',
-                      gist: '📝 Configuring The Gist',
-                      remixing: '🎨 Preparing Remixing tools',
-                      augmentedSharing: '📤 Enabling Augmented Sharing',
-                      recommendedQuestions: '💡 Training question generator',
-                      augmentedAnswers: '🔗 Connecting partner sources',
-                      goDeeper: '🔍 Building recommendation engine',
-                      ethicalAds: '💰 Setting up ethical ads'
+                      askAnything: '🤖 Setting up Ask Anything conversational AI',
+                      gist: '📝 Configuring The Gist summary engine',
+                      remixing: '🎨 Preparing content remixing tools',
+                      augmentedSharing: '📤 Enabling augmented sharing features',
+                      recommendedQuestions: '💡 Training question generator AI',
+                      augmentedAnswers: '🔗 Connecting licensed partner sources',
+                      goDeeper: '🔍 Building expandable sidebar engine',
+                      ethicalAds: '💰 Setting up privacy-safe ad units',
+                      customVoices: '🎭 Configuring branded TTS and avatars',
+                      addToDaily: '📅 Creating personalized digest system',
+                      customAgents: '🤖 Building custom publisher agents',
+                      futureProofing: '🚀 Deploying MCP server integration'
                     };
                     return (
                       <div key={key} className="loading-step">
@@ -629,7 +637,7 @@ export default function Home() {
 
         .features-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
           gap: 1.5rem;
           margin-bottom: 3rem;
         }
@@ -643,6 +651,9 @@ export default function Home() {
           transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
           position: relative;
           overflow: hidden;
+          min-height: 180px;
+          display: flex;
+          flex-direction: column;
         }
 
         .feature-card:hover {
@@ -670,12 +681,14 @@ export default function Home() {
           font-weight: 600;
           margin-bottom: 0.75rem;
           color: #1f2937;
+          line-height: 1.3;
         }
 
         .feature-card p {
           color: #6b7280;
           font-size: 0.95rem;
           line-height: 1.5;
+          flex-grow: 1;
         }
 
         .coming-soon-badge {
