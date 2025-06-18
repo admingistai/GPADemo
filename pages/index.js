@@ -59,12 +59,13 @@ export default function Home() {
         }
       });
 
-      // Floating parallax effect for table rows (excluding header)
-      const tableRows = document.querySelectorAll('.table-row:not(.table-header)');
-      tableRows.forEach((row, index) => {
-        const rowRate = scrolled * (-0.03 - index * 0.005);
-        row.style.transform = `translateY(${rowRate}px)`;
-      });
+      // Floating parallax effect for table rows (excluding header and all table elements)
+      // Removed table parallax to prevent positioning issues
+      // const tableRows = document.querySelectorAll('.table-row:not(.table-header)');
+      // tableRows.forEach((row, index) => {
+      //   const rowRate = scrolled * (-0.03 - index * 0.005);
+      //   row.style.transform = `translateY(${rowRate}px)`;
+      // });
 
       // Parallax background patterns
       const sections = document.querySelectorAll('.features, .testimonial, .how-it-works, .cta');
@@ -678,7 +679,7 @@ export default function Home() {
 
         /* Features Section */
         .features {
-          padding: 4rem 0;
+          padding: 3rem 0;
           background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
           position: relative;
           overflow: hidden;
@@ -730,7 +731,7 @@ export default function Home() {
           font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
           font-size: 2.5rem;
           text-align: center;
-          margin: 0 0 3rem 0;
+          margin: 0 0 2rem 0;
           background: linear-gradient(135deg, #1a202c 0%, #4a5568 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -754,6 +755,7 @@ export default function Home() {
           border: 1px solid rgba(255, 255, 255, 0.2);
           display: flex;
           flex-direction: column;
+          transform: none !important;
         }
 
         .table-header {
@@ -781,6 +783,7 @@ export default function Home() {
           position: relative;
           z-index: 1;
           background: white;
+          transform: none !important;
         }
 
         .table-row:hover {
@@ -1855,6 +1858,33 @@ export default function Home() {
         @keyframes glowPulse {
           from { text-shadow: 0 0 20px rgba(75, 102, 255, 0.3); }
           to { text-shadow: 0 0 30px rgba(75, 102, 255, 0.5); }
+        }
+
+        /* Table row specific overrides to prevent movement */
+        .table-row.animate-on-scroll {
+          transform: none !important;
+        }
+
+        .table-row.animate-on-scroll.animate-visible {
+          opacity: 1;
+          transform: none !important;
+        }
+
+        /* Ensure features table stays stable */
+        .features-table {
+          background: rgba(255, 255, 255, 0.9);
+          backdrop-filter: blur(20px);
+          border-radius: 20px;
+          box-shadow: 
+            0 20px 40px rgba(0, 0, 0, 0.1),
+            0 0 0 1px rgba(255, 255, 255, 0.2);
+          overflow: hidden;
+          position: relative;
+          z-index: 2;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          display: flex;
+          flex-direction: column;
+          transform: none !important;
         }
       `}</style>
     </div>
