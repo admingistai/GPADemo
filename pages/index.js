@@ -1052,18 +1052,19 @@ export default function Home() {
         .step-number {
           background: linear-gradient(135deg, #4B66FF 0%, #7C3AED 100%);
           color: white;
-          width: 3.5rem;
-          height: 3.5rem;
+          width: 4rem;
+          height: 4rem;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-weight: 800;
-          font-size: 1.3rem;
+          font-weight: 900;
+          font-size: 1.6rem;
           flex-shrink: 0;
-          box-shadow: 0 8px 25px rgba(75, 102, 255, 0.3);
+          box-shadow: 0 12px 35px rgba(75, 102, 255, 0.5), 0 4px 15px rgba(0, 0, 0, 0.2);
           position: relative;
           transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+          border: 3px solid white;
         }
 
         .step:hover .step-number {
@@ -1656,9 +1657,11 @@ export default function Home() {
           }
 
           .step-number {
-            width: 3rem;
-            height: 3rem;
-            font-size: 1.2rem;
+            width: 3.5rem;
+            height: 3.5rem;
+            font-size: 1.4rem;
+            font-weight: 900;
+            border: 2px solid white;
           }
 
           .content-wrapper {
@@ -1728,9 +1731,11 @@ export default function Home() {
 
           .step-number {
             align-self: center;
-            width: 3rem;
-            height: 3rem;
-            font-size: 1.1rem;
+            width: 3.2rem;
+            height: 3.2rem;
+            font-size: 1.3rem;
+            font-weight: 900;
+            border: 2px solid white;
           }
 
           .feature-selection h1, .loading-screen h1 {
