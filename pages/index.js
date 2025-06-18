@@ -49,10 +49,13 @@ export default function Home() {
       const animateOnScroll = document.querySelectorAll('.animate-on-scroll');
       animateOnScroll.forEach((element) => {
         const elementTop = element.getBoundingClientRect().top;
-        const elementVisible = 150;
+        const elementVisible = 200; // Increased threshold for better timing
         
         if (elementTop < window.innerHeight - elementVisible) {
           element.classList.add('animate-visible');
+        } else {
+          // Optional: Remove class if element goes back out of view (for re-animation)
+          // element.classList.remove('animate-visible');
         }
       });
 
@@ -390,62 +393,62 @@ export default function Home() {
             <div className="content-wrapper">
               <h2 className="animate-on-scroll">The Ethical AI Advantage That Publishers Are Winning With</h2>
               
-              <div className="features-table">
+              <div className="features-table animate-on-scroll">
                 <div className="table-header">
                   <div>Feature</div>
                   <div>What It Does</div>
                   <div>Benefit to You</div>
                 </div>
                 
-                <div className="table-row">
+                <div className="table-row animate-on-scroll">
                   <div className="feature-name"><strong>Ethical AI That Pays You</strong></div>
                   <div>Built on fair licensing agreements that compensate content creators—no stealing, no scraping.</div>
                   <div>Generate revenue from AI interactions while supporting the journalism ecosystem you depend on.</div>
                 </div>
                 
-                <div className="table-row">
+                <div className="table-row animate-on-scroll">
                   <div className="feature-name"><strong>Engagement That Converts to Revenue</strong></div>
                   <div>Turn every reader interaction into monetizable engagement with contextual, brand-safe advertising.</div>
                   <div>3x longer session times mean 3x more ad impressions—all while delivering genuine value to readers.</div>
                 </div>
                 
-                <div className="table-row">
+                <div className="table-row animate-on-scroll">
                   <div className="feature-name"><strong>Publisher Network Power</strong></div>
                   <div>Access premium content from 1000+ licensed publishers to enrich every conversation.</div>
                   <div>Keep readers on your site longer with authoritative answers that cite and link back to quality sources.</div>
                 </div>
                 
-                <div className="table-row">
+                <div className="table-row animate-on-scroll">
                   <div className="feature-name"><strong>Brand-Safe Revenue Multiplication</strong></div>
                   <div>Contextual ads that enhance user experience instead of interrupting it—embedded naturally in AI responses.</div>
                   <div>Generate 40% more revenue per visitor while maintaining editorial integrity and reader trust.</div>
                 </div>
                 
-                <div className="table-row">
+                <div className="table-row animate-on-scroll">
                   <div className="feature-name"><strong>Future-Ready Content Experiences</strong></div>
                   <div>Voice, video, and interactive formats that transform passive readers into active participants.</div>
                   <div>Accessibility features that expand your audience while creating viral, shareable moments that drive organic growth.</div>
                 </div>
                 
-                <div className="table-row">
+                <div className="table-row animate-on-scroll">
                   <div className="feature-name"><strong>Viral Content Engine</strong></div>
                   <div>Automatically generates social media content, newsletters, and video snippets from your articles.</div>
                   <div>Turn one published article into 20+ pieces of engaging content that drive traffic back to your site.</div>
                 </div>
                 
-                <div className="table-row">
+                <div className="table-row animate-on-scroll">
                   <div className="feature-name"><strong>Publisher-First Attribution</strong></div>
                   <div>Every AI response includes transparent source attribution and revenue sharing with original creators.</div>
                   <div>Build trust with readers while supporting quality journalism—differentiate from AI platforms that exploit content.</div>
                 </div>
                 
-                <div className="table-row">
+                <div className="table-row animate-on-scroll">
                   <div className="feature-name"><strong>Revenue-Sharing Network</strong></div>
                   <div>Join a network where quality content creators earn from every AI interaction across the web.</div>
                   <div>50/50 revenue split ensures your best content generates income even when accessed through partner sites.</div>
                 </div>
                 
-                <div className="table-row">
+                <div className="table-row animate-on-scroll">
                   <div className="feature-name"><strong>AI Traffic Monetization</strong></div>
                   <div>Control and profit from AI agent access to your content with intelligent rate limiting and premium tiers.</div>
                   <div>As AI search explodes, you're positioned to capture value instead of watching traffic disappear to ChatGPT and Claude.</div>
@@ -499,7 +502,7 @@ export default function Home() {
           <section className="cta animate-on-scroll">
             <div className="content-wrapper">
               <h2 className="animate-on-scroll">Stop Losing Revenue to AI—Start Earning From It</h2>
-              <p><strong>Test your site above and see the revenue potential</strong> or <strong>book a demo</strong> to see real publisher results.</p>
+              <p className="animate-on-scroll"><strong>Test your site above and see the revenue potential</strong> or <strong>book a demo</strong> to see real publisher results.</p>
             </div>
           </section>
 
@@ -1789,6 +1792,69 @@ export default function Home() {
               transform: none !important;
             }
           }
+        }
+
+        /* Scroll Animations */
+        .animate-on-scroll {
+          opacity: 0;
+          transform: translateY(60px) rotateX(10deg);
+          transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          transform-origin: center;
+        }
+
+        .animate-on-scroll.animate-visible {
+          opacity: 1;
+          transform: translateY(0) rotateX(0deg);
+        }
+
+        /* Staggered animation delays for multiple elements */
+        .animate-on-scroll:nth-child(1) { transition-delay: 0.1s; }
+        .animate-on-scroll:nth-child(2) { transition-delay: 0.2s; }
+        .animate-on-scroll:nth-child(3) { transition-delay: 0.3s; }
+        .animate-on-scroll:nth-child(4) { transition-delay: 0.4s; }
+        .animate-on-scroll:nth-child(5) { transition-delay: 0.5s; }
+        .animate-on-scroll:nth-child(6) { transition-delay: 0.6s; }
+        .animate-on-scroll:nth-child(7) { transition-delay: 0.7s; }
+        .animate-on-scroll:nth-child(8) { transition-delay: 0.8s; }
+        .animate-on-scroll:nth-child(9) { transition-delay: 0.9s; }
+
+        /* Section-specific animations */
+        .features.animate-on-scroll {
+          transform: translateY(80px) scale(0.95);
+        }
+
+        .testimonial.animate-on-scroll {
+          transform: translateY(100px) rotateY(5deg);
+        }
+
+        .how-it-works.animate-on-scroll {
+          transform: translateY(60px) rotateX(-5deg);
+        }
+
+        .cta.animate-on-scroll {
+          transform: translateY(40px) scale(0.98);
+        }
+
+        /* Smooth scroll behavior */
+        html {
+          scroll-behavior: smooth;
+        }
+
+        /* 3D perspective for sections */
+        .features, .testimonial, .how-it-works, .cta {
+          perspective: 1000px;
+          transform-style: preserve-3d;
+        }
+
+        /* Subtle glow effects */
+        .animate-on-scroll.animate-visible h2 {
+          text-shadow: 0 0 20px rgba(75, 102, 255, 0.3);
+          animation: glowPulse 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glowPulse {
+          from { text-shadow: 0 0 20px rgba(75, 102, 255, 0.3); }
+          to { text-shadow: 0 0 30px rgba(75, 102, 255, 0.5); }
         }
       `}</style>
     </div>
