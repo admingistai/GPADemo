@@ -52,7 +52,7 @@ export default function URLInputForm({ onSubmit, loading, error }) {
         <div className={`input-wrapper ${isFocused ? 'focused' : ''} ${loading ? 'loading' : ''}`}>
           {/* Animated background particles */}
           <div className="particles-container">
-            {Array.from({ length: 12 }).map((_, i) => (
+            {Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className={`particle particle-${i + 1}`}></div>
             ))}
           </div>
@@ -127,11 +127,14 @@ export default function URLInputForm({ onSubmit, loading, error }) {
           align-items: stretch;
           position: relative;
           overflow: hidden;
-          border-radius: 12px;
+          border-radius: 16px;
           background: white;
-          border: 2px solid #e5e7eb;
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-          transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+          border: 1px solid #e5e7eb;
+          box-shadow: 
+            0 1px 3px 0 rgba(0, 0, 0, 0.1), 
+            0 1px 2px 0 rgba(0, 0, 0, 0.06);
+          transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          backdrop-filter: blur(8px);
         }
 
         /* Particles Container */
@@ -144,36 +147,33 @@ export default function URLInputForm({ onSubmit, loading, error }) {
           pointer-events: none;
           z-index: 1;
           opacity: 0;
-          transition: opacity 0.4s ease;
+          transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .input-wrapper.focused .particles-container {
-          opacity: 1;
+          opacity: 0.8;
         }
 
         .particle {
           position: absolute;
-          width: 3px;
-          height: 3px;
-          background: radial-gradient(circle, #3b82f6 0%, #1e40af 50%, transparent 70%);
+          width: 2px;
+          height: 2px;
+          background: radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, rgba(59, 130, 246, 0.4) 50%, transparent 80%);
           border-radius: 50%;
-          animation-duration: 4s;
-          animation-timing-function: ease-in-out;
+          animation-duration: 5s;
+          animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
           animation-iteration-count: infinite;
+          will-change: transform, opacity;
         }
 
-        .particle-1 { animation: float1 4s ease-in-out infinite; }
-        .particle-2 { animation: float2 4.2s ease-in-out infinite; }
-        .particle-3 { animation: float3 3.8s ease-in-out infinite; }
-        .particle-4 { animation: float4 4.5s ease-in-out infinite; }
-        .particle-5 { animation: float5 3.9s ease-in-out infinite; }
-        .particle-6 { animation: float6 4.3s ease-in-out infinite; }
-        .particle-7 { animation: float7 4.1s ease-in-out infinite; }
-        .particle-8 { animation: float8 3.7s ease-in-out infinite; }
-        .particle-9 { animation: float9 4.4s ease-in-out infinite; }
-        .particle-10 { animation: float10 3.6s ease-in-out infinite; }
-        .particle-11 { animation: float11 4.6s ease-in-out infinite; }
-        .particle-12 { animation: float12 3.5s ease-in-out infinite; }
+        .particle-1 { animation: float1 5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite; animation-delay: 0s; }
+        .particle-2 { animation: float2 5.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite; animation-delay: 0.3s; }
+        .particle-3 { animation: float3 4.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite; animation-delay: 0.6s; }
+        .particle-4 { animation: float4 5.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite; animation-delay: 0.9s; }
+        .particle-5 { animation: float5 4.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite; animation-delay: 1.2s; }
+        .particle-6 { animation: float6 5.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite; animation-delay: 1.5s; }
+        .particle-7 { animation: float7 5.1s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite; animation-delay: 1.8s; }
+        .particle-8 { animation: float8 4.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite; animation-delay: 2.1s; }
 
         @keyframes float1 {
           0% { transform: translateY(100%) translateX(10%); opacity: 0; }
@@ -262,34 +262,34 @@ export default function URLInputForm({ onSubmit, loading, error }) {
         /* Subtle Border Glow Effect */
         .border-glow {
           position: absolute;
-          top: -2px;
-          left: -2px;
-          right: -2px;
-          bottom: -2px;
-          background: linear-gradient(45deg, #3b82f6, #1d4ed8);
-          border-radius: 14px;
+          top: -1px;
+          left: -1px;
+          right: -1px;
+          bottom: -1px;
+          background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(29, 78, 216, 0.2));
+          border-radius: 17px;
           z-index: -1;
           opacity: 0;
-          transition: opacity 0.3s ease;
+          transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .input-wrapper.focused .border-glow {
-          opacity: 0.4;
+          opacity: 1;
         }
 
         .input-wrapper.loading .border-glow {
-          opacity: 0.6;
-          animation: subtlePulse 2s ease-in-out infinite;
+          opacity: 1;
+          animation: subtlePulse 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
         }
 
         @keyframes subtlePulse {
           0%, 100% { 
             transform: scale(1);
-            opacity: 0.6;
+            opacity: 0.7;
           }
           50% { 
-            transform: scale(1.01);
-            opacity: 0.8;
+            transform: scale(1.005);
+            opacity: 1;
           }
         }
 
@@ -300,37 +300,41 @@ export default function URLInputForm({ onSubmit, loading, error }) {
           left: 50%;
           width: 0;
           height: 0;
-          background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 40%, transparent 70%);
           border-radius: 50%;
-          z-index: -1;
+          z-index: 0;
           opacity: 0;
-          transition: all 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+          transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
           transform: translate(-50%, -50%);
+          pointer-events: none;
         }
 
         .input-wrapper.focused .gradient-border {
-          width: 120%;
-          height: 120%;
+          width: 140%;
+          height: 140%;
           opacity: 1;
         }
 
         /* Input and Button Styling */
         input {
           flex: 1;
-          padding: 0.75rem 1rem;
+          padding: 0.875rem 1.25rem;
           font-size: 1rem;
           border: none;
           background: transparent;
-          border-radius: 6px;
-          transition: all 0.2s;
+          border-radius: 12px;
+          transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
           font-family: inherit;
           position: relative;
-          z-index: 2;
+          z-index: 3;
+          color: #374151;
+          font-weight: 400;
+          letter-spacing: -0.01em;
         }
 
         input:focus {
           outline: none;
-          transform: scale(1.01);
+          transform: none;
         }
 
         input:disabled {
@@ -344,30 +348,33 @@ export default function URLInputForm({ onSubmit, loading, error }) {
 
         input::placeholder {
           color: #9ca3af;
-          transition: color 0.2s ease;
+          transition: color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          font-weight: 400;
         }
 
         .input-wrapper.focused input::placeholder {
-          color: #60a5fa;
+          color: rgba(59, 130, 246, 0.6);
         }
 
         button {
-          padding: 0.75rem 1.5rem;
-          font-size: 1rem;
+          padding: 0.875rem 1.75rem;
+          font-size: 0.95rem;
           font-weight: 600;
           color: white;
-          background: linear-gradient(135deg, #0070f3 0%, #0051cc 100%);
+          background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
           border: none;
-          border-radius: 6px;
+          border-radius: 12px;
           cursor: pointer;
-          transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+          transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
           display: flex;
           align-items: center;
           gap: 0.5rem;
           white-space: nowrap;
           position: relative;
-          z-index: 2;
+          z-index: 3;
           overflow: hidden;
+          letter-spacing: -0.01em;
+          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
 
         button::before {
@@ -386,13 +393,16 @@ export default function URLInputForm({ onSubmit, loading, error }) {
         }
 
         button:hover:not(:disabled) {
-          background: linear-gradient(135deg, #0051cc 0%, #003d99 100%);
-          transform: translateY(-2px) scale(1.02);
-          box-shadow: 0 8px 25px rgba(0, 112, 243, 0.3);
+          background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
+          transform: translateY(-1px);
+          box-shadow: 
+            0 4px 6px -1px rgba(0, 0, 0, 0.1),
+            0 10px 15px -3px rgba(59, 130, 246, 0.4);
         }
 
         button:active:not(:disabled) {
-          transform: translateY(0) scale(1);
+          transform: translateY(0);
+          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
 
         button:disabled {
@@ -444,32 +454,36 @@ export default function URLInputForm({ onSubmit, loading, error }) {
 
         /* Enhanced Focus State */
         .input-wrapper.focused {
-          transform: translateY(-2px);
-          border-color: #3b82f6;
+          transform: translateY(-1px);
+          border-color: rgba(59, 130, 246, 0.5);
           box-shadow: 
-            0 10px 25px rgba(59, 130, 246, 0.15),
-            0 20px 40px rgba(59, 130, 246, 0.1),
-            0 0 0 3px rgba(59, 130, 246, 0.1);
+            0 4px 6px -1px rgba(0, 0, 0, 0.1),
+            0 2px 4px -1px rgba(0, 0, 0, 0.06),
+            0 8px 25px rgba(59, 130, 246, 0.15),
+            0 0 0 1px rgba(59, 130, 246, 0.1);
         }
 
         /* Loading State Enhancements */
         .input-wrapper.loading {
-          border-color: #3b82f6;
-          animation: loadingPulse 2s ease-in-out infinite;
+          border-color: rgba(59, 130, 246, 0.4);
+          animation: loadingPulse 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
         }
 
         @keyframes loadingPulse {
           0%, 100% { 
+            transform: translateY(0);
+            box-shadow: 
+              0 1px 3px 0 rgba(0, 0, 0, 0.1), 
+              0 1px 2px 0 rgba(0, 0, 0, 0.06),
+              0 0 0 1px rgba(59, 130, 246, 0.2);
+          }
+          50% { 
+            transform: translateY(-0.5px);
             box-shadow: 
               0 4px 6px -1px rgba(0, 0, 0, 0.1), 
               0 2px 4px -1px rgba(0, 0, 0, 0.06),
+              0 8px 20px rgba(59, 130, 246, 0.2),
               0 0 0 2px rgba(59, 130, 246, 0.3);
-          }
-          50% { 
-            box-shadow: 
-              0 10px 15px -3px rgba(0, 0, 0, 0.1), 
-              0 4px 6px -2px rgba(0, 0, 0, 0.05),
-              0 0 0 4px rgba(59, 130, 246, 0.4);
           }
         }
 
