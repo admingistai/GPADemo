@@ -1503,7 +1503,6 @@ export default function Home() {
         .loading-logo {
           height: 80px;
           width: auto;
-          filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
           display: block;
           opacity: 1;
           margin: 0 auto;
