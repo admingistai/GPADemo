@@ -133,8 +133,8 @@ export default function Home() {
             <div className="logo-section">
               <img src="/gist-logo.png" alt="Gist Logo" className="feature-logo" />
             </div>
-            <h1>Configure Your Revenue-Generating AI Companion</h1>
-            <p className="feature-subtitle">Choose from a wide range of Gen AI solutions developed specifically for publishers and content creators—generate and deploy in minutes:</p>
+            <h1>Configure Your Ethical AI Companion</h1>
+            <p className="feature-subtitle">Choose from AI solutions built specifically for publishers and content creators—fully customizable and completely free. Deploy in minutes:</p>
             
             <div className="features-grid">
               {/* Available Features - Top Priority */}
@@ -287,7 +287,7 @@ export default function Home() {
             <div className="logo-section">
               <img src="/gist-logo.png" alt="Gist Logo" className="loading-logo" />
             </div>
-            <h1>Launching Your Ethical AI Revenue Engine</h1>
+            <h1>Launching Your AI Companion</h1>
             <div className="loading-steps">
               {Object.entries(selectedFeatures)
                 .filter(([key, isSelected]) => isSelected)
@@ -331,10 +331,10 @@ export default function Home() {
               <div className="logo-section">
                 <img src="/gist-logo.png" alt="Gist Logo" className="hero-logo" />
               </div>
-              <h1>Launch Your Ethical AI Revenue Engine Today</h1>
+              <h1>Fight Fire With Fire—Get Your AI Companion</h1>
               <p className="hero-subtitle">
-                  <strong>Transform reader engagement into sustainable revenue with AI that respects your brand.</strong><br />
-                  See how ProRata's ethical AI companion drives deeper engagement and unlocks new monetization—instantly.
+                  <strong>AI is stealing your content, readers, and revenue. Not anymore.</strong><br />
+                  The ethical AI Companion from Gist Answers stops the big steal—keeping your users, content, and revenue where they belong: with you.
               </p>
               
               <div className="url-input-section">
@@ -356,7 +356,7 @@ export default function Home() {
           {/* Features Section */}
           <section className="features animate-on-scroll">
             <div className="content-wrapper">
-              <h2 className="animate-on-scroll">The Ethical AI Advantage That Publishers Are Winning With</h2>
+              <h2 className="animate-on-scroll">Why Publishers Choose the Ethical AI Companion</h2>
               
               <div className="features-table animate-on-scroll">
                 <div className="table-header">
@@ -366,57 +366,57 @@ export default function Home() {
                 </div>
                 
                 <div className="table-row animate-on-scroll">
-                  <div className="feature-name"><strong>Ethical AI That Pays You</strong></div>
-                  <div>Built on fair licensing agreements that compensate content creators—no stealing, no scraping.</div>
-                  <div>Generate revenue from AI interactions while supporting the journalism ecosystem you depend on.</div>
+                  <div className="feature-name"><strong>100% Licensed Content Sources</strong></div>
+                  <div>Unlike any other AI solution—100% of answers sourced from licensed, opt-in content providers. No stealing, no scraping.</div>
+                  <div>Answers from your content first, keeping users engaged and on your site longer while supporting ethical journalism.</div>
                 </div>
                 
                 <div className="table-row animate-on-scroll">
-                  <div className="feature-name"><strong>Engagement That Converts to Revenue</strong></div>
-                  <div>Turn every reader interaction into monetizable engagement with contextual, brand-safe advertising.</div>
-                  <div>3x longer session times mean 3x more ad impressions—all while delivering genuine value to readers.</div>
+                  <div className="feature-name"><strong>Completely Free & Ad-Supported</strong></div>
+                  <div>100% private, ethical monetization solution that respects your users' privacy—no tracking or data harvesting.</div>
+                  <div>Generate revenue through contextual ads that enhance user experience instead of interrupting it.</div>
                 </div>
                 
                 <div className="table-row animate-on-scroll">
-                  <div className="feature-name"><strong>Publisher Network Power</strong></div>
-                  <div>Access premium content from 1000+ licensed publishers to enrich every conversation.</div>
-                  <div>Keep readers on your site longer with authoritative answers that cite and link back to quality sources.</div>
+                  <div className="feature-name"><strong>Fully Customizable AI Companion</strong></div>
+                  <div>Live in minutes with full editorial control over sources, tone, and brand voice—matches your design and values.</div>
+                  <div>Can answer any question while keeping users on your site longer than traditional search solutions.</div>
                 </div>
                 
                 <div className="table-row animate-on-scroll">
-                  <div className="feature-name"><strong>Brand-Safe Revenue Multiplication</strong></div>
-                  <div>Contextual ads that enhance user experience instead of interrupting it—embedded naturally in AI responses.</div>
-                  <div>Generate 40% more revenue per visitor while maintaining editorial integrity and reader trust.</div>
+                  <div className="feature-name"><strong>Future-Proof & Always in Your Control</strong></div>
+                  <div>Join thousands of publishers fighting back against AI theft and building the ethical AI movement.</div>
+                  <div>Partner with creators who refuse to let big tech steal their livelihood—take back control of your content and revenue.</div>
                 </div>
                 
                 <div className="table-row animate-on-scroll">
-                  <div className="feature-name"><strong>Future-Ready Content Experiences</strong></div>
-                  <div>Voice, video, and interactive formats that transform passive readers into active participants.</div>
-                  <div>Accessibility features that expand your audience while creating viral, shareable moments that drive organic growth.</div>
+                  <div className="feature-name"><strong>Stop the Big Steal</strong></div>
+                  <div>Fight back against AI platforms that steal your content without permission or compensation.</div>
+                  <div>Reclaim your content, readers, and revenue from big tech companies exploiting your hard work.</div>
                 </div>
                 
                 <div className="table-row animate-on-scroll">
-                  <div className="feature-name"><strong>Viral Content Engine</strong></div>
-                  <div>Automatically generates social media content, newsletters, and video snippets from your articles.</div>
-                  <div>Turn one published article into 20+ pieces of engaging content that drive traffic back to your site.</div>
+                  <div className="feature-name"><strong>Ethical AI Movement</strong></div>
+                  <div>Join thousands of publishers and creators building a fair, sustainable future for content creation.</div>
+                  <div>Be part of the solution that respects creators' rights while providing valuable AI-powered experiences.</div>
                 </div>
                 
                 <div className="table-row animate-on-scroll">
-                  <div className="feature-name"><strong>Publisher-First Attribution</strong></div>
-                  <div>Every AI response includes transparent source attribution and revenue sharing with original creators.</div>
-                  <div>Build trust with readers while supporting quality journalism—differentiate from AI platforms that exploit content.</div>
+                  <div className="feature-name"><strong>Publisher-First Design</strong></div>
+                  <div>Built specifically for publishers and content creators—not as an afterthought to big tech AI.</div>
+                  <div>Every feature designed to protect your interests while enhancing your readers' experience.</div>
                 </div>
                 
                 <div className="table-row animate-on-scroll">
-                  <div className="feature-name"><strong>Revenue-Sharing Network</strong></div>
-                  <div>Join a network where quality content creators earn from every AI interaction across the web.</div>
-                  <div>50/50 revenue split ensures your best content generates income even when accessed through partner sites.</div>
+                  <div className="feature-name"><strong>Keep Users Where They Belong</strong></div>
+                  <div>Unlike traditional search that sends users away, our AI keeps them engaged on your site longer.</div>
+                  <div>Your content, your readers, your revenue—all staying exactly where they should be: with you.</div>
                 </div>
                 
                 <div className="table-row animate-on-scroll">
-                  <div className="feature-name"><strong>AI Traffic Monetization</strong></div>
-                  <div>Control and profit from AI agent access to your content with intelligent rate limiting and premium tiers.</div>
-                  <div>As AI search explodes, you're positioned to capture value instead of watching traffic disappear to ChatGPT and Claude.</div>
+                  <div className="feature-name"><strong>Fight Fire With Fire</strong></div>
+                  <div>Use AI to defend against AI—leverage the same technology that's threatening your business to protect it.</div>
+                  <div>Turn the tables on content theft and reclaim your rightful place in the digital ecosystem.</div>
                 </div>
               </div>
             </div>
@@ -425,10 +425,10 @@ export default function Home() {
           {/* Testimonial Section */}
           <section className="testimonial animate-on-scroll">
             <div className="content-wrapper">
-              <h2 className="animate-on-scroll">Publishers Are Already Winning</h2>
+              <h2 className="animate-on-scroll">Publishers Are Fighting Back and Winning</h2>
               <blockquote className="animate-on-scroll">
-                "ProRata's ethical AI companion transformed how our readers engage with content. We're seeing 3x longer sessions and 40% more ad revenue—while actually supporting the journalism we depend on."
-                <cite>— <strong>Leading Media Executive</strong></cite>
+                "The AI Companion from Gist Answers helped us reclaim our content and readers from big tech. We're keeping users on our site longer while generating ethical revenue—finally, an AI solution built for us, not against us."
+                <cite>— <strong>Independent Publisher</strong></cite>
               </blockquote>
             </div>
           </section>
@@ -436,27 +436,27 @@ export default function Home() {
           {/* How It Works Section */}
           <section className="how-it-works animate-on-scroll">
             <div className="content-wrapper">
-              <h2 className="animate-on-scroll">From Setup to Revenue in Under 5 Minutes</h2>
+              <h2 className="animate-on-scroll">Join the Fight in Under 5 Minutes</h2>
               <div className="steps animate-on-scroll">
                 <div className="step animate-on-scroll">
                   <div className="step-number">1</div>
                   <div className="step-content">
                     <h3>Connect Your Content</h3>
-                    <p>Upload your content or connect your CMS—we respect your permissions and licensing.</p>
+                    <p>Upload your content or connect your CMS—we respect your permissions and licensing, unlike big tech AI.</p>
                   </div>
                 </div>
                 <div className="step animate-on-scroll">
                   <div className="step-number">2</div>
                   <div className="step-content">
                     <h3>Launch Your AI Companion</h3>
-                    <p>Branded, ethical AI goes live on your site—matches your design, voice, and values.</p>
+                    <p>Fully customizable AI goes live on your site—matches your design, voice, and values with full editorial control.</p>
                   </div>
                 </div>
                 <div className="step animate-on-scroll">
                   <div className="step-number">3</div>
                   <div className="step-content">
-                    <h3>Watch Revenue Multiply</h3>
-                    <p>Track engagement spikes, ad performance, and revenue growth in real-time—starting day one.</p>
+                    <h3>Fight Fire With Fire</h3>
+                    <p>Keep users, content, and revenue where they belong—with you. Future-proof and always in your control.</p>
                   </div>
                 </div>
               </div>
@@ -466,8 +466,8 @@ export default function Home() {
           {/* CTA Section */}
           <section className="cta animate-on-scroll">
             <div className="content-wrapper">
-              <h2 className="animate-on-scroll">Stop Losing Revenue to AI—Start Earning From It</h2>
-              <p className="animate-on-scroll"><strong>Test your site above and see the revenue potential</strong> or <strong>book a demo</strong> to see real publisher results.</p>
+              <h2 className="animate-on-scroll">Join the Ethical AI Movement</h2>
+              <p className="animate-on-scroll"><strong>Test your AI Companion above</strong> and join thousands of publishers fighting back against content theft. <strong>It's time to fight fire with fire.</strong></p>
             </div>
           </section>
 
