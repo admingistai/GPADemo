@@ -238,9 +238,26 @@ export default function Home() {
           left: 0;
           right: 0;
           bottom: 0;
-          background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
-                      radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
-                      radial-gradient(circle at 40% 90%, rgba(255,255,255,0.05) 0%, transparent 50%);
+          background: 
+            radial-gradient(circle at 30% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+            radial-gradient(circle at 40% 90%, rgba(255,255,255,0.05) 0%, transparent 50%);
+          pointer-events: none;
+        }
+
+        .hero::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-image: 
+            radial-gradient(circle at 25% 25%, rgba(255,255,255,0.03) 1px, transparent 1px),
+            radial-gradient(circle at 75% 75%, rgba(255,255,255,0.02) 1px, transparent 1px);
+          background-size: 60px 60px, 40px 40px;
+          background-position: 0 0, 30px 30px;
+          opacity: 0.4;
           pointer-events: none;
         }
 
@@ -342,6 +359,24 @@ export default function Home() {
           background: 
             radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
             radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+          pointer-events: none;
+        }
+
+        .features::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-image: 
+            linear-gradient(45deg, rgba(99, 102, 241, 0.02) 25%, transparent 25%), 
+            linear-gradient(-45deg, rgba(99, 102, 241, 0.02) 25%, transparent 25%), 
+            linear-gradient(45deg, transparent 75%, rgba(139, 92, 246, 0.02) 75%), 
+            linear-gradient(-45deg, transparent 75%, rgba(139, 92, 246, 0.02) 75%);
+          background-size: 50px 50px;
+          background-position: 0 0, 0 25px, 25px -25px, -25px 0px;
+          opacity: 0.3;
           pointer-events: none;
         }
 
@@ -455,6 +490,22 @@ export default function Home() {
           background: 
             radial-gradient(circle at 70% 30%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
             radial-gradient(circle at 30% 70%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+          pointer-events: none;
+        }
+
+        .testimonial::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-image: 
+            radial-gradient(circle at 40% 40%, rgba(99, 102, 241, 0.015) 2px, transparent 2px),
+            radial-gradient(circle at 60% 60%, rgba(139, 92, 246, 0.015) 1px, transparent 1px);
+          background-size: 70px 70px, 50px 50px;
+          background-position: 0 0, 35px 25px;
+          opacity: 0.5;
           pointer-events: none;
         }
 
