@@ -59,9 +59,8 @@ export default function Home() {
       // Floating parallax effect for table rows
       const tableRows = document.querySelectorAll('.table-row');
       tableRows.forEach((row, index) => {
-        const rowRate = scrolled * (-0.08 - index * 0.015);
-        const rotateRate = scrolled * (0.02 + index * 0.005);
-        row.style.transform = `translateY(${rowRate}px) rotate(${rotateRate}deg)`;
+        const rowRate = scrolled * (-0.05 - index * 0.01);
+        row.style.transform = `translateY(${rowRate}px)`;
       });
 
       // Parallax background patterns
