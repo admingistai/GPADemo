@@ -109,28 +109,13 @@ export default function Home() {
           {/* Publishers Band */}
           <footer className="publishers-band">
             <div className="publishers-content">
-              <div className="publishers-logos">
-                <span className="publisher-name">FP</span>
-                <span className="publisher-name">The Atlantic</span>
-                <span className="publisher-name">The Guardian</span>
-                <span className="publisher-name">FORTUNE</span>
-                <span className="publisher-name">ADWEEK</span>
-                <span className="publisher-name">TheStreet</span>
-                <span className="publisher-name">POPULAR SCIENCE</span>
-                <span className="publisher-name">bob vila</span>
-              </div>
+              <img 
+                src="/publishers-logos.png" 
+                alt="Publishers logos" 
+                className="publishers-image"
+              />
               <div className="publishers-message">
                 Drive growth, boost engagement, and earn more today.
-              </div>
-              <div className="publishers-logos-bottom">
-                <span className="publisher-name">EXPONENTIAL VIEW</span>
-                <span className="publisher-name">Prospect</span>
-                <span className="publisher-name">NewScientist</span>
-                <span className="publisher-name">TIME</span>
-                <span className="publisher-name">BuzzFeed</span>
-                <span className="publisher-name">SLATE</span>
-                <span className="publisher-name">sky NEWS</span>
-                <span className="publisher-name">mumsnet</span>
               </div>
             </div>
             
@@ -323,9 +308,10 @@ export default function Home() {
           position: relative;
         }
 
-        .publishers-logos,
-        .publishers-logos-bottom {
-          display: none;
+        .publishers-image {
+          max-width: 100%;
+          height: auto;
+          margin: 2rem 0;
         }
 
         .publishers-message {
@@ -334,17 +320,6 @@ export default function Home() {
           color: white;
           margin: 2rem 0;
           font-family: 'Inter', sans-serif;
-          position: relative;
-          z-index: 2;
-          padding: 4rem 2rem;
-          background-image: url('/publishers-logos.png');
-          background-repeat: no-repeat;
-          background-position: center center;
-          background-size: contain;
-          min-height: 200px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
         }
 
         .bottom-cta {
