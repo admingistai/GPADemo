@@ -531,12 +531,25 @@ export default function Home() {
       )}
 
       <style jsx>{`
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body, html {
+          margin: 0;
+          padding: 0;
+        }
+
         .container {
           min-height: 100vh;
           font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
           line-height: 1.6;
           color: #333;
           overflow-x: hidden;
+          margin: 0;
+          padding: 0;
         }
 
         /* Hero Section */
@@ -686,7 +699,7 @@ export default function Home() {
 
         /* Features Section */
         .features {
-          padding: 3rem 0;
+          padding: 0;
           background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
           position: relative;
           overflow: hidden;
@@ -739,6 +752,7 @@ export default function Home() {
           font-size: 2.5rem;
           text-align: center;
           margin: 0 0 2rem 0;
+          padding-top: 3rem;
           background: linear-gradient(135deg, #1a202c 0%, #4a5568 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -763,6 +777,7 @@ export default function Home() {
           display: flex;
           flex-direction: column;
           transform: none !important;
+          margin-bottom: 3rem;
         }
 
         .table-header {
