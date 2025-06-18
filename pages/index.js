@@ -51,10 +51,10 @@ export default function Home() {
                 <img src="/gist-logo.png" alt="Gist Logo" className="hero-logo" />
               </div>
               <h1>Turn Any Website into an AI-Powered Experience</h1>
-              <p className="hero-subtitle">
-                <strong>Paste any article, blog, or homepage URL below.</strong><br />
-                Gist Answers will spin up a fully branded, citation‑rich AI assistant that lives right on your site.
-              </p>
+                              <p className="hero-subtitle">
+                  <strong>Paste any article, blog, or homepage URL below.</strong><br />
+                  See what a Gist Powered AI Companion would look like on your site.
+                </p>
               
               <div className="url-input-section">
                 <URLInputForm 
