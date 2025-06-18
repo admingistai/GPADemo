@@ -253,41 +253,7 @@ export default function Home() {
           padding: 8px;
           margin-bottom: 1rem;
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-          position: relative;
-          z-index: 1;
-        }
-
-        .url-input-wrapper::before {
-          content: '';
-          position: absolute;
-          top: -4px;
-          left: -4px;
-          right: -4px;
-          bottom: -4px;
-          background: linear-gradient(45deg, 
-            rgba(255, 0, 0, 0.4), 
-            rgba(255, 115, 0, 0.4), 
-            rgba(255, 251, 0, 0.4), 
-            rgba(72, 255, 0, 0.4), 
-            rgba(0, 255, 213, 0.4), 
-            rgba(0, 43, 255, 0.4), 
-            rgba(122, 0, 255, 0.4), 
-            rgba(255, 0, 200, 0.4), 
-            rgba(255, 0, 0, 0.4)
-          );
-          border-radius: 58px;
-          z-index: -1;
-          background-size: 400% 400%;
-          animation: rainbow 10s ease infinite;
-        }
-
-        @keyframes rainbow {
-          0%, 100% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
+          border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
         .url-input {
@@ -308,18 +274,7 @@ export default function Home() {
         }
 
         .generate-btn {
-          background: linear-gradient(45deg, 
-            rgba(255, 0, 0, 0.6), 
-            rgba(255, 115, 0, 0.6), 
-            rgba(255, 251, 0, 0.6), 
-            rgba(72, 255, 0, 0.6), 
-            rgba(0, 255, 213, 0.6), 
-            rgba(0, 43, 255, 0.6), 
-            rgba(122, 0, 255, 0.6), 
-            rgba(255, 0, 200, 0.6)
-          );
-          background-size: 400% 400%;
-          animation: rainbow 10s ease infinite;
+          background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
           border: none;
           color: white;
           padding: 1rem 2rem;
@@ -330,12 +285,13 @@ export default function Home() {
           cursor: pointer;
           transition: all 0.3s ease;
           white-space: nowrap;
-          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         .generate-btn:hover:not(:disabled) {
+          background: linear-gradient(135deg, #ff5252, #ff7575);
           transform: translateY(-1px);
-          box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+          box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
         }
 
         .generate-btn:disabled {
@@ -369,25 +325,7 @@ export default function Home() {
 
         .publishers-logos,
         .publishers-logos-bottom {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          align-items: center;
-          gap: 2rem 3rem;
-          margin-bottom: 2rem;
-          opacity: 0.4;
-        }
-
-        .publishers-logos-bottom {
-          margin-bottom: 3rem;
-        }
-
-        .publisher-name {
-          font-size: 1rem;
-          font-weight: 400;
-          color: white;
-          font-family: 'Inter', sans-serif;
-          white-space: nowrap;
+          display: none;
         }
 
         .publishers-message {
@@ -398,7 +336,13 @@ export default function Home() {
           font-family: 'Inter', sans-serif;
           position: relative;
           z-index: 2;
-          padding: 2rem;
+          padding: 4rem 2rem;
+          background: url('/publishers-logos.png') center center no-repeat;
+          background-size: contain;
+          min-height: 200px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .bottom-cta {
