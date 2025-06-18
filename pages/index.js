@@ -209,7 +209,7 @@ export default function Home() {
       <style jsx>{`
         .container {
           min-height: 100vh;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+          font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
           line-height: 1.6;
           color: #333;
           overflow-x: hidden;
@@ -285,18 +285,19 @@ export default function Home() {
           transform: scale(1.05) rotate(2deg);
         }
 
-        .hero h1 {
-          font-size: 4rem;
-          font-weight: 800;
-          margin: 0 0 2rem 0;
-          letter-spacing: -0.03em;
-          background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 50%, #dbeafe 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-          animation: fadeInUp 1s ease-out 0.4s both;
-        }
+                 .hero h1 {
+           font-family: 'Playfair Display', Georgia, serif;
+           font-size: 4rem;
+           font-weight: 800;
+           margin: 0 0 2rem 0;
+           letter-spacing: -0.03em;
+           background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 50%, #dbeafe 100%);
+           -webkit-background-clip: text;
+           -webkit-text-fill-color: transparent;
+           background-clip: text;
+           text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+           animation: fadeInUp 1s ease-out 0.4s both;
+         }
 
         .hero-subtitle {
           font-size: 1.4rem;
@@ -345,6 +346,7 @@ export default function Home() {
         }
 
         .features h2 {
+          font-family: 'Playfair Display', Georgia, serif;
           font-size: 3rem;
           text-align: center;
           margin: 0 0 4rem 0;
@@ -457,6 +459,7 @@ export default function Home() {
         }
 
         .testimonial h2 {
+          font-family: 'Playfair Display', Georgia, serif;
           font-size: 3rem;
           text-align: center;
           margin: 0 0 3rem 0;
@@ -471,6 +474,7 @@ export default function Home() {
         }
 
         blockquote {
+          font-family: 'Playfair Display', Georgia, serif;
           font-size: 1.8rem;
           font-style: italic;
           text-align: center;
@@ -550,6 +554,7 @@ export default function Home() {
         }
 
         .how-it-works h2 {
+          font-family: 'Playfair Display', Georgia, serif;
           font-size: 3rem;
           text-align: center;
           margin: 0 0 4rem 0;
@@ -649,6 +654,7 @@ export default function Home() {
         }
 
         .step-content h3 {
+          font-family: 'Playfair Display', Georgia, serif;
           margin: 0 0 1rem 0;
           color: #2d3748;
           font-size: 1.5rem;
@@ -684,6 +690,7 @@ export default function Home() {
          }
 
          .cta h2 {
+           font-family: 'Playfair Display', Georgia, serif;
            font-size: 3rem;
            margin: 0 0 2rem 0;
            background: linear-gradient(135deg, #1a202c 0%, #4a5568 100%);
