@@ -180,14 +180,14 @@ export default function Home() {
             <p className="feature-subtitle">Choose from a wide range of Gen AI solutions developed specifically for publishers and content creators—generate and deploy in minutes:</p>
             
             <div className="features-grid">
-              <div className={`feature-card ${selectedFeatures.recommendedQuestions ? 'selected' : ''}`} 
-                   onClick={() => handleFeatureToggle('recommendedQuestions')}>
-                <div className="feature-icon">💡</div>
-                <h3>Recommended Questions</h3>
-                <p>Auto-generates the most asked follow-ups; placed inline to guide exploration; lifts page views per visit.</p>
-                <div className="coming-soon-label">Coming Soon</div>
+              {/* Available Features - Top Priority */}
+              <div className={`feature-card ${selectedFeatures.askAnything ? 'selected' : ''}`} 
+                   onClick={() => handleFeatureToggle('askAnything')}>
+                <div className="feature-icon">🤖</div>
+                <h3>Ask Anything</h3>
+                <p>Site-wide conversational box designed to match your brand, trained on your archive; answers in milliseconds; keeps traffic on-domain.</p>
                 <div className="toggle-indicator">
-                  {selectedFeatures.recommendedQuestions ? '✓' : '+'}
+                  {selectedFeatures.askAnything ? '✓' : '+'}
                 </div>
               </div>
               
@@ -201,13 +201,35 @@ export default function Home() {
                 </div>
               </div>
               
-              <div className={`feature-card ${selectedFeatures.askAnything ? 'selected' : ''}`} 
-                   onClick={() => handleFeatureToggle('askAnything')}>
-                <div className="feature-icon">🤖</div>
-                <h3>Ask Anything</h3>
-                <p>Site-wide conversational box designed to match your brand, trained on your archive; answers in milliseconds; keeps traffic on-domain.</p>
+              <div className={`feature-card ${selectedFeatures.remixing ? 'selected' : ''}`} 
+                   onClick={() => handleFeatureToggle('remixing')}>
+                <div className="feature-icon">🎨</div>
+                <h3>Remixing</h3>
+                <p>Auto-converts articles into share-ready cards, reels, and threads; boosts organic reach without extra editing.</p>
                 <div className="toggle-indicator">
-                  {selectedFeatures.askAnything ? '✓' : '+'}
+                  {selectedFeatures.remixing ? '✓' : '+'}
+                </div>
+              </div>
+              
+              <div className={`feature-card ${selectedFeatures.augmentedSharing ? 'selected' : ''}`} 
+                   onClick={() => handleFeatureToggle('augmentedSharing')}>
+                <div className="feature-icon">📤</div>
+                <h3>Augmented Sharing</h3>
+                <p>Generates pre-written social posts and on-scroll highlights with backlinks; simplifies promotion, tracks attribution.</p>
+                <div className="toggle-indicator">
+                  {selectedFeatures.augmentedSharing ? '✓' : '+'}
+                </div>
+              </div>
+
+              {/* Coming Soon Features */}
+              <div className={`feature-card ${selectedFeatures.recommendedQuestions ? 'selected' : ''}`} 
+                   onClick={() => handleFeatureToggle('recommendedQuestions')}>
+                <div className="feature-icon">💡</div>
+                <h3>Recommended Questions</h3>
+                <p>Auto-generates the most asked follow-ups; placed inline to guide exploration; lifts page views per visit.</p>
+                <div className="coming-soon-label">Coming Soon</div>
+                <div className="toggle-indicator">
+                  {selectedFeatures.recommendedQuestions ? '✓' : '+'}
                 </div>
               </div>
               
@@ -255,16 +277,6 @@ export default function Home() {
                 </div>
               </div>
               
-              <div className={`feature-card ${selectedFeatures.remixing ? 'selected' : ''}`} 
-                   onClick={() => handleFeatureToggle('remixing')}>
-                <div className="feature-icon">🎨</div>
-                <h3>Remixing</h3>
-                <p>Auto-converts articles into share-ready cards, reels, and threads; boosts organic reach without extra editing.</p>
-                <div className="toggle-indicator">
-                  {selectedFeatures.remixing ? '✓' : '+'}
-                </div>
-              </div>
-              
               <div className={`feature-card ${selectedFeatures.addToDaily ? 'selected' : ''}`} 
                    onClick={() => handleFeatureToggle('addToDaily')}>
                 <div className="feature-icon">📅</div>
@@ -273,16 +285,6 @@ export default function Home() {
                 <div className="coming-soon-label">Coming Soon</div>
                 <div className="toggle-indicator">
                   {selectedFeatures.addToDaily ? '✓' : '+'}
-                </div>
-              </div>
-              
-              <div className={`feature-card ${selectedFeatures.augmentedSharing ? 'selected' : ''}`} 
-                   onClick={() => handleFeatureToggle('augmentedSharing')}>
-                <div className="feature-icon">📤</div>
-                <h3>Augmented Sharing</h3>
-                <p>Generates pre-written social posts and on-scroll highlights with backlinks; simplifies promotion, tracks attribution.</p>
-                <div className="toggle-indicator">
-                  {selectedFeatures.augmentedSharing ? '✓' : '+'}
                 </div>
               </div>
               
