@@ -82,21 +82,23 @@ export default function Home() {
             
             <div className="url-input-container">
               <div className="url-input-wrapper">
-                <input
-                  type="text"
-                  placeholder="Paste URL"
-                  value={targetUrl}
-                  onChange={(e) => setTargetUrl(e.target.value)}
-                  className="url-input"
-                  disabled={loading}
-                />
-                <button
-                  onClick={() => handleUrlSubmit(targetUrl)}
-                  disabled={loading || !targetUrl.trim()}
-                  className="generate-btn"
-                >
-                  {loading ? 'Generating...' : 'Generate'}
-                </button>
+                <div className="url-input-inner">
+                  <input
+                    type="text"
+                    placeholder="Paste URL"
+                    value={targetUrl}
+                    onChange={(e) => setTargetUrl(e.target.value)}
+                    className="url-input"
+                    disabled={loading}
+                  />
+                  <button
+                    onClick={() => handleUrlSubmit(targetUrl)}
+                    disabled={loading || !targetUrl.trim()}
+                    className="generate-btn"
+                  >
+                    {loading ? 'Generating...' : 'Generate'}
+                  </button>
+                </div>
               </div>
               {error && (
                 <div className="error-message">
@@ -225,12 +227,19 @@ export default function Home() {
 
         .url-input-wrapper {
           display: flex;
-          background: white;
+          background: linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7);
           border-radius: 50px;
-          padding: 6px;
+          padding: 3px;
           margin-bottom: 1rem;
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-          border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .url-input-inner {
+          display: flex;
+          background: white;
+          border-radius: 47px;
+          padding: 3px;
+          width: 100%;
         }
 
         .url-input {
