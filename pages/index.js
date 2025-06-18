@@ -109,14 +109,14 @@ export default function Home() {
           {/* Publishers Band */}
           <footer className="publishers-band">
             <div className="publishers-content">
+              <div className="publishers-message">
+                Drive growth, boost engagement, and earn more today.
+              </div>
               <img 
                 src="/publishers-logos.png?v=1" 
                 alt="Publishers logos" 
                 className="publishers-image"
               />
-              <div className="publishers-message">
-                Drive growth, boost engagement, and earn more today.
-              </div>
             </div>
             
             <div className="bottom-cta">
