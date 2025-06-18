@@ -248,7 +248,7 @@ export default function Home() {
 
         .url-input-wrapper {
           display: flex;
-          background: rgba(255, 255, 255, 0.95);
+          background: white;
           border-radius: 50px;
           padding: 4px;
           margin-bottom: 1rem;
@@ -265,20 +265,20 @@ export default function Home() {
           right: -4px;
           bottom: -4px;
           background: linear-gradient(45deg, 
-            rgba(255, 0, 0, 0.6), 
-            rgba(255, 115, 0, 0.6), 
-            rgba(255, 251, 0, 0.6), 
-            rgba(72, 255, 0, 0.6), 
-            rgba(0, 255, 213, 0.6), 
-            rgba(0, 43, 255, 0.6), 
-            rgba(122, 0, 255, 0.6), 
-            rgba(255, 0, 200, 0.6), 
-            rgba(255, 0, 0, 0.6)
+            rgba(255, 0, 0, 0.4), 
+            rgba(255, 115, 0, 0.4), 
+            rgba(255, 251, 0, 0.4), 
+            rgba(72, 255, 0, 0.4), 
+            rgba(0, 255, 213, 0.4), 
+            rgba(0, 43, 255, 0.4), 
+            rgba(122, 0, 255, 0.4), 
+            rgba(255, 0, 200, 0.4), 
+            rgba(255, 0, 0, 0.4)
           );
           border-radius: 54px;
           z-index: -1;
           background-size: 400% 400%;
-          animation: rainbow 6s ease infinite;
+          animation: rainbow 10s ease infinite;
         }
 
         @keyframes rainbow {
@@ -308,17 +308,17 @@ export default function Home() {
 
         .generate-btn {
           background: linear-gradient(45deg, 
-            rgba(255, 0, 0, 0.8), 
-            rgba(255, 115, 0, 0.8), 
-            rgba(255, 251, 0, 0.8), 
-            rgba(72, 255, 0, 0.8), 
-            rgba(0, 255, 213, 0.8), 
-            rgba(0, 43, 255, 0.8), 
-            rgba(122, 0, 255, 0.8), 
-            rgba(255, 0, 200, 0.8)
+            rgba(255, 0, 0, 0.6), 
+            rgba(255, 115, 0, 0.6), 
+            rgba(255, 251, 0, 0.6), 
+            rgba(72, 255, 0, 0.6), 
+            rgba(0, 255, 213, 0.6), 
+            rgba(0, 43, 255, 0.6), 
+            rgba(122, 0, 255, 0.6), 
+            rgba(255, 0, 200, 0.6)
           );
           background-size: 400% 400%;
-          animation: rainbow 6s ease infinite;
+          animation: rainbow 10s ease infinite;
           border: none;
           color: white;
           padding: 1rem 2rem;
