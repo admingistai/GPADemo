@@ -162,10 +162,11 @@ export default function Home() {
         .app {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           min-height: 100vh;
+          background: radial-gradient(ellipse at center, #2c3e75 0%, #1a252f 100%);
         }
 
         .landing-page {
-          background: #1e2a5a;
+          background: transparent;
           min-height: 100vh;
           display: flex;
           flex-direction: column;
@@ -252,6 +253,30 @@ export default function Home() {
           padding: 8px;
           margin-bottom: 1rem;
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+          position: relative;
+        }
+
+        .url-input-wrapper::before {
+          content: '';
+          position: absolute;
+          top: -3px;
+          left: -3px;
+          right: -3px;
+          bottom: -3px;
+          background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+          border-radius: 53px;
+          z-index: -1;
+          background-size: 400% 400%;
+          animation: rainbow 3s ease infinite;
+        }
+
+        @keyframes rainbow {
+          0%, 100% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
         }
 
         .url-input {
@@ -271,7 +296,9 @@ export default function Home() {
         }
 
         .generate-btn {
-          background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+          background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8);
+          background-size: 400% 400%;
+          animation: rainbow 3s ease infinite;
           border: none;
           color: white;
           padding: 1rem 2rem;
@@ -282,12 +309,12 @@ export default function Home() {
           cursor: pointer;
           transition: all 0.3s ease;
           white-space: nowrap;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
 
         .generate-btn:hover:not(:disabled) {
-          background: linear-gradient(135deg, #ff5252, #ff7575);
           transform: translateY(-1px);
-          box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+          box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
         }
 
         .generate-btn:disabled {
