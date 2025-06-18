@@ -35,7 +35,7 @@
         
         // Last resort fallback - this should rarely be used
         console.warn('[GistWidget] Could not auto-detect backend URL, using fallback');
-        return 'https://gpa-topaz.vercel.app';
+        return 'https://gpademo.vercel.app';
     }
 
     const BACKEND_BASE_URL = getBackendBaseUrl();
