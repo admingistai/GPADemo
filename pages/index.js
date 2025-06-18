@@ -163,7 +163,7 @@ export default function Home() {
 
         .header-left .logo {
           font-size: 1.5rem;
-          font-weight: 400;
+          font-weight: 600;
           line-height: 1.2;
           color: white;
           font-family: 'Inter', sans-serif;
@@ -212,10 +212,10 @@ export default function Home() {
 
         .main-title {
           font-size: 4rem;
-          font-weight: 400;
+          font-weight: 700;
           line-height: 1.1;
           margin-bottom: 3rem;
-          max-width: 900px;
+          max-width: 700px;
           color: white;
           font-family: 'Inter', sans-serif;
         }
