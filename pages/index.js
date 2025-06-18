@@ -1001,9 +1001,9 @@ export default function Home() {
 
         .steps {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-          gap: 2rem;
-          max-width: 1000px;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 1.5rem;
+          max-width: 1200px;
           margin: 0 auto;
           position: relative;
           z-index: 2;
