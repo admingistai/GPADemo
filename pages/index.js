@@ -215,7 +215,7 @@ export default function Home() {
           font-weight: 700;
           line-height: 1.1;
           margin-bottom: 3rem;
-          max-width: 700px;
+          max-width: 1100px;
           color: white;
           font-family: 'Inter', sans-serif;
         }
