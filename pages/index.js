@@ -1425,31 +1425,33 @@ export default function Home() {
           font-weight: 600;
           font-size: 1rem;
           cursor: pointer;
-          transition: all 0.3s ease;
+          transition: all 0.3s ease !important;
           border: none;
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          opacity: 1 !important;
+          transform: none !important;
         }
 
         .btn-primary {
-          background: linear-gradient(135deg, #4B66FF 0%, #7C3AED 100%);
-          color: white;
-          box-shadow: 0 10px 25px rgba(75, 102, 255, 0.3);
+          background: linear-gradient(135deg, #4B66FF 0%, #7C3AED 100%) !important;
+          color: white !important;
+          box-shadow: 0 10px 25px rgba(75, 102, 255, 0.3) !important;
         }
 
         .btn-primary:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 15px 35px rgba(75, 102, 255, 0.4);
+          transform: translateY(-2px) !important;
+          box-shadow: 0 15px 35px rgba(75, 102, 255, 0.4) !important;
         }
 
         .btn-secondary {
-          background: rgba(255, 255, 255, 0.2);
-          color: white;
-          border: 2px solid rgba(255, 255, 255, 0.3);
+          background: rgba(255, 255, 255, 0.2) !important;
+          color: white !important;
+          border: 2px solid rgba(255, 255, 255, 0.3) !important;
         }
 
         .btn-secondary:hover {
-          background: rgba(255, 255, 255, 0.3);
-          transform: translateY(-2px);
+          background: rgba(255, 255, 255, 0.3) !important;
+          transform: translateY(-2px) !important;
         }
 
         /* Loading Screen */
