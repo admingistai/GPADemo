@@ -260,7 +260,7 @@ export default function Home() {
         }
 
         .generate-btn {
-          background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+          background: linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7);
           border: none;
           color: white;
           padding: 0.75rem 1.5rem;
@@ -275,7 +275,7 @@ export default function Home() {
         }
 
         .generate-btn:hover:not(:disabled) {
-          background: linear-gradient(135deg, #ff5252, #ff7575);
+          background: linear-gradient(135deg, #e55a2b, #e0821a, #ff5252, #9333ea);
           transform: translateY(-1px);
           box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
         }
