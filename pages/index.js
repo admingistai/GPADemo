@@ -106,15 +106,34 @@ export default function Home() {
             </div>
           </main>
 
-          {/* Publishers Section with PNG Background */}
-          <div className="publishers-section">
-            <div className="publishers-message">
-              Drive growth, boost engagement, and earn more today.
-            </div>
-          </div>
-
-          {/* Bottom CTA */}
+          {/* Publishers Band */}
           <footer className="publishers-band">
+            <div className="publishers-content">
+              <div className="publishers-logos">
+                <span className="publisher-name">FP</span>
+                <span className="publisher-name">The Atlantic</span>
+                <span className="publisher-name">The Guardian</span>
+                <span className="publisher-name">FORTUNE</span>
+                <span className="publisher-name">ADWEEK</span>
+                <span className="publisher-name">TheStreet</span>
+                <span className="publisher-name">POPULAR SCIENCE</span>
+                <span className="publisher-name">bob vila</span>
+              </div>
+              <div className="publishers-message">
+                Drive growth, boost engagement, and earn more today.
+              </div>
+              <div className="publishers-logos-bottom">
+                <span className="publisher-name">EXPONENTIAL VIEW</span>
+                <span className="publisher-name">Prospect</span>
+                <span className="publisher-name">NewScientist</span>
+                <span className="publisher-name">TIME</span>
+                <span className="publisher-name">BuzzFeed</span>
+                <span className="publisher-name">SLATE</span>
+                <span className="publisher-name">sky NEWS</span>
+                <span className="publisher-name">mumsnet</span>
+              </div>
+            </div>
+            
             <div className="bottom-cta">
               <span className="cta-text">Go ahead. Ask Anything. We dare you.</span>
               <button className="ask-anything-btn">
@@ -230,7 +249,7 @@ export default function Home() {
         .url-input-wrapper {
           display: flex;
           background: white;
-          border-radius: 40px;
+          border-radius: 50px;
           padding: 6px;
           margin-bottom: 1rem;
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -242,11 +261,11 @@ export default function Home() {
           border: none;
           background: white;
           padding: 0.75rem 1.25rem;
-          font-size: 0.95rem;
+          font-size: 1rem;
           font-family: 'Inter', sans-serif;
           color: #333;
           outline: none;
-          border-radius: 34px;
+          border-radius: 42px;
         }
 
         .url-input::placeholder {
@@ -259,10 +278,10 @@ export default function Home() {
           border: none;
           color: white;
           padding: 0.75rem 1.5rem;
-          border-radius: 34px;
+          border-radius: 40px;
           font-family: 'Inter', sans-serif;
           font-weight: 600;
-          font-size: 0.95rem;
+          font-size: 1rem;
           cursor: pointer;
           transition: all 0.3s ease;
           white-space: nowrap;
@@ -291,42 +310,6 @@ export default function Home() {
           margin-top: 1rem;
         }
 
-        /* Publishers Logo Section */
-        .publishers-section {
-          background: url('/publishers-logos.png') center center no-repeat;
-          background-size: cover;
-          min-height: 300px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin: 4rem 0 2rem 0;
-          position: relative;
-          width: 100%;
-        }
-
-        .publishers-section::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(30, 42, 90, 0.3);
-          z-index: 1;
-        }
-
-        .publishers-message {
-          font-size: 1.8rem;
-          font-weight: 500;
-          color: white;
-          font-family: 'Inter', sans-serif;
-          text-align: center;
-          position: relative;
-          z-index: 2;
-          padding: 2rem;
-          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
         /* Publishers Band */
         .publishers-band {
           background: transparent;
@@ -343,6 +326,25 @@ export default function Home() {
         .publishers-logos,
         .publishers-logos-bottom {
           display: none;
+        }
+
+        .publishers-message {
+          font-size: 1.5rem;
+          font-weight: 400;
+          color: white;
+          margin: 2rem 0;
+          font-family: 'Inter', sans-serif;
+          position: relative;
+          z-index: 2;
+          padding: 4rem 2rem;
+          background-image: url('/publishers-logos.png');
+          background-repeat: no-repeat;
+          background-position: center center;
+          background-size: contain;
+          min-height: 200px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .bottom-cta {
