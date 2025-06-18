@@ -638,9 +638,9 @@ export default function Home() {
 
         /* Enhanced hover effects with scroll */
         .table-row:hover {
-          transform: translateY(-8px) scale(1.02) rotateY(2deg) !important;
-          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+          background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+          transform: translateY(-2px);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
         /* Smooth scroll behavior */
@@ -664,18 +664,6 @@ export default function Home() {
         .features::before, .testimonial::before, .how-it-works::before, .cta::before {
           will-change: background-position;
           transition: background-position 0.1s ease-out;
-        }
-
-        /* Blur effect on scroll for depth */
-        @media (prefers-reduced-motion: no-preference) {
-          .table-row {
-            filter: blur(0px);
-            transition: filter 0.3s ease;
-          }
-          
-          .table-row:not(:hover) {
-            filter: blur(0.5px);
-          }
         }
 
         /* Subtle glow effects */
@@ -864,9 +852,9 @@ export default function Home() {
         }
 
         .table-row:hover {
-          background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+          background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%);
           transform: translateY(-2px);
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
         }
 
         .table-row:last-child {
@@ -1861,7 +1849,9 @@ export default function Home() {
 
           /* Simplified parallax on mobile */
           .table-row:hover {
-            transform: translateY(-4px) scale(1.01) !important;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
           }
 
           /* Disable complex animations on small screens */
