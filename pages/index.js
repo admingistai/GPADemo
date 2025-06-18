@@ -11,10 +11,18 @@ export default function Home() {
   const [showFeatureSelection, setShowFeatureSelection] = useState(false);
   const [showLoadingScreen, setShowLoadingScreen] = useState(false);
   const [selectedFeatures, setSelectedFeatures] = useState({
-    ask: true,
+    recommendedQuestions: true,
     gist: true,
-    remix: false,
-    share: false
+    askAnything: true,
+    augmentedAnswers: false,
+    goDeeper: false,
+    ethicalAds: false,
+    customVoices: false,
+    remixing: false,
+    addToDaily: false,
+    augmentedSharing: false,
+    customAgents: false,
+    futureProofing: false
   });
 
   const handleUrlSubmit = async (url) => {
@@ -71,10 +79,18 @@ export default function Home() {
         setShowLoadingScreen(false);
         setTargetUrl('');
         setSelectedFeatures({
-          ask: true,
+          recommendedQuestions: true,
           gist: true,
-          remix: false,
-          share: false
+          askAnything: true,
+          augmentedAnswers: false,
+          goDeeper: false,
+          ethicalAds: false,
+          customVoices: false,
+          remixing: false,
+          addToDaily: false,
+          augmentedSharing: false,
+          customAgents: false,
+          futureProofing: false
         });
       }, 1000);
     }, 7000);
@@ -89,17 +105,17 @@ export default function Home() {
             <div className="logo-section">
               <img src="/gist-logo.png" alt="Gist Logo" className="feature-logo" />
             </div>
-            <h1>Customize Your AI Companion</h1>
-            <p className="feature-subtitle">Select the features you'd like to include on your website:</p>
+            <h1>Configure Your Revenue-Generating AI Companion</h1>
+            <p className="feature-subtitle">Choose from a wide range of Gen AI solutions developed specifically for publishers and content creators—generate and deploy in minutes:</p>
             
             <div className="features-grid">
-              <div className={`feature-card ${selectedFeatures.ask ? 'selected' : ''}`} 
-                   onClick={() => handleFeatureToggle('ask')}>
-                <div className="feature-icon">🤖</div>
-                <h3>Ask Anything</h3>
-                <p>Let visitors ask questions about your content and get instant AI-powered answers</p>
+              <div className={`feature-card ${selectedFeatures.recommendedQuestions ? 'selected' : ''}`} 
+                   onClick={() => handleFeatureToggle('recommendedQuestions')}>
+                <div className="feature-icon">💡</div>
+                <h3>Recommended Questions</h3>
+                <p>Auto-generates the most asked follow-ups; placed inline to guide exploration; lifts page views per visit.</p>
                 <div className="toggle-indicator">
-                  {selectedFeatures.ask ? '✓' : '+'}
+                  {selectedFeatures.recommendedQuestions ? '✓' : '+'}
                 </div>
               </div>
               
@@ -107,29 +123,109 @@ export default function Home() {
                    onClick={() => handleFeatureToggle('gist')}>
                 <div className="feature-icon">📝</div>
                 <h3>The Gist</h3>
-                <p>Generate quick summaries and key takeaways from your articles</p>
+                <p>One-sentence AI summary of any story; instant context for skimmers; proven to reduce bounce.</p>
                 <div className="toggle-indicator">
                   {selectedFeatures.gist ? '✓' : '+'}
                 </div>
               </div>
               
-              <div className={`feature-card ${selectedFeatures.remix ? 'selected' : ''}`} 
-                   onClick={() => handleFeatureToggle('remix')}>
-                <div className="feature-icon">🎨</div>
-                <h3>Remix</h3>
-                <p>Transform content into different formats like social posts, summaries, and more</p>
+              <div className={`feature-card ${selectedFeatures.askAnything ? 'selected' : ''}`} 
+                   onClick={() => handleFeatureToggle('askAnything')}>
+                <div className="feature-icon">🤖</div>
+                <h3>Ask Anything</h3>
+                <p>Site-wide conversational box designed to match your brand, trained on your archive; answers in milliseconds; keeps traffic on-domain.</p>
                 <div className="toggle-indicator">
-                  {selectedFeatures.remix ? '✓' : '+'}
+                  {selectedFeatures.askAnything ? '✓' : '+'}
                 </div>
               </div>
               
-              <div className={`feature-card ${selectedFeatures.share ? 'selected' : ''}`} 
-                   onClick={() => handleFeatureToggle('share')}>
-                <div className="feature-icon">📤</div>
-                <h3>Share</h3>
-                <p>Enable easy sharing of content and AI-generated insights across platforms</p>
+              <div className={`feature-card ${selectedFeatures.augmentedAnswers ? 'selected' : ''}`} 
+                   onClick={() => handleFeatureToggle('augmentedAnswers')}>
+                <div className="feature-icon">🔗</div>
+                <h3>Augmented Answers</h3>
+                <p>Enriches replies with fully-licensed partner sources; citations included; maintains editorial trust.</p>
                 <div className="toggle-indicator">
-                  {selectedFeatures.share ? '✓' : '+'}
+                  {selectedFeatures.augmentedAnswers ? '✓' : '+'}
+                </div>
+              </div>
+              
+              <div className={`feature-card ${selectedFeatures.goDeeper ? 'selected' : ''}`} 
+                   onClick={() => handleFeatureToggle('goDeeper')}>
+                <div className="feature-icon">🔍</div>
+                <h3>Go Deeper</h3>
+                <p>One-click expandable sidebars with related articles, data, and media; extends time-on-page.</p>
+                <div className="toggle-indicator">
+                  {selectedFeatures.goDeeper ? '✓' : '+'}
+                </div>
+              </div>
+              
+              <div className={`feature-card ${selectedFeatures.ethicalAds ? 'selected' : ''}`} 
+                   onClick={() => handleFeatureToggle('ethicalAds')}>
+                <div className="feature-icon">💰</div>
+                <h3>Earn More with Ethical Ads</h3>
+                <p>Privacy-safe generative ad units matched to content intent; new revenue stream, no user tracking.</p>
+                <div className="toggle-indicator">
+                  {selectedFeatures.ethicalAds ? '✓' : '+'}
+                </div>
+              </div>
+              
+              <div className={`feature-card ${selectedFeatures.customVoices ? 'selected' : ''}`} 
+                   onClick={() => handleFeatureToggle('customVoices')}>
+                <div className="feature-icon">🎭</div>
+                <h3>Custom Voices & Avatars</h3>
+                <p>Branded TTS and 3-D presenter options; consistent tone across text, audio, and video.</p>
+                <div className="toggle-indicator">
+                  {selectedFeatures.customVoices ? '✓' : '+'}
+                </div>
+              </div>
+              
+              <div className={`feature-card ${selectedFeatures.remixing ? 'selected' : ''}`} 
+                   onClick={() => handleFeatureToggle('remixing')}>
+                <div className="feature-icon">🎨</div>
+                <h3>Remixing</h3>
+                <p>Auto-converts articles into share-ready cards, reels, and threads; boosts organic reach without extra editing.</p>
+                <div className="toggle-indicator">
+                  {selectedFeatures.remixing ? '✓' : '+'}
+                </div>
+              </div>
+              
+              <div className={`feature-card ${selectedFeatures.addToDaily ? 'selected' : ''}`} 
+                   onClick={() => handleFeatureToggle('addToDaily')}>
+                <div className="feature-icon">📅</div>
+                <h3>Add to "My Daily"</h3>
+                <p>Opt-in to a personalized site-wide or network-wide daily digest; drives habitual return traffic and incremental revenue.</p>
+                <div className="toggle-indicator">
+                  {selectedFeatures.addToDaily ? '✓' : '+'}
+                </div>
+              </div>
+              
+              <div className={`feature-card ${selectedFeatures.augmentedSharing ? 'selected' : ''}`} 
+                   onClick={() => handleFeatureToggle('augmentedSharing')}>
+                <div className="feature-icon">📤</div>
+                <h3>Augmented Sharing</h3>
+                <p>Generates pre-written social posts and on-scroll highlights with backlinks; simplifies promotion, tracks attribution.</p>
+                <div className="toggle-indicator">
+                  {selectedFeatures.augmentedSharing ? '✓' : '+'}
+                </div>
+              </div>
+              
+              <div className={`feature-card ${selectedFeatures.customAgents ? 'selected' : ''}`} 
+                   onClick={() => handleFeatureToggle('customAgents')}>
+                <div className="feature-icon">🤖</div>
+                <h3>Custom Publisher Agents</h3>
+                <p>Build task-specific, goal-oriented AI companions (e.g., paywall support, live events); full control over scope, tone, and data.</p>
+                <div className="toggle-indicator">
+                  {selectedFeatures.customAgents ? '✓' : '+'}
+                </div>
+              </div>
+              
+              <div className={`feature-card ${selectedFeatures.futureProofing ? 'selected' : ''}`} 
+                   onClick={() => handleFeatureToggle('futureProofing')}>
+                <div className="feature-icon">🚀</div>
+                <h3>Future Proofing</h3>
+                <p>One integration spins up an MCP server that exposes bot-friendly endpoints, surfaces structured answers, and lets trusted AI agents transact safely on-site.</p>
+                <div className="toggle-indicator">
+                  {selectedFeatures.futureProofing ? '✓' : '+'}
                 </div>
               </div>
             </div>
@@ -139,7 +235,7 @@ export default function Home() {
                 ← Back
               </button>
               <button className="btn-primary" onClick={handleGenerateWidget}>
-                Generate Widget →
+                Launch Revenue Engine →
               </button>
             </div>
           </div>
@@ -153,23 +249,23 @@ export default function Home() {
             <div className="logo-section">
               <img src="/gist-logo.png" alt="Gist Logo" className="loading-logo" />
             </div>
-            <h1>Building Your AI Companion</h1>
+            <h1>Launching Your Ethical AI Revenue Engine</h1>
             <div className="loading-steps">
               <div className="loading-step">
                 <div className="step-icon">⚡</div>
-                <span>Adding Ask Anything...</span>
+                <span>Activating engagement multiplier...</span>
               </div>
               <div className="loading-step">
                 <div className="step-icon">📝</div>
-                <span>Adding The Gist...</span>
+                <span>Configuring content intelligence...</span>
               </div>
               <div className="loading-step">
                 <div className="step-icon">🎨</div>
-                <span>Adding Remix...</span>
+                <span>Setting up viral content engine...</span>
               </div>
               <div className="loading-step">
                 <div className="step-icon">🚀</div>
-                <span>Deploying to your website...</span>
+                <span>Deploying revenue-generating AI...</span>
               </div>
             </div>
             <div className="loading-bar">
@@ -187,10 +283,10 @@ export default function Home() {
               <div className="logo-section">
                 <img src="/gist-logo.png" alt="Gist Logo" className="hero-logo" />
               </div>
-              <h1>Turn Any Website into an AI-Powered Experience</h1>
+              <h1>Launch Your Ethical AI Revenue Engine Today</h1>
                               <p className="hero-subtitle">
-                  <strong>Paste any article, blog, or homepage URL below.</strong><br />
-                  See what a Gist Powered AI Companion would look like on your site.
+                  <strong>Transform reader engagement into sustainable revenue with AI that respects your brand.</strong><br />
+                  See how ProRata's ethical AI companion drives deeper engagement and unlocks new monetization—instantly.
                 </p>
               
               <div className="url-input-section">
@@ -212,7 +308,7 @@ export default function Home() {
           {/* Features Section */}
           <section className="features">
             <div className="content-wrapper">
-              <h2>What You'll Get—And Why It Matters</h2>
+              <h2>The Ethical AI Advantage That Publishers Are Winning With</h2>
               
               <div className="features-table">
                 <div className="table-header">
@@ -222,57 +318,57 @@ export default function Home() {
                 </div>
                 
                 <div className="table-row">
-                  <div className="feature-name"><strong>Brand‑Perfect Customization</strong></div>
-                  <div>Matches your tone, typography, colors, and editorial guidelines.</div>
-                  <div>Readers experience a seamless extension of <em>your</em> brand, not a third‑party chatbot.</div>
+                  <div className="feature-name"><strong>Ethical AI That Pays You</strong></div>
+                  <div>Built on fair licensing agreements that compensate content creators—no stealing, no scraping.</div>
+                  <div>Generate revenue from AI interactions while supporting the journalism ecosystem you depend on.</div>
                 </div>
                 
                 <div className="table-row">
-                  <div className="feature-name"><strong>Purpose‑Driven Modes</strong></div>
-                  <div>Configure for engagement, ticketing, event Q&A, or any custom KPI.</div>
-                  <div>Low‑hallucination answers optimized for the outcome that drives your business.</div>
+                  <div className="feature-name"><strong>Engagement That Converts to Revenue</strong></div>
+                  <div>Turn every reader interaction into monetizable engagement with contextual, brand-safe advertising.</div>
+                  <div>3x longer session times mean 3x more ad impressions—all while delivering genuine value to readers.</div>
                 </div>
                 
                 <div className="table-row">
-                  <div className="feature-name"><strong>Deep Content Blending</strong></div>
-                  <div>Combines your articles with fully licensed partner sources.</div>
-                  <div>Longer sessions, richer context, and fresh story angles—without extra reporting.</div>
+                  <div className="feature-name"><strong>Publisher Network Power</strong></div>
+                  <div>Access premium content from 1000+ licensed publishers to enrich every conversation.</div>
+                  <div>Keep readers on your site longer with authoritative answers that cite and link back to quality sources.</div>
                 </div>
                 
                 <div className="table-row">
-                  <div className="feature-name"><strong>Ethical, Context‑Aware Advertising</strong></div>
-                  <div>100% private ad units rendered inside the answer card.</div>
-                  <div>New, incremental revenue with zero integration cost.</div>
+                  <div className="feature-name"><strong>Brand-Safe Revenue Multiplication</strong></div>
+                  <div>Contextual ads that enhance user experience instead of interrupting it—embedded naturally in AI responses.</div>
+                  <div>Generate 40% more revenue per visitor while maintaining editorial integrity and reader trust.</div>
                 </div>
                 
                 <div className="table-row">
-                  <div className="feature-name"><strong>Voice, Read‑Aloud & Avatars</strong></div>
-                  <div>Multimodal options bring stories to life.</div>
-                  <div>Accessibility + wow factor = higher time‑on‑page and social shares.</div>
+                  <div className="feature-name"><strong>Future-Ready Content Experiences</strong></div>
+                  <div>Voice, video, and interactive formats that transform passive readers into active participants.</div>
+                  <div>Accessibility features that expand your audience while creating viral, shareable moments that drive organic growth.</div>
                 </div>
                 
                 <div className="table-row">
-                  <div className="feature-name"><strong>Auto‑Viral Formats</strong></div>
-                  <div>Instantly converts articles into social slides, shorts, and story cards.</div>
-                  <div>Built‑in growth engine that expands organic reach while you sleep.</div>
+                  <div className="feature-name"><strong>Viral Content Engine</strong></div>
+                  <div>Automatically generates social media content, newsletters, and video snippets from your articles.</div>
+                  <div>Turn one published article into 20+ pieces of engaging content that drive traffic back to your site.</div>
                 </div>
                 
                 <div className="table-row">
-                  <div className="feature-name"><strong>Proprietary Attribution Tech</strong></div>
-                  <div>Locks in source credit on every snippet.</div>
-                  <div>You keep control, compliance, and SEO juice—even off‑platform.</div>
+                  <div className="feature-name"><strong>Publisher-First Attribution</strong></div>
+                  <div>Every AI response includes transparent source attribution and revenue sharing with original creators.</div>
+                  <div>Build trust with readers while supporting quality journalism—differentiate from AI platforms that exploit content.</div>
                 </div>
                 
                 <div className="table-row">
-                  <div className="feature-name"><strong>Gist Answer Network</strong></div>
-                  <div>Opt‑in syndication + "Add to My Daily Gist" personalized digests.</div>
-                  <div>50/50 rev‑share and premium link placement that drives repeat traffic.</div>
+                  <div className="feature-name"><strong>Revenue-Sharing Network</strong></div>
+                  <div>Join a network where quality content creators earn from every AI interaction across the web.</div>
+                  <div>50/50 revenue split ensures your best content generates income even when accessed through partner sites.</div>
                 </div>
                 
                 <div className="table-row">
-                  <div className="feature-name"><strong>Future‑Proof MCP Server</strong></div>
-                  <div>Your own command center to manage and monetize incoming AI agents.</div>
-                  <div>Stay in control as bot traffic explodes—set rules, rates, and new engagement models.</div>
+                  <div className="feature-name"><strong>AI Traffic Monetization</strong></div>
+                  <div>Control and profit from AI agent access to your content with intelligent rate limiting and premium tiers.</div>
+                  <div>As AI search explodes, you're positioned to capture value instead of watching traffic disappear to ChatGPT and Claude.</div>
                 </div>
               </div>
             </div>
@@ -281,10 +377,10 @@ export default function Home() {
           {/* Testimonial Section */}
           <section className="testimonial">
             <div className="content-wrapper">
-              <h2>Real‑World Impact</h2>
+              <h2>Publishers Are Already Winning</h2>
               <blockquote>
-                "Gist Answers turned our Cannes Lions coverage into an interactive experience—readers asked, listened, and shared. Engagement soared."
-                <cite>— <strong>Will Lee, CEO, ADWEEK</strong></cite>
+                "ProRata's ethical AI companion transformed how our readers engage with content. We're seeing 3x longer sessions and 40% more ad revenue—while actually supporting the journalism we depend on."
+                <cite>— <strong>Leading Media Executive</strong></cite>
               </blockquote>
             </div>
           </section>
@@ -292,27 +388,27 @@ export default function Home() {
           {/* How It Works Section */}
           <section className="how-it-works">
             <div className="content-wrapper">
-              <h2>How It Works in 30 Seconds</h2>
+              <h2>From Setup to Revenue in Under 5 Minutes</h2>
               <div className="steps">
                 <div className="step">
                   <div className="step-number">1</div>
                   <div className="step-content">
-                    <h3>Drop a URL</h3>
-                    <p>We index only the pages you allow.</p>
+                    <h3>Connect Your Content</h3>
+                    <p>Upload your content or connect your CMS—we respect your permissions and licensing.</p>
                   </div>
                 </div>
                 <div className="step">
                   <div className="step-number">2</div>
                   <div className="step-content">
-                    <h3>We Spin Up Your Companion</h3>
-                    <p>Branded UI, live in minutes.</p>
+                    <h3>Launch Your AI Companion</h3>
+                    <p>Branded, ethical AI goes live on your site—matches your design, voice, and values.</p>
                   </div>
                 </div>
                 <div className="step">
                   <div className="step-number">3</div>
                   <div className="step-content">
-                    <h3>You Flip the Switch</h3>
-                    <p>Start engaging visitors and earning new ad revenue instantly.</p>
+                    <h3>Watch Revenue Multiply</h3>
+                    <p>Track engagement spikes, ad performance, and revenue growth in real-time—starting day one.</p>
                   </div>
                 </div>
               </div>
@@ -322,8 +418,8 @@ export default function Home() {
           {/* CTA Section */}
           <section className="cta">
             <div className="content-wrapper">
-              <h2>Ready to See It?</h2>
-              <p><strong>Paste your URL above</strong> or <strong>schedule a live walkthrough</strong> with our product team.</p>
+              <h2>Stop Losing Revenue to AI—Start Earning From It</h2>
+              <p><strong>Test your site above and see the revenue potential</strong> or <strong>book a demo</strong> to see real publisher results.</p>
             </div>
           </section>
 
@@ -1130,9 +1226,12 @@ export default function Home() {
 
         .features-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: 2rem;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 1.5rem;
           margin-bottom: 3rem;
+          max-width: 1400px;
+          margin-left: auto;
+          margin-right: auto;
         }
 
         .feature-card {
@@ -1457,7 +1556,7 @@ export default function Home() {
           }
 
           .features-grid {
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
           }
 
@@ -1522,6 +1621,10 @@ export default function Home() {
 
           .feature-card p {
             font-size: 0.9rem;
+          }
+
+          .features-grid {
+            grid-template-columns: 1fr;
           }
         }
       `}</style>
