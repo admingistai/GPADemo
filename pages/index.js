@@ -1494,15 +1494,19 @@ export default function Home() {
           animation: none;
           opacity: 1;
           transform: none;
+          text-align: center;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
         .loading-logo {
           height: 80px;
           width: auto;
-          margin-bottom: 1rem;
-          filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3)) drop-shadow(0 0 20px rgba(0,0,0,0.8)) drop-shadow(0 0 40px rgba(0,0,0,0.6));
+          filter: drop-shadow(0 0 30px rgba(0,0,0,0.9)) drop-shadow(0 0 60px rgba(0,0,0,0.7)) drop-shadow(0 0 90px rgba(0,0,0,0.5));
           display: block;
           opacity: 1;
+          margin: 0 auto;
         }
 
         .loading-screen h1 {
