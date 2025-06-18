@@ -251,22 +251,32 @@ export default function Home() {
             </div>
             <h1>Launching Your Ethical AI Revenue Engine</h1>
             <div className="loading-steps">
-              <div className="loading-step">
-                <div className="step-icon">⚡</div>
-                <span>Activating engagement multiplier...</span>
-              </div>
-              <div className="loading-step">
-                <div className="step-icon">📝</div>
-                <span>Configuring content intelligence...</span>
-              </div>
-              <div className="loading-step">
-                <div className="step-icon">🎨</div>
-                <span>Setting up viral content engine...</span>
-              </div>
-              <div className="loading-step">
-                <div className="step-icon">🚀</div>
-                <span>Deploying revenue-generating AI...</span>
-              </div>
+              {Object.entries(selectedFeatures)
+                .filter(([key, isSelected]) => isSelected)
+                .map(([key, isSelected], index) => {
+                  const featureInfo = {
+                    recommendedQuestions: { icon: "💡", text: "Generating recommended questions..." },
+                    gist: { icon: "📝", text: "Creating AI summaries..." },
+                    askAnything: { icon: "🤖", text: "Training conversational AI..." },
+                    augmentedAnswers: { icon: "🔗", text: "Setting up augmented answers..." },
+                    goDeeper: { icon: "🔍", text: "Building deep-dive sidebars..." },
+                    ethicalAds: { icon: "💰", text: "Configuring ethical ad units..." },
+                    customVoices: { icon: "🎭", text: "Setting up custom voices & avatars..." },
+                    remixing: { icon: "🎨", text: "Enabling content remixing..." },
+                    addToDaily: { icon: "📅", text: "Creating daily digest system..." },
+                    augmentedSharing: { icon: "📤", text: "Setting up augmented sharing..." },
+                    customAgents: { icon: "🤖", text: "Building custom publisher agents..." },
+                    futureProofing: { icon: "🚀", text: "Deploying MCP server integration..." }
+                  };
+                  
+                  return (
+                    <div key={key} className="loading-step" style={{animationDelay: `${index * 0.5}s`}}>
+                      <div className="step-icon">{featureInfo[key].icon}</div>
+                      <span>{featureInfo[key].text}</span>
+                    </div>
+                  );
+                })
+              }
             </div>
             <div className="loading-bar">
               <div className="loading-progress"></div>
@@ -1410,9 +1420,7 @@ export default function Home() {
           animation: loadingPulse 2s ease-in-out infinite;
         }
 
-        .loading-step:nth-child(2) { animation-delay: 0.5s; }
-        .loading-step:nth-child(3) { animation-delay: 1s; }
-        .loading-step:nth-child(4) { animation-delay: 1.5s; }
+
 
         @keyframes loadingPulse {
           0%, 100% { 
