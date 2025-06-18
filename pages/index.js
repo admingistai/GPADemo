@@ -286,11 +286,11 @@ export default function Home() {
         }
 
                  .hero h1 {
-           font-family: 'Playfair Display', Georgia, serif;
+           font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
            font-size: 4rem;
-           font-weight: 800;
+           font-weight: 700;
            margin: 0 0 2rem 0;
-           letter-spacing: -0.03em;
+           letter-spacing: -0.02em;
            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 50%, #dbeafe 100%);
            -webkit-background-clip: text;
            -webkit-text-fill-color: transparent;
@@ -346,7 +346,7 @@ export default function Home() {
         }
 
         .features h2 {
-          font-family: 'Playfair Display', Georgia, serif;
+          font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
           font-size: 3rem;
           text-align: center;
           margin: 0 0 4rem 0;
@@ -354,8 +354,8 @@ export default function Home() {
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
-          font-weight: 800;
-          letter-spacing: -0.02em;
+          font-weight: 700;
+          letter-spacing: -0.01em;
           position: relative;
           z-index: 2;
         }
@@ -459,7 +459,7 @@ export default function Home() {
         }
 
         .testimonial h2 {
-          font-family: 'Playfair Display', Georgia, serif;
+          font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
           font-size: 3rem;
           text-align: center;
           margin: 0 0 3rem 0;
@@ -467,16 +467,16 @@ export default function Home() {
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
-          font-weight: 800;
-          letter-spacing: -0.02em;
+          font-weight: 700;
+          letter-spacing: -0.01em;
           position: relative;
           z-index: 2;
         }
 
         blockquote {
-          font-family: 'Playfair Display', Georgia, serif;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
           font-size: 1.8rem;
-          font-style: italic;
+          font-style: normal;
           text-align: center;
           margin: 0;
           color: #1a202c;
@@ -554,7 +554,7 @@ export default function Home() {
         }
 
         .how-it-works h2 {
-          font-family: 'Playfair Display', Georgia, serif;
+          font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
           font-size: 3rem;
           text-align: center;
           margin: 0 0 4rem 0;
@@ -562,8 +562,8 @@ export default function Home() {
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
-          font-weight: 800;
-          letter-spacing: -0.02em;
+          font-weight: 700;
+          letter-spacing: -0.01em;
           position: relative;
           z-index: 2;
         }
@@ -654,11 +654,11 @@ export default function Home() {
         }
 
         .step-content h3 {
-          font-family: 'Playfair Display', Georgia, serif;
+          font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
           margin: 0 0 1rem 0;
           color: #2d3748;
           font-size: 1.5rem;
-          font-weight: 700;
+          font-weight: 600;
         }
 
         .step-content p {
@@ -690,15 +690,15 @@ export default function Home() {
          }
 
          .cta h2 {
-           font-family: 'Playfair Display', Georgia, serif;
+           font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
            font-size: 3rem;
            margin: 0 0 2rem 0;
            background: linear-gradient(135deg, #1a202c 0%, #4a5568 100%);
            -webkit-background-clip: text;
            -webkit-text-fill-color: transparent;
            background-clip: text;
-           font-weight: 800;
-           letter-spacing: -0.02em;
+           font-weight: 700;
+           letter-spacing: -0.01em;
            position: relative;
            z-index: 2;
          }
