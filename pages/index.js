@@ -45,17 +45,14 @@ export default function Home() {
         heroLogo.style.transform = `rotate(${rotateAmount}deg) scale(${scaleAmount})`;
       }
 
-      // Animate elements on scroll
+      // Animate elements on scroll - Simplified timing
       const animateOnScroll = document.querySelectorAll('.animate-on-scroll');
       animateOnScroll.forEach((element) => {
         const elementTop = element.getBoundingClientRect().top;
-        const elementVisible = 200; // Increased threshold for better timing
+        const elementVisible = 100; // Reduced threshold for more immediate reveals
         
         if (elementTop < window.innerHeight - elementVisible) {
           element.classList.add('animate-visible');
-        } else {
-          // Optional: Remove class if element goes back out of view (for re-animation)
-          // element.classList.remove('animate-visible');
         }
       });
 
@@ -1797,67 +1794,45 @@ export default function Home() {
           }
         }
 
-        /* Scroll Animations */
+        /* Scroll Animations - Simplified */
         .animate-on-scroll {
           opacity: 0;
-          transform: translateY(60px) rotateX(10deg);
-          transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-          transform-origin: center;
+          transform: translateY(30px);
+          transition: all 0.6s ease-out;
         }
 
         .animate-on-scroll.animate-visible {
           opacity: 1;
-          transform: translateY(0) rotateX(0deg);
+          transform: translateY(0);
         }
 
-        /* Staggered animation delays for multiple elements */
+        /* Simplified staggered animation delays */
         .animate-on-scroll:nth-child(1) { transition-delay: 0.1s; }
         .animate-on-scroll:nth-child(2) { transition-delay: 0.2s; }
         .animate-on-scroll:nth-child(3) { transition-delay: 0.3s; }
         .animate-on-scroll:nth-child(4) { transition-delay: 0.4s; }
         .animate-on-scroll:nth-child(5) { transition-delay: 0.5s; }
-        .animate-on-scroll:nth-child(6) { transition-delay: 0.6s; }
-        .animate-on-scroll:nth-child(7) { transition-delay: 0.7s; }
-        .animate-on-scroll:nth-child(8) { transition-delay: 0.8s; }
-        .animate-on-scroll:nth-child(9) { transition-delay: 0.9s; }
 
-        /* Section-specific animations */
+        /* Section-specific animations - Much simpler */
         .features.animate-on-scroll {
-          transform: translateY(80px) scale(0.95);
+          transform: translateY(40px);
         }
 
         .testimonial.animate-on-scroll {
-          transform: translateY(100px) rotateY(5deg);
+          transform: translateY(40px);
         }
 
         .how-it-works.animate-on-scroll {
-          transform: translateY(60px) rotateX(-5deg);
+          transform: translateY(40px);
         }
 
         .cta.animate-on-scroll {
-          transform: translateY(40px) scale(0.98);
+          transform: translateY(30px);
         }
 
         /* Smooth scroll behavior */
         html {
           scroll-behavior: smooth;
-        }
-
-        /* 3D perspective for sections */
-        .features, .testimonial, .how-it-works, .cta {
-          perspective: 1000px;
-          transform-style: preserve-3d;
-        }
-
-        /* Subtle glow effects */
-        .animate-on-scroll.animate-visible h2 {
-          text-shadow: 0 0 20px rgba(75, 102, 255, 0.3);
-          animation: glowPulse 3s ease-in-out infinite alternate;
-        }
-
-        @keyframes glowPulse {
-          from { text-shadow: 0 0 20px rgba(75, 102, 255, 0.3); }
-          to { text-shadow: 0 0 30px rgba(75, 102, 255, 0.5); }
         }
 
         /* Table row specific overrides to prevent movement */
@@ -1867,23 +1842,6 @@ export default function Home() {
 
         .table-row.animate-on-scroll.animate-visible {
           opacity: 1;
-          transform: none !important;
-        }
-
-        /* Ensure features table stays stable */
-        .features-table {
-          background: rgba(255, 255, 255, 0.9);
-          backdrop-filter: blur(20px);
-          border-radius: 20px;
-          box-shadow: 
-            0 20px 40px rgba(0, 0, 0, 0.1),
-            0 0 0 1px rgba(255, 255, 255, 0.2);
-          overflow: hidden;
-          position: relative;
-          z-index: 2;
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          display: flex;
-          flex-direction: column;
           transform: none !important;
         }
       `}</style>
