@@ -28,63 +28,20 @@ export default function Home() {
   // Scroll animation effects
   useEffect(() => {
     const handleScroll = () => {
-      const scrolled = window.pageYOffset;
-      const rate = scrolled * -0.3;
-      
-      // Parallax background effect for hero
-      const hero = document.querySelector('.hero');
-      if (hero) {
-        hero.style.transform = `translateY(${rate}px)`;
-      }
-
-      // Rotate and scale hero logo on scroll
-      const heroLogo = document.querySelector('.hero-logo');
-      if (heroLogo && scrolled < window.innerHeight) {
-        const rotateAmount = scrolled * 0.1;
-        const scaleAmount = 1 + (scrolled * 0.0005);
-        heroLogo.style.transform = `rotate(${rotateAmount}deg) scale(${scaleAmount})`;
-      }
-
-      // Animate elements on scroll - Simplified timing
+      // Animate elements on scroll - Simplified timing only
       const animateOnScroll = document.querySelectorAll('.animate-on-scroll');
       animateOnScroll.forEach((element) => {
         const elementTop = element.getBoundingClientRect().top;
-        const elementVisible = 100; // Reduced threshold for more immediate reveals
+        const elementVisible = 100;
         
         if (elementTop < window.innerHeight - elementVisible) {
           element.classList.add('animate-visible');
         }
       });
-
-      // Floating parallax effect for table rows (excluding header and all table elements)
-      // Removed table parallax to prevent positioning issues
-      // const tableRows = document.querySelectorAll('.table-row:not(.table-header)');
-      // tableRows.forEach((row, index) => {
-      //   const rowRate = scrolled * (-0.03 - index * 0.005);
-      //   row.style.transform = `translateY(${rowRate}px)`;
-      // });
-
-      // Parallax background patterns
-      const sections = document.querySelectorAll('.features, .testimonial, .how-it-works, .cta');
-      sections.forEach((section, index) => {
-        const sectionRate = scrolled * (0.1 + index * 0.05);
-        if (section.querySelector('::before')) {
-          section.style.backgroundPosition = `${sectionRate}px ${sectionRate * 0.5}px`;
-        }
-      });
     };
 
     const handleMouseMove = (e) => {
-      const mouseX = e.clientX / window.innerWidth;
-      const mouseY = e.clientY / window.innerHeight;
-      
-      // Mouse parallax for hero background
-      const hero = document.querySelector('.hero');
-      if (hero) {
-        const moveX = (mouseX - 0.5) * 20;
-        const moveY = (mouseY - 0.5) * 20;
-        hero.style.backgroundPosition = `${50 + moveX}% ${50 + moveY}%`;
-      }
+      // Mouse effects removed to prevent layout issues
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -566,8 +523,6 @@ export default function Home() {
           justify-content: center;
           position: relative;
           overflow: hidden;
-          will-change: transform, background-position;
-          transition: background-position 0.1s ease-out;
         }
 
         .hero::before {
@@ -651,7 +606,6 @@ export default function Home() {
           width: auto;
           filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
           transition: transform 0.3s ease;
-          will-change: transform;
         }
 
         .hero-logo:hover {
@@ -1110,7 +1064,6 @@ export default function Home() {
           box-shadow: 0 8px 25px rgba(75, 102, 255, 0.3);
           position: relative;
           transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-          will-change: transform;
         }
 
         .step:hover .step-number {
@@ -1812,78 +1765,41 @@ export default function Home() {
             grid-template-columns: 1fr;
           }
 
-          /* Reduced motion for mobile performance */
+          /* All animations disabled on mobile for performance */
           .animate-on-scroll {
-            transform: translateY(30px);
-            transition-duration: 0.6s;
+            transform: none !important;
+            transition: none;
+            opacity: 1;
           }
 
-          /* Simplified parallax on mobile */
+          /* Simplified hover on mobile */
           .table-row:hover {
             background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
           }
 
-          /* Disable complex animations on small screens */
-          @media (prefers-reduced-motion: reduce) {
-            .animate-on-scroll, .step-number, .table-row, .hero-logo {
-              animation: none;
-              transition: none;
-              transform: none !important;
-            }
+          /* Disable all animations */
+          .animate-on-scroll, .step-number, .table-row, .hero-logo {
+            animation: none;
+            transition: none;
+            transform: none !important;
           }
         }
 
-        /* Scroll Animations - Simplified */
+        /* Scroll Animations - Disabled to prevent layout issues */
         .animate-on-scroll {
-          opacity: 0;
-          transform: translateY(30px);
-          transition: all 0.6s ease-out;
+          opacity: 1;
+          transform: none !important;
+          transition: none;
         }
 
         .animate-on-scroll.animate-visible {
           opacity: 1;
-          transform: translateY(0);
-        }
-
-        /* Simplified staggered animation delays */
-        .animate-on-scroll:nth-child(1) { transition-delay: 0.1s; }
-        .animate-on-scroll:nth-child(2) { transition-delay: 0.2s; }
-        .animate-on-scroll:nth-child(3) { transition-delay: 0.3s; }
-        .animate-on-scroll:nth-child(4) { transition-delay: 0.4s; }
-        .animate-on-scroll:nth-child(5) { transition-delay: 0.5s; }
-
-        /* Section-specific animations - Much simpler */
-        .features.animate-on-scroll {
-          transform: translateY(40px);
-        }
-
-        .testimonial.animate-on-scroll {
-          transform: translateY(40px);
-        }
-
-        .how-it-works.animate-on-scroll {
-          transform: translateY(40px);
-        }
-
-        .cta.animate-on-scroll {
-          transform: translateY(30px);
+          transform: none !important;
         }
 
         /* Smooth scroll behavior */
         html {
           scroll-behavior: smooth;
-        }
-
-        /* Table row specific overrides to prevent movement */
-        .table-row.animate-on-scroll {
-          transform: none !important;
-        }
-
-        .table-row.animate-on-scroll.animate-visible {
-          opacity: 1;
-          transform: none !important;
         }
       `}</style>
     </div>
