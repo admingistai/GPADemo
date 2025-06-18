@@ -6,6 +6,9 @@ const nextConfig = {
   // Disable x-powered-by header
   poweredByHeader: false,
   
+  // Configure to serve static files
+  trailingSlash: false,
+  
   // Security headers
   async headers() {
     return [
@@ -45,6 +48,16 @@ const nextConfig = {
           {
             key: 'Content-Type',
             value: 'application/javascript'
+          }
+        ]
+      },
+      // Static file headers
+      {
+        source: '/:path*\\.(html|css|js)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=3600'
           }
         ]
       },

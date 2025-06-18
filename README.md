@@ -1,16 +1,14 @@
-# GPA - JavaScript Injection Tool
+# GPA - JavaScript Widget Demo
 
-A production-ready web application that replicates any website and automatically injects custom JavaScript (widget.js). Built with Next.js and deployable on Vercel.
+A demo website that showcases JavaScript widget injection functionality. Features "The Harbor" demo website with integrated widget.js for testing AI-powered features.
 
 ## Features
 
-- 🌐 **1:1 Website Replication**: Mirrors any website with complete fidelity
-- 💉 **Automatic JavaScript Injection**: Injects your custom widget.js into every replicated page
+- 🌐 **Demo Website**: "The Harbor" news website for testing widget functionality  
+- 💉 **Widget Integration**: Custom widget.js automatically loaded on the demo site
 - 🤖 **AI-Powered Widget**: OpenAI GPT integration for chat and image generation
-- 🎨 **DALL-E Integration**: Generate images directly within replicated websites
-- 🚀 **Serverless Architecture**: Optimized for Vercel deployment
-- 🛡️ **Security First**: Comprehensive security measures and input validation
-- ⚡ **Performance Optimized**: Streaming responses and efficient processing
+- 🎨 **DALL-E Integration**: Generate images directly within the demo website
+- 🚀 **Static Site Serving**: Optimized static file serving with Next.js
 - 📱 **Responsive Design**: Works on all devices
 - 🔍 **Error Handling**: Comprehensive error handling with user-friendly messages
 
@@ -56,35 +54,36 @@ npm run dev
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the application.
+Open [http://localhost:3000](http://localhost:3000) to see "The Harbor" demo website with the widget integrated.
 
 ## Project Structure
 
 ```
 ├── pages/
-│   ├── index.js                 # Main page with URL input
+│   ├── [[...slug]].js           # Catch-all route for static file serving
 │   ├── _app.js                  # Next.js app wrapper
 │   └── api/
-│       ├── proxy.js             # Main proxy endpoint
+│       ├── proxy.js             # Main proxy endpoint (for widget)
 │       ├── chat.js              # OpenAI chat completion endpoint
 │       ├── image.js             # OpenAI image generation endpoint
+│       ├── tts.js               # Text-to-speech endpoint
 │       └── health.js            # Health check endpoint
-├── components/
-│   ├── URLInputForm.jsx         # URL input component
-│   ├── WebsiteDisplay.jsx       # Website display component
-│   └── ErrorDisplay.jsx         # Error display component
-├── api/utils/
+├── pages/api/utils/
 │   ├── proxyHandler.js          # Core proxy logic
 │   ├── htmlModifier.js          # HTML modification utilities
 │   ├── headerProcessor.js       # HTTP header processing
 │   └── errorLogger.js           # Error logging utilities
-├── utils/
-│   ├── urlValidator.js          # URL validation
-│   └── errorHandler.js          # Error handling utilities
+├── theharbor/                   # Original demo website files
+│   ├── index.html               # Main harbor page
+│   ├── styles.css               # Harbor styles
+│   ├── script.js                # Harbor scripts
+│   └── *.html                   # Additional harbor pages
 ├── public/
-│   └── widget.js                # Injectable JavaScript
-├── styles/
-│   └── globals.css              # Global styles
+│   ├── index.html               # Harbor home page (copied)
+│   ├── styles.css               # Harbor styles (copied)
+│   ├── script.js                # Harbor scripts (copied)
+│   ├── *.html                   # Harbor pages (copied)
+│   └── widget.js                # Injectable JavaScript widget
 ├── package.json
 ├── vercel.json                  # Vercel configuration
 └── README.md
@@ -152,10 +151,10 @@ vercel --prod
 
 ## Usage
 
-1. Navigate to your deployed application
-2. Enter a complete URL (including http:// or https://)
-3. Click "Add Widget"
-4. The website will be displayed with your widget.js injected
+1. Navigate to [http://localhost:3000](http://localhost:3000) 
+2. You'll see "The Harbor" demo news website
+3. The widget.js is automatically loaded and integrated into the page
+4. Use the widget features (chat, image generation, etc.) to test functionality
 
 ## Security Considerations
 
