@@ -40,7 +40,6 @@ export default function URLInputForm({ onSubmit, loading, error }) {
   return (
     <form onSubmit={handleSubmit} className="url-form">
       <div className="form-group">
-        <label htmlFor="urlInput">Enter Website URL:</label>
         <div className="input-wrapper">
           <input
             type="text"
