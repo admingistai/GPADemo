@@ -185,6 +185,7 @@ export default function Home() {
                 <div className="feature-icon">💡</div>
                 <h3>Recommended Questions</h3>
                 <p>Auto-generates the most asked follow-ups; placed inline to guide exploration; lifts page views per visit.</p>
+                <div className="coming-soon-label">Coming Soon</div>
                 <div className="toggle-indicator">
                   {selectedFeatures.recommendedQuestions ? '✓' : '+'}
                 </div>
@@ -215,6 +216,7 @@ export default function Home() {
                 <div className="feature-icon">🔗</div>
                 <h3>Augmented Answers</h3>
                 <p>Enriches replies with fully-licensed partner sources; citations included; maintains editorial trust.</p>
+                <div className="coming-soon-label">Coming Soon</div>
                 <div className="toggle-indicator">
                   {selectedFeatures.augmentedAnswers ? '✓' : '+'}
                 </div>
@@ -225,6 +227,7 @@ export default function Home() {
                 <div className="feature-icon">🔍</div>
                 <h3>Go Deeper</h3>
                 <p>One-click expandable sidebars with related articles, data, and media; extends time-on-page.</p>
+                <div className="coming-soon-label">Coming Soon</div>
                 <div className="toggle-indicator">
                   {selectedFeatures.goDeeper ? '✓' : '+'}
                 </div>
@@ -235,6 +238,7 @@ export default function Home() {
                 <div className="feature-icon">💰</div>
                 <h3>Earn More with Ethical Ads</h3>
                 <p>Privacy-safe generative ad units matched to content intent; new revenue stream, no user tracking.</p>
+                <div className="coming-soon-label">Coming Soon</div>
                 <div className="toggle-indicator">
                   {selectedFeatures.ethicalAds ? '✓' : '+'}
                 </div>
@@ -245,6 +249,7 @@ export default function Home() {
                 <div className="feature-icon">🎭</div>
                 <h3>Custom Voices & Avatars</h3>
                 <p>Branded TTS and 3-D presenter options; consistent tone across text, audio, and video.</p>
+                <div className="coming-soon-label">Coming Soon</div>
                 <div className="toggle-indicator">
                   {selectedFeatures.customVoices ? '✓' : '+'}
                 </div>
@@ -265,6 +270,7 @@ export default function Home() {
                 <div className="feature-icon">📅</div>
                 <h3>Add to "My Daily"</h3>
                 <p>Opt-in to a personalized site-wide or network-wide daily digest; drives habitual return traffic and incremental revenue.</p>
+                <div className="coming-soon-label">Coming Soon</div>
                 <div className="toggle-indicator">
                   {selectedFeatures.addToDaily ? '✓' : '+'}
                 </div>
@@ -285,6 +291,7 @@ export default function Home() {
                 <div className="feature-icon">🤖</div>
                 <h3>Custom Publisher Agents</h3>
                 <p>Build task-specific, goal-oriented AI companions (e.g., paywall support, live events); full control over scope, tone, and data.</p>
+                <div className="coming-soon-label">Coming Soon</div>
                 <div className="toggle-indicator">
                   {selectedFeatures.customAgents ? '✓' : '+'}
                 </div>
@@ -295,6 +302,7 @@ export default function Home() {
                 <div className="feature-icon">🚀</div>
                 <h3>Future Proofing</h3>
                 <p>One integration spins up an MCP server that exposes bot-friendly endpoints, surfaces structured answers, and lets trusted AI agents transact safely on-site.</p>
+                <div className="coming-soon-label">Coming Soon</div>
                 <div className="toggle-indicator">
                   {selectedFeatures.futureProofing ? '✓' : '+'}
                 </div>
@@ -1416,6 +1424,22 @@ export default function Home() {
         .feature-card.selected .toggle-indicator {
           background: rgba(34, 197, 94, 0.8);
           color: white;
+        }
+
+        .coming-soon-label {
+          position: absolute;
+          top: 0.5rem;
+          left: 0.5rem;
+          background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+          color: white;
+          font-size: 0.7rem;
+          font-weight: 600;
+          padding: 0.25rem 0.5rem;
+          border-radius: 6px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+          z-index: 5;
         }
 
         .feature-actions {
