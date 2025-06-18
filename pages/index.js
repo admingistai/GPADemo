@@ -250,24 +250,35 @@ export default function Home() {
           display: flex;
           background: rgba(255, 255, 255, 0.95);
           border-radius: 50px;
-          padding: 8px;
+          padding: 4px;
           margin-bottom: 1rem;
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
           position: relative;
+          z-index: 1;
         }
 
         .url-input-wrapper::before {
           content: '';
           position: absolute;
-          top: -3px;
-          left: -3px;
-          right: -3px;
-          bottom: -3px;
-          background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
-          border-radius: 53px;
+          top: -4px;
+          left: -4px;
+          right: -4px;
+          bottom: -4px;
+          background: linear-gradient(45deg, 
+            rgba(255, 0, 0, 0.6), 
+            rgba(255, 115, 0, 0.6), 
+            rgba(255, 251, 0, 0.6), 
+            rgba(72, 255, 0, 0.6), 
+            rgba(0, 255, 213, 0.6), 
+            rgba(0, 43, 255, 0.6), 
+            rgba(122, 0, 255, 0.6), 
+            rgba(255, 0, 200, 0.6), 
+            rgba(255, 0, 0, 0.6)
+          );
+          border-radius: 54px;
           z-index: -1;
           background-size: 400% 400%;
-          animation: rainbow 3s ease infinite;
+          animation: rainbow 6s ease infinite;
         }
 
         @keyframes rainbow {
@@ -296,9 +307,18 @@ export default function Home() {
         }
 
         .generate-btn {
-          background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8);
+          background: linear-gradient(45deg, 
+            rgba(255, 0, 0, 0.8), 
+            rgba(255, 115, 0, 0.8), 
+            rgba(255, 251, 0, 0.8), 
+            rgba(72, 255, 0, 0.8), 
+            rgba(0, 255, 213, 0.8), 
+            rgba(0, 43, 255, 0.8), 
+            rgba(122, 0, 255, 0.8), 
+            rgba(255, 0, 200, 0.8)
+          );
           background-size: 400% 400%;
-          animation: rainbow 3s ease infinite;
+          animation: rainbow 6s ease infinite;
           border: none;
           color: white;
           padding: 1rem 2rem;
@@ -309,7 +329,7 @@ export default function Home() {
           cursor: pointer;
           transition: all 0.3s ease;
           white-space: nowrap;
-          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         .generate-btn:hover:not(:disabled) {
@@ -335,38 +355,20 @@ export default function Home() {
 
         /* Publishers Band */
         .publishers-band {
-          background: rgba(255, 255, 255, 0.05);
+          background: transparent;
           padding: 3rem 2rem 2rem;
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .publishers-content {
           max-width: 1200px;
           margin: 0 auto;
           text-align: center;
+          position: relative;
         }
 
         .publishers-logos,
         .publishers-logos-bottom {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          align-items: center;
-          gap: 2rem 3rem;
-          margin-bottom: 2rem;
-          opacity: 0.7;
-        }
-
-        .publishers-logos-bottom {
-          margin-bottom: 3rem;
-        }
-
-        .publisher-name {
-          font-size: 1rem;
-          font-weight: 400;
-          color: white;
-          font-family: 'Inter', sans-serif;
-          white-space: nowrap;
+          display: none;
         }
 
         .publishers-message {
@@ -375,6 +377,15 @@ export default function Home() {
           color: white;
           margin: 2rem 0;
           font-family: 'Inter', sans-serif;
+          position: relative;
+          z-index: 2;
+          background: url('/publishers-logos.png') center center no-repeat;
+          background-size: contain;
+          padding: 2rem;
+          min-height: 200px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .bottom-cta {
@@ -384,7 +395,6 @@ export default function Home() {
           gap: 2rem;
           margin-top: 2rem;
           padding-top: 2rem;
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .cta-text {
