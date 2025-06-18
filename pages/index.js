@@ -253,23 +253,27 @@ export default function Home() {
           right: 0;
           bottom: 0;
           background-image: 
-            linear-gradient(30deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%),
-            linear-gradient(150deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%),
-            radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15) 1px, transparent 2px),
-            radial-gradient(circle at 80% 70%, rgba(255,255,255,0.12) 1px, transparent 2px);
-          background-size: 120px 120px, 80px 80px, 60px 60px, 40px 40px;
-          background-position: 0 0, 40px 40px, 0 0, 20px 20px;
-          opacity: 0.6;
+            radial-gradient(ellipse 300px 100px at 20% 30%, rgba(255,255,255,0.12) 0%, transparent 70%),
+            radial-gradient(ellipse 200px 150px at 80% 70%, rgba(255,255,255,0.08) 0%, transparent 70%),
+            radial-gradient(ellipse 250px 80px at 50% 20%, rgba(255,255,255,0.06) 0%, transparent 60%),
+            radial-gradient(ellipse 180px 120px at 30% 80%, rgba(255,255,255,0.04) 0%, transparent 60%);
+          opacity: 0.7;
           pointer-events: none;
-          animation: patternMove 20s ease-in-out infinite;
+          animation: heroFlow 25s ease-in-out infinite;
         }
 
-        @keyframes patternMove {
+        @keyframes heroFlow {
           0%, 100% { 
-            background-position: 0 0, 40px 40px, 0 0, 20px 20px; 
+            transform: translateX(0) translateY(0) scale(1);
+          }
+          25% { 
+            transform: translateX(20px) translateY(-10px) scale(1.05);
           }
           50% { 
-            background-position: 30px 30px, 70px 10px, 20px 20px, 40px 0px; 
+            transform: translateX(-15px) translateY(15px) scale(0.95);
+          }
+          75% { 
+            transform: translateX(10px) translateY(-5px) scale(1.02);
           }
         }
 
@@ -382,27 +386,24 @@ export default function Home() {
           right: 0;
           bottom: 0;
           background-image: 
-            linear-gradient(60deg, rgba(99, 102, 241, 0.08) 2px, transparent 2px),
-            linear-gradient(120deg, rgba(139, 92, 246, 0.06) 1px, transparent 1px),
-            conic-gradient(from 0deg at 50% 50%, 
-              transparent 0deg, 
-              rgba(99, 102, 241, 0.05) 30deg, 
-              transparent 60deg, 
-              rgba(139, 92, 246, 0.05) 90deg, 
-              transparent 120deg);
-          background-size: 80px 80px, 120px 120px, 200px 200px;
-          background-position: 0 0, 40px 40px, 0 0;
-          opacity: 0.7;
+            radial-gradient(ellipse 400px 200px at 30% 40%, rgba(99, 102, 241, 0.06) 0%, transparent 60%),
+            radial-gradient(ellipse 300px 150px at 70% 60%, rgba(139, 92, 246, 0.04) 0%, transparent 60%),
+            radial-gradient(circle 100px at 20% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+            radial-gradient(circle 80px at 80% 20%, rgba(139, 92, 246, 0.06) 0%, transparent 50%);
+          opacity: 0.5;
           pointer-events: none;
-          animation: featuresPattern 15s linear infinite;
+          animation: featuresFloat 30s ease-in-out infinite;
         }
 
-        @keyframes featuresPattern {
-          0% { 
-            background-position: 0 0, 40px 40px, 0 0; 
+        @keyframes featuresFloat {
+          0%, 100% { 
+            transform: translateX(0) translateY(0) rotate(0deg);
           }
-          100% { 
-            background-position: 80px 80px, 160px 160px, 200px 200px; 
+          33% { 
+            transform: translateX(30px) translateY(-20px) rotate(2deg);
+          }
+          66% { 
+            transform: translateX(-25px) translateY(25px) rotate(-2deg);
           }
         }
 
@@ -527,40 +528,27 @@ export default function Home() {
           right: 0;
           bottom: 0;
           background-image: 
-            repeating-linear-gradient(
-              45deg,
-              transparent,
-              transparent 20px,
-              rgba(99, 102, 241, 0.03) 20px,
-              rgba(99, 102, 241, 0.03) 22px
-            ),
-            repeating-linear-gradient(
-              -45deg,
-              transparent,
-              transparent 30px,
-              rgba(139, 92, 246, 0.02) 30px,
-              rgba(139, 92, 246, 0.02) 31px
-            ),
-            radial-gradient(
-              ellipse at 30% 70%, 
-              rgba(99, 102, 241, 0.08) 0%, 
-              transparent 60%
-            );
-          background-size: 100px 100px, 150px 150px, 300px 200px;
-          opacity: 0.6;
+            radial-gradient(ellipse 500px 300px at 40% 30%, rgba(99, 102, 241, 0.05) 0%, transparent 70%),
+            radial-gradient(ellipse 350px 200px at 60% 70%, rgba(139, 92, 246, 0.03) 0%, transparent 70%),
+            radial-gradient(circle 150px at 80% 40%, rgba(99, 102, 241, 0.04) 0%, transparent 60%),
+            radial-gradient(circle 120px at 20% 60%, rgba(139, 92, 246, 0.02) 0%, transparent 60%);
+          opacity: 0.8;
           pointer-events: none;
-          animation: testimonialPattern 25s ease-in-out infinite;
+          animation: testimonialGlow 35s ease-in-out infinite;
         }
 
-        @keyframes testimonialPattern {
+        @keyframes testimonialGlow {
           0%, 100% { 
-            transform: translateX(0) translateY(0) rotate(0deg);
+            transform: translateX(0) translateY(0) scale(1);
           }
-          33% { 
-            transform: translateX(20px) translateY(-10px) rotate(1deg);
+          25% { 
+            transform: translateX(15px) translateY(-10px) scale(1.02);
           }
-          66% { 
-            transform: translateX(-15px) translateY(15px) rotate(-1deg);
+          50% { 
+            transform: translateX(-20px) translateY(20px) scale(0.98);
+          }
+          75% { 
+            transform: translateX(10px) translateY(-15px) scale(1.01);
           }
         }
 
