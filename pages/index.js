@@ -253,11 +253,11 @@ export default function Home() {
           right: 0;
           bottom: 0;
           background-image: 
-            radial-gradient(ellipse 300px 100px at 20% 30%, rgba(255,255,255,0.12) 0%, transparent 70%),
-            radial-gradient(ellipse 200px 150px at 80% 70%, rgba(255,255,255,0.08) 0%, transparent 70%),
-            radial-gradient(ellipse 250px 80px at 50% 20%, rgba(255,255,255,0.06) 0%, transparent 60%),
-            radial-gradient(ellipse 180px 120px at 30% 80%, rgba(255,255,255,0.04) 0%, transparent 60%);
-          opacity: 0.7;
+            radial-gradient(ellipse 300px 100px at 20% 30%, rgba(255,255,255,0.25) 0%, transparent 70%),
+            radial-gradient(ellipse 200px 150px at 80% 70%, rgba(255,255,255,0.2) 0%, transparent 70%),
+            radial-gradient(ellipse 250px 80px at 50% 20%, rgba(255,255,255,0.15) 0%, transparent 60%),
+            radial-gradient(ellipse 180px 120px at 30% 80%, rgba(255,255,255,0.1) 0%, transparent 60%);
+          opacity: 1;
           pointer-events: none;
           animation: heroFlow 25s ease-in-out infinite;
         }
@@ -386,11 +386,11 @@ export default function Home() {
           right: 0;
           bottom: 0;
           background-image: 
-            radial-gradient(ellipse 400px 200px at 30% 40%, rgba(99, 102, 241, 0.06) 0%, transparent 60%),
-            radial-gradient(ellipse 300px 150px at 70% 60%, rgba(139, 92, 246, 0.04) 0%, transparent 60%),
-            radial-gradient(circle 100px at 20% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
-            radial-gradient(circle 80px at 80% 20%, rgba(139, 92, 246, 0.06) 0%, transparent 50%);
-          opacity: 0.5;
+            radial-gradient(ellipse 400px 200px at 30% 40%, rgba(99, 102, 241, 0.15) 0%, transparent 60%),
+            radial-gradient(ellipse 300px 150px at 70% 60%, rgba(139, 92, 246, 0.12) 0%, transparent 60%),
+            radial-gradient(circle 100px at 20% 80%, rgba(99, 102, 241, 0.18) 0%, transparent 50%),
+            radial-gradient(circle 80px at 80% 20%, rgba(139, 92, 246, 0.14) 0%, transparent 50%);
+          opacity: 0.8;
           pointer-events: none;
           animation: featuresFloat 30s ease-in-out infinite;
         }
@@ -528,11 +528,11 @@ export default function Home() {
           right: 0;
           bottom: 0;
           background-image: 
-            radial-gradient(ellipse 500px 300px at 40% 30%, rgba(99, 102, 241, 0.05) 0%, transparent 70%),
-            radial-gradient(ellipse 350px 200px at 60% 70%, rgba(139, 92, 246, 0.03) 0%, transparent 70%),
-            radial-gradient(circle 150px at 80% 40%, rgba(99, 102, 241, 0.04) 0%, transparent 60%),
-            radial-gradient(circle 120px at 20% 60%, rgba(139, 92, 246, 0.02) 0%, transparent 60%);
-          opacity: 0.8;
+            radial-gradient(ellipse 500px 300px at 40% 30%, rgba(99, 102, 241, 0.12) 0%, transparent 70%),
+            radial-gradient(ellipse 350px 200px at 60% 70%, rgba(139, 92, 246, 0.08) 0%, transparent 70%),
+            radial-gradient(circle 150px at 80% 40%, rgba(99, 102, 241, 0.1) 0%, transparent 60%),
+            radial-gradient(circle 120px at 20% 60%, rgba(139, 92, 246, 0.06) 0%, transparent 60%);
+          opacity: 1;
           pointer-events: none;
           animation: testimonialGlow 35s ease-in-out infinite;
         }
