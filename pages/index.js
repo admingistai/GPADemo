@@ -386,11 +386,11 @@ export default function Home() {
           right: 0;
           bottom: 0;
           background-image: 
-            radial-gradient(ellipse 400px 200px at 30% 40%, rgba(99, 102, 241, 0.15) 0%, transparent 60%),
-            radial-gradient(ellipse 300px 150px at 70% 60%, rgba(139, 92, 246, 0.12) 0%, transparent 60%),
-            radial-gradient(circle 100px at 20% 80%, rgba(99, 102, 241, 0.18) 0%, transparent 50%),
-            radial-gradient(circle 80px at 80% 20%, rgba(139, 92, 246, 0.14) 0%, transparent 50%);
-          opacity: 0.8;
+            radial-gradient(ellipse 400px 200px at 30% 40%, rgba(99, 102, 241, 0.25) 0%, transparent 60%),
+            radial-gradient(ellipse 300px 150px at 70% 60%, rgba(139, 92, 246, 0.22) 0%, transparent 60%),
+            radial-gradient(circle 100px at 20% 80%, rgba(99, 102, 241, 0.28) 0%, transparent 50%),
+            radial-gradient(circle 80px at 80% 20%, rgba(139, 92, 246, 0.24) 0%, transparent 50%);
+          opacity: 1;
           pointer-events: none;
           animation: featuresFloat 30s ease-in-out infinite;
         }
@@ -528,10 +528,10 @@ export default function Home() {
           right: 0;
           bottom: 0;
           background-image: 
-            radial-gradient(ellipse 500px 300px at 40% 30%, rgba(99, 102, 241, 0.12) 0%, transparent 70%),
-            radial-gradient(ellipse 350px 200px at 60% 70%, rgba(139, 92, 246, 0.08) 0%, transparent 70%),
-            radial-gradient(circle 150px at 80% 40%, rgba(99, 102, 241, 0.1) 0%, transparent 60%),
-            radial-gradient(circle 120px at 20% 60%, rgba(139, 92, 246, 0.06) 0%, transparent 60%);
+            radial-gradient(ellipse 500px 300px at 40% 30%, rgba(99, 102, 241, 0.22) 0%, transparent 70%),
+            radial-gradient(ellipse 350px 200px at 60% 70%, rgba(139, 92, 246, 0.18) 0%, transparent 70%),
+            radial-gradient(circle 150px at 80% 40%, rgba(99, 102, 241, 0.2) 0%, transparent 60%),
+            radial-gradient(circle 120px at 20% 60%, rgba(139, 92, 246, 0.16) 0%, transparent 60%);
           opacity: 1;
           pointer-events: none;
           animation: testimonialGlow 35s ease-in-out infinite;
@@ -647,22 +647,22 @@ export default function Home() {
           pointer-events: none;
         }
 
-        .how-it-works::after {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-image: 
-            radial-gradient(ellipse 350px 180px at 25% 60%, rgba(99, 102, 241, 0.08) 0%, transparent 70%),
-            radial-gradient(ellipse 280px 140px at 75% 40%, rgba(139, 92, 246, 0.06) 0%, transparent 70%),
-            radial-gradient(circle 120px at 60% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 60%),
-            radial-gradient(circle 90px at 20% 85%, rgba(139, 92, 246, 0.08) 0%, transparent 60%);
-          opacity: 0.9;
-          pointer-events: none;
-          animation: stepsPattern 20s ease-in-out infinite;
-        }
+                 .how-it-works::after {
+           content: '';
+           position: absolute;
+           top: 0;
+           left: 0;
+           right: 0;
+           bottom: 0;
+           background-image: 
+             radial-gradient(ellipse 350px 180px at 25% 60%, rgba(99, 102, 241, 0.18) 0%, transparent 70%),
+             radial-gradient(ellipse 280px 140px at 75% 40%, rgba(139, 92, 246, 0.16) 0%, transparent 70%),
+             radial-gradient(circle 120px at 60% 20%, rgba(99, 102, 241, 0.2) 0%, transparent 60%),
+             radial-gradient(circle 90px at 20% 85%, rgba(139, 92, 246, 0.18) 0%, transparent 60%);
+           opacity: 1;
+           pointer-events: none;
+           animation: stepsPattern 20s ease-in-out infinite;
+         }
 
         @keyframes stepsPattern {
           0%, 100% { 
@@ -823,11 +823,11 @@ export default function Home() {
            right: 0;
            bottom: 0;
            background-image: 
-             radial-gradient(ellipse 400px 250px at 30% 30%, rgba(99, 102, 241, 0.06) 0%, transparent 80%),
-             radial-gradient(ellipse 300px 200px at 70% 70%, rgba(139, 92, 246, 0.04) 0%, transparent 80%),
-             radial-gradient(circle 150px at 80% 30%, rgba(99, 102, 241, 0.08) 0%, transparent 70%),
-             radial-gradient(circle 100px at 20% 70%, rgba(139, 92, 246, 0.06) 0%, transparent 70%);
-           opacity: 0.8;
+             radial-gradient(ellipse 400px 250px at 30% 30%, rgba(99, 102, 241, 0.16) 0%, transparent 80%),
+             radial-gradient(ellipse 300px 200px at 70% 70%, rgba(139, 92, 246, 0.14) 0%, transparent 80%),
+             radial-gradient(circle 150px at 80% 30%, rgba(99, 102, 241, 0.18) 0%, transparent 70%),
+             radial-gradient(circle 100px at 20% 70%, rgba(139, 92, 246, 0.16) 0%, transparent 70%);
+           opacity: 1;
            pointer-events: none;
            animation: ctaGlow 28s ease-in-out infinite;
          }
@@ -900,11 +900,11 @@ export default function Home() {
            right: 0;
            bottom: 0;
            background-image: 
-             radial-gradient(ellipse 200px 80px at 20% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 70%),
-             radial-gradient(ellipse 180px 70px at 80% 50%, rgba(139, 92, 246, 0.06) 0%, transparent 70%),
-             radial-gradient(circle 60px at 50% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 60%),
-             radial-gradient(circle 50px at 50% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 60%);
-           opacity: 0.7;
+             radial-gradient(ellipse 200px 80px at 20% 50%, rgba(99, 102, 241, 0.18) 0%, transparent 70%),
+             radial-gradient(ellipse 180px 70px at 80% 50%, rgba(139, 92, 246, 0.16) 0%, transparent 70%),
+             radial-gradient(circle 60px at 50% 20%, rgba(99, 102, 241, 0.2) 0%, transparent 60%),
+             radial-gradient(circle 50px at 50% 80%, rgba(139, 92, 246, 0.18) 0%, transparent 60%);
+           opacity: 1;
            pointer-events: none;
            animation: footerShimmer 32s ease-in-out infinite;
          }
