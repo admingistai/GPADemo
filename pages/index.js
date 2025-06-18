@@ -110,7 +110,7 @@ export default function Home() {
           <footer className="publishers-band">
             <div className="publishers-content">
               <img 
-                src="/publishers-logos.png" 
+                src="/publishers-logos.png?v=1" 
                 alt="Publishers logos" 
                 className="publishers-image"
               />
