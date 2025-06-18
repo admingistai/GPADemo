@@ -577,9 +577,9 @@ export default function Home() {
         }
 
         /* Hero Content */
-        .hero-content {
+                 .hero-content {
           max-width: 900px;
-          width: 100%;
+           width: 100%;
           position: relative;
           z-index: 2;
           animation: fadeInUp 1s ease-out;
@@ -594,50 +594,50 @@ export default function Home() {
             opacity: 1;
             transform: translateY(0);
           }
-        }
+         }
 
-        .logo-section {
+         .logo-section {
           margin-bottom: 2rem;
           animation: fadeInUp 1s ease-out 0.2s both;
-        }
+         }
 
-        .hero-logo {
+         .hero-logo {
           height: 150px;
-          width: auto;
+           width: auto;
           filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3)) drop-shadow(0 0 20px rgba(0,0,0,0.8)) drop-shadow(0 0 40px rgba(0,0,0,0.6));
           transition: transform 0.3s ease;
         }
 
         .hero-logo:hover {
           transform: scale(1.05) rotate(2deg);
-        }
+         }
 
-        .hero h1 {
+         .hero h1 {
           font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
           font-size: 3.2rem;
-          font-weight: 700;
-          margin: 0 0 1.5rem 0;
-          letter-spacing: -0.02em;
+           font-weight: 700;
+           margin: 0 0 1.5rem 0;
+           letter-spacing: -0.02em;
           background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 50%, #dbeafe 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
           text-shadow: 0 4px 20px rgba(0,0,0,0.3);
           animation: fadeInUp 1s ease-out 0.4s both;
-        }
+         }
 
-        .hero-subtitle {
+         .hero-subtitle {
           font-size: 1.2rem;
           margin: 0 0 2.5rem 0;
           opacity: 0.95;
-          max-width: 600px;
-          margin-left: auto;
-          margin-right: auto;
+           max-width: 600px;
+           margin-left: auto;
+           margin-right: auto;
           color: #f8fafc;
           line-height: 1.6;
           text-shadow: 0 2px 10px rgba(0,0,0,0.2);
           animation: fadeInUp 1s ease-out 0.6s both;
-        }
+         }
 
         .url-input-section {
           margin-top: 2rem;
@@ -872,16 +872,16 @@ export default function Home() {
           z-index: 2;
         }
 
-        blockquote {
+                 blockquote {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-          font-size: 1.5rem;
+           font-size: 1.5rem;
           font-style: normal;
-          text-align: center;
-          margin: 0;
-          color: #1a202c;
-          max-width: 800px;
-          margin: 0 auto;
-          line-height: 1.7;
+           text-align: center;
+           margin: 0;
+           color: #1a202c;
+           max-width: 800px;
+           margin: 0 auto;
+           line-height: 1.7;
           position: relative;
           z-index: 2;
           padding: 2.5rem;
@@ -915,12 +915,12 @@ export default function Home() {
           right: 20px;
           font-family: Georgia, serif;
           opacity: 0.3;
-        }
+         }
 
-        cite {
-          display: block;
+         cite {
+           display: block;
           margin-top: 2rem;
-          font-style: normal;
+           font-style: normal;
           background: linear-gradient(135deg, #4B66FF 0%, #7C3AED 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -929,7 +929,7 @@ export default function Home() {
           font-weight: 700;
           text-transform: uppercase;
           letter-spacing: 0.5px;
-        }
+         }
 
         /* How It Works Section */
         .how-it-works {
@@ -1119,18 +1119,18 @@ export default function Home() {
           font-weight: 600;
         }
 
-        .step-content p {
-          margin: 0;
+                 .step-content p {
+           margin: 0;
           color: #4a5568;
           font-size: 1rem;
           line-height: 1.5;
-        }
+         }
 
-        /* CTA Section */
-        .cta {
-          padding: 4rem 0;
+         /* CTA Section */
+         .cta {
+           padding: 4rem 0;
           background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-          text-align: center;
+           text-align: center;
           position: relative;
           overflow: hidden;
         }
@@ -1174,11 +1174,11 @@ export default function Home() {
           66% { 
             transform: translateX(-18px) translateY(18px) rotate(-1deg);
           }
-        }
+         }
 
-        .cta h2 {
+         .cta h2 {
           font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-          font-size: 2.5rem;
+           font-size: 2.5rem;
           margin: 0 0 1.5rem 0;
           background: linear-gradient(135deg, #1a202c 0%, #4a5568 100%);
           -webkit-background-clip: text;
@@ -1188,25 +1188,25 @@ export default function Home() {
           letter-spacing: -0.01em;
           position: relative;
           z-index: 2;
-        }
+         }
 
-        .cta p {
+         .cta p {
           font-size: 1.2rem;
-          margin: 0;
+           margin: 0;
           color: #4a5568;
           position: relative;
           z-index: 2;
           max-width: 550px;
           margin: 0 auto;
           line-height: 1.5;
-        }
+         }
 
-        /* Footer */
-        .footer {
+                 /* Footer */
+         .footer {
           background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
-          color: #e2e8f0;
-          padding: 2rem 0;
-          text-align: center;
+           color: #e2e8f0;
+           padding: 2rem 0;
+           text-align: center;
           position: relative;
           overflow: hidden;
         }
@@ -1248,10 +1248,10 @@ export default function Home() {
           50% { 
             transform: translateX(15px) scaleX(1.1);
           }
-        }
+         }
 
-        .footer p {
-          margin: 0;
+         .footer p {
+           margin: 0;
           font-size: 1rem;
           position: relative;
           z-index: 2;
@@ -1582,7 +1582,7 @@ export default function Home() {
         @keyframes loadingProgress {
           0% { transform: translateX(-100%); }
           100% { transform: translateX(0); }
-        }
+         }
 
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
@@ -1819,7 +1819,7 @@ export default function Home() {
         /* Smooth scroll behavior */
         html {
           scroll-behavior: smooth;
-        }
+         }
       `}</style>
     </div>
   );

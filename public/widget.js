@@ -1702,26 +1702,20 @@
                 }
                 
                 .gist-add-to-site {
-                    color: #6366f1;
+                    color: #374151;
                     text-decoration: none;
-                    transition: all 0.2s ease;
+                    transition: color 0.2s ease;
                     pointer-events: auto;
-                    font-weight: 600;
-                    padding: 4px 8px;
-                    border-radius: 6px;
-                    background: rgba(99, 102, 241, 0.1);
                 }
                 
                 .gist-add-to-site:hover {
-                    color: #4f46e5;
-                    background: rgba(99, 102, 241, 0.2);
-                    transform: translateY(-1px);
+                    color: #6366f1;
+                    text-decoration: underline;
                 }
                 
                 .gist-powered-text {
                     pointer-events: none;
                     color: #374151;
-                    font-weight: 600;
                 }
                 
                 /* Fixed footer for answer container */
@@ -1729,13 +1723,13 @@
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    padding: 12px 16px;
+                    padding: 8px 16px;
                     border-top: 1px solid #e5e7eb;
                     border-radius: 0 0 14.5px 14.5px;
-                    color: #6b7280;
-                    font-size: 13px;
-                    font-weight: 600;
-                    opacity: 1;
+                    color: #d1d5db;
+                    font-size: 10px;
+                    font-weight: 500;
+                    opacity: 0.8;
                     position: relative;
                     z-index: 2;
                     flex-shrink: 0;
@@ -1744,14 +1738,14 @@
                 .gist-powered-section {
                     display: flex;
                     align-items: center;
-                    gap: 8px;
+                    gap: 6px;
                 }
                 
                 .gist-footer-logo {
-                    width: 18px;
-                    height: 18px;
+                    width: 14px;
+                    height: 14px;
                     object-fit: contain;
-                    opacity: 1;
+                    opacity: 0.8;
                 }
 
                 
