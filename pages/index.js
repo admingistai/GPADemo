@@ -50,7 +50,7 @@ export default function Home() {
               <div className="logo-section">
                 <img src="/gist-logo.png" alt="Gist Logo" className="hero-logo" />
               </div>
-              <h1>Create an AI Companion for Your Content—in Seconds</h1>
+              <h1>Turn Any Website into an AI-Powered Experience</h1>
               <p className="hero-subtitle">
                 <strong>Paste any article, blog, or homepage URL below.</strong><br />
                 Gist Answers will spin up a fully branded, citation‑rich AI assistant that lives right on your site.
