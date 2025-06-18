@@ -93,7 +93,7 @@ export default function URLInputForm({ onSubmit, loading, error }) {
           display: block;
           margin-bottom: 0.5rem;
           font-weight: 600;
-          color: #333;
+          color: white;
           font-size: 1.1rem;
         }
 
