@@ -294,10 +294,10 @@ export default function Home() {
                 <img src="/gist-logo.png" alt="Gist Logo" className="hero-logo" />
               </div>
               <h1>Launch Your Ethical AI Revenue Engine Today</h1>
-                              <p className="hero-subtitle">
+              <p className="hero-subtitle">
                   <strong>Transform reader engagement into sustainable revenue with AI that respects your brand.</strong><br />
                   See how ProRata's ethical AI companion drives deeper engagement and unlocks new monetization—instantly.
-                </p>
+              </p>
               
               <div className="url-input-section">
                 <URLInputForm 
@@ -464,9 +464,9 @@ export default function Home() {
           background-size: 400% 400%;
           animation: gradientShift 8s ease infinite;
           color: white;
-          padding: 2.5rem 1.5rem;
+          padding: 4rem 2rem;
           text-align: center;
-          min-height: 55vh;
+          min-height: 75vh;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -526,9 +526,9 @@ export default function Home() {
           100% { background-position: 0% 50%; }
         }
 
-        .hero-content {
+                 .hero-content {
           max-width: 900px;
-          width: 100%;
+           width: 100%;
           position: relative;
           z-index: 2;
           animation: fadeInUp 1s ease-out;
@@ -543,29 +543,29 @@ export default function Home() {
             opacity: 1;
             transform: translateY(0);
           }
-        }
+         }
 
-        .logo-section {
-          margin-bottom: 1.5rem;
+         .logo-section {
+          margin-bottom: 2rem;
           animation: fadeInUp 1s ease-out 0.2s both;
-        }
+         }
 
-        .hero-logo {
-          height: 80px;
-          width: auto;
+         .hero-logo {
+          height: 100px;
+           width: auto;
           filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
           transition: transform 0.3s ease;
         }
 
         .hero-logo:hover {
           transform: scale(1.05) rotate(2deg);
-        }
+         }
 
-                          .hero h1 {
+         .hero h1 {
            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-           font-size: 2.8rem;
+           font-size: 3.2rem;
            font-weight: 700;
-           margin: 0 0 1rem 0;
+           margin: 0 0 1.5rem 0;
            letter-spacing: -0.02em;
            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 50%, #dbeafe 100%);
            -webkit-background-clip: text;
@@ -576,8 +576,8 @@ export default function Home() {
          }
 
          .hero-subtitle {
-           font-size: 1.1rem;
-           margin: 0 0 2rem 0;
+           font-size: 1.2rem;
+           margin: 0 0 2.5rem 0;
            opacity: 0.95;
            max-width: 600px;
            margin-left: auto;
@@ -589,7 +589,7 @@ export default function Home() {
          }
 
         .url-input-section {
-          margin-top: 1.5rem;
+          margin-top: 2rem;
           animation: fadeInUp 1s ease-out 0.8s both;
         }
 
@@ -602,7 +602,7 @@ export default function Home() {
 
         /* Features Section */
         .features {
-          padding: 3rem 0;
+          padding: 4rem 0;
           background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
           position: relative;
           overflow: hidden;
@@ -652,9 +652,9 @@ export default function Home() {
 
         .features h2 {
           font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-          font-size: 2.2rem;
+          font-size: 2.5rem;
           text-align: center;
-          margin: 0 0 2.5rem 0;
+          margin: 0 0 3rem 0;
           background: linear-gradient(135deg, #1a202c 0%, #4a5568 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -693,7 +693,7 @@ export default function Home() {
         .table-row {
           display: grid;
           grid-template-columns: 1fr 1fr 1fr;
-          padding: 1.2rem 1rem;
+          padding: 1.5rem 1.2rem;
           border-bottom: 1px solid rgba(226, 232, 240, 0.5);
           align-items: start;
           transition: all 0.3s ease;
@@ -744,7 +744,7 @@ export default function Home() {
 
         /* Testimonial Section */
         .testimonial {
-          padding: 3rem 0;
+          padding: 4rem 0;
           background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
           position: relative;
           overflow: hidden;
@@ -797,9 +797,9 @@ export default function Home() {
 
         .testimonial h2 {
           font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-          font-size: 2.2rem;
+          font-size: 2.5rem;
           text-align: center;
-          margin: 0 0 2rem 0;
+          margin: 0 0 2.5rem 0;
           background: linear-gradient(135deg, #1a202c 0%, #4a5568 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -810,19 +810,19 @@ export default function Home() {
           z-index: 2;
         }
 
-        blockquote {
+                 blockquote {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-          font-size: 1.3rem;
+           font-size: 1.5rem;
           font-style: normal;
-          text-align: center;
-          margin: 0;
-          color: #1a202c;
-          max-width: 700px;
-          margin: 0 auto;
-          line-height: 1.6;
+           text-align: center;
+           margin: 0;
+           color: #1a202c;
+           max-width: 800px;
+           margin: 0 auto;
+           line-height: 1.7;
           position: relative;
           z-index: 2;
-          padding: 2rem;
+          padding: 2.5rem;
           background: rgba(255, 255, 255, 0.8);
           backdrop-filter: blur(20px);
           border-radius: 20px;
@@ -853,12 +853,12 @@ export default function Home() {
           right: 20px;
           font-family: Georgia, serif;
           opacity: 0.3;
-        }
+         }
 
-        cite {
-          display: block;
-          margin-top: 1.5rem;
-          font-style: normal;
+         cite {
+           display: block;
+          margin-top: 2rem;
+           font-style: normal;
           background: linear-gradient(135deg, #4B66FF 0%, #7C3AED 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -867,11 +867,11 @@ export default function Home() {
           font-weight: 700;
           text-transform: uppercase;
           letter-spacing: 0.5px;
-        }
+         }
 
         /* How It Works Section */
         .how-it-works {
-          padding: 3rem 0;
+          padding: 4rem 0;
           background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
           position: relative;
           overflow: hidden;
@@ -924,9 +924,9 @@ export default function Home() {
 
         .how-it-works h2 {
           font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-          font-size: 2.2rem;
+          font-size: 2.5rem;
           text-align: center;
-          margin: 0 0 2.5rem 0;
+          margin: 0 0 3rem 0;
           background: linear-gradient(135deg, #1a202c 0%, #4a5568 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -940,7 +940,7 @@ export default function Home() {
         .steps {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-          gap: 1.5rem;
+          gap: 2rem;
           max-width: 1000px;
           margin: 0 auto;
           position: relative;
@@ -950,10 +950,10 @@ export default function Home() {
         .step {
           display: flex;
           align-items: flex-start;
-          gap: 1rem;
+          gap: 1.2rem;
           background: rgba(255, 255, 255, 0.9);
           backdrop-filter: blur(20px);
-          padding: 1.5rem;
+          padding: 2rem;
           border-radius: 16px;
           box-shadow: 
             0 15px 30px rgba(0, 0, 0, 0.1),
@@ -990,8 +990,8 @@ export default function Home() {
         .step-number {
           background: linear-gradient(135deg, #4B66FF 0%, #7C3AED 100%);
           color: white;
-          width: 3rem;
-          height: 3rem;
+          width: 3.5rem;
+          height: 3.5rem;
           border-radius: 50%;
           display: flex;
           align-items: center;
@@ -1024,22 +1024,22 @@ export default function Home() {
 
         .step-content h3 {
           font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-          margin: 0 0 0.6rem 0;
+          margin: 0 0 0.8rem 0;
           color: #2d3748;
           font-size: 1.3rem;
           font-weight: 600;
         }
 
-        .step-content p {
-          margin: 0;
+                 .step-content p {
+           margin: 0;
           color: #4a5568;
           font-size: 1rem;
           line-height: 1.5;
-        }
+         }
 
          /* CTA Section */
          .cta {
-           padding: 3rem 0;
+           padding: 4rem 0;
            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
            text-align: center;
            position: relative;
@@ -1089,8 +1089,8 @@ export default function Home() {
 
          .cta h2 {
            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-           font-size: 2.2rem;
-           margin: 0 0 1.2rem 0;
+           font-size: 2.5rem;
+           margin: 0 0 1.5rem 0;
            background: linear-gradient(135deg, #1a202c 0%, #4a5568 100%);
            -webkit-background-clip: text;
            -webkit-text-fill-color: transparent;
@@ -1112,11 +1112,11 @@ export default function Home() {
            line-height: 1.5;
          }
 
-         /* Footer */
+                 /* Footer */
          .footer {
            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
            color: #e2e8f0;
-           padding: 1.5rem 0;
+           padding: 2rem 0;
            text-align: center;
            position: relative;
            overflow: hidden;
@@ -1176,7 +1176,7 @@ export default function Home() {
           background-size: 400% 400%;
           animation: gradientShift 8s ease infinite;
           color: white;
-          padding: 3rem 1.5rem;
+          padding: 2rem 1rem;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1206,15 +1206,15 @@ export default function Home() {
         }
 
         .feature-logo {
-          height: 70px;
+          height: 60px;
           width: auto;
-          margin-bottom: 1.5rem;
+          margin-bottom: 1rem;
           filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
         }
 
         .feature-selection h1 {
           font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-          font-size: 2.4rem;
+          font-size: 2.2rem;
           font-weight: 700;
           margin: 0 0 0.8rem 0;
           letter-spacing: -0.02em;
@@ -1226,19 +1226,19 @@ export default function Home() {
         }
 
         .feature-subtitle {
-          font-size: 1.1rem;
-          margin: 0 0 2.5rem 0;
+          font-size: 1rem;
+          margin: 0 0 2rem 0;
           opacity: 0.95;
           color: #f8fafc;
-          line-height: 1.6;
+          line-height: 1.5;
           text-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
         .features-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-          gap: 1.5rem;
-          margin-bottom: 3rem;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 1rem;
+          margin-bottom: 2rem;
           max-width: 1400px;
           margin-left: auto;
           margin-right: auto;
@@ -1247,7 +1247,7 @@ export default function Home() {
         .feature-card {
           background: rgba(255, 255, 255, 0.15);
           backdrop-filter: blur(20px);
-          border-radius: 20px;
+          border-radius: 16px;
           padding: 1.5rem;
           text-align: center;
           cursor: pointer;
@@ -1275,16 +1275,16 @@ export default function Home() {
 
         .feature-card h3 {
           font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-          font-size: 1.3rem;
+          font-size: 1.2rem;
           font-weight: 600;
           margin: 0 0 0.8rem 0;
           color: white;
         }
 
         .feature-card p {
-          font-size: 1rem;
+          font-size: 0.9rem;
           color: rgba(255, 255, 255, 0.9);
-          line-height: 1.5;
+          line-height: 1.4;
           margin: 0;
         }
 
@@ -1310,15 +1310,15 @@ export default function Home() {
 
         .feature-actions {
           display: flex;
-          gap: 1.5rem;
+          gap: 1rem;
           justify-content: center;
         }
 
         .btn-primary, .btn-secondary {
-          padding: 1rem 2.5rem;
-          border-radius: 12px;
+          padding: 0.8rem 2rem;
+          border-radius: 10px;
           font-weight: 600;
-          font-size: 1.1rem;
+          font-size: 1rem;
           cursor: pointer;
           transition: all 0.3s ease;
           border: none;
@@ -1354,7 +1354,7 @@ export default function Home() {
           background-size: 400% 400%;
           animation: gradientShift 8s ease infinite;
           color: white;
-          padding: 4rem 2rem;
+          padding: 2rem 1rem;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1376,7 +1376,7 @@ export default function Home() {
         }
 
         .loading-content {
-          max-width: 600px;
+          max-width: 500px;
           width: 100%;
           text-align: center;
           position: relative;
@@ -1384,17 +1384,17 @@ export default function Home() {
         }
 
         .loading-logo {
-          height: 80px;
+          height: 60px;
           width: auto;
-          margin-bottom: 2rem;
+          margin-bottom: 1.5rem;
           filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
         }
 
         .loading-screen h1 {
           font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-          font-size: 2.5rem;
+          font-size: 2rem;
           font-weight: 700;
-          margin: 0 0 3rem 0;
+          margin: 0 0 2rem 0;
           letter-spacing: -0.02em;
           background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 50%, #dbeafe 100%);
           -webkit-background-clip: text;
@@ -1404,18 +1404,18 @@ export default function Home() {
         }
 
         .loading-steps {
-          margin-bottom: 3rem;
+          margin-bottom: 2rem;
         }
 
         .loading-step {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 1rem;
-          padding: 1rem;
-          margin-bottom: 0.5rem;
+          gap: 0.8rem;
+          padding: 0.8rem;
+          margin-bottom: 0.4rem;
           background: rgba(255, 255, 255, 0.1);
-          border-radius: 12px;
+          border-radius: 10px;
           backdrop-filter: blur(10px);
           animation: loadingPulse 2s ease-in-out infinite;
         }
@@ -1438,7 +1438,7 @@ export default function Home() {
         }
 
         .loading-step span {
-          font-size: 1.1rem;
+          font-size: 1rem;
           font-weight: 500;
         }
 
@@ -1461,31 +1461,31 @@ export default function Home() {
         @keyframes loadingProgress {
           0% { transform: translateX(-100%); }
           100% { transform: translateX(0); }
-        }
+         }
 
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
           .hero {
-            padding: 2rem 1rem;
-            min-height: 50vh;
+            padding: 3rem 1rem;
+            min-height: 70vh;
           }
 
           .hero h1 {
-            font-size: 2.2rem;
-            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            margin-bottom: 1.2rem;
           }
 
           .hero-subtitle {
-            font-size: 1rem;
-            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
           }
 
           .hero-logo {
-            height: 70px;
+            height: 80px;
           }
 
           .features h2, .testimonial h2, .how-it-works h2, .cta h2 {
-            font-size: 1.8rem;
+            font-size: 2rem;
           }
 
           .table-header, .table-row {
@@ -1499,11 +1499,11 @@ export default function Home() {
 
           .table-row {
             display: block;
-            padding: 1.2rem 1rem;
+            padding: 1.5rem 1.2rem;
           }
 
           .table-row > div {
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
           }
 
           .table-row > div:last-child {
@@ -1517,8 +1517,8 @@ export default function Home() {
           }
 
           blockquote {
-            font-size: 1.2rem;
-            padding: 1.5rem;
+            font-size: 1.3rem;
+            padding: 1.8rem;
             margin: 0 1rem;
           }
 
@@ -1529,11 +1529,11 @@ export default function Home() {
 
           .steps {
             grid-template-columns: 1fr;
-            gap: 1.5rem;
+            gap: 2rem;
           }
 
           .step {
-            padding: 1.2rem;
+            padding: 1.5rem;
             margin: 0 1rem;
           }
 
@@ -1548,24 +1548,24 @@ export default function Home() {
           }
 
           .features, .testimonial, .how-it-works, .cta {
-            padding: 2.5rem 0;
+            padding: 3rem 0;
           }
 
           .hero-content {
             max-width: 100%;
           }
 
-          .feature-selection, .loading-screen {
-            padding: 2.5rem 1rem;
+                    .feature-selection, .loading-screen {
+            padding: 1.5rem 1rem;
           }
 
           .feature-selection h1, .loading-screen h1 {
-            font-size: 2rem;
+            font-size: 1.8rem;
           }
 
           .features-grid {
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem;
           }
 
           .feature-card {
@@ -1612,29 +1612,29 @@ export default function Home() {
           }
 
           .feature-selection h1, .loading-screen h1 {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
           }
 
           .feature-subtitle {
-            font-size: 1rem;
+            font-size: 0.9rem;
           }
 
           .feature-icon {
-            font-size: 2.5rem;
+            font-size: 2rem;
           }
 
           .feature-card h3 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
           }
 
           .feature-card p {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
           }
 
           .features-grid {
             grid-template-columns: 1fr;
-          }
-        }
+           }
+         }
       `}</style>
     </div>
   );
