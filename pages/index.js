@@ -642,9 +642,41 @@ export default function Home() {
           right: 0;
           bottom: 0;
           background: 
-            radial-gradient(circle at 40% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            radial-gradient(circle at 40% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.12) 0%, transparent 50%);
           pointer-events: none;
+        }
+
+        .how-it-works::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-image: 
+            radial-gradient(ellipse 350px 180px at 25% 60%, rgba(99, 102, 241, 0.08) 0%, transparent 70%),
+            radial-gradient(ellipse 280px 140px at 75% 40%, rgba(139, 92, 246, 0.06) 0%, transparent 70%),
+            radial-gradient(circle 120px at 60% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 60%),
+            radial-gradient(circle 90px at 20% 85%, rgba(139, 92, 246, 0.08) 0%, transparent 60%);
+          opacity: 0.9;
+          pointer-events: none;
+          animation: stepsPattern 20s ease-in-out infinite;
+        }
+
+        @keyframes stepsPattern {
+          0%, 100% { 
+            transform: translateX(0) translateY(0) scale(1);
+          }
+          25% { 
+            transform: translateX(25px) translateY(-15px) scale(1.05);
+          }
+          50% { 
+            transform: translateX(-20px) translateY(20px) scale(0.95);
+          }
+          75% { 
+            transform: translateX(15px) translateY(-10px) scale(1.02);
+          }
         }
 
         .how-it-works h2 {
@@ -779,8 +811,37 @@ export default function Home() {
            right: 0;
            bottom: 0;
            background: 
-             radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+             radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
            pointer-events: none;
+         }
+
+         .cta::after {
+           content: '';
+           position: absolute;
+           top: 0;
+           left: 0;
+           right: 0;
+           bottom: 0;
+           background-image: 
+             radial-gradient(ellipse 400px 250px at 30% 30%, rgba(99, 102, 241, 0.06) 0%, transparent 80%),
+             radial-gradient(ellipse 300px 200px at 70% 70%, rgba(139, 92, 246, 0.04) 0%, transparent 80%),
+             radial-gradient(circle 150px at 80% 30%, rgba(99, 102, 241, 0.08) 0%, transparent 70%),
+             radial-gradient(circle 100px at 20% 70%, rgba(139, 92, 246, 0.06) 0%, transparent 70%);
+           opacity: 0.8;
+           pointer-events: none;
+           animation: ctaGlow 28s ease-in-out infinite;
+         }
+
+         @keyframes ctaGlow {
+           0%, 100% { 
+             transform: translateX(0) translateY(0) rotate(0deg);
+           }
+           33% { 
+             transform: translateX(20px) translateY(-12px) rotate(1deg);
+           }
+           66% { 
+             transform: translateX(-18px) translateY(18px) rotate(-1deg);
+           }
          }
 
          .cta h2 {
@@ -826,9 +887,35 @@ export default function Home() {
            right: 0;
            bottom: 0;
            background: 
-             radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
-             radial-gradient(circle at 70% 70%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+             radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+             radial-gradient(circle at 70% 70%, rgba(139, 92, 246, 0.12) 0%, transparent 50%);
            pointer-events: none;
+         }
+
+         .footer::after {
+           content: '';
+           position: absolute;
+           top: 0;
+           left: 0;
+           right: 0;
+           bottom: 0;
+           background-image: 
+             radial-gradient(ellipse 200px 80px at 20% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 70%),
+             radial-gradient(ellipse 180px 70px at 80% 50%, rgba(139, 92, 246, 0.06) 0%, transparent 70%),
+             radial-gradient(circle 60px at 50% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 60%),
+             radial-gradient(circle 50px at 50% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 60%);
+           opacity: 0.7;
+           pointer-events: none;
+           animation: footerShimmer 32s ease-in-out infinite;
+         }
+
+         @keyframes footerShimmer {
+           0%, 100% { 
+             transform: translateX(0) scaleX(1);
+           }
+           50% { 
+             transform: translateX(15px) scaleX(1.1);
+           }
          }
 
          .footer p {
