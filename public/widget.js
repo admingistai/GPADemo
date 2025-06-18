@@ -92,25 +92,126 @@
             icons: []
         };
         
-        // 1. FAVICON EXTRACTION - Most reliable source for brand identity
+        // 1. FAVICON EXTRACTION - Most comprehensive and reliable detection
+        const faviconCandidates = [];
+        
+        // High-priority favicon sources with size scoring
         const faviconSelectors = [
-            'link[rel="apple-touch-icon"][sizes="180x180"]', // High res iPhone
-            'link[rel="apple-touch-icon"][sizes="192x192"]', // High res Android
-            'link[rel="apple-touch-icon"]', // General Apple touch icon
-            'link[rel="icon"][sizes*="192"]', // High res favicon
-            'link[rel="icon"][sizes*="180"]',
-            'link[rel="icon"][sizes*="96"]',
-            'link[rel="icon"]',
-            'link[rel="shortcut icon"]'
+            // Apple touch icons (usually high quality)
+            { selector: 'link[rel="apple-touch-icon"][sizes="180x180"]', priority: 100, expectedSize: 180 },
+            { selector: 'link[rel="apple-touch-icon"][sizes="192x192"]', priority: 95, expectedSize: 192 },
+            { selector: 'link[rel="apple-touch-icon"][sizes="167x167"]', priority: 90, expectedSize: 167 },
+            { selector: 'link[rel="apple-touch-icon"][sizes="152x152"]', priority: 85, expectedSize: 152 },
+            { selector: 'link[rel="apple-touch-icon"][sizes="120x120"]', priority: 80, expectedSize: 120 },
+            { selector: 'link[rel="apple-touch-icon"]', priority: 75, expectedSize: 180 },
+            
+            // Modern favicon formats
+            { selector: 'link[rel="icon"][type="image/svg+xml"]', priority: 70, expectedSize: 'vector' },
+            { selector: 'link[rel="icon"][sizes="192x192"]', priority: 90, expectedSize: 192 },
+            { selector: 'link[rel="icon"][sizes="180x180"]', priority: 85, expectedSize: 180 },
+            { selector: 'link[rel="icon"][sizes="96x96"]', priority: 65, expectedSize: 96 },
+            { selector: 'link[rel="icon"][sizes="48x48"]', priority: 60, expectedSize: 48 },
+            { selector: 'link[rel="icon"][sizes="32x32"]', priority: 55, expectedSize: 32 },
+            { selector: 'link[rel="icon"][sizes="16x16"]', priority: 50, expectedSize: 16 },
+            
+            // Fallback favicon sources
+            { selector: 'link[rel="icon"]', priority: 45, expectedSize: 32 },
+            { selector: 'link[rel="shortcut icon"]', priority: 40, expectedSize: 32 },
+            
+            // Microsoft tiles
+            { selector: 'meta[name="msapplication-TileImage"]', priority: 35, expectedSize: 144, isMetaContent: true },
+            
+            // Mask icons (Safari pinned tabs)
+            { selector: 'link[rel="mask-icon"]', priority: 30, expectedSize: 'vector' }
         ];
         
-        for (const selector of faviconSelectors) {
-            const element = document.querySelector(selector);
-            if (element && element.href && isValidImageUrl(element.href)) {
-                results.favicon = element.href;
-                break;
-            }
-        }
+        // Collect all favicon candidates with scoring
+        faviconSelectors.forEach(({ selector, priority, expectedSize, isMetaContent }) => {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(element => {
+                let url = isMetaContent ? element.content : element.href;
+                
+                if (url && isValidImageUrl(url)) {
+                    // Convert relative URLs to absolute
+                    if (url.startsWith('/')) {
+                        url = window.location.origin + url;
+                    } else if (url.startsWith('./') || !url.includes('://')) {
+                        url = new URL(url, window.location.href).href;
+                    }
+                    
+                    faviconCandidates.push({
+                        url: url,
+                        priority: priority,
+                        expectedSize: expectedSize,
+                        element: element,
+                        selector: selector
+                    });
+                }
+            });
+        });
+        
+                 // Add common favicon fallback locations if no link tags found
+         if (faviconCandidates.length === 0) {
+             const fallbackPaths = [
+                 '/favicon.ico',
+                 '/favicon.png', 
+                 '/favicon.svg',
+                 '/assets/favicon.ico',
+                 '/assets/images/favicon.ico',
+                 '/images/favicon.ico',
+                 '/static/favicon.ico',
+                 '/public/favicon.ico'
+             ];
+             
+             fallbackPaths.forEach((path, index) => {
+                 faviconCandidates.push({
+                     url: window.location.origin + path,
+                     priority: 25 - index, // Decreasing priority
+                     expectedSize: 32,
+                     element: null,
+                     selector: 'fallback-' + path.replace('/', '')
+                 });
+             });
+         }
+         
+         // Also add some fallback options even if we found candidates (lower priority)
+         const additionalFallbacks = [
+             '/favicon.ico',
+             '/apple-touch-icon.png',
+             '/apple-touch-icon-180x180.png'
+         ];
+         
+         additionalFallbacks.forEach((path, index) => {
+             // Only add if not already present
+             const exists = faviconCandidates.some(c => c.url.endsWith(path));
+             if (!exists) {
+                 faviconCandidates.push({
+                     url: window.location.origin + path,
+                     priority: 15 - index,
+                     expectedSize: path.includes('180') ? 180 : 32,
+                     element: null,
+                     selector: 'additional-fallback-' + path.replace('/', '')
+                 });
+             }
+         });
+        
+        // Sort candidates by priority and select the best one
+        faviconCandidates.sort((a, b) => b.priority - a.priority);
+        
+                 // For now, select the highest priority favicon immediately
+         // Async verification can be added later if needed
+         if (faviconCandidates.length > 0) {
+             results.favicon = faviconCandidates[0].url;
+             console.log('[GistWidget] Selected favicon:', faviconCandidates[0].url, 'Priority:', faviconCandidates[0].priority);
+             
+             // Optional: Log all candidates for debugging
+             console.log('[GistWidget] All favicon candidates:', faviconCandidates.map(c => ({
+                 url: c.url,
+                 priority: c.priority,
+                 size: c.expectedSize,
+                 selector: c.selector
+             })));
+         }
         
         // 2. META TAG EXTRACTION - Social media images often represent brand well
         const metaImageSelectors = [
@@ -282,16 +383,59 @@
     function isValidImageUrl(url) {
         if (!url || typeof url !== 'string') return false;
         
-        // Skip data URLs, SVGs embedded as data, and suspicious URLs
-        if (url.startsWith('data:')) return false;
-        if (url.includes('base64')) return false;
-        if (url.length > 1000) return false; // Suspiciously long URLs
+        // Clean the URL
+        url = url.trim();
         
-        // Check for common image extensions or image-serving domains
-        const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg)(\?|$)/i;
-        const imageServingDomains = /(cloudfront|cloudinary|imgix|amazonaws|googleusercontent|gravatar)/i;
+        // Skip empty URLs
+        if (url.length === 0) return false;
         
-        return imageExtensions.test(url) || imageServingDomains.test(url) || url.includes('/logo') || url.includes('/brand');
+        // Skip data URLs (but allow SVG data URLs for favicons in some cases)
+        if (url.startsWith('data:')) {
+            // Allow SVG data URLs for favicons as they're common
+            return url.startsWith('data:image/svg+xml');
+        }
+        
+        // Skip suspiciously long URLs (except for legitimate image services)
+        if (url.length > 2000) return false;
+        
+        // Allow relative URLs (they'll be converted to absolute)
+        if (url.startsWith('/') || url.startsWith('./') || url.startsWith('../')) {
+            return true;
+        }
+        
+        // Check for valid URL protocol
+        if (!url.includes('://') && !url.startsWith('/')) {
+            // Might be a relative URL without ./
+            return true;
+        }
+        
+        // Validate URL protocol
+        if (!url.match(/^https?:\/\//i)) {
+            return false;
+        }
+        
+        // Check for common image extensions
+        const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|ico|bmp|tiff?)(\?.*)?$/i;
+        
+        // Check for image-serving domains and CDNs
+        const imageServingDomains = /(cloudfront|cloudinary|imgix|amazonaws|googleusercontent|gravatar|imgur|flickr|unsplash|pexels|shutterstock|gettyimages|istockphoto|akamaihd|fastly|jsdelivr|unpkg|cdnjs)/i;
+        
+        // Check for logo/brand indicators in URL
+        const logoIndicators = /(\/logo|\/brand|\/icon|favicon|apple-touch|android-chrome|mstile)/i;
+        
+        // Check for WordPress/CMS upload patterns
+        const cmsPatterns = /(\/wp-content\/uploads|\/uploads|\/media|\/assets|\/images)/i;
+        
+        // Allow if it matches any of these patterns
+        return imageExtensions.test(url) || 
+               imageServingDomains.test(url) || 
+               logoIndicators.test(url) ||
+               cmsPatterns.test(url) ||
+               // Allow URLs that end with image-like query parameters
+               /\.(jpg|jpeg|png|gif|webp|svg|ico)$/i.test(url.split('?')[0]) ||
+               // Allow common favicon paths
+               url.includes('favicon') ||
+               url.endsWith('/favicon.ico');
     }
     
     // Extract font families from the website
