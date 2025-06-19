@@ -98,7 +98,7 @@
                 primaryColor: '#ff6b35', // Use solid color for better compatibility
                 secondaryColor: '#e55a2b',
                 accentColor: '#a855f7',
-                logoUrl: '/Gist G white no background.png',
+                logoUrl: '/gist-logo.png',
                 faviconUrl: '/favicon.png',
                 isRainbowMode: true,
                 forceGistStyling: true,
@@ -1002,7 +1002,21 @@
                 opacity: 1;
                 transform: scale(1) translateX(0);
                 transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                ${styling.isRainbowMode ? `
+                filter: hue-rotate(0deg);
+                animation: rainbowLogo 3s ease-in-out infinite;
+                ` : ''}
             }
+            
+            ${styling.isRainbowMode ? `
+            @keyframes rainbowLogo {
+                0% { filter: hue-rotate(0deg) saturate(1.5) brightness(1.2); }
+                25% { filter: hue-rotate(90deg) saturate(1.5) brightness(1.2); }
+                50% { filter: hue-rotate(180deg) saturate(1.5) brightness(1.2); }
+                75% { filter: hue-rotate(270deg) saturate(1.5) brightness(1.2); }
+                100% { filter: hue-rotate(360deg) saturate(1.5) brightness(1.2); }
+            }
+            ` : ''}
             ` : `
             .gist-pill-logo {
                 width: 24px;
