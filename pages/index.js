@@ -126,13 +126,6 @@ export default function Home() {
         <script src="/widget.js" async></script>
       </Head>
       
-      {/* Widget prompt text - only on landing page */}
-      {!showWebsite && !showLoadingPage && (
-        <div className="widget-prompt">
-          Go ahead. Ask Anything. We dare you. →
-        </div>
-      )}
-      
     <div className="app">
       {/* Loading Page */}
       {showLoadingPage && (
@@ -240,23 +233,6 @@ export default function Home() {
           background: radial-gradient(ellipse at center, #3742fa 0%, #0c1426 100%);
         }
 
-        /* Widget Prompt Text */
-        .widget-prompt {
-          position: fixed;
-          bottom: 40px;
-          left: 50%;
-          transform: translateX(-280px);
-          color: white;
-          font-family: 'Inter', sans-serif;
-          font-size: 1rem;
-          font-weight: 400;
-          opacity: 0.8;
-          z-index: 9999;
-          pointer-events: none;
-          transition: all 0.3s ease;
-          white-space: nowrap;
-        }
-
         /* Loading Page */
         .loading-page {
           min-height: 100vh;
@@ -338,16 +314,17 @@ export default function Home() {
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
-          padding: 2rem 3rem;
+          padding: 1.9rem 2.85rem;
           position: relative;
         }
 
         .header-left .logo {
           font-size: 1.5rem;
           font-weight: 600;
-          line-height: 1.2;
+          line-height: 1.14;
           color: white;
           font-family: 'Inter', sans-serif;
+          letter-spacing: -0.05em;
         }
 
         .header-right {

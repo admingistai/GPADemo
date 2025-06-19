@@ -88,20 +88,24 @@
     function applyDomainSpecificStyling() {
         const currentHost = window.location.hostname;
         
-        if (currentHost === 'gpademo.vercel.app') {
+        if (currentHost === 'gpademo.vercel.app' || currentHost === 'localhost') {
             console.log('[GistWidget] Applying gpademo.vercel.app customization - rainbow mode with Gist favicon');
+            console.log('[GistWidget] Current host:', currentHost);
             
             // Force rainbow styling and Gist favicon for the landing page
             websiteStyling = {
                 ...websiteStyling,
-                primaryColor: 'linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7)',
-                secondaryColor: 'linear-gradient(135deg, #e55a2b, #e0821a, #ff5252, #9333ea)',
-                accentColor: 'linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7)',
+                primaryColor: '#ff6b35', // Use solid color for better compatibility
+                secondaryColor: '#e55a2b',
+                accentColor: '#a855f7',
                 logoUrl: '/Gist G white no background.png',
                 faviconUrl: '/favicon.png',
                 isRainbowMode: true,
-                forceGistStyling: true
+                forceGistStyling: true,
+                rainbowGradient: 'linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7)'
             };
+            
+            console.log('[GistWidget] Applied styling:', websiteStyling);
         }
     }
 
@@ -936,7 +940,8 @@
             
             .gist-pill {
                 background: ${styling.backgroundColor};
-                border: 1px solid ${styling.primaryColor}20;
+                border: ${styling.isRainbowMode ? `2px solid transparent` : `1px solid ${styling.primaryColor}20`};
+                ${styling.isRainbowMode ? `background-image: linear-gradient(${styling.backgroundColor}, ${styling.backgroundColor}), ${styling.rainbowGradient}; background-origin: border-box; background-clip: padding-box, border-box;` : ''}
                 border-radius: ${styling.borderRadius};
                 padding: 8px 6px 8px 12px;
                 display: flex;
@@ -968,7 +973,7 @@
             }
             
             .gist-pill-submit {
-                background: ${styling.primaryColor};
+                background: ${styling.rainbowGradient || styling.primaryColor};
                 border: none;
                 border-radius: ${styling.borderRadius === '16px' ? '10px' : styling.borderRadius};
                 width: 32px;
