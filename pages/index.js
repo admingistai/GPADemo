@@ -31,12 +31,27 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [showWebsite]);
 
+  const formatUrl = (inputUrl) => {
+    let formattedUrl = inputUrl.trim();
+    
+    // Remove any existing protocol
+    formattedUrl = formattedUrl.replace(/^https?:\/\//, '');
+    
+    // Add https:// prefix
+    formattedUrl = 'https://' + formattedUrl;
+    
+    return formattedUrl;
+  };
+
   const handleUrlSubmit = async (url) => {
     try {
       setLoading(true);
       setError(null);
       setShowWebsite(false);
       setShowLoadingPage(true);
+      
+      // Format the URL automatically
+      const formattedUrl = formatUrl(url);
       
       const loadingMessages = [
         'Generating button design...',
@@ -60,27 +75,31 @@ export default function Home() {
       // Random delay between 5-10 seconds
       const delay = Math.random() * 5000 + 5000;
       
-      setTimeout(async () => {
-        clearInterval(messageInterval);
-        
-        try {
-          const testResponse = await fetch(`/api/proxy?url=${encodeURIComponent(url)}&test=true`);
-          const testResult = await testResponse.json();
+                      setTimeout(async () => {
+          clearInterval(messageInterval);
+          
+          try {
+            const testResponse = await fetch(`/api/proxy?url=${encodeURIComponent(formattedUrl)}&test=true`);
+            const testResult = await testResponse.json();
 
-          if (!testResponse.ok) {
-            throw new Error(testResult.error || 'Unable to reach the specified website');
+            if (!testResponse.ok) {
+              throw new Error(testResult.error || 'Unable to reach the specified website');
+            }
+
+            // Directly open the website with widget in a new tab
+            const websiteWithWidgetUrl = `/website?url=${encodeURIComponent(formattedUrl)}`;
+            window.open(websiteWithWidgetUrl, '_blank');
+            
+            // Reset the form for potential next use
+            setShowLoadingPage(false);
+            setTargetUrl('');
+          } catch (err) {
+            setShowLoadingPage(false);
+            setError(err.message);
+          } finally {
+            setLoading(false);
           }
-
-          setTargetUrl(url);
-          setShowLoadingPage(false);
-          setShowWebsite(true);
-        } catch (err) {
-          setShowLoadingPage(false);
-          setError(err.message);
-        } finally {
-          setLoading(false);
-        }
-      }, delay);
+        }, delay);
 
     } catch (err) {
       setShowLoadingPage(false);
@@ -103,7 +122,9 @@ export default function Home() {
       {showLoadingPage && (
         <div className="loading-page">
           <div className="loading-content">
-            <div className="loading-spinner"></div>
+            <div className="loading-spinner">
+              <img src="/Gist G white no background.png" alt="Gist Logo" />
+            </div>
             <h2 className="loading-title">Setting up Ask Anything™</h2>
             <p className="loading-message">{loadingMessage}</p>
             <div className="loading-progress">
@@ -216,12 +237,14 @@ export default function Home() {
         .loading-spinner {
           width: 80px;
           height: 80px;
-          border: 4px solid rgba(255, 255, 255, 0.1);
-          border-left: 4px solid;
-          border-image: linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7) 1;
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
           margin: 0 auto 2rem;
+          animation: spin 2s linear infinite;
+        }
+
+        .loading-spinner img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
         }
 
         .loading-title {
