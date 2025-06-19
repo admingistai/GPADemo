@@ -89,17 +89,15 @@
         const currentHost = window.location.hostname;
         
         if (currentHost === 'gpademo.vercel.app') {
-            console.log('[GistWidget] Applying gpademo.vercel.app customization');
+            console.log('[GistWidget] Applying gpademo.vercel.app customization - using default styling');
             
-            // Apply rainbow gradient colors
+            // Use default styling but with Gist logo
             websiteStyling = {
                 ...websiteStyling,
-                primaryColor: 'linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7)',
-                secondaryColor: 'linear-gradient(135deg, #e55a2b, #e0821a, #ff5252, #9333ea)',
-                accentColor: 'linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7)',
                 logoUrl: '/Gist G white no background.png',
                 faviconUrl: '/favicon.png',
-                isRainbowMode: true
+                // Keep default colors for normal outline appearance
+                isRainbowMode: false
             };
         }
     }

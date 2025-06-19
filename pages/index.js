@@ -456,7 +456,8 @@ export default function Home() {
         /* Publishers Band */
         .publishers-band {
           background: transparent;
-          padding: 1rem 2rem 2rem;
+          padding: 1rem 2rem 5rem;
+          margin-bottom: 80px;
         }
 
         .publishers-content {
