@@ -87,18 +87,21 @@
     // Domain-specific customization for gpademo.vercel.app
     function applyDomainSpecificStyling() {
         const currentHost = window.location.hostname;
+        const currentPath = window.location.pathname;
         
-        if (currentHost === 'gpademo.vercel.app' || currentHost === 'localhost') {
-            console.log('[GistWidget] Applying gpademo.vercel.app customization - rainbow mode with Gist favicon');
-            console.log('[GistWidget] Current host:', currentHost);
+        // Only apply rainbow styling on the main landing page of gpademo.vercel.app
+        if ((currentHost === 'gpademo.vercel.app' && currentPath === '/') || 
+            (currentHost === 'localhost' && (currentPath === '/' || currentPath === ''))) {
+            console.log('[GistWidget] Applying gpademo.vercel.app LANDING PAGE customization - rainbow mode with Gist favicon');
+            console.log('[GistWidget] Current host:', currentHost, 'Current path:', currentPath);
             
-            // Force rainbow styling and Gist favicon for the landing page
+            // Force rainbow styling and Gist favicon for the landing page ONLY
             websiteStyling = {
                 ...websiteStyling,
                 primaryColor: '#ff6b35', // Use solid color for better compatibility
                 secondaryColor: '#e55a2b',
                 accentColor: '#a855f7',
-                logoUrl: '/gist-logo.png',
+                logoUrl: '/Gist_Mark_000000.png',
                 faviconUrl: '/favicon.png',
                 isRainbowMode: true,
                 forceGistStyling: true,
@@ -106,6 +109,9 @@
             };
             
             console.log('[GistWidget] Applied styling:', websiteStyling);
+        } else {
+            console.log('[GistWidget] Not on landing page - using default styling');
+            console.log('[GistWidget] Current host:', currentHost, 'Current path:', currentPath);
         }
     }
 
@@ -1002,10 +1008,7 @@
                 opacity: 1;
                 transform: scale(1) translateX(0);
                 transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-                ${styling.isRainbowMode ? `
-                filter: hue-rotate(0deg);
-                animation: rainbowLogo 3s ease-in-out infinite;
-                ` : ''}
+
             }
             
             ${styling.isRainbowMode ? `
