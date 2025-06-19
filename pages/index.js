@@ -120,6 +120,9 @@ export default function Home() {
   return (
     <>
       <Head>
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" href="/favicon.png" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
         <script src="/widget.js" async></script>
       </Head>
       
@@ -360,7 +363,7 @@ export default function Home() {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          padding: 2rem;
+          padding: 1rem 2rem;
           text-align: center;
         }
 
@@ -368,7 +371,7 @@ export default function Home() {
           font-size: 4rem;
           font-weight: 700;
           line-height: 1.1;
-          margin-bottom: 3rem;
+          margin-bottom: 2rem;
           max-width: 1100px;
           color: white;
           font-family: 'Inter', sans-serif;
@@ -453,7 +456,7 @@ export default function Home() {
         /* Publishers Band */
         .publishers-band {
           background: transparent;
-          padding: 3rem 2rem 2rem;
+          padding: 1rem 2rem 2rem;
         }
 
         .publishers-content {
