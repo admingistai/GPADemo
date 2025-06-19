@@ -321,7 +321,7 @@ export default function Home() {
         .header-left .logo {
           font-size: 1.5rem;
           font-weight: 600;
-          line-height: 1.14;
+          line-height: 1.0;
           color: white;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.05em;
@@ -337,7 +337,9 @@ export default function Home() {
           font-size: 1rem;
           font-style: italic;
           opacity: 0.9;
-          font-weight: 400;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+          line-height: 1.1;
         }
 
         .login-btn {
