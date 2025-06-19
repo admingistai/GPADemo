@@ -87,7 +87,7 @@ export default function Home() {
             }
 
             // Directly open the website with widget in a new tab
-            const websiteWithWidgetUrl = `/website?url=${encodeURIComponent(formattedUrl)}`;
+            const websiteWithWidgetUrl = `/api/proxy?url=${encodeURIComponent(formattedUrl)}`;
             window.open(websiteWithWidgetUrl, '_blank');
             
             // Reset the form for potential next use
@@ -163,6 +163,11 @@ export default function Home() {
                     placeholder="Paste URL"
                     value={targetUrl}
                     onChange={(e) => setTargetUrl(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !loading && targetUrl.trim()) {
+                        handleUrlSubmit(targetUrl);
+                      }
+                    }}
                     className="url-input"
                     disabled={loading}
                   />
