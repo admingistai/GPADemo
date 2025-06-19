@@ -83,6 +83,29 @@
         shadows: 'drop-shadow(0 8px 25px rgba(0, 0, 0, 0.15))',
         accentColor: '#ec4899'
     };
+
+    // Domain-specific customization for gpademo.vercel.app
+    function applyDomainSpecificStyling() {
+        const currentHost = window.location.hostname;
+        
+        if (currentHost === 'gpademo.vercel.app') {
+            console.log('[GistWidget] Applying gpademo.vercel.app customization');
+            
+            // Apply rainbow gradient colors
+            websiteStyling = {
+                ...websiteStyling,
+                primaryColor: 'linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7)',
+                secondaryColor: 'linear-gradient(135deg, #e55a2b, #e0821a, #ff5252, #9333ea)',
+                accentColor: 'linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7)',
+                logoUrl: '/Gist G white no background.png',
+                faviconUrl: '/favicon.png',
+                isRainbowMode: true
+            };
+        }
+    }
+
+    // Apply domain-specific styling immediately
+    applyDomainSpecificStyling();
     
     // Extract website favicon and logo with reliable, simple detection
     function extractLogosAndIcons() {
@@ -804,17 +827,27 @@
             primary: styling.primaryColor,
             secondary: styling.secondaryColor,
             accent: styling.accentColor,
-            brand: styling.brandColors[0]
+            brand: styling.brandColors[0],
+            isRainbowMode: styling.isRainbowMode
         });
         
-        // Extract RGB values for rgba variations
-        const primaryColor = styling.primaryColor || '#6366f1';
-        const hex = primaryColor.replace('#', '');
-        const r = parseInt(hex.substr(0, 2), 16);
-        const g = parseInt(hex.substr(2, 2), 16);
-        const b = parseInt(hex.substr(4, 2), 16);
-        const rgba40 = `rgba(${r}, ${g}, ${b}, 0.4)`;
-        const rgba0 = `rgba(${r}, ${g}, ${b}, 0)`;
+        // Handle rainbow gradients for gpademo.vercel.app
+        let primaryColor = styling.primaryColor || '#6366f1';
+        let rgba40, rgba0;
+        
+        if (styling.isRainbowMode) {
+            // For rainbow mode, use a single color for rgba calculations
+            rgba40 = 'rgba(255, 107, 53, 0.4)'; // Orange-ish with transparency
+            rgba0 = 'rgba(255, 107, 53, 0)';
+        } else {
+            // Extract RGB values for rgba variations (normal mode)
+            const hex = primaryColor.replace('#', '');
+            const r = parseInt(hex.substr(0, 2), 16);
+            const g = parseInt(hex.substr(2, 2), 16);
+            const b = parseInt(hex.substr(4, 2), 16);
+            rgba40 = `rgba(${r}, ${g}, ${b}, 0.4)`;
+            rgba0 = `rgba(${r}, ${g}, ${b}, 0)`;
+        }
         
         // Ensure we have a font family - fallback to Comic Sans if detection failed
         const widgetFont = styling.fontFamily || '"Comic Sans MS", cursive';
@@ -908,7 +941,7 @@
                 justify-content: center;
                 cursor: pointer;
                 transition: all 0.2s ease;
-        color: white;
+                color: white;
             }
             
             .gist-pill-submit:hover {
