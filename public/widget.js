@@ -89,30 +89,9 @@
         const currentHost = window.location.hostname;
         const currentPath = window.location.pathname;
         
-        // Only apply rainbow styling on the main landing page of gpademo.vercel.app
-        if ((currentHost === 'gpademo.vercel.app' && currentPath === '/') || 
-            (currentHost === 'localhost' && (currentPath === '/' || currentPath === ''))) {
-            console.log('[GistWidget] Applying gpademo.vercel.app LANDING PAGE customization - rainbow mode with Gist favicon');
-            console.log('[GistWidget] Current host:', currentHost, 'Current path:', currentPath);
-            
-            // Force rainbow styling and Gist favicon for the landing page ONLY
-            websiteStyling = {
-                ...websiteStyling,
-                primaryColor: '#ff6b35', // Use solid color for better compatibility
-                secondaryColor: '#e55a2b',
-                accentColor: '#a855f7',
-                logoUrl: '/Gist_Mark_000000.png',
-                faviconUrl: '/favicon.png',
-                isRainbowMode: true,
-                forceGistStyling: true,
-                rainbowGradient: 'linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7)'
-            };
-            
-            console.log('[GistWidget] Applied styling:', websiteStyling);
-        } else {
-            console.log('[GistWidget] Not on landing page - using default styling');
-            console.log('[GistWidget] Current host:', currentHost, 'Current path:', currentPath);
-        }
+        // Use default styling for all pages including landing page
+        console.log('[GistWidget] Using default styling for all pages');
+        console.log('[GistWidget] Current host:', currentHost, 'Current path:', currentPath);
     }
 
     // Apply domain-specific styling immediately
@@ -789,7 +768,7 @@
                 secondaryColor: websiteStyling.secondaryColor,
                 accentColor: websiteStyling.accentColor,
                 forceDefaultFavicon: websiteStyling.forceDefaultFavicon,
-                isRainbowMode: websiteStyling.isRainbowMode,
+    
                 forceGistStyling: websiteStyling.forceGistStyling
             };
             
@@ -811,7 +790,7 @@
                     rawColorScheme: colorScheme,
                     availableIcons: logos.icons,
                     forceDefaultFavicon: existingCustomizations.forceDefaultFavicon,
-                    isRainbowMode: existingCustomizations.isRainbowMode,
+    
                     forceGistStyling: existingCustomizations.forceGistStyling
                 };
             } else {
@@ -830,7 +809,7 @@
                     rawColorScheme: colorScheme,
                     availableIcons: logos.icons,
                     forceDefaultFavicon: existingCustomizations.forceDefaultFavicon,
-                    isRainbowMode: existingCustomizations.isRainbowMode
+    
                 };
             }
             
@@ -875,7 +854,7 @@
             secondary: styling.secondaryColor,
             accent: styling.accentColor,
             brand: styling.brandColors[0],
-            isRainbowMode: styling.isRainbowMode
+
         });
         
         // Handle rainbow gradients for gpademo.vercel.app
@@ -946,8 +925,7 @@
             
             .gist-pill {
                 background: ${styling.backgroundColor};
-                border: ${styling.isRainbowMode ? `2px solid transparent` : `1px solid ${styling.primaryColor}20`};
-                ${styling.isRainbowMode ? `background-image: linear-gradient(${styling.backgroundColor}, ${styling.backgroundColor}), ${styling.rainbowGradient}; background-origin: border-box; background-clip: padding-box, border-box;` : ''}
+                border: 1px solid ${styling.primaryColor}20;
                 border-radius: ${styling.borderRadius};
                 padding: 8px 6px 8px 12px;
                 display: flex;
@@ -979,7 +957,7 @@
             }
             
             .gist-pill-submit {
-                background: ${styling.rainbowGradient || styling.primaryColor};
+                background: ${styling.primaryColor};
                 border: none;
                 border-radius: ${styling.borderRadius === '16px' ? '10px' : styling.borderRadius};
                 width: 32px;
@@ -1010,16 +988,7 @@
                 transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
             }
-            
-            ${styling.isRainbowMode ? `
-            @keyframes rainbowLogo {
-                0% { filter: hue-rotate(0deg) saturate(1.5) brightness(1.2); }
-                25% { filter: hue-rotate(90deg) saturate(1.5) brightness(1.2); }
-                50% { filter: hue-rotate(180deg) saturate(1.5) brightness(1.2); }
-                75% { filter: hue-rotate(270deg) saturate(1.5) brightness(1.2); }
-                100% { filter: hue-rotate(360deg) saturate(1.5) brightness(1.2); }
-            }
-            ` : ''}
+
             ` : `
             .gist-pill-logo {
                 width: 24px;
