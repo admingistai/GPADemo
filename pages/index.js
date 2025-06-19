@@ -8,6 +8,8 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showWebsite, setShowWebsite] = useState(false);
+  const [showLoadingPage, setShowLoadingPage] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState('');
 
   // Simplified scroll animation effects
   useEffect(() => {
@@ -34,19 +36,55 @@ export default function Home() {
       setLoading(true);
       setError(null);
       setShowWebsite(false);
+      setShowLoadingPage(true);
       
-      const testResponse = await fetch(`/api/proxy?url=${encodeURIComponent(url)}&test=true`);
-      const testResult = await testResponse.json();
+      const loadingMessages = [
+        'Generating button design...',
+        'Adding functionality...',
+        'Optimizing user experience...',
+        'Implementing Ask Anything™...',
+        'Configuring smart responses...',
+        'Setting up AI integration...',
+        'Customizing for your site...',
+        'Finalizing button placement...',
+        'Testing compatibility...',
+        'Preparing launch...'
+      ];
 
-      if (!testResponse.ok) {
-        throw new Error(testResult.error || 'Unable to reach the specified website');
-      }
+      // Show random loading messages
+      const messageInterval = setInterval(() => {
+        const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+        setLoadingMessage(randomMessage);
+      }, 800);
 
-      setTargetUrl(url);
-      setShowWebsite(true);
+      // Random delay between 5-10 seconds
+      const delay = Math.random() * 5000 + 5000;
+      
+      setTimeout(async () => {
+        clearInterval(messageInterval);
+        
+        try {
+          const testResponse = await fetch(`/api/proxy?url=${encodeURIComponent(url)}&test=true`);
+          const testResult = await testResponse.json();
+
+          if (!testResponse.ok) {
+            throw new Error(testResult.error || 'Unable to reach the specified website');
+          }
+
+          setTargetUrl(url);
+          setShowLoadingPage(false);
+          setShowWebsite(true);
+        } catch (err) {
+          setShowLoadingPage(false);
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      }, delay);
+
     } catch (err) {
+      setShowLoadingPage(false);
       setError(err.message);
-    } finally {
       setLoading(false);
     }
   };
@@ -54,13 +92,29 @@ export default function Home() {
   const handleRetry = () => {
     setError(null);
     setShowWebsite(false);
+    setShowLoadingPage(false);
     setTargetUrl('');
+    setLoading(false);
   };
 
   return (
     <div className="app">
+      {/* Loading Page */}
+      {showLoadingPage && (
+        <div className="loading-page">
+          <div className="loading-content">
+            <div className="loading-spinner"></div>
+            <h2 className="loading-title">Setting up Ask Anything™</h2>
+            <p className="loading-message">{loadingMessage}</p>
+            <div className="loading-progress">
+              <div className="progress-bar"></div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Landing Page */}
-      {!showWebsite && (
+      {!showWebsite && !showLoadingPage && (
         <div className="landing-page">
           {/* Header */}
           <header className="header">
@@ -142,6 +196,72 @@ export default function Home() {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           min-height: 100vh;
           background: radial-gradient(ellipse at center, #3742fa 0%, #0c1426 100%);
+        }
+
+        /* Loading Page */
+        .loading-page {
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+        }
+
+        .loading-content {
+          text-align: center;
+          max-width: 500px;
+          padding: 2rem;
+        }
+
+        .loading-spinner {
+          width: 80px;
+          height: 80px;
+          border: 4px solid rgba(255, 255, 255, 0.1);
+          border-left: 4px solid;
+          border-image: linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7) 1;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          margin: 0 auto 2rem;
+        }
+
+        .loading-title {
+          font-size: 2.5rem;
+          font-weight: 700;
+          margin-bottom: 1rem;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .loading-message {
+          font-size: 1.2rem;
+          margin-bottom: 2rem;
+          opacity: 0.8;
+          font-family: 'Inter', sans-serif;
+          min-height: 1.5rem;
+        }
+
+        .loading-progress {
+          width: 100%;
+          height: 8px;
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 4px;
+          overflow: hidden;
+        }
+
+        .progress-bar {
+          height: 100%;
+          background: linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7);
+          animation: progress 8s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
+        @keyframes progress {
+          0% { width: 0%; }
+          50% { width: 70%; }
+          100% { width: 100%; }
         }
 
         .landing-page {
