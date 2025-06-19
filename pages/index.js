@@ -364,10 +364,10 @@ export default function Home() {
           flex: 1;
           display: flex;
           flex-direction: column;
-          align-items: flex-start;
+          align-items: center;
           justify-content: center;
           padding: 1rem 2rem;
-          text-align: left;
+          text-align: center;
         }
 
         .main-title {
