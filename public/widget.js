@@ -91,13 +91,15 @@
         if (currentHost === 'gpademo.vercel.app') {
             console.log('[GistWidget] Applying gpademo.vercel.app customization - using default styling');
             
-            // Use default styling but with Gist logo
+            // Use default styling but with Gist logo and ensure favicon detection
             websiteStyling = {
                 ...websiteStyling,
                 logoUrl: '/Gist G white no background.png',
                 faviconUrl: '/favicon.png',
                 // Keep default colors for normal outline appearance
-                isRainbowMode: false
+                isRainbowMode: false,
+                // Force the default favicon to be detected
+                forceDefaultFavicon: true
             };
         }
     }
@@ -768,7 +770,14 @@
             // Regenerate color variations with the final primary color
             const finalColorVariations = generateColorVariations(primaryColor);
             
-            // Update website styling object
+            // Update website styling object, preserving domain-specific customizations
+            const existingCustomizations = {
+                logoUrl: websiteStyling.logoUrl,
+                faviconUrl: websiteStyling.faviconUrl,
+                forceDefaultFavicon: websiteStyling.forceDefaultFavicon,
+                isRainbowMode: websiteStyling.isRainbowMode
+            };
+            
             websiteStyling = {
                 primaryColor: primaryColor || '#6366f1',
                 secondaryColor: finalColorVariations.secondary,
@@ -776,13 +785,15 @@
                 textColor: textColor || '#374151',
                 fontFamily: fontFamily || '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
                 borderRadius: borderRadius || '16px',
-                logoUrl: logos.logo,
-                faviconUrl: logos.favicon,
+                logoUrl: existingCustomizations.logoUrl || logos.logo,
+                faviconUrl: existingCustomizations.faviconUrl || logos.favicon,
                 brandColors: [primaryColor, finalColorVariations.secondary, finalColorVariations.accent, finalColorVariations.brand].filter(Boolean),
                 shadows: 'drop-shadow(0 8px 25px rgba(0, 0, 0, 0.15))',
                 accentColor: finalColorVariations.accent,
                 rawColorScheme: colorScheme,
-                availableIcons: logos.icons
+                availableIcons: logos.icons,
+                forceDefaultFavicon: existingCustomizations.forceDefaultFavicon,
+                isRainbowMode: existingCustomizations.isRainbowMode
             };
             
             log('info', 'Website styling analysis complete', websiteStyling);

@@ -372,9 +372,11 @@ export default function Home() {
           font-weight: 700;
           line-height: 1.1;
           margin-bottom: 2rem;
+          margin-top: 1.5rem;
           max-width: 1100px;
           color: white;
           font-family: 'Inter', sans-serif;
+          letter-spacing: -0.01em;
         }
 
         .url-input-container {
