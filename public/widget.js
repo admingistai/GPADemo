@@ -89,9 +89,26 @@
         const currentHost = window.location.hostname;
         const currentPath = window.location.pathname;
         
-        // Use default styling for all pages including landing page
-        console.log('[GistWidget] Using default styling for all pages');
-        console.log('[GistWidget] Current host:', currentHost, 'Current path:', currentPath);
+        // Apply custom favicon for gpademo.vercel.app
+        if (currentHost === 'gpademo.vercel.app' || currentHost === 'localhost') {
+            console.log('[GistWidget] Applying gpademo.vercel.app favicon customization');
+            console.log('[GistWidget] Current host:', currentHost, 'Current path:', currentPath);
+            
+            // Force use of the favicon.png from public folder
+            websiteStyling = {
+                ...websiteStyling,
+                faviconUrl: '/favicon.png',
+                forceGistStyling: true
+            };
+            
+            console.log('[GistWidget] Applied gpademo.vercel.app favicon styling:', {
+                faviconUrl: websiteStyling.faviconUrl,
+                forceGistStyling: websiteStyling.forceGistStyling
+            });
+        } else {
+            console.log('[GistWidget] Using default styling for other domains');
+            console.log('[GistWidget] Current host:', currentHost, 'Current path:', currentPath);
+        }
     }
 
     // Apply domain-specific styling immediately
