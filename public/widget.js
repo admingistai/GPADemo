@@ -55,7 +55,7 @@
     // ================================
     // Configure which tools are enabled/disabled
     // Can be modified via console: TOOLS_CONFIG.remix = false
-    const TOOLS_CONFIG = {
+    const TOOLS_CONFIG = {  
         ask: true,      // Always enabled - core functionality
         gist: true,     // Summary tool
         remix: true,    // Content remix tool  
@@ -89,17 +89,18 @@
         const currentHost = window.location.hostname;
         
         if (currentHost === 'gpademo.vercel.app') {
-            console.log('[GistWidget] Applying gpademo.vercel.app customization - using default styling');
+            console.log('[GistWidget] Applying gpademo.vercel.app customization - rainbow mode with Gist favicon');
             
-            // Use default styling but with Gist logo and ensure favicon detection
+            // Force rainbow styling and Gist favicon for the landing page
             websiteStyling = {
                 ...websiteStyling,
+                primaryColor: 'linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7)',
+                secondaryColor: 'linear-gradient(135deg, #e55a2b, #e0821a, #ff5252, #9333ea)',
+                accentColor: 'linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7)',
                 logoUrl: '/Gist G white no background.png',
                 faviconUrl: '/favicon.png',
-                // Keep default colors for normal outline appearance
-                isRainbowMode: false,
-                // Force the default favicon to be detected
-                forceDefaultFavicon: true
+                isRainbowMode: true,
+                forceGistStyling: true
             };
         }
     }
@@ -774,27 +775,54 @@
             const existingCustomizations = {
                 logoUrl: websiteStyling.logoUrl,
                 faviconUrl: websiteStyling.faviconUrl,
+                primaryColor: websiteStyling.primaryColor,
+                secondaryColor: websiteStyling.secondaryColor,
+                accentColor: websiteStyling.accentColor,
                 forceDefaultFavicon: websiteStyling.forceDefaultFavicon,
-                isRainbowMode: websiteStyling.isRainbowMode
+                isRainbowMode: websiteStyling.isRainbowMode,
+                forceGistStyling: websiteStyling.forceGistStyling
             };
             
-            websiteStyling = {
-                primaryColor: primaryColor || '#6366f1',
-                secondaryColor: finalColorVariations.secondary,
-                backgroundColor: backgroundColor || '#ffffff',
-                textColor: textColor || '#374151',
-                fontFamily: fontFamily || '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                borderRadius: borderRadius || '16px',
-                logoUrl: existingCustomizations.logoUrl || logos.logo,
-                faviconUrl: existingCustomizations.faviconUrl || logos.favicon,
-                brandColors: [primaryColor, finalColorVariations.secondary, finalColorVariations.accent, finalColorVariations.brand].filter(Boolean),
-                shadows: 'drop-shadow(0 8px 25px rgba(0, 0, 0, 0.15))',
-                accentColor: finalColorVariations.accent,
-                rawColorScheme: colorScheme,
-                availableIcons: logos.icons,
-                forceDefaultFavicon: existingCustomizations.forceDefaultFavicon,
-                isRainbowMode: existingCustomizations.isRainbowMode
-            };
+            // If forceGistStyling is true, preserve all the custom styling
+            if (existingCustomizations.forceGistStyling) {
+                websiteStyling = {
+                    ...websiteStyling,
+                    primaryColor: existingCustomizations.primaryColor,
+                    secondaryColor: existingCustomizations.secondaryColor,
+                    accentColor: existingCustomizations.accentColor,
+                    backgroundColor: backgroundColor || '#ffffff',
+                    textColor: textColor || '#374151',
+                    fontFamily: fontFamily || '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                    borderRadius: borderRadius || '16px',
+                    logoUrl: existingCustomizations.logoUrl,
+                    faviconUrl: existingCustomizations.faviconUrl,
+                    brandColors: [existingCustomizations.primaryColor, existingCustomizations.secondaryColor, existingCustomizations.accentColor].filter(Boolean),
+                    shadows: 'drop-shadow(0 8px 25px rgba(0, 0, 0, 0.15))',
+                    rawColorScheme: colorScheme,
+                    availableIcons: logos.icons,
+                    forceDefaultFavicon: existingCustomizations.forceDefaultFavicon,
+                    isRainbowMode: existingCustomizations.isRainbowMode,
+                    forceGistStyling: existingCustomizations.forceGistStyling
+                };
+            } else {
+                websiteStyling = {
+                    primaryColor: primaryColor || '#6366f1',
+                    secondaryColor: finalColorVariations.secondary,
+                    backgroundColor: backgroundColor || '#ffffff',
+                    textColor: textColor || '#374151',
+                    fontFamily: fontFamily || '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                    borderRadius: borderRadius || '16px',
+                    logoUrl: existingCustomizations.logoUrl || logos.logo,
+                    faviconUrl: existingCustomizations.faviconUrl || logos.favicon,
+                    brandColors: [primaryColor, finalColorVariations.secondary, finalColorVariations.accent, finalColorVariations.brand].filter(Boolean),
+                    shadows: 'drop-shadow(0 8px 25px rgba(0, 0, 0, 0.15))',
+                    accentColor: finalColorVariations.accent,
+                    rawColorScheme: colorScheme,
+                    availableIcons: logos.icons,
+                    forceDefaultFavicon: existingCustomizations.forceDefaultFavicon,
+                    isRainbowMode: existingCustomizations.isRainbowMode
+                };
+            }
             
             log('info', 'Website styling analysis complete', websiteStyling);
             
