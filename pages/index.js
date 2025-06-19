@@ -266,6 +266,8 @@ export default function Home() {
           font-weight: 700;
           margin-bottom: 1rem;
           font-family: 'Inter', sans-serif;
+          line-height: 0.95;
+          letter-spacing: -0.05em;
         }
 
         .loading-message {
@@ -274,6 +276,8 @@ export default function Home() {
           opacity: 0.8;
           font-family: 'Inter', sans-serif;
           min-height: 1.5rem;
+          line-height: 0.95;
+          letter-spacing: -0.02em;
         }
 
         .loading-progress {

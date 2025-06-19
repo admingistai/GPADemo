@@ -3293,7 +3293,7 @@
                     <div class="gist-answer-footer">
                         <div class="gist-powered-section">
                             <img src="${BACKEND_BASE_URL}/gist-logo.png" alt="Gist Logo" class="gist-footer-logo">
-                            <span class="gist-powered-text">Powered by Gist</span>
+                            <span class="gist-powered-text">Powered by Gist Answers</span>
                         </div>
                         <a href="https://gpademo.vercel.app" target="_blank" class="gist-add-to-site">Add to your site</a>
                     </div>
