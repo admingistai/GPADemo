@@ -371,7 +371,7 @@ export default function Home() {
         }
 
         .main-title {
-          font-size: 4rem;
+          font-size: 3.2rem;
           font-weight: 700;
           line-height: 1.1;
           margin-bottom: 2rem;
