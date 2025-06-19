@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Head from 'next/head';
 import URLInputForm from '../components/URLInputForm';
 import WebsiteDisplay from '../components/WebsiteDisplay';
 import ErrorDisplay from '../components/ErrorDisplay';
@@ -117,6 +118,11 @@ export default function Home() {
   };
 
   return (
+    <>
+      <Head>
+        <script src="/widget.js" async></script>
+      </Head>
+      
     <div className="app">
       {/* Loading Page */}
       {showLoadingPage && (
@@ -596,5 +602,6 @@ export default function Home() {
         }
       `}</style>
     </div>
+    </>
   );
 }
