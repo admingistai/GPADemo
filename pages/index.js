@@ -626,28 +626,27 @@ export default function Home() {
                 Join leading publishers who are using Gist Answers to transform their content strategy, increase engagement, and drive sustainable revenue growth.
               </p>
               
-              <div className="footer-cta-buttons">
-                <div className="footer-button-group">
+              <div className="footer-url-input-container">
+                <div className="footer-url-input-wrapper">
                   <input
-                    type="text"
-                    placeholder="Book a 20-Minute Strategy Call"
-                    className="footer-input"
-                    readOnly
+                    type="url"
+                    value={targetUrl}
+                    onChange={(e) => setTargetUrl(e.target.value)}
+                    placeholder="Enter URL (e.g., cnn.com/article)"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && targetUrl.trim()) {
+                        handleUrlSubmit(targetUrl);
+                      }
+                    }}
+                    className="footer-url-input"
+                    disabled={loading}
                   />
-                  <button className="footer-btn primary">
-                    Book Call
-                  </button>
-                </div>
-                
-                <div className="footer-button-group">
-                  <input
-                    type="text"
-                    placeholder="Download Solution Overview"
-                    className="footer-input"
-                    readOnly
-                  />
-                  <button className="footer-btn secondary">
-                    Download
+                  <button
+                    onClick={() => handleUrlSubmit(targetUrl)}
+                    disabled={loading || !targetUrl.trim()}
+                    className="footer-generate-btn"
+                  >
+                    {loading ? 'Generating...' : 'Generate'}
                   </button>
                 </div>
               </div>
@@ -2550,15 +2549,13 @@ export default function Home() {
           font-family: 'Inter', sans-serif;
         }
 
-        .footer-cta-buttons {
+        .footer-url-input-container {
           display: flex;
-          gap: 2rem;
           justify-content: center;
-          align-items: center;
           margin-bottom: 2rem;
         }
 
-        .footer-button-group {
+        .footer-url-input-wrapper {
           display: flex;
           background: rgba(255, 255, 255, 0.1);
           backdrop-filter: blur(10px);
@@ -2566,14 +2563,16 @@ export default function Home() {
           border-radius: 50px;
           overflow: hidden;
           transition: all 0.3s ease;
+          max-width: 500px;
+          width: 100%;
         }
 
-        .footer-button-group:hover {
+        .footer-url-input-wrapper:hover {
           background: rgba(255, 255, 255, 0.15);
           border-color: rgba(255, 255, 255, 0.3);
         }
 
-        .footer-input {
+        .footer-url-input {
           flex: 1;
           padding: 1rem 1.5rem;
           border: none;
@@ -2582,16 +2581,21 @@ export default function Home() {
           font-size: 1rem;
           outline: none;
           font-family: 'Inter', sans-serif;
-          pointer-events: none;
         }
 
-        .footer-input::placeholder {
+        .footer-url-input::placeholder {
           color: rgba(255, 255, 255, 0.7);
         }
 
-        .footer-btn {
+        .footer-url-input:disabled {
+          opacity: 0.7;
+        }
+
+        .footer-generate-btn {
           padding: 1rem 2rem;
           border: none;
+          background: linear-gradient(135deg, #ff6b35, #f7931e);
+          color: white;
           font-size: 1rem;
           font-weight: 600;
           cursor: pointer;
@@ -2600,26 +2604,14 @@ export default function Home() {
           white-space: nowrap;
         }
 
-        .footer-btn.primary {
-          background: linear-gradient(135deg, #4ade80, #22c55e);
-          color: white;
-        }
-
-        .footer-btn.primary:hover {
-          background: linear-gradient(135deg, #22c55e, #16a34a);
+        .footer-generate-btn:hover:not(:disabled) {
+          background: linear-gradient(135deg, #e55a2b, #e0821a);
           transform: translateY(-1px);
         }
 
-        .footer-btn.secondary {
-          background: transparent;
-          color: #4ade80;
-          border: 2px solid #4ade80;
-        }
-
-        .footer-btn.secondary:hover {
-          background: #4ade80;
-          color: white;
-          transform: translateY(-1px);
+        .footer-generate-btn:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
         }
 
         .footer-disclaimer {
@@ -2643,17 +2635,11 @@ export default function Home() {
             margin-bottom: 2.5rem;
           }
           
-          .footer-cta-buttons {
-            flex-direction: column;
-            gap: 1.5rem;
-          }
-          
-          .footer-button-group {
-            width: 100%;
+          .footer-url-input-wrapper {
             max-width: 400px;
           }
           
-          .footer-btn {
+          .footer-generate-btn {
             padding: 0.875rem 1.5rem;
             font-size: 0.95rem;
           }
@@ -2668,12 +2654,12 @@ export default function Home() {
             font-size: 1rem;
           }
           
-          .footer-input {
+          .footer-url-input {
             padding: 0.875rem 1.25rem;
             font-size: 0.9rem;
           }
           
-          .footer-btn {
+          .footer-generate-btn {
             padding: 0.875rem 1.25rem;
             font-size: 0.9rem;
           }
