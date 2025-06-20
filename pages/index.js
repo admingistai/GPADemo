@@ -408,30 +408,10 @@ export default function Home() {
             <div className="testimonials-container">
               <div className="testimonial-box">
                 <div className="testimonial-content">
-                  <p>"Ask Anything™ increased our page views by 340% in the first month. Readers stay longer and engage more with our content."</p>
+                  <p>"With Gist Answers, we can combine our award-winning journalism with trusted external sources to deliver deeper context and smarter discovery in response to user questions."</p>
                   <div className="testimonial-author">
-                    <strong>Sarah Chen</strong>
-                    <span>Editor-in-Chief, TechDaily</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="testimonial-box">
-                <div className="testimonial-content">
-                  <p>"The ad revenue alone pays for our hosting costs. It's like having a 24/7 expert answering reader questions on every article."</p>
-                  <div className="testimonial-author">
-                    <strong>Mike Rodriguez</strong>
-                    <span>Publisher, HealthToday</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="testimonial-box">
-                <div className="testimonial-content">
-                  <p>"Setup took literally 2 minutes. Our bounce rate dropped 60% and readers are discovering content they never would have found before."</p>
-                  <div className="testimonial-author">
-                    <strong>Emma Thompson</strong>
-                    <span>Content Director, LifestyleMag</span>
+                    <strong>Will Lee</strong>
+                    <span>CEO, AdWeek</span>
                   </div>
                 </div>
               </div>
@@ -974,21 +954,22 @@ export default function Home() {
         }
 
         .testimonials-container {
-          max-width: 1200px;
+          max-width: 800px;
           margin: 0 auto;
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 2rem;
+          display: flex;
+          justify-content: center;
         }
 
         .testimonial-box {
           background: rgba(255, 255, 255, 0.08);
           border: 1px solid rgba(255, 255, 255, 0.12);
           border-radius: 16px;
-          padding: 2rem;
+          padding: 2.5rem;
           transition: all 0.3s ease;
           backdrop-filter: blur(10px);
           position: relative;
+          width: 100%;
+          text-align: center;
         }
 
         .testimonial-box:hover {
@@ -999,12 +980,13 @@ export default function Home() {
         }
 
         .testimonial-content p {
-          font-size: 1rem;
+          font-size: 1.1rem;
           line-height: 1.6;
           color: rgba(255, 255, 255, 0.9);
           font-family: 'Inter', sans-serif;
           margin-bottom: 1.5rem;
           font-style: italic;
+          max-width: 100%;
         }
 
         .testimonial-author {
@@ -1028,12 +1010,20 @@ export default function Home() {
 
         @media (max-width: 768px) {
           .testimonials-container {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
+            max-width: 100%;
+            padding: 0 1rem;
           }
           
           .testimonials-section {
-            padding: 3rem 1rem;
+            padding: 2rem 1rem 3rem;
+          }
+          
+          .testimonial-box {
+            padding: 2rem;
+          }
+          
+          .testimonial-content p {
+            font-size: 1rem;
           }
         }
 
