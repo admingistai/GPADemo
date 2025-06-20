@@ -976,22 +976,22 @@ export default function Home() {
           position: absolute;
           top: 50%;
           transform: translateY(-50%);
-          font-size: 8rem;
+          font-size: 12rem;
           font-weight: 300;
           color: white;
-          font-family: 'Inter', sans-serif;
+          font-family: 'Georgia', 'Times New Roman', serif;
           line-height: 1;
           pointer-events: none;
         }
 
         .testimonial-box::before {
           content: '{';
-          left: -4rem;
+          left: -6rem;
         }
 
         .testimonial-box::after {
           content: '}';
-          right: -4rem;
+          right: -6rem;
         }
 
         .testimonial-content p {
@@ -1049,15 +1049,15 @@ export default function Home() {
           
           .testimonial-box::before,
           .testimonial-box::after {
-            font-size: 5rem;
+            font-size: 8rem;
           }
           
           .testimonial-box::before {
-            left: -2rem;
+            left: -3rem;
           }
           
           .testimonial-box::after {
-            right: -2rem;
+            right: -3rem;
           }
         }
 
