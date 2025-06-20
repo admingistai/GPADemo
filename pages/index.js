@@ -768,7 +768,7 @@ export default function Home() {
           display: flex;
           flex-direction: column;
           align-items: center;
-          padding: 2rem;
+          padding: 2rem 2rem 8rem;
           max-width: 1200px;
           margin: 0 auto;
           width: 100%;
@@ -1029,7 +1029,7 @@ export default function Home() {
 
           /* Feature Page Mobile Styles */
           .feature-content {
-            padding: 1rem;
+            padding: 1rem 1rem 8rem;
           }
 
           .feature-title {
