@@ -15,9 +15,7 @@ export default function Home() {
   const [loadingMessage, setLoadingMessage] = useState('');
   const [selectedFeatures, setSelectedFeatures] = useState({
     ask: true, // Always enabled, non-toggleable
-    recommendedQuestions: false,
     theGist: true,
-    augmentedAnswers: false,
     goDeeper: false,
     ethicalAds: false,
     customVoices: false,
@@ -25,7 +23,6 @@ export default function Home() {
     myDaily: false,
     augmentedSharing: false,
     customAgents: false,
-    futureProofing: false,
     share: true
   });
 
@@ -247,32 +244,6 @@ export default function Home() {
                 <div className="feature-header">
                   <input
                     type="checkbox"
-                    id="recommendedQuestions"
-                    checked={selectedFeatures.recommendedQuestions}
-                    onChange={(e) => setSelectedFeatures(prev => ({...prev, recommendedQuestions: e.target.checked}))}
-                  />
-                  <label htmlFor="recommendedQuestions" className="feature-name">Recommended Questions</label>
-                </div>
-                <p className="feature-description">Auto-generates the most asked follow-ups; placed inline to guide exploration; lifts page views per visit.</p>
-              </div>
-
-              <div className="feature-card">
-                <div className="feature-header">
-                  <input
-                    type="checkbox"
-                    id="augmentedAnswers"
-                    checked={selectedFeatures.augmentedAnswers}
-                    onChange={(e) => setSelectedFeatures(prev => ({...prev, augmentedAnswers: e.target.checked}))}
-                  />
-                  <label htmlFor="augmentedAnswers" className="feature-name">Augmented Answers</label>
-                </div>
-                <p className="feature-description">Enriches replies with fully-licensed partner sources; citations included; maintains editorial trust.</p>
-              </div>
-
-              <div className="feature-card">
-                <div className="feature-header">
-                  <input
-                    type="checkbox"
                     id="goDeeper"
                     checked={selectedFeatures.goDeeper}
                     onChange={(e) => setSelectedFeatures(prev => ({...prev, goDeeper: e.target.checked}))}
@@ -345,19 +316,6 @@ export default function Home() {
                   <label htmlFor="customAgents" className="feature-name">Custom Publisher/Creator/Promotional Agents</label>
                 </div>
                 <p className="feature-description">Build task-specific, goal-oriented AI companions (e.g., paywall support, live events); full control over scope, tone, and data.</p>
-              </div>
-
-              <div className="feature-card">
-                <div className="feature-header">
-                  <input
-                    type="checkbox"
-                    id="futureProofing"
-                    checked={selectedFeatures.futureProofing}
-                    onChange={(e) => setSelectedFeatures(prev => ({...prev, futureProofing: e.target.checked}))}
-                  />
-                  <label htmlFor="futureProofing" className="feature-name">Future Proofing</label>
-                </div>
-                <p className="feature-description">One integration spins up an MCP server that: (1) exposes bot-friendly endpoints for GEO/AEO mention boosts, (2) surfaces structured answers search engines favor, and (3) lets trusted third-party AI agents transact safely on-site—opening additive revenue streams while you keep full data control.</p>
               </div>
 
             </div>

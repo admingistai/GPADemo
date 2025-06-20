@@ -1381,7 +1381,7 @@
                 }
                 
                 .gist-widget:not(.minimized) .gist-pill-content {
-                    width: 380px;
+                    width: 320px;
         justify-content: space-between;
                     padding-left: 4px;
                     transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1390,7 +1390,7 @@
 
                 
                 .gist-answer-container {
-                    width: 400px;
+                    width: 340px;
                     max-height: 300px;
                     position: relative;
                     border-radius: 16px;
@@ -1410,7 +1410,7 @@
                 
                 /* Compact version for Remix tool */
                 .gist-answer-container.remix-compact {
-                    width: 400px;
+                    width: 340px;
                     max-height: 350px; /* Increased from 300px to accommodate TTS interface */
                     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 }
@@ -1444,7 +1444,7 @@
                 
                 /* Ads Container Styling */
                 .gist-ads-container {
-                    width: 400px;
+                    width: 340px;
                     position: relative;
                     opacity: 0;
                     transform: translateY(20px) scale(0.95);
@@ -1886,7 +1886,7 @@
                 }
                 
                 .gist-pill {
-                    width: 400px;
+                    width: 340px;
                     height: 48px;
                     border-radius: 24px;
                     display: flex;
@@ -1949,7 +1949,7 @@
                     font-weight: 400;
                     letter-spacing: -0.01em;
                     white-space: nowrap;
-                    width: 380px;
+                    width: 320px;
                     padding: 0 4px;
                 }
                 
@@ -2283,7 +2283,7 @@
                 }
                 
                 .gist-toolbox {
-                    width: 400px;
+                    width: 340px;
                     background: #f8fafc;
                     border-radius: 12px;
                     padding: 4px;
