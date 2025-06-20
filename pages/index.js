@@ -1067,7 +1067,7 @@ export default function Home() {
         .video-container {
           position: relative;
           width: 100%;
-          max-width: 720px;
+          max-width: 960px;
           aspect-ratio: 16 / 9;
           border-radius: 16px;
           overflow: hidden;
