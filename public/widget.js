@@ -373,7 +373,7 @@
             }
         }
         
-        // 5. FALLBACK TO HIGH-QUALITY FAVICON
+                // 5. FALLBACK TO HIGH-QUALITY FAVICON
         if (!results.logo && results.favicon) {
             // Use favicon as logo if it's high quality
             const favicon = results.favicon.toLowerCase();
@@ -381,8 +381,33 @@
                 results.logo = results.favicon;
             }
         }
-        
-        // 6. COLLECT ALL POTENTIAL LOGO CANDIDATES
+
+        // 6. CHECK FOR GIST-LOGO.PNG ON THE WEBSITE
+        if (!results.logo) {
+            // First check if there's already an image with gist-logo.png in the DOM
+            const existingGistLogo = document.querySelector('img[src*="gist-logo.png"]');
+            if (existingGistLogo && existingGistLogo.src) {
+                results.logo = existingGistLogo.src;
+                console.log('[GistWidget] Found existing gist-logo.png in DOM:', existingGistLogo.src);
+            } else {
+                // Check common paths for gist-logo.png
+                const gistLogoPaths = [
+                    '/gist-logo.png',
+                    '/assets/gist-logo.png',
+                    '/images/gist-logo.png',
+                    '/static/gist-logo.png',
+                    '/public/gist-logo.png',
+                    '/uploads/gist-logo.png'
+                ];
+                
+                // Try the most common path first
+                const primaryGistLogoUrl = window.location.origin + '/gist-logo.png';
+                results.logo = primaryGistLogoUrl;
+                console.log('[GistWidget] Using fallback gist-logo.png path:', primaryGistLogoUrl);
+            }
+        }
+
+        // 7. COLLECT ALL POTENTIAL LOGO CANDIDATES
         const allImages = document.querySelectorAll('img[src]');
         allImages.forEach(img => {
             if (img.src && isValidImageUrl(img.src)) {

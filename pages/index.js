@@ -614,14 +614,9 @@ export default function Home() {
 
           .publishers-message {
             font-size: 1.2rem;
-            max-width: 280px;
+            max-width: 250px;
+            white-space: normal;
             line-height: 1.3;
-            word-wrap: break-word;
-          }
-
-          .publishers-band {
-            padding: 1rem 2rem 3rem;
-            margin-bottom: 40px;
           }
 
           .bottom-cta {
