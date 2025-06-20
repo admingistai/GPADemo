@@ -984,13 +984,13 @@ export default function Home() {
 
         .testimonial-box::before {
           content: '"';
-          top: -2rem;
+          top: 0;
           left: -6rem;
         }
 
         .testimonial-box::after {
           content: '"';
-          bottom: -2rem;
+          bottom: 0;
           right: -6rem;
         }
 
@@ -1053,12 +1053,12 @@ export default function Home() {
           }
           
           .testimonial-box::before {
-            top: -1rem;
+            top: 0;
             left: -3rem;
           }
           
           .testimonial-box::after {
-            bottom: -1rem;
+            bottom: 0;
             right: -3rem;
           }
         }
