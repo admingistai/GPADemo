@@ -613,8 +613,9 @@ export default function Home() {
           }
 
           .publishers-band {
-            padding: 1rem 2rem 2rem;
-            margin-bottom: 40px;
+            padding: 1rem 2rem 5rem;
+            margin-bottom: 80px;
+            margin-top: -3rem;
           }
 
           .publishers-message {
@@ -636,8 +637,9 @@ export default function Home() {
           }
 
           .publishers-band {
-            padding: 1rem 1rem 1.5rem;
-            margin-bottom: 30px;
+            padding: 2rem 1rem;
+            margin-bottom: 80px;
+            margin-top: -4rem;
           }
 
           .publishers-logos,
