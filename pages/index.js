@@ -59,7 +59,7 @@ export default function Home() {
   };
 
   const handleUrlSubmit = async (url) => {
-    setError(null);
+      setError(null);
     setShowFeaturePage(true);
   };
 
@@ -97,11 +97,11 @@ export default function Home() {
       
       try {
         const testResponse = await fetch(`/api/proxy?url=${encodeURIComponent(formattedUrl)}&test=true`);
-        const testResult = await testResponse.json();
+      const testResult = await testResponse.json();
 
-        if (!testResponse.ok) {
-          throw new Error(testResult.error || 'Unable to reach the specified website');
-        }
+      if (!testResponse.ok) {
+        throw new Error(testResult.error || 'Unable to reach the specified website');
+      }
 
         // Convert feature selection to widget configuration
         const widgetConfig = {
@@ -119,12 +119,12 @@ export default function Home() {
         // Reset the form for potential next use
         setShowLoadingPage(false);
         setTargetUrl('');
-      } catch (err) {
+    } catch (err) {
         setShowLoadingPage(false);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
     }, delay);
   };
 
@@ -155,7 +155,7 @@ export default function Home() {
           <div className="loading-content">
             <div className="loading-spinner">
               <img src="/Gist G white no background.png" alt="Gist Logo" />
-            </div>
+              </div>
             <h2 className="loading-title">Setting up <em>Ask Anything™</em></h2>
             <p className="loading-message">{loadingMessage}</p>
             <div className="loading-progress">
@@ -210,9 +210,9 @@ export default function Home() {
                     onChange={(e) => setSelectedFeatures(prev => ({...prev, theGist: e.target.checked}))}
                   />
                   <label htmlFor="theGist" className="feature-name">The Gist</label>
-                </div>
-                <p className="feature-description">One-sentence AI summary of any story; instant context for skimmers; proven to reduce bounce.</p>
               </div>
+                <p className="feature-description">One-sentence AI summary of any story; instant context for skimmers; proven to reduce bounce.</p>
+            </div>
 
               <div className="feature-card">
                 <div className="feature-header">
@@ -238,8 +238,8 @@ export default function Home() {
                   <label htmlFor="share" className="feature-name">Share</label>
                 </div>
                 <p className="feature-description">Enable users to share content and insights with others through various channels and platforms.</p>
-              </div>
-
+                </div>
+                
               <div className="feature-card">
                 <div className="feature-header">
                   <input
@@ -251,8 +251,8 @@ export default function Home() {
                   <label htmlFor="goDeeper" className="feature-name">Go Deeper</label>
                 </div>
                 <p className="feature-description">One-click expandable sidebars with related articles, data, and media; extends time-on-page.</p>
-              </div>
-
+                </div>
+                
               <div className="feature-card">
                 <div className="feature-header">
                   <input
@@ -264,8 +264,8 @@ export default function Home() {
                   <label htmlFor="ethicalAds" className="feature-name">Earn More with Ethical Ads</label>
                 </div>
                 <p className="feature-description">Privacy-safe generative ad units matched to content intent; new revenue stream, no user tracking.</p>
-              </div>
-
+                </div>
+                
               <div className="feature-card">
                 <div className="feature-header">
                   <input
@@ -277,8 +277,8 @@ export default function Home() {
                   <label htmlFor="customVoices" className="feature-name">Custom Voices & Avatars</label>
                 </div>
                 <p className="feature-description">Branded TTS and 3-D presenter options; consistent tone across text, audio, and video.</p>
-              </div>
-
+                </div>
+                
               <div className="feature-card">
                 <div className="feature-header">
                   <input
@@ -290,8 +290,8 @@ export default function Home() {
                   <label htmlFor="myDaily" className="feature-name">Add to "My Daily"</label>
                 </div>
                 <p className="feature-description">Opt-in to a personalized site-wide or network-wide daily digest that pulls your latest pieces into readers' personalized, customized news feed; drives habitual return traffic and incremental revenue.</p>
-              </div>
-
+                </div>
+                
               <div className="feature-card">
                 <div className="feature-header">
                   <input
@@ -303,8 +303,8 @@ export default function Home() {
                   <label htmlFor="augmentedSharing" className="feature-name">Augmented Sharing</label>
                 </div>
                 <p className="feature-description">Generates pre-written social posts and on-scroll highlights with backlinks; simplifies promotion, tracks attribution.</p>
-              </div>
-
+                </div>
+                
               <div className="feature-card">
                 <div className="feature-header">
                   <input
@@ -316,10 +316,10 @@ export default function Home() {
                   <label htmlFor="customAgents" className="feature-name">Custom Publisher/Creator/Promotional Agents</label>
                 </div>
                 <p className="feature-description">Build task-specific, goal-oriented AI companions (e.g., paywall support, live events); full control over scope, tone, and data.</p>
-              </div>
-
-            </div>
-
+                </div>
+                
+                </div>
+                
             <div className="feature-actions">
               <button className="back-btn" onClick={() => setShowFeaturePage(false)}>
                 ← Back
@@ -327,7 +327,7 @@ export default function Home() {
               <button className="continue-btn" onClick={handleFeatureContinue}>
                 Continue with Selected Features
               </button>
-            </div>
+                </div>
           </main>
         </div>
       )}
@@ -339,11 +339,11 @@ export default function Home() {
           <header className="header">
             <div className="header-left">
               <h1 className="logo">Ask<br />Anything™</h1>
-            </div>
+                </div>
             <div className="header-right">
               <span className="tagline">100% ethical, uses fully licensed sources</span>
               <button className="login-btn" onClick={() => setShowLoginPage(true)}>Login</button>
-            </div>
+              </div>
           </header>
 
           {/* Main Content */}
@@ -380,7 +380,7 @@ export default function Home() {
                   >
                     {loading ? 'Generating...' : 'Generate'}
                   </button>
-                </div>
+            </div>
               </div>
               <div className="see-how-text">
                 See how this will look on your website.
@@ -401,7 +401,7 @@ export default function Home() {
                 alt="Publishers logos" 
                 className="publishers-image"
               />
-            </div>
+                  </div>
           </footer>
 
           {/* Why Choose Us Section */}
@@ -410,7 +410,7 @@ export default function Home() {
               <div className="why-choose-header">
                                  <h2 className="why-choose-title">Why Choose <em>Ask Anything™</em>?</h2>
                 <p className="why-choose-subtitle">The smart choice for publishers who want results</p>
-              </div>
+                </div>
               
               <div className="why-choose-content">
                 <div className="why-choose-main">
@@ -419,15 +419,15 @@ export default function Home() {
                     <div className="benefit-content">
                       <h3>Drives Engagement</h3>
                       <p>Keep visitors on your site longer with interactive AI answers that boost page views and time spent.</p>
-                    </div>
                   </div>
+                </div>
                   
                   <div className="benefit-item">
                     <div className="benefit-number">02</div>
                     <div className="benefit-content">
                       <h3>Privacy-First & Ethical</h3>
                       <p>No user tracking, fully licensed content sources, and transparent attribution you can trust.</p>
-                    </div>
+                  </div>
                   </div>
                   
                   <div className="benefit-item">
@@ -445,108 +445,6 @@ export default function Home() {
                     <span className="cta-arrow">→</span>
                   </button>
                   <p className="cta-note">Setup takes less than 2 minutes</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Features Section */}
-          <section className="features-section">
-            <div className="features-container">
-              <h2 className="features-title">Everything You Need to Succeed</h2>
-              <p className="features-subtitle">
-                <em>Ask Anything™</em> delivers powerful features that keep users engaged while driving revenue
-              </p>
-              
-              <div className="features-categories">
-                <div className="category">
-                  <div className="category-header">
-                    <div className="category-icon">🚀</div>
-                    <h3 className="category-title">Performance & Engagement</h3>
-                  </div>
-                  <div className="category-features">
-                    <div className="feature-item-small">
-                      <div className="feature-icon">🎯</div>
-                      <div className="feature-content">
-                        <h4>Accurate Answers</h4>
-                        <p>Provide precise responses to user questions with AI-powered accuracy</p>
-                      </div>
-                    </div>
-                    <div className="feature-item-small">
-                      <div className="feature-icon">🏠</div>
-                      <div className="feature-content">
-                        <h4>Keep Users Engaged</h4>
-                        <p>Prevent users from leaving for Google, ChatGPT, or other sites</p>
-                      </div>
-                    </div>
-                    <div className="feature-item-small">
-                      <div className="feature-icon">💰</div>
-                      <div className="feature-content">
-                        <h4>New Revenue Stream</h4>
-                        <p>Generate high-value revenue from ethically-placed advertisements</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="category">
-                  <div className="category-header">
-                    <div className="category-icon">📚</div>
-                    <h3 className="category-title">Content & Sources</h3>
-                  </div>
-                  <div className="category-features">
-                    <div className="feature-item-small">
-                      <div className="feature-icon">🔗</div>
-                      <div className="feature-content">
-                        <h4>Promotes Your Content First</h4>
-                        <p>Your content appears first in answers with direct links back to sources</p>
-                      </div>
-                    </div>
-                    <div className="feature-item-small">
-                      <div className="feature-icon">📰</div>
-                      <div className="feature-content">
-                        <h4>Leading Publication Integration</h4>
-                        <p>Supplement answers with content from top-tier publications</p>
-                      </div>
-                    </div>
-                    <div className="feature-item-small">
-                      <div className="feature-icon">⚙️</div>
-                      <div className="feature-content">
-                        <h4>Source Control</h4>
-                        <p>Choose which third-party publications can be used as sources</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="category">
-                  <div className="category-header">
-                    <div className="category-icon">🛡️</div>
-                    <h3 className="category-title">Setup & Control</h3>
-                  </div>
-                  <div className="category-features">
-                    <div className="feature-item-small">
-                      <div className="feature-icon">⚡</div>
-                      <div className="feature-content">
-                        <h4>Easy Installation</h4>
-                        <p>Quick setup with a simple plug-in or just one line of code</p>
-                      </div>
-                    </div>
-                    <div className="feature-item-small">
-                      <div className="feature-icon">🎨</div>
-                      <div className="feature-content">
-                        <h4>Full Customization</h4>
-                        <p>Control colors, fonts, and overall look and feel to match your brand</p>
-                      </div>
-                    </div>
-                    <div className="feature-item-small">
-                      <div className="feature-icon">🔒</div>
-                      <div className="feature-content">
-                        <h4>Privacy-Safe</h4>
-                        <p>No user-level tracking - protect your audience's privacy</p>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -672,7 +570,7 @@ export default function Home() {
         }
 
         .loading-spinner img {
-          width: 100%;
+           width: 100%;
           height: 100%;
           object-fit: contain;
         }
@@ -776,8 +674,8 @@ export default function Home() {
           font-size: 1rem;
           font-style: italic;
           opacity: 0.9;
-          font-weight: 700;
-          letter-spacing: -0.02em;
+           font-weight: 700;
+           letter-spacing: -0.02em;
           line-height: 1.1;
         }
 
@@ -1176,7 +1074,7 @@ export default function Home() {
             justify-content: space-between;
             align-items: flex-start;
             gap: 1rem;
-            padding: 1.5rem;
+          padding: 1.5rem;
           }
 
           .header-left {
@@ -1351,9 +1249,9 @@ export default function Home() {
 
           .feature-card {
             padding: 1rem;
-          }
+        }
 
-          .feature-name {
+        .feature-name {
             font-size: 1rem;
           }
 
@@ -1401,7 +1299,7 @@ export default function Home() {
           right: 1rem;
           background: none;
           border: none;
-          font-size: 1.5rem;
+           font-size: 1.5rem;
           color: #9ca3af;
           cursor: pointer;
           padding: 0.5rem;
@@ -1415,7 +1313,7 @@ export default function Home() {
         }
 
         .login-header {
-          text-align: center;
+           text-align: center;
           margin-bottom: 2rem;
         }
 
@@ -1482,7 +1380,7 @@ export default function Home() {
         }
 
         .remember-me input {
-          margin: 0;
+           margin: 0;
         }
 
         .forgot-password {
@@ -1503,7 +1401,7 @@ export default function Home() {
           padding: 1rem;
           border-radius: 12px;
           font-size: 1rem;
-          font-weight: 600;
+           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s ease;
           font-family: inherit;
@@ -1623,7 +1521,7 @@ export default function Home() {
 
         /* Why Choose Us Section - Redesigned */
         .why-choose-section {
-          padding: 1.5rem 3rem;
+          padding: 4rem 3rem;
           background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
           backdrop-filter: blur(20px);
           border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -1642,21 +1540,21 @@ export default function Home() {
 
         .why-choose-header {
           text-align: center;
-          margin-bottom: 1.5rem;
+          margin-bottom: 3rem;
         }
 
         .why-choose-title {
-          font-size: 2.25rem;
+          font-size: 2.75rem;
           font-weight: 700;
           color: white;
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.75rem;
           letter-spacing: -0.02em;
           line-height: 1.1;
           font-family: 'Inter', sans-serif;
         }
 
         .why-choose-subtitle {
-          font-size: 1rem;
+          font-size: 1.2rem;
           color: rgba(255, 255, 255, 0.7);
           font-weight: 400;
           font-family: 'Inter', sans-serif;
@@ -1665,24 +1563,24 @@ export default function Home() {
         .why-choose-content {
           display: grid;
           grid-template-columns: 2fr 1fr;
-          gap: 2rem;
+          gap: 4rem;
           align-items: center;
         }
 
         .why-choose-main {
           display: flex;
           flex-direction: column;
-          gap: 1rem;
+          gap: 2rem;
         }
 
         .benefit-item {
           display: flex;
           align-items: flex-start;
-          gap: 1rem;
-          padding: 1.25rem;
+          gap: 1.5rem;
+          padding: 2rem;
           background: rgba(255, 255, 255, 0.05);
           border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 16px;
+          border-radius: 20px;
           transition: all 0.3s ease;
           backdrop-filter: blur(10px);
         }
@@ -1696,31 +1594,31 @@ export default function Home() {
         .benefit-number {
           background: linear-gradient(135deg, #ff6b35, #f7931e);
           color: white;
-          width: 2.5rem;
-          height: 2.5rem;
+          width: 3rem;
+          height: 3rem;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 1rem;
+          font-size: 1.2rem;
           font-weight: 700;
           flex-shrink: 0;
           font-family: 'Inter', sans-serif;
         }
 
         .benefit-content h3 {
-          font-size: 1.25rem;
+          font-size: 1.5rem;
           font-weight: 600;
           color: white;
-          margin-bottom: 0.25rem;
+          margin-bottom: 0.5rem;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.01em;
         }
 
         .benefit-content p {
-          font-size: 0.9rem;
+          font-size: 1rem;
           color: rgba(255, 255, 255, 0.8);
-          line-height: 1.5;
+          line-height: 1.6;
           font-family: 'Inter', sans-serif;
         }
 
@@ -1729,8 +1627,8 @@ export default function Home() {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          text-align: center;
-          padding: 1rem;
+           text-align: center;
+          padding: 2rem;
         }
 
         .primary-cta-button {
@@ -1775,146 +1673,72 @@ export default function Home() {
           font-size: 0.9rem;
           color: rgba(255, 255, 255, 0.6);
           font-family: 'Inter', sans-serif;
-          margin: 0;
+           margin: 0;
         }
 
-        /* Features Section */
-        .features-section {
-          padding: 1.25rem 3rem 1.5rem;
-          background: rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(10px);
-          animation: slideInUp 0.8s ease-out 0.6s both;
-        }
 
-        .features-container {
-          max-width: 1200px;
-          margin: 0 auto;
-          text-align: center;
-        }
-
-        .features-title {
-          font-size: 1.9rem;
-          font-weight: 700;
-          color: white;
-          margin-bottom: 0.5rem;
-          letter-spacing: -0.02em;
-          line-height: 1.1;
-        }
-
-        .features-subtitle {
-          font-size: 1rem;
-          color: rgba(255, 255, 255, 0.8);
-          margin-bottom: 1rem;
-          max-width: 600px;
-          margin-left: auto;
-          margin-right: auto;
-          line-height: 1.4;
-        }
-
-        .features-categories {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 1rem;
-          margin-top: 0.25rem;
-          max-width: 1400px;
-          margin-left: auto;
-          margin-right: auto;
-        }
-
-        .category {
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 14px;
-          padding: 1rem;
-          transition: all 0.3s ease;
-          backdrop-filter: blur(10px);
-        }
-
-        .category:hover {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(255, 255, 255, 0.2);
-          transform: translateY(-2px);
-          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .category-header {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          margin-bottom: 0.75rem;
-          padding-bottom: 0.5rem;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .category-icon {
-          font-size: 1.25rem;
-          background: linear-gradient(135deg, #ff6b35, #f7931e);
-          padding: 0.375rem;
-          border-radius: 8px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .category-title {
-          font-size: 1.1rem;
-          font-weight: 600;
-          color: white;
-          margin: 0;
-          font-family: 'Inter', sans-serif;
-          letter-spacing: -0.01em;
-        }
-
-        .category-features {
-          display: flex;
-          flex-direction: column;
-          gap: 0.625rem;
-        }
-
-        .feature-item-small {
-          display: flex;
-          align-items: flex-start;
-          gap: 0.625rem;
-          padding: 0.75rem;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 8px;
-          transition: all 0.3s ease;
-        }
-
-        .feature-item-small:hover {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(255, 255, 255, 0.15);
-          transform: translateX(3px);
-        }
-
-        .feature-icon {
-          font-size: 1.1rem;
-          flex-shrink: 0;
-          margin-top: 0.1rem;
-        }
-
-        .feature-content h4 {
-          font-size: 0.95rem;
-          font-weight: 600;
-          color: white;
-          margin: 0 0 0.25rem 0;
-          font-family: 'Inter', sans-serif;
-          letter-spacing: -0.01em;
-        }
-
-        .feature-content p {
-          font-size: 0.8rem;
-          color: rgba(255, 255, 255, 0.75);
-          line-height: 1.3;
-          margin: 0;
-          font-family: 'Inter', sans-serif;
-        }
 
         /* Responsive Design for Why Choose Us Section */
         @media (max-width: 768px) {
           .why-choose-section {
-            padding: 1.25rem 2rem;
+            padding: 2.5rem 2rem;
+          }
+
+          .why-choose-title {
+            font-size: 2.25rem;
+          }
+
+          .why-choose-subtitle {
+            font-size: 1.1rem;
+          }
+
+          .why-choose-content {
+            grid-template-columns: 1fr;
+            gap: 2.5rem;
+          }
+
+          .why-choose-main {
+            gap: 1.5rem;
+          }
+
+          .benefit-item {
+            padding: 1.5rem;
+            gap: 1rem;
+          }
+
+          .benefit-number {
+            width: 2.5rem;
+            height: 2.5rem;
+            font-size: 1rem;
+          }
+
+          .benefit-content h3 {
+            font-size: 1.25rem;
+          }
+
+          .benefit-content p {
+            font-size: 0.9rem;
+          }
+
+          .why-choose-cta {
+            padding: 1.5rem;
+          }
+
+          .primary-cta-button {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+          }
+        }
+
+          .cta-button {
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .why-choose-section {
+            padding: 2rem 1.5rem;
           }
 
           .why-choose-title {
@@ -1922,21 +1746,20 @@ export default function Home() {
           }
 
           .why-choose-subtitle {
-            font-size: 0.95rem;
+            font-size: 1rem;
           }
 
           .why-choose-content {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
+            gap: 2rem;
           }
 
           .why-choose-main {
-            gap: 0.875rem;
+            gap: 1.25rem;
           }
 
           .benefit-item {
-            padding: 1rem;
-            gap: 0.875rem;
+            padding: 1.25rem;
+            gap: 1rem;
           }
 
           .benefit-number {
@@ -1951,6 +1774,7 @@ export default function Home() {
 
           .benefit-content p {
             font-size: 0.85rem;
+            line-height: 1.5;
           }
 
           .why-choose-cta {
@@ -1961,119 +1785,9 @@ export default function Home() {
             padding: 0.875rem 1.75rem;
             font-size: 0.95rem;
           }
-        }
-
-          .cta-button {
-            padding: 1rem 2.5rem;
-            font-size: 1rem;
-          }
-
-          .features-section {
-            padding: 1rem 2rem 1.25rem;
-          }
-
-          .features-title {
-            font-size: 1.6rem;
-          }
-
-          .features-subtitle {
-            font-size: 0.9rem;
-            margin-bottom: 0.75rem;
-          }
-
-          .features-categories {
-            grid-template-columns: 1fr;
-            gap: 0.875rem;
-          }
-
-          .category {
-            padding: 1rem;
-          }
-
-          .category-header {
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.5rem;
-          }
-
-          .category-icon {
-            font-size: 1.25rem;
-            padding: 0.5rem;
-          }
-
-          .category-title {
-            font-size: 1.1rem;
-          }
-
-          .feature-item-small {
-            padding: 0.875rem;
-            gap: 0.625rem;
-          }
-
-          .feature-icon {
-            font-size: 1.125rem;
-          }
-
-          .feature-content h4 {
-            font-size: 0.95rem;
-          }
-
-          .feature-content p {
-            font-size: 0.8rem;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .why-choose-section {
-            padding: 1rem 1.5rem;
-          }
-
-          .why-choose-title {
-            font-size: 1.6rem;
-          }
-
-          .why-choose-subtitle {
-            font-size: 0.9rem;
-          }
-
-          .why-choose-content {
-            gap: 1.25rem;
-          }
-
-          .why-choose-main {
-            gap: 0.75rem;
-          }
-
-          .benefit-item {
-            padding: 0.875rem;
-            gap: 0.75rem;
-          }
-
-          .benefit-number {
-            width: 2rem;
-            height: 2rem;
-            font-size: 0.8rem;
-          }
-
-          .benefit-content h3 {
-            font-size: 1rem;
-          }
-
-          .benefit-content p {
-            font-size: 0.8rem;
-            line-height: 1.4;
-          }
-
-          .why-choose-cta {
-            padding: 0.75rem;
-          }
-
-          .primary-cta-button {
-            padding: 0.75rem 1.5rem;
-            font-size: 0.9rem;
-          }
 
           .cta-note {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
           }
         }
 
@@ -2081,82 +1795,9 @@ export default function Home() {
             padding: 0.875rem 2rem;
             font-size: 0.95rem;
           }
-
-          .features-section {
-            padding: 0.875rem 1.5rem 1rem;
-          }
-
-          .features-title {
-            font-size: 1.4rem;
-          }
-
-          .features-subtitle {
-            font-size: 0.85rem;
-          }
-
-          .category {
-            padding: 0.75rem;
-          }
-
-          .category-header {
-            margin-bottom: 0.625rem;
-            padding-bottom: 0.375rem;
-          }
-
-          .category-icon {
-            font-size: 1.125rem;
-            padding: 0.25rem;
-          }
-
-          .category-title {
-            font-size: 0.95rem;
-          }
-
-          .feature-item-small {
-            padding: 0.625rem;
-            gap: 0.5rem;
-          }
-
-          .feature-icon {
-            font-size: 0.95rem;
-          }
-
-          .feature-content h4 {
-            font-size: 0.85rem;
-          }
-
-          .feature-content p {
-            font-size: 0.7rem;
-          }
-
-          .features-categories {
-            gap: 0.75rem;
-          }
         }
 
-        /* Large Tablet Specific Adjustments */
-        @media (min-width: 1025px) and (max-width: 1200px) {
-          .features-categories {
-            gap: 1rem;
-          }
 
-          .category {
-            padding: 1.25rem;
-          }
-
-          .category-header {
-            margin-bottom: 0.875rem;
-            padding-bottom: 0.625rem;
-          }
-
-          .category-features {
-            gap: 0.75rem;
-          }
-
-          .feature-item-small {
-            padding: 0.875rem;
-          }
-        }
 
         /* Tablet Specific Adjustments */
         @media (min-width: 769px) and (max-width: 1024px) {
@@ -2177,23 +1818,10 @@ export default function Home() {
             font-size: 1.35rem;
           }
 
-          .features-categories {
-            grid-template-columns: 1fr;
-            gap: 1.25rem;
-          }
-
-          .category {
-            padding: 1.5rem;
-          }
-
           .why-choose-title {
             font-size: 2.5rem;
-          }
-
-          .features-title {
-            font-size: 2rem;
-          }
-        }
+           }
+         }
       `}</style>
     </div>
     </>
