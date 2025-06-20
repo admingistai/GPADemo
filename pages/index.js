@@ -414,26 +414,26 @@ export default function Home() {
               <div className="horizontal-benefits">
                 <div className="benefit-item-horizontal">
                   <div className="benefit-number">01</div>
-                  <h3>Drives Engagement</h3>
-                  <p>Keep visitors on your site longer with interactive AI answers that boost page views and time spent.</p>
+                  <h3>Boost Engagement</h3>
+                  <p>Avg session length ↑ 2.3× with interactive answers.</p>
                   </div>
                   
                 <div className="benefit-item-horizontal">
                   <div className="benefit-number">02</div>
-                  <h3>Privacy-First & Ethical</h3>
-                  <p>No user tracking, fully licensed content sources, and transparent attribution you can trust.</p>
+                  <h3>Zero-Cost, Ad-Supported</h3>
+                  <p>Earn new revenue from privacy-safe ads—no fees, no lock-ins.</p>
                 </div>
                   
                 <div className="benefit-item-horizontal">
                   <div className="benefit-number">03</div>
-                  <h3>Completely Free</h3>
-                  <p>No upfront costs, no hidden fees, no monthly subscriptions. Start adding value immediately.</p>
+                  <h3>Privacy-First</h3>
+                  <p>0 user-level tracking. Fully licensed sources.</p>
                   </div>
                 </div>
               
               <div className="why-choose-cta">
                 <button className="primary-cta-button" onClick={() => document.querySelector('.url-input').focus()}>
-                  Get Started Now
+                  Get the code—live in 2 minutes
                   <span className="cta-arrow">→</span>
                 </button>
                 <p className="cta-note">Setup takes less than 2 minutes</p>
