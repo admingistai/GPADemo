@@ -407,10 +407,32 @@ export default function Home() {
                 </div>
               
               <div className="why-choose-cta">
-                <button className="primary-cta-button" onClick={() => document.querySelector('.url-input').focus()}>
-                  Enter your URL to preview on your site...
-                  <span className="cta-arrow">→</span>
-                </button>
+                <div className="why-choose-url-input-container">
+                  <div className="why-choose-url-input-wrapper">
+                    <div className="why-choose-url-input-inner">
+                      <input
+                        type="url"
+                        value={targetUrl}
+                        onChange={(e) => setTargetUrl(e.target.value)}
+                        placeholder="Enter your URL to preview on your site..."
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && !loading && targetUrl.trim()) {
+                            handleUrlSubmit(targetUrl);
+                          }
+                        }}
+                        className="why-choose-url-input"
+                        disabled={loading}
+                      />
+                      <button
+                        onClick={() => handleUrlSubmit(targetUrl)}
+                        disabled={loading || !targetUrl.trim()}
+                        className="why-choose-generate-btn"
+                      >
+                        {loading ? 'Generating...' : 'Generate'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
@@ -777,6 +799,7 @@ export default function Home() {
           flex-direction: column;
           color: white;
           animation: fadeIn 0.8s ease-out;
+          padding-bottom: 6rem;
          }
 
         @keyframes fadeIn {
@@ -2120,6 +2143,100 @@ export default function Home() {
           font-family: 'Inter', sans-serif;
            margin: 0;
          }
+
+        /* Why Choose URL Input Styles */
+        .why-choose-url-input-container {
+          display: flex;
+          justify-content: center;
+          width: 100%;
+        }
+
+        .why-choose-url-input-wrapper {
+          display: flex;
+          background: linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7);
+          border-radius: 50px;
+          padding: 3px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+          transition: all 0.3s ease;
+          max-width: 500px;
+          width: 100%;
+        }
+
+        .why-choose-url-input-wrapper:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .why-choose-url-input-wrapper:focus-within {
+          transform: translateY(-3px);
+          box-shadow: 0 12px 40px rgba(255, 107, 53, 0.2);
+        }
+
+        .why-choose-url-input-inner {
+          display: flex;
+          background: white;
+          border-radius: 47px;
+          padding: 3px;
+          width: 100%;
+        }
+
+        .why-choose-url-input {
+          flex: 1;
+          border: none;
+          background: white;
+          padding: 0.75rem 1.25rem;
+          font-size: 1rem;
+          font-family: 'Inter', sans-serif;
+          color: #333;
+          outline: none;
+          border-radius: 42px;
+          transition: all 0.2s ease;
+        }
+
+        .why-choose-url-input:focus {
+          transform: scale(1.01);
+        }
+
+        .why-choose-url-input::placeholder {
+          color: #666;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .why-choose-url-input:disabled {
+          opacity: 0.7;
+        }
+
+        .why-choose-generate-btn {
+          background: linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7);
+          border: none;
+          color: white;
+          padding: 0.75rem 1.5rem;
+          border-radius: 40px;
+          font-family: 'Inter', sans-serif;
+          font-weight: 600;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          white-space: nowrap;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .why-choose-generate-btn:hover:not(:disabled) {
+          background: linear-gradient(135deg, #e55a2b, #e0821a, #ff5252, #9333ea);
+          transform: translateY(-1px) scale(1.05);
+          box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .why-choose-generate-btn:active:not(:disabled) {
+          transform: translateY(0) scale(0.98);
+          transition: all 0.1s ease;
+        }
+
+        .why-choose-generate-btn:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          transform: none;
+        }
 
         /* How It Works Section */
         .how-it-works-section {
