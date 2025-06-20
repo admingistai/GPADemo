@@ -206,7 +206,10 @@ export default function Home() {
             </div>
             <div className="header-right">
               <span className="tagline">100% ethical, uses fully licensed sources</span>
-              <button className="login-btn" onClick={() => setShowLoginPage(true)}>Login</button>
+              <div className="auth-buttons">
+                <button className="signin-btn" onClick={() => {}}>Sign In</button>
+                <button className="signup-btn" onClick={() => setShowLoginPage(true)}>Sign Up</button>
+              </div>
             </div>
           </header>
 
@@ -319,10 +322,13 @@ export default function Home() {
               <img src="/Gist G white no background.png" alt="Gist" className="gist-logo" onClick={() => window.open('https://about.gist.ai', '_blank')} />
               <h1 className="logo">Ask<br />Anything™</h1>
                 </div>
-            <div className="header-right">
+                        <div className="header-right">
               <span className="tagline">100% ethical, uses fully licensed sources</span>
-              <button className="login-btn" onClick={() => setShowLoginPage(true)}>Login</button>
+              <div className="auth-buttons">
+                <button className="signin-btn" onClick={() => {}}>Sign In</button>
+                <button className="signup-btn" onClick={() => setShowLoginPage(true)}>Sign Up</button>
               </div>
+            </div>
           </header>
 
           {/* Main Content */}
@@ -971,8 +977,14 @@ export default function Home() {
           line-height: 1.1;
          }
 
-        .login-btn {
-          background: rgba(255, 255, 255, 0.1);
+        .auth-buttons {
+          display: flex;
+          gap: 1rem;
+          align-items: center;
+        }
+
+        .signin-btn {
+          background: transparent;
           border: 1px solid rgba(255, 255, 255, 0.2);
           color: white;
           padding: 0.75rem 1.5rem;
@@ -983,9 +995,28 @@ export default function Home() {
           transition: all 0.3s ease;
         }
 
-        .login-btn:hover {
-          background: rgba(255, 255, 255, 0.15);
+        .signin-btn:hover {
+          background: rgba(255, 255, 255, 0.05);
           border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .signup-btn {
+          background: linear-gradient(135deg, #ff6b35, #f7931e);
+          border: none;
+          color: white;
+          padding: 0.75rem 1.5rem;
+          border-radius: 8px;
+          font-family: 'Inter', sans-serif;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 2px 10px rgba(255, 107, 53, 0.3);
+        }
+
+        .signup-btn:hover {
+          background: linear-gradient(135deg, #e55a2b, #e0821a);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
         }
 
         /* Main Content */
@@ -1022,7 +1053,7 @@ export default function Home() {
           color: rgba(255, 255, 255, 0.9);
           margin-bottom: 2rem;
           font-family: 'Inter', sans-serif;
-          font-weight: 700;
+          font-weight: 600;
           text-align: center;
           animation: slideInUp 0.8s ease-out 0.5s both;
           max-width: 600px;
@@ -1245,7 +1276,7 @@ export default function Home() {
         /* Testimonials Section */
         .testimonials-section {
           background: transparent;
-          padding: 3rem 2rem 5rem;
+          padding: 1.5rem 2rem 5rem;
           margin-bottom: 0;
           opacity: 0;
           transform: translateY(40px);
@@ -2701,6 +2732,7 @@ export default function Home() {
           margin: 0;
           font-family: 'Inter', sans-serif;
           line-height: 1.6;
+          font-weight: 600;
         }
 
         .revenue-cta {
