@@ -382,6 +382,10 @@ export default function Home() {
             </div>
               </div>
               
+              <div className="see-how-text">
+                Paste any article link to preview Ask Anything™ on your site.
+              </div>
+              
               {/* YouTube Video Section */}
               <div className="video-section">
                 <div className="video-container">
@@ -395,10 +399,6 @@ export default function Home() {
                     allowFullScreen>
                   </iframe>
                 </div>
-              </div>
-              
-              <div className="see-how-text">
-                Paste any article link to preview Ask Anything™ on your site.
               </div>
               {error && (
                 <div className="error-message">
