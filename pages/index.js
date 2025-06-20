@@ -927,8 +927,8 @@ export default function Home() {
         /* Publishers Band */
         .publishers-band {
           background: transparent;
-          padding: 1rem 2rem 5rem;
-          margin-bottom: 80px;
+          padding: 1rem 2rem 2rem;
+          margin-bottom: 0;
           animation: fadeInUp 1s ease-out 0.8s both;
         }
 
@@ -966,7 +966,7 @@ export default function Home() {
         /* Testimonials Section */
         .testimonials-section {
           background: transparent;
-          padding: 4rem 2rem;
+          padding: 2rem 2rem 4rem;
           margin-bottom: 0;
         }
 
