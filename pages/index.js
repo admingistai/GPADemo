@@ -414,7 +414,6 @@ export default function Home() {
             <div className="why-choose-container">
               <div className="why-choose-header">
                 <h2 className="why-choose-title">Transform Content into Conversations</h2>
-                <p className="why-choose-subtitle">The smart choice for publishers who want results</p>
                 </div>
               
               <div className="horizontal-benefits">
@@ -2135,7 +2134,7 @@ export default function Home() {
 
         .why-choose-header {
           text-align: center;
-          margin-bottom: 3rem;
+          margin-bottom: 1.5rem;
         }
 
         .why-choose-title {
