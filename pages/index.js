@@ -26,13 +26,13 @@ export default function Home() {
     share: true
   });
 
-  // Simplified scroll animation effects
+  // Enhanced scroll animation effects
   useEffect(() => {
     const handleScroll = () => {
       const animateOnScroll = document.querySelectorAll('.animate-on-scroll');
       animateOnScroll.forEach((element) => {
         const elementTop = element.getBoundingClientRect().top;
-        const elementVisible = 150;
+        const elementVisible = 120;
         
         if (elementTop < window.innerHeight - elementVisible) {
           element.classList.add('animate-visible');
@@ -40,10 +40,41 @@ export default function Home() {
       });
     };
 
+    // Intersection Observer for more sophisticated animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -80px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('scroll-animate-in');
+          // Add stagger delay for child elements
+          const children = entry.target.querySelectorAll('.stagger-animate');
+          children.forEach((child, index) => {
+            setTimeout(() => {
+              child.classList.add('stagger-in');
+            }, index * 100);
+          });
+        }
+      });
+    }, observerOptions);
+
+    // Observe sections for scroll animations
+    const sections = document.querySelectorAll('section, .publishers-band, .testimonials-section');
+    sections.forEach(section => {
+      section.classList.add('scroll-observe');
+      observer.observe(section);
+    });
+
     window.addEventListener('scroll', handleScroll);
     handleScroll(); // Run once on mount
     
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      observer.disconnect();
+    };
   }, [showWebsite]);
 
   const formatUrl = (inputUrl) => {
@@ -389,19 +420,19 @@ export default function Home() {
                 </div>
               
               <div className="horizontal-benefits">
-                <div className="benefit-item-horizontal">
+                <div className="benefit-item-horizontal stagger-animate">
                   <div className="benefit-icon">📚</div>
                   <h3>Answer beyond the article</h3>
                   <p>Gist draws from your entire content library to provide comprehensive answers while always citing sources.</p>
                   </div>
                   
-                <div className="benefit-item-horizontal">
+                <div className="benefit-item-horizontal stagger-animate">
                   <div className="benefit-icon">🎯</div>
                   <h3>Search traffic stays put</h3>
                   <p>Keep readers engaged on your site instead of bouncing back to search engines for follow-up questions.</p>
                 </div>
                   
-                <div className="benefit-item-horizontal">
+                <div className="benefit-item-horizontal stagger-animate">
                   <div className="benefit-icon">💰</div>
                   <h3>Ad-funded, no fees</h3>
                   <p>Our revenue-share model means you only pay when Gist generates additional ad impressions and engagement.</p>
@@ -447,23 +478,23 @@ export default function Home() {
               </div>
               
               <div className="how-it-works-steps">
-                <div className="step-item">
+                <div className="step-item stagger-animate">
                   <div className="step-number">01</div>
                   <h3 className="step-title">One line: live in minutes</h3>
                   <p className="step-description">Drop a single line of code into your site and Gist Answers is instantly live. No complex setup, no technical expertise required.</p>
                 </div>
                 
-                <div className="step-arrow">→</div>
+                <div className="step-arrow stagger-animate">→</div>
                 
-                <div className="step-item">
+                <div className="step-item stagger-animate">
                   <div className="step-number">02</div>
                   <h3 className="step-title">Choose theme</h3>
                   <p className="step-description">Customize colors, fonts, and positioning to match your brand perfectly. Your answers, your style, your site.</p>
                 </div>
                 
-                <div className="step-arrow">→</div>
+                <div className="step-arrow stagger-animate">→</div>
                 
-                <div className="step-item">
+                <div className="step-item stagger-animate">
                   <div className="step-number">03</div>
                   <h3 className="step-title">Integrate with ads</h3>
                   <p className="step-description">Start earning revenue immediately with privacy-safe ads that complement your content without disrupting the user experience.</p>
@@ -481,17 +512,17 @@ export default function Home() {
               </div>
               
               <div className="copy-features">
-                <div className="copy-feature">
+                <div className="copy-feature stagger-animate">
                   <div className="feature-icon">✓</div>
                   <p>Every answer includes citations to your content and trusted external sources</p>
                 </div>
                 
-                <div className="copy-feature">
+                <div className="copy-feature stagger-animate">
                   <div className="feature-icon">✓</div>
                   <p>Strict fact-checking protocols prevent hallucinations and misinformation</p>
                 </div>
                 
-                <div className="copy-feature">
+                <div className="copy-feature stagger-animate">
                   <div className="feature-icon">✓</div>
                   <p>Your content remains on your servers; we never train on your proprietary data</p>
                 </div>
@@ -806,6 +837,77 @@ export default function Home() {
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scroll Animation Styles */
+        .scroll-observe {
+          opacity: 0;
+          transform: translateY(30px);
+          transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .scroll-observe.scroll-animate-in {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        .stagger-animate {
+          opacity: 0;
+          transform: translateY(20px);
+          transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .stagger-animate.stagger-in {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        /* Smooth scrolling for the entire page */
+        html {
+          scroll-behavior: smooth;
+        }
+
+        /* Subtle parallax effect on scroll */
+        .parallax-subtle {
+          transition: transform 0.1s ease-out;
+        }
+
+        /* Professional micro-interactions */
+        .benefit-item-horizontal, .step-item, .copy-feature {
+          transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .benefit-item-horizontal:hover {
+          transform: translateY(-2px);
+        }
+
+        .step-item:hover {
+          transform: translateY(-1px);
+        }
+
+        .copy-feature:hover {
+          transform: translateX(2px);
+        }
+
+        /* Smooth transitions for all interactive elements */
+        button, input, .url-input-wrapper, .video-container {
+          transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* Enhanced button animations */
+        .generate-btn, .why-choose-generate-btn, .footer-generate-btn {
+          transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* Subtle scale animation for icons */
+        .benefit-icon, .feature-icon, .step-number {
+          transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .benefit-item-horizontal:hover .benefit-icon,
+        .copy-feature:hover .feature-icon,
+        .step-item:hover .step-number {
+          transform: scale(1.1);
         }
 
         /* Header */
