@@ -830,7 +830,7 @@ export default function Home() {
         }
 
         .gist-logo {
-          height: 2rem;
+          height: 2.5rem;
           width: auto;
           transition: all 0.3s ease;
           cursor: pointer;
@@ -2974,7 +2974,6 @@ export default function Home() {
           align-items: center;
           padding: 2rem 0 1rem 0;
           margin-top: 2rem;
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
           font-family: 'Inter', sans-serif;
         }
 
