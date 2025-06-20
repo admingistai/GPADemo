@@ -360,28 +360,25 @@ export default function Home() {
                   </button>
             </div>
               </div>
-              
-              {/* YouTube Video Section */}
-              <div className="video-section">
-                <div className="video-container">
-                  <iframe 
-                    width="560" 
-                    height="315" 
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-                    title="YouTube video player" 
-                    frameBorder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    allowFullScreen>
-                  </iframe>
-                </div>
-              </div>
-              
 
               {error && (
                 <div className="error-message">
                   {error}
                 </div>
               )}
+            </div>
+            
+            {/* YouTube Video Section */}
+            <div className="video-section">
+              <div className="video-container">
+                <iframe 
+                  src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                  title="YouTube video player" 
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  allowFullScreen>
+                </iframe>
+              </div>
             </div>
           </main>
 
