@@ -182,36 +182,42 @@
             elements.forEach(element => {
                 let url = isMetaContent ? element.content : element.href;
                 
-                if (url && isValidImageUrl(url)) {
-                    // Convert relative URLs to absolute
-                    if (url.startsWith('/')) {
-                        url = window.location.origin + url;
-                    } else if (url.startsWith('./') || !url.includes('://')) {
-                        url = new URL(url, window.location.href).href;
+                if (url && typeof url === 'string' && url.trim()) {
+                    // Convert relative URLs to absolute properly
+                    try {
+                        if (url.startsWith('//')) {
+                            // Protocol-relative URL
+                            url = window.location.protocol + url;
+                        } else if (url.startsWith('/')) {
+                            // Absolute path
+                            url = window.location.origin + url;
+                        } else if (!url.match(/^https?:\/\//i)) {
+                            // Relative URL
+                            url = new URL(url, window.location.href).href;
+                        }
+                        
+                        if (isValidImageUrl(url)) {
+                            faviconCandidates.push({
+                                url: url,
+                                priority: priority,
+                                expectedSize: expectedSize,
+                                element: element,
+                                selector: selector
+                            });
+                        }
+                    } catch (error) {
+                        console.warn('[GistWidget] Invalid favicon URL:', url, error);
                     }
-                    
-                    faviconCandidates.push({
-                        url: url,
-                        priority: priority,
-                        expectedSize: expectedSize,
-                        element: element,
-                        selector: selector
-                    });
                 }
             });
         });
         
-                 // Add common favicon fallback locations if no link tags found
+         // Add common favicon fallback locations only if no good candidates found
          if (faviconCandidates.length === 0) {
              const fallbackPaths = [
                  '/favicon.ico',
                  '/favicon.png', 
-                 '/favicon.svg',
-                 '/assets/favicon.ico',
-                 '/assets/images/favicon.ico',
-                 '/images/favicon.ico',
-                 '/static/favicon.ico',
-                 '/public/favicon.ico'
+                 '/favicon.svg'
              ];
              
              fallbackPaths.forEach((path, index) => {
@@ -220,49 +226,36 @@
                      priority: 25 - index, // Decreasing priority
                      expectedSize: 32,
                      element: null,
-                     selector: 'fallback-' + path.replace('/', '')
+                     selector: 'fallback-' + path.replace('/', ''),
+                     isFallback: true
                  });
              });
          }
-         
-         // Also add some fallback options even if we found candidates (lower priority)
-         const additionalFallbacks = [
-             '/favicon.ico',
-             '/apple-touch-icon.png',
-             '/apple-touch-icon-180x180.png'
-         ];
-         
-         additionalFallbacks.forEach((path, index) => {
-             // Only add if not already present
-             const exists = faviconCandidates.some(c => c.url.endsWith(path));
-             if (!exists) {
-                 faviconCandidates.push({
-                     url: window.location.origin + path,
-                     priority: 15 - index,
-                     expectedSize: path.includes('180') ? 180 : 32,
-                     element: null,
-                     selector: 'additional-fallback-' + path.replace('/', '')
-                 });
-             }
-         });
         
         // Sort candidates by priority and select the best one
         faviconCandidates.sort((a, b) => b.priority - a.priority);
         
-                 // For now, select the highest priority favicon immediately
-         // Async verification can be added later if needed
-         if (faviconCandidates.length > 0) {
-             results.favicon = faviconCandidates[0].url;
-             console.log('[GistWidget] Selected favicon:', faviconCandidates[0].url, 'Priority:', faviconCandidates[0].priority);
-             
-             // Optional: Log all candidates for debugging
-             console.log('[GistWidget] All favicon candidates:', faviconCandidates.map(c => ({
-                 url: c.url,
-                 priority: c.priority,
-                 size: c.expectedSize,
-                 selector: c.selector
-             })));
-         }
+        // Try to find the best working favicon
+        if (faviconCandidates.length > 0) {
+            // First try non-fallback candidates
+            let selectedCandidate = faviconCandidates.find(c => !c.isFallback);
+            if (!selectedCandidate) {
+                // If no non-fallback candidates, use the highest priority one
+                selectedCandidate = faviconCandidates[0];
+            }
+            
+            results.favicon = selectedCandidate.url;
+            console.log('[GistWidget] Selected favicon:', selectedCandidate.url, 'Priority:', selectedCandidate.priority, 'Type:', selectedCandidate.isFallback ? 'fallback' : 'detected');
+            
+            // Log all candidates for debugging
+            console.log('[GistWidget] All favicon candidates:', faviconCandidates.map(c => ({
+                url: c.url,
+                priority: c.priority,
+                size: c.expectedSize,
+                selector: c.selector,
+                isFallback: c.isFallback || false
+            })));
+        }
         
         // 2. META TAG EXTRACTION - Social media images often represent brand well
         const metaImageSelectors = [
@@ -275,12 +268,28 @@
         for (const selector of metaImageSelectors) {
             const meta = document.querySelector(selector);
             if (meta && meta.content && isValidImageUrl(meta.content)) {
-                const imageUrl = meta.content.toLowerCase();
-                // Only use if it looks like a logo (has "logo" in name or is small enough)
-                if (imageUrl.includes('logo') || imageUrl.includes('brand') || 
-                    selector === 'meta[property="og:logo"]') {
-                    results.logo = meta.content;
-                    break;
+                try {
+                    let imageUrl = meta.content;
+                    
+                    // Convert relative URLs to absolute
+                    if (imageUrl.startsWith('//')) {
+                        imageUrl = window.location.protocol + imageUrl;
+                    } else if (imageUrl.startsWith('/')) {
+                        imageUrl = window.location.origin + imageUrl;
+                    } else if (!imageUrl.match(/^https?:\/\//i)) {
+                        imageUrl = new URL(imageUrl, window.location.href).href;
+                    }
+                    
+                    const imageUrlLower = imageUrl.toLowerCase();
+                    // Only use if it looks like a logo or is explicitly marked as logo
+                    if (imageUrlLower.includes('logo') || imageUrlLower.includes('brand') || 
+                        selector === 'meta[property="og:logo"]') {
+                        results.logo = imageUrl;
+                        console.log('[GistWidget] Found meta logo:', imageUrl, 'from', selector);
+                        break;
+                    }
+                } catch (error) {
+                    console.warn('[GistWidget] Invalid meta image URL:', meta.content, error);
                 }
             }
         }
@@ -427,6 +436,14 @@
             }
         });
         
+        // Final summary for debugging
+        console.log('[GistWidget] Logo extraction summary:', {
+            favicon: results.favicon ? results.favicon : 'None found',
+            logo: results.logo ? results.logo : 'None found',
+            iconCount: results.icons.length,
+            faviconCandidatesCount: faviconCandidates.length
+        });
+        
         return results;
     }
     
@@ -440,53 +457,47 @@
         // Skip empty URLs
         if (url.length === 0) return false;
         
-        // Skip data URLs (but allow SVG data URLs for favicons in some cases)
+        // Skip data URLs (but allow SVG data URLs for favicons)
         if (url.startsWith('data:')) {
-            // Allow SVG data URLs for favicons as they're common
-            return url.startsWith('data:image/svg+xml');
+            return url.startsWith('data:image/svg+xml') || url.startsWith('data:image/png') || url.startsWith('data:image/jpeg');
         }
         
-        // Skip suspiciously long URLs (except for legitimate image services)
-        if (url.length > 2000) return false;
+        // Skip suspiciously long URLs (but be more lenient for image services)
+        if (url.length > 3000) return false;
         
         // Allow relative URLs (they'll be converted to absolute)
-        if (url.startsWith('/') || url.startsWith('./') || url.startsWith('../')) {
+        if (url.startsWith('/') || url.startsWith('./') || url.startsWith('../') || url.startsWith('//')) {
             return true;
         }
         
-        // Check for valid URL protocol
-        if (!url.includes('://') && !url.startsWith('/')) {
-            // Might be a relative URL without ./
-            return true;
-        }
-        
-        // Validate URL protocol
-        if (!url.match(/^https?:\/\//i)) {
+        // Validate URL protocol for absolute URLs
+        if (url.includes('://') && !url.match(/^https?:\/\//i)) {
             return false;
         }
         
         // Check for common image extensions
-        const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|ico|bmp|tiff?)(\?.*)?$/i;
+        const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|ico|bmp|tiff?|avif)(\?.*)?$/i;
         
         // Check for image-serving domains and CDNs
-        const imageServingDomains = /(cloudfront|cloudinary|imgix|amazonaws|googleusercontent|gravatar|imgur|flickr|unsplash|pexels|shutterstock|gettyimages|istockphoto|akamaihd|fastly|jsdelivr|unpkg|cdnjs)/i;
+        const imageServingDomains = /(cloudfront|cloudinary|imgix|amazonaws|googleusercontent|gravatar|imgur|flickr|unsplash|pexels|shutterstock|gettyimages|istockphoto|akamaihd|fastly|jsdelivr|unpkg|cdnjs|wp\.com|wordpress\.com)/i;
         
         // Check for logo/brand indicators in URL
-        const logoIndicators = /(\/logo|\/brand|\/icon|favicon|apple-touch|android-chrome|mstile)/i;
+        const logoIndicators = /(\/logo|\/brand|\/icon|favicon|apple-touch|android-chrome|mstile|site-icon)/i;
         
         // Check for WordPress/CMS upload patterns
-        const cmsPatterns = /(\/wp-content\/uploads|\/uploads|\/media|\/assets|\/images)/i;
+        const cmsPatterns = /(\/wp-content\/uploads|\/uploads|\/media|\/assets|\/images|\/static|\/dist|\/build)/i;
+        
+        // Check for common favicon paths
+        const faviconPaths = /(favicon|apple-touch|android-chrome|mstile|site-icon)/i;
         
         // Allow if it matches any of these patterns
         return imageExtensions.test(url) || 
                imageServingDomains.test(url) || 
                logoIndicators.test(url) ||
                cmsPatterns.test(url) ||
+               faviconPaths.test(url) ||
                // Allow URLs that end with image-like query parameters
-               /\.(jpg|jpeg|png|gif|webp|svg|ico)$/i.test(url.split('?')[0]) ||
-               // Allow common favicon paths
-               url.includes('favicon') ||
-               url.endsWith('/favicon.ico');
+               /\.(jpg|jpeg|png|gif|webp|svg|ico|avif)$/i.test(url.split('?')[0]);
     }
     
     // Extract font families from the website
