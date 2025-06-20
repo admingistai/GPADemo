@@ -819,6 +819,10 @@ export default function Home() {
           font-weight: 700;
           text-align: center;
           animation: slideInUp 0.8s ease-out 0.5s both;
+          max-width: 600px;
+          margin-left: auto;
+          margin-right: auto;
+          line-height: 1.3;
         }
 
         /* Subtle hover animations for interactive text */
