@@ -1583,35 +1583,16 @@ export default function Home() {
         }
 
         .why-choose-section.white-section {
-          background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 30%, #f5f6f7 100%) !important;
+          background: 
+            radial-gradient(circle at 15% 85%, rgba(255, 107, 53, 0.15) 0%, transparent 30%),
+            radial-gradient(circle at 85% 15%, rgba(168, 85, 247, 0.15) 0%, transparent 30%),
+            radial-gradient(ellipse at center, rgba(0, 0, 0, 0.02) 0%, transparent 70%),
+            linear-gradient(135deg, #f9f9f9 0%, #ffffff 50%, #f7f8f9 100%) !important;
           backdrop-filter: none;
           border-top: 1px solid rgba(0, 0, 0, 0.1);
           padding: 4rem 3rem 5rem;
           position: relative;
-        }
-
-        .why-choose-section.white-section::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: radial-gradient(ellipse at center, transparent 0%, transparent 60%, rgba(0, 0, 0, 0.06) 100%);
-          pointer-events: none;
-        }
-
-        .why-choose-section.white-section::after {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: 
-            radial-gradient(circle at 15% 85%, rgba(255, 107, 53, 0.08) 0%, transparent 40%),
-            radial-gradient(circle at 85% 15%, rgba(168, 85, 247, 0.08) 0%, transparent 40%);
-          pointer-events: none;
+          box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.03);
         }
 
         .why-choose-section.white-section .why-choose-title {
