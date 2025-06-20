@@ -373,13 +373,13 @@ export default function Home() {
           {/* YouTube Video Section */}
           <div className="video-section">
             <div className="video-container">
-              <iframe 
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-                title="YouTube video player" 
-                frameBorder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                allowFullScreen>
-              </iframe>
+                              <iframe 
+                  src="https://www.youtube.com/embed/g_XPo_d-Mhw" 
+                  title="YouTube video player" 
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  allowFullScreen>
+                </iframe>
             </div>
           </div>
 
