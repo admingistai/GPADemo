@@ -559,7 +559,11 @@ export default function Home() {
           }
 
           .header-left {
-            text-align: left;
+            text-align: left !important;
+          }
+
+          .header-left .logo {
+            text-align: left !important;
           }
 
           .header-right {
