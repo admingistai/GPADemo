@@ -886,7 +886,6 @@ export default function Home() {
 
         /* White sections for contrast */
         .white-section {
-          background: white !important;
           color: #333 !important;
         }
 
@@ -1583,17 +1582,17 @@ export default function Home() {
         }
 
         .why-choose-section.white-section {
-          background: #f8f9fa !important;
-          background-image: 
-            radial-gradient(circle at 20% 80%, rgba(255, 107, 53, 0.12) 0%, transparent 35%),
-            radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.12) 0%, transparent 35%),
-            linear-gradient(135deg, rgba(0, 0, 0, 0.02) 0%, transparent 100%) !important;
+          background: 
+            radial-gradient(circle at 20% 80%, rgba(255, 107, 53, 0.15) 0%, transparent 35%),
+            radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.15) 0%, transparent 35%),
+            linear-gradient(135deg, rgba(0, 0, 0, 0.03) 0%, transparent 100%),
+            #f8f9fa !important;
           backdrop-filter: none !important;
           border-top: 1px solid rgba(0, 0, 0, 0.1);
           padding: 4rem 3rem 5rem;
           position: relative;
           box-shadow: 
-            inset 0 0 120px rgba(0, 0, 0, 0.06),
+            inset 0 0 120px rgba(0, 0, 0, 0.08),
             0 0 0 1px rgba(0, 0, 0, 0.05) !important;
         }
 
