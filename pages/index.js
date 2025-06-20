@@ -1573,10 +1573,10 @@ export default function Home() {
 
         .why-choose-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          grid-template-columns: repeat(3, 1fr);
           gap: 1.25rem;
           margin: 1.5rem 0;
-          max-width: 900px;
+          max-width: 1000px;
           margin-left: auto;
           margin-right: auto;
         }
@@ -1723,6 +1723,15 @@ export default function Home() {
           font-family: 'Inter', sans-serif;
         }
 
+        /* Medium screen adjustments */
+        @media (max-width: 900px) {
+          .why-choose-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+          }
+        }
+
         /* Responsive Design for New Sections */
         @media (max-width: 768px) {
           .cta-section {
@@ -1861,17 +1870,25 @@ export default function Home() {
 
         /* Tablet Specific Adjustments */
         @media (min-width: 769px) and (max-width: 1024px) {
+          .why-choose-grid {
+            gap: 1rem;
+          }
+
+          .why-choose-item {
+            padding: 1.25rem 0.75rem;
+          }
+
           .features-grid {
             grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
+            gap: 1.5rem;
           }
 
           .cta-title {
-            font-size: 2.75rem;
+            font-size: 2.25rem;
           }
 
           .features-title {
-            font-size: 2.5rem;
+            font-size: 2rem;
           }
         }
       `}</style>
