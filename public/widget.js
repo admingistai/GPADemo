@@ -307,16 +307,28 @@
                     let priority = 0;
                     
                     // Highest priority: explicit logo in URL
-                    if (src.includes('/logo') || src.includes('logo.') || src.includes('_logo') || src.includes('-logo')) {
+                    if (src.includes('/logo') || src.includes('logo.') || src.includes('_logo') || src.includes('-logo') || src.includes('logo-')) {
                         priority = 100;
                     }
                     // High priority: brand in URL
-                    else if (src.includes('/brand') || src.includes('brand.') || src.includes('_brand') || src.includes('-brand')) {
+                    else if (src.includes('/brand') || src.includes('brand.') || src.includes('_brand') || src.includes('-brand') || src.includes('brand-')) {
                         priority = 90;
                     }
+                    // High priority: company/site name patterns
+                    else if (src.includes('company-logo') || src.includes('site-logo') || src.includes('main-logo')) {
+                        priority = 95;
+                    }
+                    // Medium-high priority: branding terms
+                    else if (src.includes('branding') || src.includes('identity') || src.includes('wordmark')) {
+                        priority = 80;
+                    }
                     // Medium priority: header images
-                    else if (src.includes('/header') || src.includes('header.')) {
+                    else if (src.includes('/header') || src.includes('header.') || src.includes('banner')) {
                         priority = 70;
+                    }
+                    // Lower priority: generic brand-related terms
+                    else if (src.includes('mark') || src.includes('emblem') || src.includes('symbol')) {
+                        priority = 60;
                     }
                     
                     if (priority > 0) {
@@ -364,6 +376,8 @@
                 '.site-logo img[src]',
                 '.brand-logo img[src]',
                 '.company-logo img[src]',
+                '.site-branding img[src]',
+                '.branding img[src]',
                 
                 // High confidence: header/nav logo areas
                 'header .logo img[src]',
@@ -372,15 +386,33 @@
                 '.navbar .logo img[src]',
                 '.navbar-brand img[src]',
                 '.masthead .logo img[src]',
+                '.site-header .logo img[src]',
+                '.main-header .logo img[src]',
+                '.top-bar .logo img[src]',
                 
-                // Medium confidence: semantic alt text
+                // Medium confidence: semantic alt text in header areas
                 'header img[alt*="logo" i][src]',
                 'nav img[alt*="logo" i][src]',
                 '.navbar img[alt*="logo" i][src]',
+                'header img[alt*="brand" i][src]',
+                '.header img[alt*="logo" i][src]',
+                
+                // WordPress specific patterns
+                '.custom-logo img[src]',
+                '.site-logo-link img[src]',
+                '.wp-custom-logo img[src]',
+                
+                // Common CMS patterns
+                '.header-logo img[src]',
+                '.main-logo img[src]',
+                '.primary-logo img[src]',
+                '.logo-container img[src]',
+                '.logo-wrapper img[src]',
                 
                 // Lower confidence but still useful
                 'img[alt*="logo" i][src]',
-                '[class*="logo"] img[src]'
+                '[class*="logo"] img[src]',
+                '[id*="logo"] img[src]'
             ];
             
             for (const selector of structuralLogoSelectors) {
@@ -436,12 +468,103 @@
             }
         });
         
+        // 10. USE WEBSITE LOGO AS FAVICON IF NO FAVICON DETECTED
+        if (!results.favicon && results.logo) {
+            results.favicon = results.logo;
+            console.log('[GistWidget] No favicon found, using website logo as favicon:', results.logo);
+        }
+        
+        // 8. ADDITIONAL LOGO SEARCH - Look for images in common logo directories
+        if (!results.logo) {
+            const allImages = document.querySelectorAll('img[src]');
+            const directoryBasedCandidates = [];
+            
+            allImages.forEach(img => {
+                if (img.src && isValidImageUrl(img.src)) {
+                    const src = img.src.toLowerCase();
+                    const rect = img.getBoundingClientRect();
+                    
+                    // Look for images in directories that commonly contain logos
+                    if (src.includes('/assets/') || src.includes('/images/') || 
+                        src.includes('/img/') || src.includes('/media/') ||
+                        src.includes('/uploads/') || src.includes('/static/')) {
+                        
+                        const width = img.width || rect.width;
+                        const height = img.height || rect.height;
+                        
+                        // Focus on images that could be logos (reasonable size, in header area)
+                        if (width > 30 && width < 350 && height > 20 && height < 200 && 
+                            rect.top < 300) { // In top area of page
+                            
+                            directoryBasedCandidates.push({
+                                src: img.src,
+                                element: img,
+                                rect: rect,
+                                width: width,
+                                height: height
+                            });
+                        }
+                    }
+                }
+            });
+            
+            // If we found potential logos in common directories, use the first reasonable one
+            if (directoryBasedCandidates.length > 0) {
+                // Sort by position (prefer images higher up and to the left)
+                directoryBasedCandidates.sort((a, b) => {
+                    const aScore = (300 - a.rect.top) + (200 - a.rect.left);
+                    const bScore = (300 - b.rect.top) + (200 - b.rect.left);
+                    return bScore - aScore;
+                });
+                
+                results.logo = directoryBasedCandidates[0].src;
+                console.log('[GistWidget] Found potential logo in common directory:', directoryBasedCandidates[0].src);
+            }
+        }
+
+        // 9. LAST RESORT - USE ANY LOGO-LIKE IMAGE FROM COLLECTED ICONS
+        if (!results.favicon && results.icons.length > 0) {
+            // Sort icons by likely logo quality (size, position, alt text)
+            const logoLikeIcons = results.icons
+                .filter(icon => {
+                    const alt = (icon.alt || '').toLowerCase();
+                    const src = icon.src.toLowerCase();
+                    // Prefer images with logo/brand indicators and reasonable size
+                    return (alt.includes('logo') || alt.includes('brand') || 
+                           src.includes('logo') || src.includes('brand')) &&
+                           icon.width > 20 && icon.width < 400 &&
+                           icon.height > 20 && icon.height < 400;
+                })
+                .sort((a, b) => {
+                    // Prefer images with better logo indicators
+                    let aScore = 0;
+                    let bScore = 0;
+                    
+                    if (a.alt.toLowerCase().includes('logo')) aScore += 20;
+                    if (a.src.toLowerCase().includes('logo')) aScore += 15;
+                    if (b.alt.toLowerCase().includes('logo')) bScore += 20;
+                    if (b.src.toLowerCase().includes('logo')) bScore += 15;
+                    
+                    // Prefer reasonable logo sizes (around 50-150px)
+                    if (a.width >= 50 && a.width <= 150) aScore += 10;
+                    if (b.width >= 50 && b.width <= 150) bScore += 10;
+                    
+                    return bScore - aScore;
+                });
+            
+            if (logoLikeIcons.length > 0) {
+                results.favicon = logoLikeIcons[0].src;
+                console.log('[GistWidget] No favicon or main logo found, using best logo-like icon as favicon:', logoLikeIcons[0].src);
+            }
+        }
+
         // Final summary for debugging
         console.log('[GistWidget] Logo extraction summary:', {
             favicon: results.favicon ? results.favicon : 'None found',
             logo: results.logo ? results.logo : 'None found',
             iconCount: results.icons.length,
-            faviconCandidatesCount: faviconCandidates.length
+            faviconCandidatesCount: faviconCandidates.length,
+            faviconSource: results.favicon ? (results.favicon === results.logo ? 'website logo' : 'detected favicon') : 'none'
         });
         
         return results;
