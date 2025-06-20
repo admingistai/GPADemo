@@ -1547,7 +1547,7 @@ export default function Home() {
 
         /* Call to Action Section */
         .cta-section {
-          padding: 8rem 3rem;
+          padding: 4rem 3rem;
           text-align: center;
           animation: slideInUp 0.8s ease-out 0.4s both;
         }
@@ -1574,8 +1574,8 @@ export default function Home() {
         .why-choose-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 2.5rem;
-          margin: 3rem 0;
+          gap: 2rem;
+          margin: 2rem 0;
           max-width: 1000px;
           margin-left: auto;
           margin-right: auto;
@@ -1585,7 +1585,7 @@ export default function Home() {
           background: rgba(255, 255, 255, 0.08);
           border: 1px solid rgba(255, 255, 255, 0.1);
           border-radius: 20px;
-          padding: 2.5rem 2rem;
+          padding: 2rem 1.5rem;
           text-align: center;
           transition: all 0.3s ease;
           backdrop-filter: blur(10px);
@@ -1599,8 +1599,8 @@ export default function Home() {
         }
 
         .why-choose-icon {
-          font-size: 3rem;
-          margin-bottom: 1.5rem;
+          font-size: 2.5rem;
+          margin-bottom: 1rem;
           display: block;
         }
 
@@ -1646,7 +1646,7 @@ export default function Home() {
 
         /* Features Section */
         .features-section {
-          padding: 6rem 3rem 8rem;
+          padding: 4rem 3rem 5rem;
           background: rgba(255, 255, 255, 0.05);
           backdrop-filter: blur(10px);
           animation: slideInUp 0.8s ease-out 0.6s both;
@@ -1670,7 +1670,7 @@ export default function Home() {
         .features-subtitle {
           font-size: 1.2rem;
           color: rgba(255, 255, 255, 0.8);
-          margin-bottom: 4rem;
+          margin-bottom: 2.5rem;
           max-width: 600px;
           margin-left: auto;
           margin-right: auto;
@@ -1680,15 +1680,15 @@ export default function Home() {
         .features-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-          gap: 2.5rem;
-          margin-top: 3rem;
+          gap: 2rem;
+          margin-top: 1rem;
         }
 
         .feature-item {
           background: rgba(255, 255, 255, 0.08);
           border: 1px solid rgba(255, 255, 255, 0.1);
           border-radius: 20px;
-          padding: 2.5rem 2rem;
+          padding: 2rem 1.5rem;
           text-align: center;
           transition: all 0.3s ease;
           backdrop-filter: blur(10px);
@@ -1702,8 +1702,8 @@ export default function Home() {
         }
 
         .feature-icon {
-          font-size: 3rem;
-          margin-bottom: 1.5rem;
+          font-size: 2.5rem;
+          margin-bottom: 1rem;
           display: block;
         }
 
@@ -1726,7 +1726,7 @@ export default function Home() {
         /* Responsive Design for New Sections */
         @media (max-width: 768px) {
           .cta-section {
-            padding: 5rem 2rem;
+            padding: 3rem 2rem;
           }
 
           .cta-title {
@@ -1735,8 +1735,8 @@ export default function Home() {
 
           .why-choose-grid {
             grid-template-columns: 1fr;
-            gap: 2rem;
-            margin: 2.5rem 0;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
           }
 
           .why-choose-item {
@@ -1762,7 +1762,7 @@ export default function Home() {
           }
 
           .features-section {
-            padding: 4rem 2rem 6rem;
+            padding: 3rem 2rem 4rem;
           }
 
           .features-title {
@@ -1771,7 +1771,7 @@ export default function Home() {
 
           .features-subtitle {
             font-size: 1.1rem;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
           }
 
           .features-grid {
@@ -1799,7 +1799,7 @@ export default function Home() {
 
         @media (max-width: 480px) {
           .cta-section {
-            padding: 4rem 1.5rem;
+            padding: 2.5rem 1.5rem;
           }
 
           .cta-title {
@@ -1829,7 +1829,7 @@ export default function Home() {
           }
 
           .features-section {
-            padding: 3rem 1.5rem 5rem;
+            padding: 2.5rem 1.5rem 3.5rem;
           }
 
           .features-title {
