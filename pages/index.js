@@ -591,6 +591,7 @@ export default function Home() {
 
           .url-input-wrapper {
             padding: 3px;
+            margin-top: 0.5rem;
           }
 
           .url-input-inner {
