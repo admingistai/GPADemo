@@ -613,6 +613,78 @@ export default function Home() {
               </div>
             </div>
           </section>
+
+          {/* Footer */}
+          <footer className="footer white-section">
+            <div className="footer-container">
+              <div className="footer-content">
+                <div className="footer-left">
+                  <div className="footer-logo">
+                    <h3>ProRata.ai</h3>
+                    <p>Transform content into conversations with AI that cites, respects rights, and drives revenue.</p>
+                  </div>
+                </div>
+                
+                <div className="footer-center">
+                  <div className="footer-links">
+                    <div className="footer-column">
+                      <h4>Product</h4>
+                      <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="#integrations">Integrations</a></li>
+                        <li><a href="#analytics">Analytics</a></li>
+                      </ul>
+                    </div>
+                    
+                    <div className="footer-column">
+                      <h4>Company</h4>
+                      <ul>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#blog">Blog</a></li>
+                        <li><a href="#careers">Careers</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                      </ul>
+                    </div>
+                    
+                    <div className="footer-column">
+                      <h4>Legal</h4>
+                      <ul>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                        <li><a href="#terms">Terms of Service</a></li>
+                        <li><a href="#cookies">Cookie Policy</a></li>
+                        <li><a href="#gdpr">GDPR Compliance</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="footer-right">
+                  <button 
+                    className="try-demo-btn"
+                    onClick={() => {
+                      document.querySelector('.url-input-container').scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'center'
+                      });
+                      document.querySelector('.url-input').focus();
+                    }}
+                  >
+                    Try a Demo
+                  </button>
+                </div>
+              </div>
+              
+              <div className="footer-bottom">
+                <div className="footer-copyright">
+                  <p>&copy; 2024 ProRata.ai. All rights reserved.</p>
+                </div>
+                <div className="footer-social">
+                  <p>Built with journalistic integrity and publisher sustainability in mind.</p>
+                </div>
+              </div>
+            </div>
+          </footer>
         </div>
       )}
 
@@ -2442,6 +2514,175 @@ export default function Home() {
           .calculate-revenue-btn {
             padding: 1rem 2rem;
             font-size: 1rem;
+          }
+        }
+
+        /* Footer */
+        .footer {
+          background: rgba(255, 255, 255, 0.03);
+          padding: 3rem 2rem 2rem;
+        }
+
+        .footer.white-section {
+          background: 
+            radial-gradient(circle at 20% 80%, rgba(255, 107, 53, 0.15) 0%, transparent 35%),
+            radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.15) 0%, transparent 35%),
+            linear-gradient(135deg, rgba(0, 0, 0, 0.03) 0%, transparent 100%),
+            #f8f9fa !important;
+          backdrop-filter: none !important;
+          border-top: 1px solid rgba(0, 0, 0, 0.1);
+          padding: 4rem 2rem 2rem;
+          position: relative;
+          box-shadow: 
+            inset 0 0 120px rgba(0, 0, 0, 0.08),
+            0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .footer-container {
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+
+        .footer-content {
+          display: grid;
+          grid-template-columns: 1fr 2fr 1fr;
+          gap: 3rem;
+          margin-bottom: 3rem;
+        }
+
+        .footer-logo h3 {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #333;
+          margin-bottom: 0.75rem;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .footer-logo p {
+          font-size: 0.95rem;
+          color: #666;
+          line-height: 1.5;
+          margin: 0;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .footer-links {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 2rem;
+        }
+
+        .footer-column h4 {
+          font-size: 1rem;
+          font-weight: 600;
+          color: #333;
+          margin-bottom: 1rem;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .footer-column ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+
+        .footer-column li {
+          margin-bottom: 0.5rem;
+        }
+
+        .footer-column a {
+          font-size: 0.9rem;
+          color: #666;
+          text-decoration: none;
+          font-family: 'Inter', sans-serif;
+          transition: color 0.3s ease;
+        }
+
+        .footer-column a:hover {
+          color: #ff6b35;
+        }
+
+        .try-demo-btn {
+          background: linear-gradient(135deg, #ff6b35, #f7931e);
+          color: white;
+          border: none;
+          padding: 1rem 2rem;
+          border-radius: 50px;
+          font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          font-family: 'Inter', sans-serif;
+          letter-spacing: -0.01em;
+          box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+          white-space: nowrap;
+        }
+
+        .try-demo-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 35px rgba(255, 107, 53, 0.4);
+          background: linear-gradient(135deg, #e55a2b, #e0821a);
+        }
+
+        .footer-bottom {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-top: 2rem;
+          border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-copyright p,
+        .footer-social p {
+          font-size: 0.85rem;
+          color: #666;
+          margin: 0;
+          font-family: 'Inter', sans-serif;
+        }
+
+        @media (max-width: 768px) {
+          .footer.white-section {
+            padding: 3rem 1.5rem 2rem;
+          }
+          
+          .footer-content {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            text-align: center;
+          }
+          
+          .footer-links {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+          }
+          
+          .footer-bottom {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+          }
+          
+          .try-demo-btn {
+            padding: 0.875rem 1.75rem;
+            font-size: 0.95rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .footer-logo h3 {
+            font-size: 1.25rem;
+          }
+          
+          .footer-logo p {
+            font-size: 0.875rem;
+          }
+          
+          .footer-column h4 {
+            font-size: 0.95rem;
+          }
+          
+          .footer-column a {
+            font-size: 0.85rem;
           }
         }
 
