@@ -2972,7 +2972,7 @@ export default function Home() {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 2rem 0 1rem 0;
+          padding: 2rem 2rem 1rem 2rem;
           margin-top: 2rem;
           font-family: 'Inter', sans-serif;
         }
