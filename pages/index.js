@@ -408,7 +408,11 @@ export default function Home() {
             <div className="testimonials-container">
               <div className="testimonial-box">
                 <div className="testimonial-content">
-                  <p>"With Gist Answers, we can combine our award-winning journalism with trusted external sources to deliver deeper context and smarter discovery in response to user questions."</p>
+                  <div className="testimonial-quote-wrapper">
+                    <span className="testimonial-bracket left-bracket">{`{`}</span>
+                    <p>"With Gist Answers, we can combine our award-winning journalism with trusted external sources to deliver deeper context and smarter discovery in response to user questions."</p>
+                    <span className="testimonial-bracket right-bracket">{`}`}</span>
+                  </div>
                   <div className="testimonial-author">
                     <strong>Will Lee</strong>
                     <span>CEO, AdWeek</span>
@@ -970,30 +974,29 @@ export default function Home() {
           text-align: center;
         }
 
-        .testimonial-box::before {
-          content: '"';
-          position: absolute;
-          font-size: 8rem;
-          font-weight: 300;
-          color: rgba(255, 255, 255, 0.15);
-          font-family: 'Inter', serif;
-          left: -2rem;
-          top: -2rem;
-          line-height: 1;
-          z-index: 0;
+        .testimonial-quote-wrapper {
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
+          gap: 1rem;
+          margin-bottom: 2rem;
         }
 
-        .testimonial-box::after {
-          content: '"';
-          position: absolute;
-          font-size: 8rem;
-          font-weight: 300;
-          color: rgba(255, 255, 255, 0.15);
-          font-family: 'Inter', serif;
-          right: -2rem;
-          bottom: -2rem;
+        .testimonial-bracket {
+          font-size: 4rem;
+          font-weight: 200;
+          color: rgba(255, 255, 255, 0.3);
+          font-family: 'Inter', sans-serif;
           line-height: 1;
-          z-index: 0;
+          user-select: none;
+        }
+
+        .left-bracket {
+          align-self: flex-start;
+        }
+
+        .right-bracket {
+          align-self: flex-end;
         }
 
         .testimonial-content p {
@@ -1001,20 +1004,18 @@ export default function Home() {
           line-height: 1.5;
           color: rgba(255, 255, 255, 0.95);
           font-family: 'Inter', sans-serif;
-          margin-bottom: 2rem;
+          margin: 0;
           font-style: italic;
           font-weight: 300;
           max-width: 100%;
-          position: relative;
-          z-index: 1;
+          flex: 1;
+          text-align: center;
         }
 
         .testimonial-author {
           display: flex;
           flex-direction: column;
           gap: 0.25rem;
-          position: relative;
-          z-index: 1;
         }
 
         .testimonial-author strong {
@@ -1040,6 +1041,14 @@ export default function Home() {
             padding: 2rem 1rem 4rem;
           }
           
+          .testimonial-quote-wrapper {
+            gap: 0.5rem;
+          }
+          
+          .testimonial-bracket {
+            font-size: 3rem;
+          }
+          
           .testimonial-content p {
             font-size: 1.2rem;
             line-height: 1.4;
@@ -1051,18 +1060,6 @@ export default function Home() {
           
           .testimonial-author span {
             font-size: 0.9rem;
-          }
-          
-          .testimonial-box::before {
-            font-size: 5rem;
-            left: -1rem;
-            top: -1rem;
-          }
-
-          .testimonial-box::after {
-            font-size: 5rem;
-            right: -1rem;
-            bottom: -1rem;
           }
         }
 
