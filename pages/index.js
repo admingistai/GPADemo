@@ -801,7 +801,6 @@ export default function Home() {
           flex-direction: column;
           color: white;
           animation: fadeIn 0.8s ease-out;
-          padding-bottom: 6rem;
          }
 
         @keyframes fadeIn {
@@ -831,7 +830,7 @@ export default function Home() {
         }
 
         .gist-logo {
-          height: 1.5rem;
+          height: 2rem;
           width: auto;
           transition: all 0.3s ease;
           cursor: pointer;
