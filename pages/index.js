@@ -449,6 +449,42 @@ export default function Home() {
               </div>
             </div>
           </section>
+
+          {/* Features Page */}
+          <section className="features-page">
+            <div className="features-page-container">
+              <h2 className="features-page-title">Core Features</h2>
+              
+              <div className="features-grid">
+                <div className="feature-group">
+                  <h3 className="feature-group-title">Smart Answers</h3>
+                  <ul className="feature-list">
+                    <li>Accurate answers to user questions</li>
+                    <li>Promotes your content first in answers (with links back to each source)</li>
+                    <li>Ability to supplement answers with content from leading publications</li>
+                  </ul>
+                </div>
+
+                <div className="feature-group">
+                  <h3 className="feature-group-title">Control & Privacy</h3>
+                  <ul className="feature-list">
+                    <li>Ability to choose which third-party publications can be used as sources</li>
+                    <li>Privacy-safe—no user-level tracking</li>
+                    <li>Ability to control look and feel (colors, fonts, etc.)</li>
+                  </ul>
+                </div>
+
+                <div className="feature-group">
+                  <h3 className="feature-group-title">Growth & Revenue</h3>
+                  <ul className="feature-list">
+                    <li>New high-value revenue stream (from ads)</li>
+                    <li>Easy install with a plug-in or one line of code</li>
+                    <li>Keeps users on your site vs. going to Google, ChatGPT, or other sites for answers</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       )}
 
@@ -1676,7 +1712,131 @@ export default function Home() {
            margin: 0;
         }
 
+        /* Features Page */
+        .features-page {
+          padding: 3rem 3rem 4rem;
+          background: rgba(255, 255, 255, 0.03);
+        }
 
+        .features-page-container {
+          max-width: 1000px;
+          margin: 0 auto;
+        }
+
+        .features-page-title {
+          font-size: 2rem;
+          font-weight: 600;
+          color: white;
+          text-align: center;
+          margin-bottom: 2.5rem;
+          letter-spacing: -0.02em;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .features-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 2rem;
+        }
+
+        .feature-group {
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 12px;
+          padding: 1.5rem;
+          transition: all 0.3s ease;
+        }
+
+        .feature-group:hover {
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(255, 255, 255, 0.2);
+          transform: translateY(-2px);
+        }
+
+        .feature-group-title {
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: white;
+          margin: 0 0 1rem 0;
+          font-family: 'Inter', sans-serif;
+          letter-spacing: -0.01em;
+        }
+
+        .feature-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+
+        .feature-list li {
+          font-size: 0.9rem;
+          color: rgba(255, 255, 255, 0.8);
+          line-height: 1.5;
+          margin-bottom: 0.75rem;
+          padding-left: 1rem;
+          position: relative;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .feature-list li:last-child {
+          margin-bottom: 0;
+        }
+
+        .feature-list li::before {
+          content: '•';
+          color: #3742fa;
+          font-weight: bold;
+          position: absolute;
+          left: 0;
+        }
+
+        /* Responsive Design for Features Page */
+        @media (max-width: 768px) {
+          .features-page {
+            padding: 2.5rem 2rem 3rem;
+          }
+
+          .features-page-title {
+            font-size: 1.75rem;
+            margin-bottom: 2rem;
+          }
+
+          .features-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+          }
+
+          .feature-group {
+            padding: 1.25rem;
+          }
+
+          .feature-group-title {
+            font-size: 1rem;
+          }
+
+          .feature-list li {
+            font-size: 0.85rem;
+            margin-bottom: 0.625rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .features-page {
+            padding: 2rem 1.5rem;
+          }
+
+          .features-page-title {
+            font-size: 1.5rem;
+          }
+
+          .feature-group {
+            padding: 1rem;
+          }
+
+          .feature-list li {
+            font-size: 0.8rem;
+          }
+        }
 
         /* Responsive Design for Why Choose Us Section */
         @media (max-width: 768px) {
