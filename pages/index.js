@@ -444,19 +444,19 @@ export default function Home() {
               
               <div className="horizontal-benefits">
                 <div className="benefit-item-horizontal">
-                  <div className="benefit-number">01</div>
+                  <div className="benefit-icon">📚</div>
                   <h3>Answer beyond the article</h3>
                   <p>Gist draws from your entire content library to provide comprehensive answers while always citing sources.</p>
                   </div>
                   
                 <div className="benefit-item-horizontal">
-                  <div className="benefit-number">02</div>
+                  <div className="benefit-icon">🎯</div>
                   <h3>Search traffic stays put</h3>
                   <p>Keep readers engaged on your site instead of bouncing back to search engines for follow-up questions.</p>
                 </div>
                   
                 <div className="benefit-item-horizontal">
-                  <div className="benefit-number">03</div>
+                  <div className="benefit-icon">💰</div>
                   <h3>Ad-funded, no fees</h3>
                   <p>Our revenue-share model means you only pay when Gist generates additional ad impressions and engagement.</p>
                   </div>
@@ -1923,6 +1923,11 @@ export default function Home() {
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
         }
 
+        .why-choose-section.white-section .benefit-item-horizontal .benefit-icon {
+          background: linear-gradient(135deg, #ff6b35, #f7931e) !important;
+          box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3) !important;
+        }
+
         .why-choose-section.white-section .benefit-item-horizontal h3 {
           color: #333 !important;
         }
@@ -1989,19 +1994,17 @@ export default function Home() {
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        .benefit-item-horizontal .benefit-number {
+        .benefit-item-horizontal .benefit-icon {
           background: linear-gradient(135deg, #ff6b35, #f7931e);
-          color: white;
           width: 3rem;
           height: 3rem;
           border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-weight: 700;
-          font-size: 1.1rem;
-          font-family: 'Inter', sans-serif;
+          font-size: 1.5rem;
           margin: 0 auto 1rem auto;
+          box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
         }
 
         .benefit-item-horizontal h3 {
@@ -2466,10 +2469,10 @@ export default function Home() {
             padding: 1.25rem;
           }
 
-          .benefit-item-horizontal .benefit-number {
+          .benefit-item-horizontal .benefit-icon {
             width: 2.5rem;
             height: 2.5rem;
-            font-size: 1rem;
+            font-size: 1.25rem;
             margin-bottom: 0.75rem;
           }
 
