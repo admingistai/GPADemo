@@ -13,17 +13,19 @@ export default function Home() {
   const [showFeaturePage, setShowFeaturePage] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
   const [selectedFeatures, setSelectedFeatures] = useState({
-    recommendedQuestions: true,
+    ask: true, // Always enabled, non-toggleable
+    recommendedQuestions: false,
     theGist: true,
     augmentedAnswers: false,
     goDeeper: false,
     ethicalAds: false,
     customVoices: false,
-    remixing: false,
+    remixing: true,
     myDaily: false,
     augmentedSharing: false,
     customAgents: false,
-    futureProofing: false
+    futureProofing: false,
+    share: true
   });
 
   // Simplified scroll animation effects
@@ -103,8 +105,17 @@ export default function Home() {
           throw new Error(testResult.error || 'Unable to reach the specified website');
         }
 
+        // Convert feature selection to widget configuration
+        const widgetConfig = {
+          ask: selectedFeatures.ask,
+          gist: selectedFeatures.theGist,
+          remix: selectedFeatures.remixing,
+          share: selectedFeatures.share
+        };
+        
         // Directly open the website with widget in a new tab
-        const websiteWithWidgetUrl = `/api/proxy?url=${encodeURIComponent(formattedUrl)}`;
+        const configParam = encodeURIComponent(JSON.stringify(widgetConfig));
+        const websiteWithWidgetUrl = `/api/proxy?url=${encodeURIComponent(formattedUrl)}&config=${configParam}`;
         window.open(websiteWithWidgetUrl, '_blank');
         
         // Reset the form for potential next use
@@ -178,6 +189,20 @@ export default function Home() {
             </p>
             
             <div className="features-grid">
+              <div className="feature-card">
+                <div className="feature-header">
+                  <input
+                    type="checkbox"
+                    id="ask"
+                    checked={selectedFeatures.ask}
+                    disabled={true}
+                    style={{opacity: 0.6}}
+                  />
+                  <label htmlFor="ask" className="feature-name">Ask Anything™</label>
+                </div>
+                <p className="feature-description">Core AI-powered question answering functionality. Always enabled for your users.</p>
+              </div>
+
               <div className="feature-card">
                 <div className="feature-header">
                   <input
@@ -319,6 +344,19 @@ export default function Home() {
                   <label htmlFor="futureProofing" className="feature-name">Future Proofing</label>
                 </div>
                 <p className="feature-description">One integration spins up an MCP server that: (1) exposes bot-friendly endpoints for GEO/AEO mention boosts, (2) surfaces structured answers search engines favor, and (3) lets trusted third-party AI agents transact safely on-site—opening additive revenue streams while you keep full data control.</p>
+              </div>
+
+              <div className="feature-card">
+                <div className="feature-header">
+                  <input
+                    type="checkbox"
+                    id="share"
+                    checked={selectedFeatures.share}
+                    onChange={(e) => setSelectedFeatures(prev => ({...prev, share: e.target.checked}))}
+                  />
+                  <label htmlFor="share" className="feature-name">Share</label>
+                </div>
+                <p className="feature-description">Enable users to share content and insights with others through various channels and platforms.</p>
               </div>
             </div>
 

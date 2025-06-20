@@ -145,7 +145,24 @@ export default async function handler(req, res) {
       // Inject widget.js script into the HTML with absolute URL and no defer
       const protocol = req.headers['x-forwarded-proto'] || 'http';
       const host = req.headers.host || 'localhost:3000';
-      const widgetScript = `<script src="${protocol}://${host}/widget.js"></script>`;
+      
+      // Pass through any additional query parameters (like config) to the widget
+      const currentUrl = new URL(`${protocol}://${host}${req.url}`);
+      const widgetParams = new URLSearchParams();
+      
+      // Copy relevant parameters to the current page URL (for the widget to read)
+      for (const [key, value] of currentUrl.searchParams.entries()) {
+        if (key !== 'url' && key !== 'test') { // Exclude proxy-specific parameters
+          widgetParams.set(key, value);
+        }
+      }
+      
+      // Add the parameters to the current page URL so the widget can access them
+      const currentPageUrl = currentUrl.pathname + (widgetParams.toString() ? '?' + widgetParams.toString() : '');
+      const updateUrlScript = widgetParams.toString() ? 
+        `<script>history.replaceState({}, '', '${currentPageUrl}');</script>` : '';
+      
+      const widgetScript = `${updateUrlScript}<script src="${protocol}://${host}/widget.js"></script>`;
       
       if (html.includes('</head>')) {
         // Inject before closing head tag

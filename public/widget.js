@@ -55,12 +55,33 @@
     // ================================
     // Configure which tools are enabled/disabled
     // Can be modified via console: TOOLS_CONFIG.remix = false
+    
+    // Parse configuration from URL parameters
+    function parseConfigFromUrl() {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const configParam = urlParams.get('config');
+            if (configParam) {
+                const config = JSON.parse(decodeURIComponent(configParam));
+                console.log('[GistWidget] Parsed config from URL:', config);
+                return config;
+            }
+        } catch (error) {
+            console.warn('[GistWidget] Failed to parse config from URL:', error);
+        }
+        return null;
+    }
+    
+    // Get initial configuration
+    const urlConfig = parseConfigFromUrl();
     const TOOLS_CONFIG = {  
         ask: true,      // Always enabled - core functionality
-        gist: true,     // Summary tool
-        remix: true,    // Content remix tool  
-        share: true     // Share functionality
+        gist: urlConfig?.gist !== undefined ? urlConfig.gist : true,     // Summary tool
+        remix: urlConfig?.remix !== undefined ? urlConfig.remix : true,    // Content remix tool  
+        share: urlConfig?.share !== undefined ? urlConfig.share : true     // Share functionality
     };
+    
+    console.log('[GistWidget] Applied tools configuration:', TOOLS_CONFIG);
     
     // Expose TOOLS_CONFIG globally for console access
     window.TOOLS_CONFIG = TOOLS_CONFIG;
