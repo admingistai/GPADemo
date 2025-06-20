@@ -207,19 +207,6 @@ export default function Home() {
                 <div className="feature-header">
                   <input
                     type="checkbox"
-                    id="recommendedQuestions"
-                    checked={selectedFeatures.recommendedQuestions}
-                    onChange={(e) => setSelectedFeatures(prev => ({...prev, recommendedQuestions: e.target.checked}))}
-                  />
-                  <label htmlFor="recommendedQuestions" className="feature-name">Recommended Questions</label>
-                </div>
-                <p className="feature-description">Auto-generates the most asked follow-ups; placed inline to guide exploration; lifts page views per visit.</p>
-              </div>
-
-              <div className="feature-card">
-                <div className="feature-header">
-                  <input
-                    type="checkbox"
                     id="theGist"
                     checked={selectedFeatures.theGist}
                     onChange={(e) => setSelectedFeatures(prev => ({...prev, theGist: e.target.checked}))}
@@ -227,6 +214,45 @@ export default function Home() {
                   <label htmlFor="theGist" className="feature-name">The Gist</label>
                 </div>
                 <p className="feature-description">One-sentence AI summary of any story; instant context for skimmers; proven to reduce bounce.</p>
+              </div>
+
+              <div className="feature-card">
+                <div className="feature-header">
+                  <input
+                    type="checkbox"
+                    id="remixing"
+                    checked={selectedFeatures.remixing}
+                    onChange={(e) => setSelectedFeatures(prev => ({...prev, remixing: e.target.checked}))}
+                  />
+                  <label htmlFor="remixing" className="feature-name">Remixing</label>
+                </div>
+                <p className="feature-description">Auto-converts articles into share-ready cards, reels, and threads; boosts organic reach without extra editing.</p>
+              </div>
+
+              <div className="feature-card">
+                <div className="feature-header">
+                  <input
+                    type="checkbox"
+                    id="share"
+                    checked={selectedFeatures.share}
+                    onChange={(e) => setSelectedFeatures(prev => ({...prev, share: e.target.checked}))}
+                  />
+                  <label htmlFor="share" className="feature-name">Share</label>
+                </div>
+                <p className="feature-description">Enable users to share content and insights with others through various channels and platforms.</p>
+              </div>
+
+              <div className="feature-card">
+                <div className="feature-header">
+                  <input
+                    type="checkbox"
+                    id="recommendedQuestions"
+                    checked={selectedFeatures.recommendedQuestions}
+                    onChange={(e) => setSelectedFeatures(prev => ({...prev, recommendedQuestions: e.target.checked}))}
+                  />
+                  <label htmlFor="recommendedQuestions" className="feature-name">Recommended Questions</label>
+                </div>
+                <p className="feature-description">Auto-generates the most asked follow-ups; placed inline to guide exploration; lifts page views per visit.</p>
               </div>
 
               <div className="feature-card">
@@ -285,19 +311,6 @@ export default function Home() {
                 <div className="feature-header">
                   <input
                     type="checkbox"
-                    id="remixing"
-                    checked={selectedFeatures.remixing}
-                    onChange={(e) => setSelectedFeatures(prev => ({...prev, remixing: e.target.checked}))}
-                  />
-                  <label htmlFor="remixing" className="feature-name">Remixing</label>
-                </div>
-                <p className="feature-description">Auto-converts articles into share-ready cards, reels, and threads; boosts organic reach without extra editing.</p>
-              </div>
-
-              <div className="feature-card">
-                <div className="feature-header">
-                  <input
-                    type="checkbox"
                     id="myDaily"
                     checked={selectedFeatures.myDaily}
                     onChange={(e) => setSelectedFeatures(prev => ({...prev, myDaily: e.target.checked}))}
@@ -346,18 +359,6 @@ export default function Home() {
                 <p className="feature-description">One integration spins up an MCP server that: (1) exposes bot-friendly endpoints for GEO/AEO mention boosts, (2) surfaces structured answers search engines favor, and (3) lets trusted third-party AI agents transact safely on-site—opening additive revenue streams while you keep full data control.</p>
               </div>
 
-              <div className="feature-card">
-                <div className="feature-header">
-                  <input
-                    type="checkbox"
-                    id="share"
-                    checked={selectedFeatures.share}
-                    onChange={(e) => setSelectedFeatures(prev => ({...prev, share: e.target.checked}))}
-                  />
-                  <label htmlFor="share" className="feature-name">Share</label>
-                </div>
-                <p className="feature-description">Enable users to share content and insights with others through various channels and platforms.</p>
-              </div>
             </div>
 
             <div className="feature-actions">
