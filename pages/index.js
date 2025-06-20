@@ -348,12 +348,12 @@ export default function Home() {
 
           {/* Main Content */}
           <main className="main-content">
-            <h1 className="main-title">
+            <h1 className="main-title hoverable-text">
               Add the <em>Ask Anything™</em> button<br />
               to your website.
             </h1>
             
-            <div className="drive-growth-text">
+            <div className="drive-growth-text hoverable-text">
               Drive growth, boost engagement, and earn more today.
             </div>
             
@@ -471,7 +471,7 @@ export default function Home() {
                   <ul className="feature-list">
                     <li>New high-value revenue stream (from ads)</li>
                     <li>Easy install with a plug-in or one line of code</li>
-                    <li>Keeps users on your site vs. going to Google, ChatGPT, or other sites for answers</li>
+                    <li>Drop in one line of code → keep answers & revenue on-site.</li>
                   </ul>
                 </div>
               </div>
@@ -761,6 +761,27 @@ export default function Home() {
           font-weight: 700;
           text-align: center;
           animation: slideInUp 0.8s ease-out 0.5s both;
+        }
+
+        /* Hover animations for interactive text */
+        .hoverable-text {
+          transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+          cursor: pointer;
+        }
+
+        .hoverable-text:hover {
+          transform: translateY(-2px) scale(1.02);
+          text-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .main-title.hoverable-text:hover {
+          color: rgba(255, 255, 255, 1);
+          letter-spacing: 0.01em;
+        }
+
+        .drive-growth-text.hoverable-text:hover {
+          color: rgba(255, 255, 255, 1);
+          transform: translateY(-1px) scale(1.01);
         }
 
         .url-input-container {
