@@ -500,37 +500,38 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Features Page */}
-          <section className="features-page white-section">
-            <div className="features-page-container">
-              <h2 className="features-page-title">Core Features</h2>
+          {/* Copy Page */}
+          <section className="copy-page white-section">
+            <div className="copy-page-container">
+              <div className="copy-header">
+                <h2 className="copy-title">AI that cites, respects rights, and never hallucinates revenue risk</h2>
+                <p className="copy-subtitle">We built Gist with journalistic integrity and publisher sustainability as our core principles.</p>
+              </div>
               
-              <div className="features-grid">
-                <div className="feature-group">
-                  <h3 className="feature-group-title">Smart Answers</h3>
-                  <ul className="feature-list">
-                    <li>Accurate answers to user questions</li>
-                    <li>Promotes your content first in answers (with links back to each source)</li>
-                    <li>Ability to supplement answers with content from leading publications</li>
-                  </ul>
+              <div className="copy-features">
+                <div className="copy-feature">
+                  <div className="feature-icon">✓</div>
+                  <p>Every answer includes citations to your content and trusted external sources</p>
                 </div>
-
-                <div className="feature-group">
-                  <h3 className="feature-group-title">Control & Privacy</h3>
-                  <ul className="feature-list">
-                    <li>Ability to choose which third-party publications can be used as sources</li>
-                    <li>Privacy-safe—no user-level tracking</li>
-                    <li>Ability to control look and feel (colors, fonts, etc.)</li>
-                  </ul>
+                
+                <div className="copy-feature">
+                  <div className="feature-icon">✓</div>
+                  <p>Strict fact-checking protocols prevent hallucinations and misinformation</p>
                 </div>
-
-                <div className="feature-group">
-                  <h3 className="feature-group-title">Growth & Revenue</h3>
-                  <ul className="feature-list">
-                    <li>New high-value revenue stream (from ads)</li>
-                    <li>Easy install with a plug-in or one line of code</li>
-                    <li>Drop in one line of code → keep answers & revenue on-site.</li>
-                  </ul>
+                
+                <div className="copy-feature">
+                  <div className="feature-icon">✓</div>
+                  <p>Your content remains on your servers; we never train on your proprietary data</p>
+                </div>
+                
+                <div className="copy-feature">
+                  <div className="feature-icon">✓</div>
+                  <p>Transparent attribution maintains reader trust and publisher authority</p>
+                </div>
+                
+                <div className="copy-feature">
+                  <div className="feature-icon">✓</div>
+                  <p>Full GDPR, CCPA, and accessibility compliance built-in</p>
                 </div>
               </div>
             </div>
@@ -797,7 +798,7 @@ export default function Home() {
           font-size: 3.2rem;
           font-weight: 700;
           line-height: 1.1;
-          margin-bottom: 2rem;
+          margin-bottom: 1rem;
           margin-top: 1.5rem;
           max-width: 1100px;
           color: white;
@@ -2101,13 +2102,13 @@ export default function Home() {
           }
         }
 
-        /* Features Page */
-        .features-page {
+        /* Copy Page */
+        .copy-page {
           padding: 3rem 3rem 4rem;
           background: rgba(255, 255, 255, 0.03);
         }
 
-        .features-page.white-section {
+        .copy-page.white-section {
           background: 
             radial-gradient(circle at 20% 80%, rgba(255, 107, 53, 0.15) 0%, transparent 35%),
             radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.15) 0%, transparent 35%),
@@ -2122,146 +2123,104 @@ export default function Home() {
             0 0 0 1px rgba(0, 0, 0, 0.05) !important;
         }
 
-        .features-page-container {
-          max-width: 1000px;
+        .copy-page-container {
+          max-width: 900px;
+          margin: 0 auto;
+          text-align: center;
+        }
+
+        .copy-header {
+          margin-bottom: 3rem;
+        }
+
+        .copy-title {
+          font-size: 2.5rem;
+          font-weight: 700;
+          color: #333;
+          margin-bottom: 1.5rem;
+          letter-spacing: -0.02em;
+          line-height: 1.2;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .copy-subtitle {
+          font-size: 1.2rem;
+          color: #666;
+          margin: 0;
+          font-family: 'Inter', sans-serif;
+          line-height: 1.5;
+        }
+
+        .copy-features {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+          text-align: left;
+          max-width: 700px;
           margin: 0 auto;
         }
 
-        .features-page-title {
-          font-size: 2rem;
-          font-weight: 600;
-          color: white;
-           text-align: center;
-          margin-bottom: 2.5rem;
-          letter-spacing: -0.02em;
-          font-family: 'Inter', sans-serif;
-         }
-
-        .features-page.white-section .features-page-title {
-          color: #333 !important;
+        .copy-feature {
+          display: flex;
+          align-items: flex-start;
+          gap: 1rem;
         }
 
-        .features-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 2rem;
-        }
-
-        .feature-group {
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 12px;
-          padding: 1.5rem;
-          transition: all 0.3s ease;
-        }
-
-        .feature-group:hover {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(255, 255, 255, 0.2);
-          transform: translateY(-2px);
-          }
-
-        .features-page.white-section .feature-group {
-          background: rgba(0, 0, 0, 0.02) !important;
-          border: 1px solid rgba(0, 0, 0, 0.1) !important;
-        }
-
-        .features-page.white-section .feature-group:hover {
-          background: rgba(0, 0, 0, 0.05) !important;
-          border-color: rgba(0, 0, 0, 0.2) !important;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
-        }
-
-        .feature-group-title {
-            font-size: 1.1rem;
-          font-weight: 600;
-          color: white;
-          margin: 0 0 1rem 0;
-          font-family: 'Inter', sans-serif;
-          letter-spacing: -0.01em;
-          }
-
-        .features-page.white-section .feature-group-title {
-          color: #333 !important;
-        }
-
-        .feature-list {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-        }
-
-        .feature-list li {
-          font-size: 0.9rem;
-          color: rgba(255, 255, 255, 0.8);
-          line-height: 1.5;
-          margin-bottom: 0.75rem;
-          padding-left: 1rem;
-          position: relative;
-          font-family: 'Inter', sans-serif;
-        }
-
-        .features-page.white-section .feature-list li {
-          color: #666 !important;
-        }
-
-        .feature-list li:last-child {
-          margin-bottom: 0;
-        }
-
-        .feature-list li::before {
-          content: '•';
-          color: #3742fa;
+        .feature-icon {
+          color: #10b981;
+          font-size: 1.2rem;
           font-weight: bold;
-          position: absolute;
-          left: 0;
-          }
+          margin-top: 0.1rem;
+          flex-shrink: 0;
+        }
 
-        /* Responsive Design for Features Page */
+        .copy-feature p {
+          font-size: 1rem;
+          color: #555;
+          margin: 0;
+          font-family: 'Inter', sans-serif;
+          line-height: 1.6;
+        }
+
+        /* Responsive Design for Copy Page */
         @media (max-width: 768px) {
-          .features-page {
+          .copy-page {
             padding: 2.5rem 2rem 3rem;
           }
 
-          .features-page-title {
-            font-size: 1.75rem;
-            margin-bottom: 2rem;
+          .copy-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
           }
 
-          .features-grid {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
+          .copy-subtitle {
+            font-size: 1.1rem;
           }
 
-          .feature-group {
-            padding: 1.25rem;
+          .copy-features {
+            gap: 1.25rem;
           }
 
-          .feature-group-title {
-            font-size: 1rem;
-          }
-
-          .feature-list li {
-            font-size: 0.85rem;
-            margin-bottom: 0.625rem;
+          .copy-feature p {
+            font-size: 0.9rem;
           }
         }
 
         @media (max-width: 480px) {
-          .features-page {
+          .copy-page {
             padding: 2rem 1.5rem;
           }
 
-          .features-page-title {
-            font-size: 1.5rem;
+          .copy-title {
+            font-size: 1.75rem;
           }
 
-          .feature-group {
-            padding: 1rem;
+          .copy-subtitle {
+            font-size: 1rem;
           }
 
-          .feature-list li {
-            font-size: 0.8rem;
+          .copy-feature p {
+            font-size: 0.85rem;
           }
         }
 
