@@ -2090,7 +2090,7 @@
                     transition: all 0.2s ease;
                     z-index: 10;
                     line-height: 1;
-                    opacity: 0.3;
+                    opacity: 0;
                 }
                 
                 .gist-secret-settings-btn:hover {
