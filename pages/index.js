@@ -551,15 +551,28 @@ export default function Home() {
         /* Responsive Design */
         @media (max-width: 768px) {
           .header {
-            flex-direction: column;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
             gap: 1rem;
             padding: 1.5rem;
-            text-align: center;
+          }
+
+          .header-left {
+            text-align: left;
           }
 
           .header-right {
             flex-direction: column;
             gap: 1rem;
+            align-items: flex-end;
+            text-align: right;
+          }
+
+          .tagline {
+            max-width: 120px;
+            word-wrap: break-word;
+            line-height: 1.2;
           }
 
           .main-title {
