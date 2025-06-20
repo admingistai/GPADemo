@@ -763,25 +763,20 @@ export default function Home() {
           animation: slideInUp 0.8s ease-out 0.5s both;
         }
 
-        /* Hover animations for interactive text */
+        /* Subtle hover animations for interactive text */
         .hoverable-text {
-          transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+          transition: all 0.4s ease;
           cursor: pointer;
-        }
-
-        .hoverable-text:hover {
-          transform: translateY(-2px) scale(1.02);
-          text-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
 
         .main-title.hoverable-text:hover {
           color: rgba(255, 255, 255, 1);
-          letter-spacing: 0.01em;
+          text-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
         }
 
         .drive-growth-text.hoverable-text:hover {
           color: rgba(255, 255, 255, 1);
-          transform: translateY(-1px) scale(1.01);
+          text-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
         }
 
         .url-input-container {
