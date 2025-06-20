@@ -403,6 +403,28 @@ export default function Home() {
                   </div>
           </footer>
 
+          {/* Join Publishers Section */}
+          <section className="join-publishers-section">
+            <div className="join-publishers-container">
+              <h2 className="join-publishers-title">Join hundreds of publishers already boosting engagement and revenue</h2>
+              <p className="join-publishers-subtitle">From independent blogs to major media companies—they're all keeping readers engaged and earning new revenue streams.</p>
+              <div className="join-publishers-stats">
+                <div className="stat-item">
+                  <span className="stat-number">2.3×</span>
+                  <span className="stat-label">Average session length increase</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-number">47%</span>
+                  <span className="stat-label">Boost in page engagement</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-number">$1,200</span>
+                  <span className="stat-label">Average monthly revenue per site</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Why Choose Us Section */}
           <section className="why-choose-section white-section">
             <div className="why-choose-container">
@@ -928,7 +950,86 @@ export default function Home() {
           filter: brightness(1.1);
         }
 
+        /* Join Publishers Section */
+        .join-publishers-section {
+          background: linear-gradient(135deg, #3742fa 0%, #0c1426 100%);
+          padding: 4rem 2rem 5rem;
+          color: white;
+          text-align: center;
+          animation: fadeInUp 1s ease-out 1s both;
+        }
 
+        .join-publishers-container {
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+
+        .join-publishers-title {
+          font-size: 2.5rem;
+          font-weight: 700;
+          line-height: 1.2;
+          margin-bottom: 1rem;
+          font-family: 'Inter', sans-serif;
+          letter-spacing: -0.02em;
+          background: linear-gradient(135deg, #ffffff, #e2e8f0);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        .join-publishers-subtitle {
+          font-size: 1.2rem;
+          color: rgba(255, 255, 255, 0.8);
+          margin-bottom: 3rem;
+          font-family: 'Inter', sans-serif;
+          max-width: 700px;
+          margin-left: auto;
+          margin-right: auto;
+          line-height: 1.5;
+        }
+
+        .join-publishers-stats {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 2rem;
+          margin-top: 3rem;
+        }
+
+        .stat-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 1.5rem;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 16px;
+          transition: all 0.3s ease;
+          backdrop-filter: blur(10px);
+        }
+
+        .stat-item:hover {
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(255, 255, 255, 0.2);
+          transform: translateY(-2px);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-number {
+          font-size: 2.5rem;
+          font-weight: 700;
+          color: #ff6b35;
+          font-family: 'Inter', sans-serif;
+          margin-bottom: 0.5rem;
+          line-height: 1;
+        }
+
+        .stat-label {
+          font-size: 0.95rem;
+          color: rgba(255, 255, 255, 0.8);
+          font-family: 'Inter', sans-serif;
+          text-align: center;
+          line-height: 1.4;
+        }
 
         /* Feature Page Styles */
         .feature-page {
