@@ -349,8 +349,7 @@ export default function Home() {
           {/* Main Content */}
           <main className="main-content">
             <h1 className="main-title hoverable-text">
-              Add the <em>Ask Anything™</em> button<br />
-              to your website.
+              Stop losing curious readers to Google—keep answers and revenue on your own site.
             </h1>
             
             <div className="drive-growth-text hoverable-text">
