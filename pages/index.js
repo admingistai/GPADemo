@@ -184,8 +184,8 @@ export default function Home() {
             </h1>
             <p className="feature-subtitle">
               Select the <em>Ask Anything™</em> features you'd like to enable for {targetUrl}
-            </p>
-            
+              </p>
+              
             <div className="features-grid">
               <div className="feature-card">
                 <div className="feature-header">
@@ -226,7 +226,7 @@ export default function Home() {
                 </div>
                 <p className="feature-description">Auto-converts articles into share-ready cards, reels, and threads; boosts organic reach without extra editing.</p>
               </div>
-
+              
               <div className="feature-card">
                 <div className="feature-header">
                   <input
@@ -410,14 +410,14 @@ export default function Home() {
               <div className="why-choose-header">
                 <h2 className="why-choose-title">Why Choose <em>Ask Anything™</em>?</h2>
                 <p className="why-choose-subtitle">The smart choice for publishers who want results</p>
-              </div>
+                </div>
               
               <div className="horizontal-benefits">
                 <div className="benefit-item-horizontal">
                   <div className="benefit-number">01</div>
                   <h3>Drives Engagement</h3>
                   <p>Keep visitors on your site longer with interactive AI answers that boost page views and time spent.</p>
-                </div>
+                  </div>
                   
                 <div className="benefit-item-horizontal">
                   <div className="benefit-number">02</div>
@@ -429,8 +429,8 @@ export default function Home() {
                   <div className="benefit-number">03</div>
                   <h3>Completely Free</h3>
                   <p>No upfront costs, no hidden fees, no monthly subscriptions. Start adding value immediately.</p>
+                  </div>
                 </div>
-              </div>
               
               <div className="why-choose-cta">
                 <button className="primary-cta-button" onClick={() => document.querySelector('.url-input').focus()}>
@@ -601,7 +601,7 @@ export default function Home() {
            width: 100%;
           height: 100%;
           object-fit: contain;
-        }
+         }
 
         .loading-title {
           font-size: 2.5rem;
@@ -654,7 +654,7 @@ export default function Home() {
           flex-direction: column;
           color: white;
           animation: fadeIn 0.8s ease-out;
-        }
+         }
 
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(20px); }
@@ -705,7 +705,7 @@ export default function Home() {
            font-weight: 700;
            letter-spacing: -0.02em;
           line-height: 1.1;
-        }
+         }
 
         .login-btn {
           background: rgba(255, 255, 255, 0.1);
@@ -821,7 +821,7 @@ export default function Home() {
 
         .url-input:focus {
           transform: scale(1.01);
-        }
+         }
 
         .url-input::placeholder {
           color: #666;
@@ -1163,7 +1163,7 @@ export default function Home() {
             padding: 0.75rem 1rem;
             font-size: 0.9rem;
             border-radius: 37px;
-          }
+        }
 
           .publishers-logos,
           .publishers-logos-bottom {
@@ -1211,7 +1211,7 @@ export default function Home() {
 
           .feature-card {
             padding: 1.25rem;
-          }
+        }
 
           .feature-actions {
             flex-direction: column;
@@ -1281,7 +1281,7 @@ export default function Home() {
 
         .feature-name {
             font-size: 1rem;
-          }
+        }
 
           .feature-description {
             font-size: 0.9rem;
@@ -1416,7 +1416,7 @@ export default function Home() {
           text-decoration: none;
           font-size: 0.9rem;
           font-weight: 500;
-        }
+         }
 
         .forgot-password:hover {
           text-decoration: underline;
@@ -1517,7 +1517,7 @@ export default function Home() {
         /* Responsive Login Modal */
         @media (max-width: 768px) {
           .login-modal {
-            padding: 2rem;
+          padding: 2rem;
             margin: 1rem;
             max-width: 100%;
           }
@@ -1640,18 +1640,18 @@ export default function Home() {
           font-size: 0.9rem;
           color: rgba(255, 255, 255, 0.8);
           line-height: 1.5;
-          margin: 0;
+           margin: 0;
           font-family: 'Inter', sans-serif;
-        }
+         }
 
         .why-choose-cta {
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          text-align: center;
+           text-align: center;
           padding: 0;
-        }
+         }
 
         .primary-cta-button {
           background: linear-gradient(135deg, #ff6b35, #f7931e);
@@ -1685,7 +1685,7 @@ export default function Home() {
         .cta-arrow {
           font-size: 1.2rem;
           transition: transform 0.3s ease;
-        }
+         }
 
         .primary-cta-button:hover .cta-arrow {
           transform: translateX(4px);
@@ -1696,7 +1696,7 @@ export default function Home() {
           color: rgba(255, 255, 255, 0.6);
           font-family: 'Inter', sans-serif;
            margin: 0;
-        }
+         }
 
         /* Features Page */
         .features-page {
@@ -1713,11 +1713,11 @@ export default function Home() {
           font-size: 2rem;
           font-weight: 600;
           color: white;
-          text-align: center;
+           text-align: center;
           margin-bottom: 2.5rem;
           letter-spacing: -0.02em;
           font-family: 'Inter', sans-serif;
-        }
+         }
 
         .features-grid {
           display: grid;
@@ -1737,16 +1737,16 @@ export default function Home() {
           background: rgba(255, 255, 255, 0.08);
           border-color: rgba(255, 255, 255, 0.2);
           transform: translateY(-2px);
-        }
+          }
 
         .feature-group-title {
-          font-size: 1.1rem;
+            font-size: 1.1rem;
           font-weight: 600;
           color: white;
           margin: 0 0 1rem 0;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.01em;
-        }
+          }
 
         .feature-list {
           list-style: none;
@@ -1774,7 +1774,7 @@ export default function Home() {
           font-weight: bold;
           position: absolute;
           left: 0;
-        }
+          }
 
         /* Responsive Design for Features Page */
         @media (max-width: 768px) {
@@ -1878,7 +1878,7 @@ export default function Home() {
         @media (max-width: 480px) {
           .why-choose-section {
             padding: 2rem 1.5rem;
-          }
+           }
 
           .why-choose-title {
             font-size: 1.9rem;

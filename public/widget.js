@@ -403,32 +403,7 @@
             }
         }
 
-        // 6. CHECK FOR GIST-LOGO.PNG ON THE WEBSITE
-        if (!results.logo) {
-            // First check if there's already an image with gist-logo.png in the DOM
-            const existingGistLogo = document.querySelector('img[src*="gist-logo.png"]');
-            if (existingGistLogo && existingGistLogo.src) {
-                results.logo = existingGistLogo.src;
-                console.log('[GistWidget] Found existing gist-logo.png in DOM:', existingGistLogo.src);
-            } else {
-                // Check common paths for gist-logo.png
-                const gistLogoPaths = [
-                    '/gist-logo.png',
-                    '/assets/gist-logo.png',
-                    '/images/gist-logo.png',
-                    '/static/gist-logo.png',
-                    '/public/gist-logo.png',
-                    '/uploads/gist-logo.png'
-                ];
-                
-                // Try the most common path first
-                const primaryGistLogoUrl = window.location.origin + '/gist-logo.png';
-                results.logo = primaryGistLogoUrl;
-                console.log('[GistWidget] Using fallback gist-logo.png path:', primaryGistLogoUrl);
-            }
-        }
-
-        // 7. COLLECT ALL POTENTIAL LOGO CANDIDATES
+        // 6. COLLECT ALL POTENTIAL LOGO CANDIDATES - removed automatic gist-logo.png fallback
         const allImages = document.querySelectorAll('img[src]');
         allImages.forEach(img => {
             if (img.src && isValidImageUrl(img.src)) {
@@ -1062,6 +1037,16 @@
                 transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             }
             `}
+            
+            .gist-pill-logo-placeholder {
+                width: 24px;
+                height: 24px;
+                background: ${styling.primaryColor}20;
+                border-radius: 4px;
+                opacity: 1;
+                transform: scale(1) translateX(0);
+                transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            }
             
             .gist-toolbox {
                 background: ${styling.backgroundColor};
@@ -3458,10 +3443,10 @@
                 <div class="gist-pill" id="gist-pill">
                     <div class="gist-pill-content">
                         ${enhancedStyling.logoUrl ? 
-                `<img src="${enhancedStyling.logoUrl}" class="gist-pill-logo" alt="Website Logo" onerror="this.src='${BACKEND_BASE_URL}/gist-logo.png'; this.alt='Gist Logo';">` :
+                `<img src="${enhancedStyling.logoUrl}" class="gist-pill-logo" alt="Website Logo">` :
                             enhancedStyling.faviconUrl ?
-                `<img src="${enhancedStyling.faviconUrl}" class="gist-pill-logo" alt="Website Icon" onerror="this.src='${BACKEND_BASE_URL}/gist-logo.png'; this.alt='Gist Logo';">` :
-                `<img src="${BACKEND_BASE_URL}/gist-logo.png" class="gist-pill-logo" alt="Gist Logo">`
+                `<img src="${enhancedStyling.faviconUrl}" class="gist-pill-logo" alt="Website Icon">` :
+                `<div class="gist-pill-logo-placeholder"></div>`
                         }
                         <input type="text" class="gist-pill-input" placeholder="Ask Anything" id="gist-input">
                         <button class="gist-desktop-mode-btn" id="gist-desktop-mode-btn" title="Desktop Mode">⊞</button>
