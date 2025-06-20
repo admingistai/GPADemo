@@ -919,9 +919,9 @@ export default function Home() {
         }
 
         .drive-growth-text {
-          font-size: 1.2rem;
+          font-size: 1.35rem;
           color: rgba(255, 255, 255, 0.9);
-          margin-bottom: 2rem;
+          margin-bottom: 2.5rem;
           font-family: 'Inter', sans-serif;
           font-weight: 700;
           text-align: center;
@@ -956,7 +956,7 @@ export default function Home() {
 
         /* Video Section */
         .video-section {
-          margin: 2rem 0 0.25rem 0;
+          margin: 2.5rem 0 0.25rem 0;
           display: flex;
           justify-content: center;
           animation: slideInUp 0.8s ease-out 0.7s both;
