@@ -570,7 +570,17 @@ export default function Home() {
           .url-input-wrapper {
             flex-direction: column;
             gap: 1rem;
-            padding: 1rem;
+            padding: 3px;
+          }
+
+          .url-input-inner {
+            flex-direction: column;
+            gap: 0.75rem;
+            padding: 0.75rem;
+          }
+
+          .url-input {
+            border-radius: 8px;
           }
 
           .generate-btn {
