@@ -408,11 +408,7 @@ export default function Home() {
             <div className="testimonials-container">
               <div className="testimonial-box">
                 <div className="testimonial-content">
-                  <div className="testimonial-quote-wrapper">
-                    <span className="testimonial-bracket left-bracket">{`{`}</span>
-                    <p>"With Gist Answers, we can combine our award-winning journalism with trusted external sources to deliver deeper context and smarter discovery in response to user questions."</p>
-                    <span className="testimonial-bracket right-bracket">{`}`}</span>
-                  </div>
+                  <p>"With Gist Answers, we can combine our award-winning journalism with trusted external sources to deliver deeper context and smarter discovery in response to user questions."</p>
                   <div className="testimonial-author">
                     <strong>Will Lee</strong>
                     <span>CEO, AdWeek</span>
@@ -974,29 +970,8 @@ export default function Home() {
           text-align: center;
         }
 
-        .testimonial-quote-wrapper {
-          display: flex;
-          align-items: flex-start;
-          justify-content: center;
-          gap: 1rem;
-          margin-bottom: 2rem;
-        }
-
-        .testimonial-bracket {
-          font-size: 4rem;
-          font-weight: 200;
-          color: rgba(255, 255, 255, 0.3);
-          font-family: 'Inter', sans-serif;
-          line-height: 1;
-          user-select: none;
-        }
-
-        .left-bracket {
-          align-self: flex-start;
-        }
-
-        .right-bracket {
-          align-self: flex-end;
+        .testimonial-content {
+          position: relative;
         }
 
         .testimonial-content p {
@@ -1004,12 +979,60 @@ export default function Home() {
           line-height: 1.5;
           color: rgba(255, 255, 255, 0.95);
           font-family: 'Inter', sans-serif;
-          margin: 0;
+          margin-bottom: 2rem;
           font-style: italic;
           font-weight: 300;
           max-width: 100%;
-          flex: 1;
-          text-align: center;
+          position: relative;
+          padding: 0 3rem;
+        }
+
+        .testimonial-content::before,
+        .testimonial-content::after {
+          content: '';
+          position: absolute;
+          width: 60px;
+          height: 80px;
+          background: #ff6b35;
+          z-index: 1;
+        }
+
+        .testimonial-content::before {
+          top: -10px;
+          left: 0;
+          clip-path: polygon(
+            0% 0%, 
+            70% 0%, 
+            70% 25%, 
+            30% 25%, 
+            30% 75%, 
+            70% 75%, 
+            70% 100%, 
+            0% 100%, 
+            0% 85%, 
+            15% 85%, 
+            15% 15%, 
+            0% 15%
+          );
+        }
+
+        .testimonial-content::after {
+          bottom: 10px;
+          right: 0;
+          clip-path: polygon(
+            30% 0%, 
+            100% 0%, 
+            100% 15%, 
+            85% 15%, 
+            85% 85%, 
+            100% 85%, 
+            100% 100%, 
+            30% 100%, 
+            30% 75%, 
+            70% 75%, 
+            70% 25%, 
+            30% 25%
+          );
         }
 
         .testimonial-author {
@@ -1041,17 +1064,26 @@ export default function Home() {
             padding: 2rem 1rem 4rem;
           }
           
-          .testimonial-quote-wrapper {
-            gap: 0.5rem;
-          }
-          
-          .testimonial-bracket {
-            font-size: 3rem;
-          }
-          
           .testimonial-content p {
             font-size: 1.2rem;
             line-height: 1.4;
+            padding: 0 2rem;
+          }
+          
+          .testimonial-content::before,
+          .testimonial-content::after {
+            width: 40px;
+            height: 60px;
+          }
+          
+          .testimonial-content::before {
+            top: -5px;
+            left: 5px;
+          }
+          
+          .testimonial-content::after {
+            bottom: 5px;
+            right: 5px;
           }
           
           .testimonial-author strong {
