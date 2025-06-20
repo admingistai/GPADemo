@@ -381,6 +381,22 @@ export default function Home() {
                   </button>
             </div>
               </div>
+              
+              {/* YouTube Video Section */}
+              <div className="video-section">
+                <div className="video-container">
+                  <iframe 
+                    width="560" 
+                    height="315" 
+                    src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                    title="YouTube video player" 
+                    frameBorder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowFullScreen>
+                  </iframe>
+                </div>
+              </div>
+              
               <div className="see-how-text">
                 Paste any article link to preview Ask Anything™ on your site.
               </div>
@@ -822,6 +838,50 @@ export default function Home() {
           width: 100%;
           max-width: 500px;
           animation: slideInUp 0.8s ease-out 0.6s both;
+        }
+
+        /* Video Section */
+        .video-section {
+          margin: 2rem 0 1.5rem 0;
+          display: flex;
+          justify-content: center;
+          animation: slideInUp 0.8s ease-out 0.7s both;
+        }
+
+        .video-container {
+          position: relative;
+          width: 100%;
+          max-width: 560px;
+          aspect-ratio: 16 / 9;
+          border-radius: 16px;
+          overflow: hidden;
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+          transition: all 0.3s ease;
+        }
+
+        .video-container:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .video-container iframe {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          border: none;
+        }
+
+        @media (max-width: 768px) {
+          .video-section {
+            margin: 1.5rem 1rem;
+          }
+          
+          .video-container {
+            max-width: 100%;
+            border-radius: 12px;
+          }
         }
 
         .see-how-text {
