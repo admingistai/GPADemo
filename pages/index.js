@@ -382,7 +382,7 @@ export default function Home() {
             </div>
               </div>
               <div className="see-how-text">
-                Enter your URL to see it on your website.
+                Paste any article link to preview Ask Anything™ on your site.
               </div>
               {error && (
                 <div className="error-message">
