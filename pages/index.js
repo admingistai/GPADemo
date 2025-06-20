@@ -536,6 +536,83 @@ export default function Home() {
               </div>
             </div>
           </section>
+
+          {/* Revenue Section */}
+          <section className="revenue-section">
+            <div className="revenue-container">
+              <div className="revenue-header">
+                <h2 className="revenue-title">$0 platform fee. We split the incremental ad revenue; you keep editorial independence.</h2>
+              </div>
+              
+              <div className="revenue-grid">
+                <div className="revenue-column">
+                  <h3 className="column-title">What You Get</h3>
+                  <div className="revenue-features">
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>Full integration with your CMS and ad stack</p>
+                    </div>
+                    
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>Custom branding and voice settings</p>
+                    </div>
+                    
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>Comprehensive analytics dashboard</p>
+                    </div>
+                    
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>Dedicated customer success manager</p>
+                    </div>
+                    
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>Weekly performance reports</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="revenue-column">
+                  <h3 className="column-title">How It Works</h3>
+                  <div className="revenue-features">
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>No upfront costs or monthly fees</p>
+                    </div>
+                    
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>Revenue share on new ad impressions only</p>
+                    </div>
+                    
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>Transparent attribution of all revenue</p>
+                    </div>
+                    
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>30-day trial with full analytics access</p>
+                    </div>
+                    
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>Cancel anytime with no penalties</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="revenue-cta">
+                <button className="calculate-revenue-btn">
+                  Calculate Your Revenue Uplift
+                </button>
+              </div>
+            </div>
+          </section>
         </div>
       )}
 
@@ -2221,6 +2298,147 @@ export default function Home() {
 
           .copy-feature p {
             font-size: 0.85rem;
+          }
+        }
+
+        /* Revenue Section */
+        .revenue-section {
+          background: radial-gradient(ellipse at center, #3742fa 0%, #0c1426 100%);
+          padding: 5rem 2rem;
+          margin-bottom: 0;
+        }
+
+        .revenue-container {
+          max-width: 1200px;
+          margin: 0 auto;
+          text-align: center;
+        }
+
+        .revenue-header {
+          margin-bottom: 4rem;
+        }
+
+        .revenue-title {
+          font-size: 2.5rem;
+          font-weight: 700;
+          color: white;
+          margin: 0;
+          letter-spacing: -0.02em;
+          line-height: 1.2;
+          font-family: 'Inter', sans-serif;
+          max-width: 900px;
+          margin: 0 auto;
+        }
+
+        .revenue-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 3rem;
+          margin-bottom: 4rem;
+        }
+
+        .revenue-column {
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 16px;
+          padding: 2.5rem;
+          backdrop-filter: blur(10px);
+        }
+
+        .column-title {
+          font-size: 1.75rem;
+          font-weight: 700;
+          color: white;
+          margin-bottom: 2rem;
+          font-family: 'Inter', sans-serif;
+          letter-spacing: -0.01em;
+        }
+
+        .revenue-features {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+          text-align: left;
+        }
+
+        .revenue-feature {
+          display: flex;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+
+        .revenue-feature .feature-icon {
+          color: #10b981;
+          font-size: 1.2rem;
+          font-weight: bold;
+          margin-top: 0.1rem;
+          flex-shrink: 0;
+        }
+
+        .revenue-feature p {
+          font-size: 1rem;
+          color: rgba(255, 255, 255, 0.9);
+          margin: 0;
+          font-family: 'Inter', sans-serif;
+          line-height: 1.6;
+        }
+
+        .revenue-cta {
+          display: flex;
+          justify-content: center;
+        }
+
+        .calculate-revenue-btn {
+          background: linear-gradient(135deg, #10b981, #059669);
+          color: white;
+          border: none;
+          padding: 1.25rem 2.5rem;
+          border-radius: 50px;
+          font-size: 1.1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          font-family: 'Inter', sans-serif;
+          letter-spacing: -0.01em;
+          box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        }
+
+        .calculate-revenue-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4);
+          background: linear-gradient(135deg, #059669, #047857);
+        }
+
+        @media (max-width: 768px) {
+          .revenue-section {
+            padding: 4rem 2rem;
+          }
+          
+          .revenue-title {
+            font-size: 2rem;
+          }
+          
+          .revenue-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+          }
+          
+          .revenue-column {
+            padding: 2rem;
+          }
+          
+          .column-title {
+            font-size: 1.5rem;
+          }
+          
+          .revenue-feature p {
+            font-size: 0.9rem;
+          }
+          
+          .calculate-revenue-btn {
+            padding: 1rem 2rem;
+            font-size: 1rem;
           }
         }
 
