@@ -974,8 +974,6 @@ export default function Home() {
         .testimonial-box::after {
           content: '';
           position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
           font-size: 12rem;
           font-weight: 100;
           color: white;
@@ -986,11 +984,13 @@ export default function Home() {
 
         .testimonial-box::before {
           content: '"';
+          top: -2rem;
           left: -6rem;
         }
 
         .testimonial-box::after {
           content: '"';
+          bottom: -2rem;
           right: -6rem;
         }
 
@@ -1053,10 +1053,12 @@ export default function Home() {
           }
           
           .testimonial-box::before {
+            top: -1rem;
             left: -3rem;
           }
           
           .testimonial-box::after {
+            bottom: -1rem;
             right: -3rem;
           }
         }
