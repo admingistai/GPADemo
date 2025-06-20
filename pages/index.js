@@ -361,7 +361,7 @@ export default function Home() {
                 <div className="url-input-inner">
                   <input
                     type="text"
-                    placeholder="Paste URL"
+                    placeholder="Enter your URL to preview on your site..."
                     value={targetUrl}
                     onChange={(e) => setTargetUrl(e.target.value)}
                     onKeyDown={(e) => {
@@ -633,7 +633,7 @@ export default function Home() {
                       type="url"
                       value={targetUrl}
                       onChange={(e) => setTargetUrl(e.target.value)}
-                      placeholder="Paste URL"
+                      placeholder="Enter your URL to preview on your site..."
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && !loading && targetUrl.trim()) {
                           handleUrlSubmit(targetUrl);
