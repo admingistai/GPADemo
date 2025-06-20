@@ -10,7 +10,21 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [showWebsite, setShowWebsite] = useState(false);
   const [showLoadingPage, setShowLoadingPage] = useState(false);
+  const [showFeaturePage, setShowFeaturePage] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
+  const [selectedFeatures, setSelectedFeatures] = useState({
+    recommendedQuestions: true,
+    theGist: true,
+    augmentedAnswers: false,
+    goDeeper: false,
+    ethicalAds: false,
+    customVoices: false,
+    remixing: false,
+    myDaily: false,
+    augmentedSharing: false,
+    customAgents: false,
+    futureProofing: false
+  });
 
   // Simplified scroll animation effects
   useEffect(() => {
@@ -45,74 +59,71 @@ export default function Home() {
   };
 
   const handleUrlSubmit = async (url) => {
-    try {
-      setLoading(true);
-      setError(null);
-      setShowWebsite(false);
-      setShowLoadingPage(true);
+    setError(null);
+    setShowFeaturePage(true);
+  };
+
+  const handleFeatureContinue = async () => {
+    setShowFeaturePage(false);
+    setShowLoadingPage(true);
+    
+    // Format the URL automatically
+    const formattedUrl = formatUrl(targetUrl);
+    
+    const loadingMessages = [
+      'Generating button design...',
+      'Adding functionality...',
+      'Optimizing user experience...',
+      'Implementing Ask Anything™...',
+      'Configuring smart responses...',
+      'Setting up AI integration...',
+      'Customizing for your site...',
+      'Finalizing button placement...',
+      'Testing compatibility...',
+      'Preparing launch...'
+    ];
+
+    // Show random loading messages
+    const messageInterval = setInterval(() => {
+      const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+      setLoadingMessage(randomMessage);
+    }, 800);
+
+    // Random delay between 5-10 seconds
+    const delay = Math.random() * 5000 + 5000;
+    
+    setTimeout(async () => {
+      clearInterval(messageInterval);
       
-      // Format the URL automatically
-      const formattedUrl = formatUrl(url);
-      
-      const loadingMessages = [
-        'Generating button design...',
-        'Adding functionality...',
-        'Optimizing user experience...',
-        'Implementing Ask Anything™...',
-        'Configuring smart responses...',
-        'Setting up AI integration...',
-        'Customizing for your site...',
-        'Finalizing button placement...',
-        'Testing compatibility...',
-        'Preparing launch...'
-      ];
+      try {
+        const testResponse = await fetch(`/api/proxy?url=${encodeURIComponent(formattedUrl)}&test=true`);
+        const testResult = await testResponse.json();
 
-      // Show random loading messages
-      const messageInterval = setInterval(() => {
-        const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
-        setLoadingMessage(randomMessage);
-      }, 800);
+        if (!testResponse.ok) {
+          throw new Error(testResult.error || 'Unable to reach the specified website');
+        }
 
-      // Random delay between 5-10 seconds
-      const delay = Math.random() * 5000 + 5000;
-      
-                      setTimeout(async () => {
-          clearInterval(messageInterval);
-          
-          try {
-            const testResponse = await fetch(`/api/proxy?url=${encodeURIComponent(formattedUrl)}&test=true`);
-            const testResult = await testResponse.json();
-
-            if (!testResponse.ok) {
-              throw new Error(testResult.error || 'Unable to reach the specified website');
-            }
-
-            // Directly open the website with widget in a new tab
-            const websiteWithWidgetUrl = `/api/proxy?url=${encodeURIComponent(formattedUrl)}`;
-            window.open(websiteWithWidgetUrl, '_blank');
-            
-            // Reset the form for potential next use
-            setShowLoadingPage(false);
-            setTargetUrl('');
-          } catch (err) {
-            setShowLoadingPage(false);
-            setError(err.message);
-          } finally {
-            setLoading(false);
-          }
-        }, delay);
-
-    } catch (err) {
-      setShowLoadingPage(false);
-      setError(err.message);
-      setLoading(false);
-    }
+        // Directly open the website with widget in a new tab
+        const websiteWithWidgetUrl = `/api/proxy?url=${encodeURIComponent(formattedUrl)}`;
+        window.open(websiteWithWidgetUrl, '_blank');
+        
+        // Reset the form for potential next use
+        setShowLoadingPage(false);
+        setTargetUrl('');
+      } catch (err) {
+        setShowLoadingPage(false);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }, delay);
   };
 
   const handleRetry = () => {
     setError(null);
     setShowWebsite(false);
     setShowLoadingPage(false);
+    setShowFeaturePage(false);
     setTargetUrl('');
     setLoading(false);
   };
@@ -145,8 +156,186 @@ export default function Home() {
         </div>
       )}
 
+      {/* Feature Selection Page */}
+      {showFeaturePage && (
+        <div className="feature-page">
+          <header className="header">
+            <div className="header-left">
+              <h1 className="logo">Ask<br />Anything™</h1>
+            </div>
+            <div className="header-right">
+              <span className="tagline">100% ethical, uses fully licensed sources</span>
+              <button className="login-btn">Login</button>
+            </div>
+          </header>
+
+          <main className="feature-content">
+            <h1 className="feature-title">
+              Choose Your Features
+            </h1>
+            <p className="feature-subtitle">
+              Select the Ask Anything™ features you'd like to enable for {targetUrl}
+            </p>
+            
+            <div className="features-grid">
+              <div className="feature-card">
+                <div className="feature-header">
+                  <input
+                    type="checkbox"
+                    id="recommendedQuestions"
+                    checked={selectedFeatures.recommendedQuestions}
+                    onChange={(e) => setSelectedFeatures(prev => ({...prev, recommendedQuestions: e.target.checked}))}
+                  />
+                  <label htmlFor="recommendedQuestions" className="feature-name">Recommended Questions</label>
+                </div>
+                <p className="feature-description">Auto-generates the most asked follow-ups; placed inline to guide exploration; lifts page views per visit.</p>
+              </div>
+
+              <div className="feature-card">
+                <div className="feature-header">
+                  <input
+                    type="checkbox"
+                    id="theGist"
+                    checked={selectedFeatures.theGist}
+                    onChange={(e) => setSelectedFeatures(prev => ({...prev, theGist: e.target.checked}))}
+                  />
+                  <label htmlFor="theGist" className="feature-name">The Gist</label>
+                </div>
+                <p className="feature-description">One-sentence AI summary of any story; instant context for skimmers; proven to reduce bounce.</p>
+              </div>
+
+              <div className="feature-card">
+                <div className="feature-header">
+                  <input
+                    type="checkbox"
+                    id="augmentedAnswers"
+                    checked={selectedFeatures.augmentedAnswers}
+                    onChange={(e) => setSelectedFeatures(prev => ({...prev, augmentedAnswers: e.target.checked}))}
+                  />
+                  <label htmlFor="augmentedAnswers" className="feature-name">Augmented Answers</label>
+                </div>
+                <p className="feature-description">Enriches replies with fully-licensed partner sources; citations included; maintains editorial trust.</p>
+              </div>
+
+              <div className="feature-card">
+                <div className="feature-header">
+                  <input
+                    type="checkbox"
+                    id="goDeeper"
+                    checked={selectedFeatures.goDeeper}
+                    onChange={(e) => setSelectedFeatures(prev => ({...prev, goDeeper: e.target.checked}))}
+                  />
+                  <label htmlFor="goDeeper" className="feature-name">Go Deeper</label>
+                </div>
+                <p className="feature-description">One-click expandable sidebars with related articles, data, and media; extends time-on-page.</p>
+              </div>
+
+              <div className="feature-card">
+                <div className="feature-header">
+                  <input
+                    type="checkbox"
+                    id="ethicalAds"
+                    checked={selectedFeatures.ethicalAds}
+                    onChange={(e) => setSelectedFeatures(prev => ({...prev, ethicalAds: e.target.checked}))}
+                  />
+                  <label htmlFor="ethicalAds" className="feature-name">Earn More with Ethical Ads</label>
+                </div>
+                <p className="feature-description">Privacy-safe generative ad units matched to content intent; new revenue stream, no user tracking.</p>
+              </div>
+
+              <div className="feature-card">
+                <div className="feature-header">
+                  <input
+                    type="checkbox"
+                    id="customVoices"
+                    checked={selectedFeatures.customVoices}
+                    onChange={(e) => setSelectedFeatures(prev => ({...prev, customVoices: e.target.checked}))}
+                  />
+                  <label htmlFor="customVoices" className="feature-name">Custom Voices & Avatars</label>
+                </div>
+                <p className="feature-description">Branded TTS and 3-D presenter options; consistent tone across text, audio, and video.</p>
+              </div>
+
+              <div className="feature-card">
+                <div className="feature-header">
+                  <input
+                    type="checkbox"
+                    id="remixing"
+                    checked={selectedFeatures.remixing}
+                    onChange={(e) => setSelectedFeatures(prev => ({...prev, remixing: e.target.checked}))}
+                  />
+                  <label htmlFor="remixing" className="feature-name">Remixing</label>
+                </div>
+                <p className="feature-description">Auto-converts articles into share-ready cards, reels, and threads; boosts organic reach without extra editing.</p>
+              </div>
+
+              <div className="feature-card">
+                <div className="feature-header">
+                  <input
+                    type="checkbox"
+                    id="myDaily"
+                    checked={selectedFeatures.myDaily}
+                    onChange={(e) => setSelectedFeatures(prev => ({...prev, myDaily: e.target.checked}))}
+                  />
+                  <label htmlFor="myDaily" className="feature-name">Add to "My Daily"</label>
+                </div>
+                <p className="feature-description">Opt-in to a personalized site-wide or network-wide daily digest that pulls your latest pieces into readers' personalized, customized news feed; drives habitual return traffic and incremental revenue.</p>
+              </div>
+
+              <div className="feature-card">
+                <div className="feature-header">
+                  <input
+                    type="checkbox"
+                    id="augmentedSharing"
+                    checked={selectedFeatures.augmentedSharing}
+                    onChange={(e) => setSelectedFeatures(prev => ({...prev, augmentedSharing: e.target.checked}))}
+                  />
+                  <label htmlFor="augmentedSharing" className="feature-name">Augmented Sharing</label>
+                </div>
+                <p className="feature-description">Generates pre-written social posts and on-scroll highlights with backlinks; simplifies promotion, tracks attribution.</p>
+              </div>
+
+              <div className="feature-card">
+                <div className="feature-header">
+                  <input
+                    type="checkbox"
+                    id="customAgents"
+                    checked={selectedFeatures.customAgents}
+                    onChange={(e) => setSelectedFeatures(prev => ({...prev, customAgents: e.target.checked}))}
+                  />
+                  <label htmlFor="customAgents" className="feature-name">Custom Publisher/Creator/Promotional Agents</label>
+                </div>
+                <p className="feature-description">Build task-specific, goal-oriented AI companions (e.g., paywall support, live events); full control over scope, tone, and data.</p>
+              </div>
+
+              <div className="feature-card">
+                <div className="feature-header">
+                  <input
+                    type="checkbox"
+                    id="futureProofing"
+                    checked={selectedFeatures.futureProofing}
+                    onChange={(e) => setSelectedFeatures(prev => ({...prev, futureProofing: e.target.checked}))}
+                  />
+                  <label htmlFor="futureProofing" className="feature-name">Future Proofing</label>
+                </div>
+                <p className="feature-description">One integration spins up an MCP server that: (1) exposes bot-friendly endpoints for GEO/AEO mention boosts, (2) surfaces structured answers search engines favor, and (3) lets trusted third-party AI agents transact safely on-site—opening additive revenue streams while you keep full data control.</p>
+              </div>
+            </div>
+
+            <div className="feature-actions">
+              <button className="back-btn" onClick={() => setShowFeaturePage(false)}>
+                ← Back
+              </button>
+              <button className="continue-btn" onClick={handleFeatureContinue}>
+                Continue with Selected Features
+              </button>
+            </div>
+          </main>
+        </div>
+      )}
+
       {/* Main Landing Page */}
-      {!showWebsite && !showLoadingPage && (
+      {!showWebsite && !showLoadingPage && !showFeaturePage && (
         <div className="landing-page">
           {/* Header */}
           <header className="header">
@@ -564,6 +753,147 @@ export default function Home() {
           to { text-shadow: 0 3px 8px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 20px rgba(255, 255, 255, 0.1); }
         }
 
+        /* Feature Page Styles */
+        .feature-page {
+          background: radial-gradient(ellipse at center, #3742fa 0%, #0c1426 100%);
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          color: white;
+          animation: fadeIn 0.8s ease-out;
+        }
+
+        .feature-content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 2rem;
+          max-width: 1200px;
+          margin: 0 auto;
+          width: 100%;
+        }
+
+        .feature-title {
+          font-size: 3rem;
+          font-weight: 700;
+          line-height: 1.1;
+          margin-bottom: 1rem;
+          color: white;
+          font-family: 'Inter', sans-serif;
+          letter-spacing: -0.01em;
+          text-align: center;
+          animation: slideInUp 0.8s ease-out 0.2s both;
+        }
+
+        .feature-subtitle {
+          font-size: 1.2rem;
+          opacity: 0.9;
+          margin-bottom: 3rem;
+          text-align: center;
+          font-family: 'Inter', sans-serif;
+          animation: slideInUp 0.8s ease-out 0.4s both;
+        }
+
+        .features-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+          gap: 1.5rem;
+          width: 100%;
+          margin-bottom: 3rem;
+          animation: slideInUp 0.8s ease-out 0.6s both;
+        }
+
+        .feature-card {
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 12px;
+          padding: 1.5rem;
+          transition: all 0.3s ease;
+          backdrop-filter: blur(10px);
+        }
+
+        .feature-card:hover {
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(255, 255, 255, 0.2);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-header {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          margin-bottom: 0.75rem;
+        }
+
+        .feature-header input[type="checkbox"] {
+          width: 18px;
+          height: 18px;
+          accent-color: #ff6b35;
+          cursor: pointer;
+        }
+
+        .feature-name {
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: white;
+          font-family: 'Inter', sans-serif;
+          cursor: pointer;
+          flex: 1;
+        }
+
+        .feature-description {
+          font-size: 0.95rem;
+          line-height: 1.5;
+          color: rgba(255, 255, 255, 0.8);
+          font-family: 'Inter', sans-serif;
+          margin: 0;
+        }
+
+        .feature-actions {
+          display: flex;
+          gap: 1rem;
+          justify-content: center;
+          width: 100%;
+          animation: slideInUp 0.8s ease-out 0.8s both;
+        }
+
+        .back-btn, .continue-btn {
+          padding: 0.75rem 2rem;
+          border-radius: 8px;
+          font-family: 'Inter', sans-serif;
+          font-weight: 600;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          border: none;
+        }
+
+        .back-btn {
+          background: rgba(255, 255, 255, 0.1);
+          color: white;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .back-btn:hover {
+          background: rgba(255, 255, 255, 0.15);
+          border-color: rgba(255, 255, 255, 0.3);
+          transform: translateY(-1px);
+        }
+
+        .continue-btn {
+          background: linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7);
+          color: white;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .continue-btn:hover {
+          background: linear-gradient(135deg, #e55a2b, #e0821a, #ff5252, #9333ea);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
         .bottom-cta {
           display: flex;
           align-items: center;
@@ -697,6 +1027,42 @@ export default function Home() {
             line-height: 1.3;
           }
 
+          /* Feature Page Mobile Styles */
+          .feature-content {
+            padding: 1rem;
+          }
+
+          .feature-title {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+          }
+
+          .feature-subtitle {
+            font-size: 1rem;
+            margin-bottom: 2rem;
+          }
+
+          .features-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+          }
+
+          .feature-card {
+            padding: 1.25rem;
+          }
+
+          .feature-actions {
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+          }
+
+          .back-btn, .continue-btn {
+            width: 100%;
+            max-width: 300px;
+          }
+
           .bottom-cta {
             flex-direction: column;
             gap: 1rem;
@@ -728,6 +1094,27 @@ export default function Home() {
 
           .publisher-name {
             font-size: 0.8rem;
+          }
+
+          /* Feature Page Small Mobile Styles */
+          .feature-title {
+            font-size: 2rem;
+          }
+
+          .feature-subtitle {
+            font-size: 0.9rem;
+          }
+
+          .feature-card {
+            padding: 1rem;
+          }
+
+          .feature-name {
+            font-size: 1rem;
+          }
+
+          .feature-description {
+            font-size: 0.9rem;
           }
         }
       `}</style>
