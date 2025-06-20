@@ -1583,10 +1583,35 @@ export default function Home() {
         }
 
         .why-choose-section.white-section {
-          background: white !important;
+          background: linear-gradient(135deg, #fafafa 0%, #ffffff 50%, #f8f9fa 100%) !important;
           backdrop-filter: none;
           border-top: 1px solid rgba(0, 0, 0, 0.1);
           padding: 4rem 3rem 5rem;
+          position: relative;
+        }
+
+        .why-choose-section.white-section::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: radial-gradient(ellipse at center, transparent 0%, transparent 70%, rgba(0, 0, 0, 0.02) 100%);
+          pointer-events: none;
+        }
+
+        .why-choose-section.white-section::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: 
+            radial-gradient(circle at 20% 80%, rgba(255, 107, 53, 0.03) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.03) 0%, transparent 50%);
+          pointer-events: none;
         }
 
         .why-choose-section.white-section .why-choose-title {
@@ -1624,6 +1649,8 @@ export default function Home() {
         .why-choose-container {
           max-width: 1200px;
           margin: 0 auto;
+          position: relative;
+          z-index: 1;
         }
 
         .why-choose-header {
