@@ -455,6 +455,32 @@ export default function Home() {
             </div>
           </section>
 
+          {/* How It Works Section */}
+          <section className="how-it-works-section">
+            <div className="how-it-works-container">
+              <div className="how-it-works-header">
+                <h2 className="how-it-works-title">How It Works</h2>
+              </div>
+              
+              <div className="how-it-works-steps">
+                <div className="step-item">
+                  <div className="step-number">01</div>
+                  <h3 className="step-title">One line: live in minutes</h3>
+                </div>
+                
+                <div className="step-item">
+                  <div className="step-number">02</div>
+                  <h3 className="step-title">Choose theme</h3>
+                </div>
+                
+                <div className="step-item">
+                  <div className="step-number">03</div>
+                  <h3 className="step-title">Integrate with ads</h3>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Features Page */}
           <section className="features-page">
             <div className="features-page-container">
@@ -1903,6 +1929,98 @@ export default function Home() {
           font-family: 'Inter', sans-serif;
            margin: 0;
          }
+
+        /* How It Works Section */
+        .how-it-works-section {
+          background: radial-gradient(ellipse at center, #2a3cdf 0%, #1a2742 100%);
+          padding: 4rem 2rem 5rem;
+          margin-bottom: 0;
+        }
+
+        .how-it-works-container {
+          max-width: 1200px;
+          margin: 0 auto;
+          text-align: center;
+        }
+
+        .how-it-works-header {
+          margin-bottom: 3rem;
+        }
+
+        .how-it-works-title {
+          font-size: 2.75rem;
+          font-weight: 700;
+          color: white;
+          margin-bottom: 0.75rem;
+          letter-spacing: -0.02em;
+          line-height: 1.1;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .how-it-works-steps {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 3rem;
+        }
+
+        .step-item {
+          text-align: center;
+          transition: all 0.3s ease;
+        }
+
+        .step-item:hover {
+          transform: translateY(-4px);
+        }
+
+        .step-number {
+          background: linear-gradient(135deg, #ff6b35, #f7931e);
+          color: white;
+          width: 4rem;
+          height: 4rem;
+          border-radius: 16px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 700;
+          font-size: 1.3rem;
+          font-family: 'Inter', sans-serif;
+          margin: 0 auto 1.5rem auto;
+          box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+        }
+
+        .step-title {
+          font-size: 1.4rem;
+          font-weight: 600;
+          color: white;
+          margin: 0;
+          font-family: 'Inter', sans-serif;
+          letter-spacing: -0.01em;
+        }
+
+        @media (max-width: 768px) {
+          .how-it-works-section {
+            padding: 3rem 2rem 4rem;
+          }
+          
+          .how-it-works-title {
+            font-size: 2.25rem;
+          }
+          
+          .how-it-works-steps {
+            grid-template-columns: 1fr;
+            gap: 2.5rem;
+          }
+          
+          .step-number {
+            width: 3.5rem;
+            height: 3.5rem;
+            font-size: 1.1rem;
+          }
+          
+          .step-title {
+            font-size: 1.2rem;
+          }
+        }
 
         /* Features Page */
         .features-page {
