@@ -687,6 +687,7 @@ export default function Home() {
             padding: 1rem 2rem 5rem;
             margin-bottom: 80px;
             transform: translateY(-6rem);
+            animation: none;
           }
 
           .publishers-message {
@@ -716,6 +717,7 @@ export default function Home() {
             padding: 2rem 1rem;
             margin-bottom: 80px;
             transform: translateY(-8rem);
+            animation: none;
           }
 
           .publishers-logos,
