@@ -970,6 +970,32 @@ export default function Home() {
           text-align: center;
         }
 
+        .testimonial-box::before {
+          content: '"';
+          position: absolute;
+          font-size: 8rem;
+          font-weight: 300;
+          color: rgba(255, 255, 255, 0.15);
+          font-family: 'Inter', serif;
+          left: -2rem;
+          top: -2rem;
+          line-height: 1;
+          z-index: 0;
+        }
+
+        .testimonial-box::after {
+          content: '"';
+          position: absolute;
+          font-size: 8rem;
+          font-weight: 300;
+          color: rgba(255, 255, 255, 0.15);
+          font-family: 'Inter', serif;
+          right: -2rem;
+          bottom: -2rem;
+          line-height: 1;
+          z-index: 0;
+        }
+
         .testimonial-content p {
           font-size: 1.5rem;
           line-height: 1.5;
@@ -979,12 +1005,16 @@ export default function Home() {
           font-style: italic;
           font-weight: 300;
           max-width: 100%;
+          position: relative;
+          z-index: 1;
         }
 
         .testimonial-author {
           display: flex;
           flex-direction: column;
           gap: 0.25rem;
+          position: relative;
+          z-index: 1;
         }
 
         .testimonial-author strong {
@@ -1021,6 +1051,18 @@ export default function Home() {
           
           .testimonial-author span {
             font-size: 0.9rem;
+          }
+          
+          .testimonial-box::before {
+            font-size: 5rem;
+            left: -1rem;
+            top: -1rem;
+          }
+
+          .testimonial-box::after {
+            font-size: 5rem;
+            right: -1rem;
+            bottom: -1rem;
           }
         }
 
