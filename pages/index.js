@@ -313,6 +313,12 @@ export default function Home() {
           display: flex;
           flex-direction: column;
           color: white;
+          animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
 
         /* Header */
@@ -322,6 +328,12 @@ export default function Home() {
           align-items: flex-start;
           padding: 1.9rem 2.85rem;
           position: relative;
+          animation: slideInDown 0.6s ease-out 0.2s both;
+        }
+
+        @keyframes slideInDown {
+          from { opacity: 0; transform: translateY(-30px); }
+          to { opacity: 1; transform: translateY(0); }
         }
 
         .header-left .logo {
@@ -331,6 +343,13 @@ export default function Home() {
           color: white;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.05em;
+          transition: all 0.3s ease;
+          cursor: pointer;
+        }
+
+        .header-left .logo:hover {
+          transform: scale(1.05);
+          text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
         }
 
         .header-right {
@@ -386,11 +405,18 @@ export default function Home() {
           color: white;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.01em;
+          animation: slideInUp 0.8s ease-out 0.4s both;
+        }
+
+        @keyframes slideInUp {
+          from { opacity: 0; transform: translateY(40px); }
+          to { opacity: 1; transform: translateY(0); }
         }
 
         .url-input-container {
           width: 100%;
           max-width: 500px;
+          animation: slideInUp 0.8s ease-out 0.6s both;
         }
 
         .url-input-wrapper {
@@ -400,6 +426,17 @@ export default function Home() {
           padding: 3px;
           margin-bottom: 1rem;
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+          transition: all 0.3s ease;
+        }
+
+        .url-input-wrapper:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .url-input-wrapper:focus-within {
+          transform: translateY(-3px);
+          box-shadow: 0 12px 40px rgba(255, 107, 53, 0.2);
         }
 
         .url-input-inner {
@@ -420,6 +457,11 @@ export default function Home() {
           color: #333;
           outline: none;
           border-radius: 42px;
+          transition: all 0.2s ease;
+        }
+
+        .url-input:focus {
+          transform: scale(1.01);
         }
 
         .url-input::placeholder {
@@ -444,8 +486,13 @@ export default function Home() {
 
         .generate-btn:hover:not(:disabled) {
           background: linear-gradient(135deg, #e55a2b, #e0821a, #ff5252, #9333ea);
-          transform: translateY(-1px);
+          transform: translateY(-1px) scale(1.05);
           box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .generate-btn:active:not(:disabled) {
+          transform: translateY(0) scale(0.98);
+          transition: all 0.1s ease;
         }
 
         .generate-btn:disabled {
@@ -469,6 +516,12 @@ export default function Home() {
           background: transparent;
           padding: 1rem 2rem 5rem;
           margin-bottom: 80px;
+          animation: fadeInUp 1s ease-out 0.8s both;
+        }
+
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
         }
 
         .publishers-content {
@@ -483,6 +536,12 @@ export default function Home() {
           height: auto;
           margin: 2rem 0;
           display: block;
+          transition: all 0.3s ease;
+        }
+
+        .publishers-image:hover {
+          transform: scale(1.02);
+          filter: brightness(1.1);
         }
 
         .publishers-message {
@@ -497,6 +556,12 @@ export default function Home() {
           z-index: 10;
           text-shadow: 0 3px 8px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9);
           white-space: nowrap;
+          animation: textGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes textGlow {
+          from { text-shadow: 0 3px 8px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9); }
+          to { text-shadow: 0 3px 8px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 20px rgba(255, 255, 255, 0.1); }
         }
 
         .bottom-cta {
