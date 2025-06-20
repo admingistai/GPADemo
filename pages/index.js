@@ -1813,16 +1813,19 @@ export default function Home() {
 
         .features-categories {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-          gap: 2rem;
-          margin-top: 1rem;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 1.25rem;
+          margin-top: 0.5rem;
+          max-width: 1400px;
+          margin-left: auto;
+          margin-right: auto;
         }
 
         .category {
           background: rgba(255, 255, 255, 0.05);
           border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 20px;
-          padding: 2rem;
+          border-radius: 16px;
+          padding: 1.5rem;
           transition: all 0.3s ease;
           backdrop-filter: blur(10px);
         }
@@ -1830,31 +1833,31 @@ export default function Home() {
         .category:hover {
           background: rgba(255, 255, 255, 0.08);
           border-color: rgba(255, 255, 255, 0.2);
-          transform: translateY(-3px);
-          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+          transform: translateY(-2px);
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
 
         .category-header {
           display: flex;
           align-items: center;
-          gap: 1rem;
-          margin-bottom: 1.5rem;
-          padding-bottom: 1rem;
+          gap: 0.75rem;
+          margin-bottom: 1rem;
+          padding-bottom: 0.75rem;
           border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .category-icon {
-          font-size: 2rem;
+          font-size: 1.5rem;
           background: linear-gradient(135deg, #ff6b35, #f7931e);
-          padding: 0.75rem;
-          border-radius: 12px;
+          padding: 0.5rem;
+          border-radius: 10px;
           display: flex;
           align-items: center;
           justify-content: center;
         }
 
         .category-title {
-          font-size: 1.4rem;
+          font-size: 1.2rem;
           font-weight: 600;
           color: white;
           margin: 0;
@@ -1865,45 +1868,45 @@ export default function Home() {
         .category-features {
           display: flex;
           flex-direction: column;
-          gap: 1.25rem;
+          gap: 0.875rem;
         }
 
         .feature-item-small {
           display: flex;
           align-items: flex-start;
-          gap: 1rem;
-          padding: 1.25rem;
+          gap: 0.75rem;
+          padding: 1rem;
           background: rgba(255, 255, 255, 0.05);
           border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 12px;
+          border-radius: 10px;
           transition: all 0.3s ease;
         }
 
         .feature-item-small:hover {
           background: rgba(255, 255, 255, 0.08);
           border-color: rgba(255, 255, 255, 0.15);
-          transform: translateX(5px);
+          transform: translateX(3px);
         }
 
         .feature-icon {
-          font-size: 1.5rem;
+          font-size: 1.25rem;
           flex-shrink: 0;
-          margin-top: 0.25rem;
+          margin-top: 0.125rem;
         }
 
         .feature-content h4 {
-          font-size: 1.1rem;
+          font-size: 1rem;
           font-weight: 600;
           color: white;
-          margin: 0 0 0.5rem 0;
+          margin: 0 0 0.375rem 0;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.01em;
         }
 
         .feature-content p {
-          font-size: 0.9rem;
+          font-size: 0.85rem;
           color: rgba(255, 255, 255, 0.75);
-          line-height: 1.4;
+          line-height: 1.35;
           margin: 0;
           font-family: 'Inter', sans-serif;
         }
@@ -1980,42 +1983,42 @@ export default function Home() {
 
           .features-categories {
             grid-template-columns: 1fr;
-            gap: 1.5rem;
+            gap: 1.25rem;
           }
 
           .category {
-            padding: 1.5rem;
+            padding: 1.25rem;
           }
 
           .category-header {
-            margin-bottom: 1.25rem;
-            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.625rem;
           }
 
           .category-icon {
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             padding: 0.5rem;
           }
 
           .category-title {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
           }
 
           .feature-item-small {
-            padding: 1rem;
-            gap: 0.75rem;
+            padding: 0.875rem;
+            gap: 0.625rem;
           }
 
           .feature-icon {
-            font-size: 1.25rem;
+            font-size: 1.125rem;
           }
 
           .feature-content h4 {
-            font-size: 1rem;
+            font-size: 0.95rem;
           }
 
           .feature-content p {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
           }
         }
 
@@ -2092,42 +2095,66 @@ export default function Home() {
           }
 
           .category {
-            padding: 1.25rem;
+            padding: 1rem;
           }
 
           .category-header {
-            margin-bottom: 1rem;
+            margin-bottom: 0.875rem;
             padding-bottom: 0.5rem;
           }
 
           .category-icon {
-            font-size: 1.5rem;
-            padding: 0.5rem;
+            font-size: 1.25rem;
+            padding: 0.375rem;
           }
 
           .category-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
+          }
+
+          .feature-item-small {
+            padding: 0.75rem;
+            gap: 0.625rem;
+          }
+
+          .feature-icon {
+            font-size: 1rem;
+          }
+
+          .feature-content h4 {
+            font-size: 0.9rem;
+          }
+
+          .feature-content p {
+            font-size: 0.75rem;
+          }
+
+          .features-categories {
+            gap: 1rem;
+          }
+        }
+
+        /* Large Tablet Specific Adjustments */
+        @media (min-width: 1025px) and (max-width: 1200px) {
+          .features-categories {
+            gap: 1rem;
+          }
+
+          .category {
+            padding: 1.25rem;
+          }
+
+          .category-header {
+            margin-bottom: 0.875rem;
+            padding-bottom: 0.625rem;
+          }
+
+          .category-features {
+            gap: 0.75rem;
           }
 
           .feature-item-small {
             padding: 0.875rem;
-            gap: 0.75rem;
-          }
-
-          .feature-icon {
-            font-size: 1.125rem;
-          }
-
-          .feature-content h4 {
-            font-size: 0.95rem;
-          }
-
-          .feature-content p {
-            font-size: 0.8rem;
-          }
-
-          .features-categories {
-            gap: 1.25rem;
           }
         }
 
@@ -2151,12 +2178,12 @@ export default function Home() {
           }
 
           .features-categories {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
           }
 
           .category {
-            padding: 1.75rem;
+            padding: 1.5rem;
           }
 
           .why-choose-title {
