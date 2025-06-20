@@ -397,9 +397,7 @@ export default function Home() {
                 </div>
               </div>
               
-              <div className="see-how-text">
-                Paste any article link to preview Ask Anything™ on your site.
-              </div>
+
               {error && (
                 <div className="error-message">
                   {error}
@@ -464,7 +462,7 @@ export default function Home() {
               
               <div className="why-choose-cta">
                 <button className="primary-cta-button" onClick={() => document.querySelector('.url-input').focus()}>
-                  Get the code—live in 2 minutes
+                  Enter your URL to preview on your site...
                   <span className="cta-arrow">→</span>
                 </button>
               </div>
@@ -653,7 +651,7 @@ export default function Home() {
                 </div>
               </div>
               
-              <p className="footer-disclaimer">No credit card, no code commit</p>
+              <p className="footer-disclaimer">Enter your URL to preview on your site...</p>
             </div>
           </footer>
         </div>
@@ -933,7 +931,7 @@ export default function Home() {
         }
 
         .drive-growth-text {
-          font-size: 1.1rem;
+          font-size: 1.2rem;
           color: rgba(255, 255, 255, 0.9);
           margin-bottom: 2rem;
           font-family: 'Inter', sans-serif;
@@ -970,7 +968,7 @@ export default function Home() {
 
         /* Video Section */
         .video-section {
-          margin: 2rem 0 1.5rem 0;
+          margin: 2rem 0 0.5rem 0;
           display: flex;
           justify-content: center;
           animation: slideInUp 0.8s ease-out 0.7s both;
