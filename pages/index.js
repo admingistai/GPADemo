@@ -615,7 +615,7 @@ export default function Home() {
           .publishers-band {
             padding: 1rem 2rem 5rem;
             margin-bottom: 80px;
-            margin-top: -3rem;
+            margin-top: -8rem;
           }
 
           .publishers-message {
@@ -639,7 +639,7 @@ export default function Home() {
           .publishers-band {
             padding: 2rem 1rem;
             margin-bottom: 80px;
-            margin-top: -4rem;
+            margin-top: -10rem;
           }
 
           .publishers-logos,
