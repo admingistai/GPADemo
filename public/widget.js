@@ -3505,9 +3505,9 @@
         function generateToolboxTabs() {
             const toolboxTabsContainer = shadowRoot.getElementById('gist-toolbox-tabs');
             const toolLabels = {
-                ask: 'Ask',
-                gist: 'The Gist', 
-                remix: 'Remix',
+                ask: 'Explore',
+                gist: 'Summarize', 
+                remix: 'Listen',
                 share: 'Share'
             };
             
