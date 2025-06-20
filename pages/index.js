@@ -382,10 +382,6 @@ export default function Home() {
             </div>
               </div>
               
-              <div className="see-how-text">
-                Paste any article link to preview Ask Anything™ on your site.
-              </div>
-              
               {/* YouTube Video Section */}
               <div className="video-section">
                 <div className="video-container">
@@ -399,6 +395,10 @@ export default function Home() {
                     allowFullScreen>
                   </iframe>
                 </div>
+              </div>
+              
+              <div className="see-how-text">
+                Paste any article link to preview Ask Anything™ on your site.
               </div>
               {error && (
                 <div className="error-message">
@@ -485,11 +485,15 @@ export default function Home() {
                   <p className="step-description">Drop a single line of code into your site and Gist Answers is instantly live. No complex setup, no technical expertise required.</p>
                 </div>
                 
+                <div className="step-arrow">→</div>
+                
                 <div className="step-item">
                   <div className="step-number">02</div>
                   <h3 className="step-title">Choose theme</h3>
                   <p className="step-description">Customize colors, fonts, and positioning to match your brand perfectly. Your answers, your style, your site.</p>
                 </div>
+                
+                <div className="step-arrow">→</div>
                 
                 <div className="step-item">
                   <div className="step-number">03</div>
@@ -2179,8 +2183,42 @@ export default function Home() {
 
         .how-it-works-steps {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 3rem;
+          grid-template-columns: 1fr auto 1fr auto 1fr;
+          gap: 2rem;
+          align-items: center;
+        }
+
+        .step-arrow {
+          font-size: 2rem;
+          color: rgba(255, 255, 255, 0.6);
+          font-weight: 300;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% { 
+            opacity: 0.6;
+            transform: scale(1);
+          }
+          50% { 
+            opacity: 1;
+            transform: scale(1.1);
+          }
+        }
+
+        @media (max-width: 768px) {
+          .how-it-works-steps {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+          }
+
+          .step-arrow {
+            transform: rotate(90deg);
+            margin: 1rem 0;
+          }
         }
 
         .step-item {
