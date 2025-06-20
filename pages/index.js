@@ -580,7 +580,8 @@ export default function Home() {
           }
 
           .main-content {
-            padding: 1rem 2rem 0.5rem;
+            padding: 1rem 2rem;
+            margin-bottom: 6rem;
           }
 
           .main-title {
@@ -620,7 +621,9 @@ export default function Home() {
           .publishers-band {
             padding: 1rem 2rem 5rem;
             margin-bottom: 80px;
-            margin-top: 0;
+            margin-top: -6rem;
+            position: relative;
+            z-index: 1;
           }
 
           .publishers-message {
@@ -638,7 +641,8 @@ export default function Home() {
 
         @media (max-width: 480px) {
           .main-content {
-            padding: 0.5rem 1rem 0.25rem;
+            padding: 0.5rem 1rem;
+            margin-bottom: 8rem;
           }
 
           .main-title {
@@ -649,7 +653,9 @@ export default function Home() {
           .publishers-band {
             padding: 2rem 1rem;
             margin-bottom: 80px;
-            margin-top: 0;
+            margin-top: -8rem;
+            position: relative;
+            z-index: 1;
           }
 
           .publishers-logos,
