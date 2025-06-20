@@ -438,27 +438,27 @@ export default function Home() {
           <section className="why-choose-section white-section">
             <div className="why-choose-container">
               <div className="why-choose-header">
-                <h2 className="why-choose-title">Why Choose <em>Ask Anything™</em>?</h2>
+                <h2 className="why-choose-title">Transform Content into Conversations</h2>
                 <p className="why-choose-subtitle">The smart choice for publishers who want results</p>
                 </div>
               
               <div className="horizontal-benefits">
                 <div className="benefit-item-horizontal">
                   <div className="benefit-number">01</div>
-                  <h3>Boost Engagement</h3>
-                  <p>Drive more traffic than ever before with interactive answers.</p>
+                  <h3>Answer beyond the article</h3>
+                  <p>Gist draws from your entire content library to provide comprehensive answers while always citing sources.</p>
                   </div>
                   
                 <div className="benefit-item-horizontal">
                   <div className="benefit-number">02</div>
-                  <h3>Zero-Cost, Ad-Supported</h3>
-                  <p>Earn new revenue from privacy-safe ads—no fees, no lock-ins.</p>
+                  <h3>Search traffic stays put</h3>
+                  <p>Keep readers engaged on your site instead of bouncing back to search engines for follow-up questions.</p>
                 </div>
                   
                 <div className="benefit-item-horizontal">
                   <div className="benefit-number">03</div>
-                  <h3>Privacy-First</h3>
-                  <p>0 user-level tracking. Fully licensed sources.</p>
+                  <h3>Ad-funded, no fees</h3>
+                  <p>Our revenue-share model means you only pay when Gist generates additional ad impressions and engagement.</p>
                   </div>
                 </div>
               
