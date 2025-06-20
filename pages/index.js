@@ -2608,6 +2608,7 @@ export default function Home() {
           margin: 0;
           font-family: 'Inter', sans-serif;
           line-height: 1.6;
+          font-weight: 600;
         }
 
         /* Responsive Design for Copy Page */
