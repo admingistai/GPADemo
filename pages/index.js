@@ -2455,7 +2455,7 @@ export default function Home() {
           margin: 0 0 1rem 0;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.01em;
-          min-height: 2.8rem;
+          height: 3.5rem;
           display: flex;
           align-items: center;
           justify-content: center;
