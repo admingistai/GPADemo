@@ -1547,7 +1547,7 @@ export default function Home() {
 
         /* Call to Action Section */
         .cta-section {
-          padding: 4rem 3rem;
+          padding: 2.5rem 3rem;
           text-align: center;
           animation: slideInUp 0.8s ease-out 0.4s both;
         }
@@ -1563,9 +1563,9 @@ export default function Home() {
         }
 
         .cta-title {
-          font-size: 3rem;
+          font-size: 2.5rem;
           font-weight: 700;
-          margin-bottom: 1.5rem;
+          margin-bottom: 1rem;
           color: white;
           letter-spacing: -0.02em;
           line-height: 1.1;
@@ -1573,10 +1573,10 @@ export default function Home() {
 
         .why-choose-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 2rem;
-          margin: 2rem 0;
-          max-width: 1000px;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 1.25rem;
+          margin: 1.5rem 0;
+          max-width: 900px;
           margin-left: auto;
           margin-right: auto;
         }
@@ -1584,8 +1584,8 @@ export default function Home() {
         .why-choose-item {
           background: rgba(255, 255, 255, 0.08);
           border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 20px;
-          padding: 2rem 1.5rem;
+          border-radius: 16px;
+          padding: 1.5rem 1rem;
           text-align: center;
           transition: all 0.3s ease;
           backdrop-filter: blur(10px);
@@ -1599,24 +1599,24 @@ export default function Home() {
         }
 
         .why-choose-icon {
-          font-size: 2.5rem;
-          margin-bottom: 1rem;
+          font-size: 2rem;
+          margin-bottom: 0.75rem;
           display: block;
         }
 
         .why-choose-item h3 {
-          font-size: 1.5rem;
+          font-size: 1.25rem;
           font-weight: 600;
           color: white;
-          margin-bottom: 1rem;
+          margin-bottom: 0.75rem;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.01em;
         }
 
         .why-choose-item p {
-          font-size: 1rem;
+          font-size: 0.9rem;
           color: rgba(255, 255, 255, 0.8);
-          line-height: 1.6;
+          line-height: 1.5;
           font-family: 'Inter', sans-serif;
         }
 
@@ -1646,7 +1646,7 @@ export default function Home() {
 
         /* Features Section */
         .features-section {
-          padding: 4rem 3rem 5rem;
+          padding: 2.5rem 3rem 3rem;
           background: rgba(255, 255, 255, 0.05);
           backdrop-filter: blur(10px);
           animation: slideInUp 0.8s ease-out 0.6s both;
@@ -1659,36 +1659,36 @@ export default function Home() {
         }
 
         .features-title {
-          font-size: 2.75rem;
+          font-size: 2.25rem;
           font-weight: 700;
           color: white;
-          margin-bottom: 1rem;
+          margin-bottom: 0.75rem;
           letter-spacing: -0.02em;
           line-height: 1.1;
         }
 
         .features-subtitle {
-          font-size: 1.2rem;
+          font-size: 1.1rem;
           color: rgba(255, 255, 255, 0.8);
-          margin-bottom: 2.5rem;
+          margin-bottom: 1.5rem;
           max-width: 600px;
           margin-left: auto;
           margin-right: auto;
-          line-height: 1.5;
+          line-height: 1.4;
         }
 
         .features-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-          gap: 2rem;
-          margin-top: 1rem;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 1.25rem;
+          margin-top: 0.5rem;
         }
 
         .feature-item {
           background: rgba(255, 255, 255, 0.08);
           border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 20px;
-          padding: 2rem 1.5rem;
+          border-radius: 16px;
+          padding: 1.5rem 1rem;
           text-align: center;
           transition: all 0.3s ease;
           backdrop-filter: blur(10px);
@@ -1702,58 +1702,58 @@ export default function Home() {
         }
 
         .feature-icon {
-          font-size: 2.5rem;
-          margin-bottom: 1rem;
+          font-size: 2rem;
+          margin-bottom: 0.75rem;
           display: block;
         }
 
         .feature-item h3 {
-          font-size: 1.4rem;
+          font-size: 1.2rem;
           font-weight: 600;
           color: white;
-          margin-bottom: 1rem;
+          margin-bottom: 0.5rem;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.01em;
         }
 
         .feature-item p {
-          font-size: 1rem;
+          font-size: 0.9rem;
           color: rgba(255, 255, 255, 0.8);
-          line-height: 1.6;
+          line-height: 1.4;
           font-family: 'Inter', sans-serif;
         }
 
         /* Responsive Design for New Sections */
         @media (max-width: 768px) {
           .cta-section {
-            padding: 3rem 2rem;
+            padding: 2rem 2rem;
           }
 
           .cta-title {
-            font-size: 2.25rem;
+            font-size: 2rem;
           }
 
           .why-choose-grid {
             grid-template-columns: 1fr;
-            gap: 1.5rem;
-            margin: 1.5rem 0;
+            gap: 1rem;
+            margin: 1rem 0;
           }
 
           .why-choose-item {
-            padding: 2rem 1.5rem;
+            padding: 1.25rem 1rem;
           }
 
           .why-choose-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
           }
 
           .why-choose-item h3 {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
           }
 
           .why-choose-item p {
-            font-size: 0.95rem;
+            font-size: 0.85rem;
           }
 
           .cta-button {
@@ -1762,74 +1762,7 @@ export default function Home() {
           }
 
           .features-section {
-            padding: 3rem 2rem 4rem;
-          }
-
-          .features-title {
-            font-size: 2.25rem;
-          }
-
-          .features-subtitle {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-          }
-
-          .features-grid {
-            grid-template-columns: 1fr;
-            gap: 2rem;
-          }
-
-          .feature-item {
-            padding: 2rem 1.5rem;
-          }
-
-          .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-          }
-
-          .feature-item h3 {
-            font-size: 1.25rem;
-          }
-
-          .feature-item p {
-            font-size: 0.95rem;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .cta-section {
-            padding: 2.5rem 1.5rem;
-          }
-
-          .cta-title {
-            font-size: 1.9rem;
-          }
-
-          .why-choose-grid {
-            margin: 2rem 0;
-          }
-
-          .why-choose-item {
-            padding: 1.5rem 1rem;
-          }
-
-          .why-choose-icon {
-            font-size: 2.25rem;
-          }
-
-          .why-choose-item h3 {
-            font-size: 1.2rem;
-            margin-bottom: 0.75rem;
-          }
-
-          .cta-button {
-            padding: 0.875rem 2rem;
-            font-size: 0.95rem;
-          }
-
-          .features-section {
-            padding: 2.5rem 1.5rem 3.5rem;
+            padding: 2rem 2rem 2.5rem;
           }
 
           .features-title {
@@ -1838,19 +1771,91 @@ export default function Home() {
 
           .features-subtitle {
             font-size: 1rem;
+            margin-bottom: 1rem;
+          }
+
+          .features-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
           }
 
           .feature-item {
-            padding: 1.5rem 1rem;
+            padding: 1.25rem 1rem;
           }
 
           .feature-icon {
-            font-size: 2.25rem;
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
           }
 
           .feature-item h3 {
             font-size: 1.1rem;
-            margin-bottom: 0.75rem;
+          }
+
+          .feature-item p {
+            font-size: 0.85rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .cta-section {
+            padding: 1.5rem 1.5rem;
+          }
+
+          .cta-title {
+            font-size: 1.75rem;
+          }
+
+          .why-choose-grid {
+            margin: 1rem 0;
+            gap: 0.75rem;
+          }
+
+          .why-choose-item {
+            padding: 1rem 0.75rem;
+          }
+
+          .why-choose-icon {
+            font-size: 1.5rem;
+          }
+
+          .why-choose-item h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+          }
+
+          .cta-button {
+            padding: 0.875rem 2rem;
+            font-size: 0.95rem;
+          }
+
+          .features-section {
+            padding: 1.5rem 1.5rem 2rem;
+          }
+
+          .features-title {
+            font-size: 1.6rem;
+          }
+
+          .features-subtitle {
+            font-size: 0.9rem;
+          }
+
+          .feature-item {
+            padding: 1rem 0.75rem;
+          }
+
+          .feature-icon {
+            font-size: 1.5rem;
+          }
+
+          .feature-item h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+          }
+
+          .features-grid {
+            gap: 0.75rem;
           }
         }
 
