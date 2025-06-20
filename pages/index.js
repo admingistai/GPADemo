@@ -946,46 +946,38 @@ export default function Home() {
         /* Testimonials Section */
         .testimonials-section {
           background: transparent;
-          padding: 2rem 2rem 4rem;
+          padding: 3rem 2rem 5rem;
           margin-bottom: 0;
           opacity: 0;
-          transform: translateY(30px);
-          animation: fadeInUp 1s ease-out 1.2s both;
+          transform: translateY(40px);
+          animation: fadeInUp 1s ease-out 2s both;
         }
 
         .testimonials-container {
-          max-width: 800px;
+          max-width: 1000px;
           margin: 0 auto;
           display: flex;
           justify-content: center;
         }
 
         .testimonial-box {
-          background: rgba(255, 255, 255, 0.08);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          border-radius: 16px;
-          padding: 2.5rem;
+          background: transparent;
+          border: none;
+          padding: 0;
           transition: all 0.3s ease;
-          backdrop-filter: blur(10px);
           position: relative;
           width: 100%;
           text-align: center;
         }
 
-        .testimonial-box:hover {
-          background: rgba(255, 255, 255, 0.12);
-          border-color: rgba(255, 255, 255, 0.2);
-          transform: translateY(-4px);
-          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-        }
-
         .testimonial-content p {
-          font-size: 1.1rem;
-          line-height: 1.6;
-          color: rgba(255, 255, 255, 0.9);
+          font-size: 1.5rem;
+          line-height: 1.5;
+          color: rgba(255, 255, 255, 0.95);
           font-family: 'Inter', sans-serif;
-          margin-bottom: 1.5rem;
+          margin-bottom: 2rem;
           font-style: italic;
+          font-weight: 300;
           max-width: 100%;
         }
 
@@ -996,15 +988,15 @@ export default function Home() {
         }
 
         .testimonial-author strong {
-          font-size: 1rem;
+          font-size: 1.1rem;
           font-weight: 600;
           color: white;
           font-family: 'Inter', sans-serif;
         }
 
         .testimonial-author span {
-          font-size: 0.85rem;
-          color: rgba(255, 255, 255, 0.6);
+          font-size: 1rem;
+          color: rgba(255, 255, 255, 0.7);
           font-family: 'Inter', sans-serif;
         }
 
@@ -1015,15 +1007,20 @@ export default function Home() {
           }
           
           .testimonials-section {
-            padding: 2rem 1rem 3rem;
-          }
-          
-          .testimonial-box {
-            padding: 2rem;
+            padding: 2rem 1rem 4rem;
           }
           
           .testimonial-content p {
+            font-size: 1.2rem;
+            line-height: 1.4;
+          }
+          
+          .testimonial-author strong {
             font-size: 1rem;
+          }
+          
+          .testimonial-author span {
+            font-size: 0.9rem;
           }
         }
 
