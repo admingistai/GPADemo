@@ -180,145 +180,91 @@ export default function Home() {
 
           <main className="feature-content">
             <h1 className="feature-title">
-              Choose Your Features
+              Configure Features
             </h1>
             <p className="feature-subtitle">
-              Select the <em>Ask Anything™</em> features you'd like to enable for {targetUrl}
-              </p>
+              Select additional features for {targetUrl}. Ask Anything™ is always enabled.
+            </p>
               
-            <div className="features-grid">
-              <div className="feature-card">
-                <div className="feature-header">
-                  <input
-                    type="checkbox"
-                    id="ask"
-                    checked={selectedFeatures.ask}
-                    disabled={true}
-                    style={{opacity: 0.6}}
-                  />
-                  <label htmlFor="ask" className="feature-name"><em>Ask Anything™</em></label>
-                </div>
-                <p className="feature-description">Core AI-powered question answering functionality. Always enabled for your users.</p>
-              </div>
-
-              <div className="feature-card">
-                <div className="feature-header">
+            <div className="features-compact-grid">
+              <div className="feature-compact-card">
+                <div className="feature-compact-header">
                   <input
                     type="checkbox"
                     id="theGist"
                     checked={selectedFeatures.theGist}
                     onChange={(e) => setSelectedFeatures(prev => ({...prev, theGist: e.target.checked}))}
                   />
-                  <label htmlFor="theGist" className="feature-name">The Gist</label>
+                  <label htmlFor="theGist" className="feature-compact-name">Summarize</label>
+                </div>
+                <p className="feature-compact-description">One-sentence AI summary of any story</p>
               </div>
-                <p className="feature-description">One-sentence AI summary of any story; instant context for skimmers; proven to reduce bounce.</p>
-            </div>
 
-              <div className="feature-card">
-                <div className="feature-header">
+              <div className="feature-compact-card">
+                <div className="feature-compact-header">
                   <input
                     type="checkbox"
                     id="remixing"
                     checked={selectedFeatures.remixing}
                     onChange={(e) => setSelectedFeatures(prev => ({...prev, remixing: e.target.checked}))}
                   />
-                  <label htmlFor="remixing" className="feature-name">Remixing</label>
+                  <label htmlFor="remixing" className="feature-compact-name">Multi-Format Sharing</label>
                 </div>
-                <p className="feature-description">Auto-converts articles into share-ready cards, reels, and threads; boosts organic reach without extra editing.</p>
+                <p className="feature-compact-description">Auto-converts articles into share-ready cards and threads</p>
               </div>
               
-              <div className="feature-card">
-                <div className="feature-header">
+              <div className="feature-compact-card">
+                <div className="feature-compact-header">
                   <input
                     type="checkbox"
                     id="share"
                     checked={selectedFeatures.share}
                     onChange={(e) => setSelectedFeatures(prev => ({...prev, share: e.target.checked}))}
                   />
-                  <label htmlFor="share" className="feature-name">Share</label>
+                  <label htmlFor="share" className="feature-compact-name">Share</label>
                 </div>
-                <p className="feature-description">Enable users to share content and insights with others through various channels and platforms.</p>
-                </div>
+                <p className="feature-compact-description">Enable users to share content through various channels</p>
+              </div>
                 
-              <div className="feature-card">
-                <div className="feature-header">
+              <div className="feature-compact-card">
+                <div className="feature-compact-header">
                   <input
                     type="checkbox"
                     id="goDeeper"
                     checked={selectedFeatures.goDeeper}
                     onChange={(e) => setSelectedFeatures(prev => ({...prev, goDeeper: e.target.checked}))}
                   />
-                  <label htmlFor="goDeeper" className="feature-name">Go Deeper</label>
+                  <label htmlFor="goDeeper" className="feature-compact-name">Go Deeper</label>
                 </div>
-                <p className="feature-description">One-click expandable sidebars with related articles, data, and media; extends time-on-page.</p>
-                </div>
+                <p className="feature-compact-description">Expandable sidebars with related articles and media</p>
+              </div>
                 
-              <div className="feature-card">
-                <div className="feature-header">
+              <div className="feature-compact-card">
+                <div className="feature-compact-header">
                   <input
                     type="checkbox"
                     id="ethicalAds"
                     checked={selectedFeatures.ethicalAds}
                     onChange={(e) => setSelectedFeatures(prev => ({...prev, ethicalAds: e.target.checked}))}
                   />
-                  <label htmlFor="ethicalAds" className="feature-name">Earn More with Ethical Ads</label>
+                  <label htmlFor="ethicalAds" className="feature-compact-name">Ethical Ads</label>
                 </div>
-                <p className="feature-description">Privacy-safe generative ad units matched to content intent; new revenue stream, no user tracking.</p>
-                </div>
+                <p className="feature-compact-description">Privacy-safe ad units matched to content intent</p>
+              </div>
                 
-              <div className="feature-card">
-                <div className="feature-header">
+              <div className="feature-compact-card">
+                <div className="feature-compact-header">
                   <input
                     type="checkbox"
                     id="customVoices"
                     checked={selectedFeatures.customVoices}
                     onChange={(e) => setSelectedFeatures(prev => ({...prev, customVoices: e.target.checked}))}
                   />
-                  <label htmlFor="customVoices" className="feature-name">Custom Voices & Avatars</label>
+                  <label htmlFor="customVoices" className="feature-compact-name">Custom Voices</label>
                 </div>
-                <p className="feature-description">Branded TTS and 3-D presenter options; consistent tone across text, audio, and video.</p>
-                </div>
-                
-              <div className="feature-card">
-                <div className="feature-header">
-                  <input
-                    type="checkbox"
-                    id="myDaily"
-                    checked={selectedFeatures.myDaily}
-                    onChange={(e) => setSelectedFeatures(prev => ({...prev, myDaily: e.target.checked}))}
-                  />
-                  <label htmlFor="myDaily" className="feature-name">Add to "My Daily"</label>
-                </div>
-                <p className="feature-description">Opt-in to a personalized site-wide or network-wide daily digest that pulls your latest pieces into readers' personalized, customized news feed; drives habitual return traffic and incremental revenue.</p>
-                </div>
-                
-              <div className="feature-card">
-                <div className="feature-header">
-                  <input
-                    type="checkbox"
-                    id="augmentedSharing"
-                    checked={selectedFeatures.augmentedSharing}
-                    onChange={(e) => setSelectedFeatures(prev => ({...prev, augmentedSharing: e.target.checked}))}
-                  />
-                  <label htmlFor="augmentedSharing" className="feature-name">Augmented Sharing</label>
-                </div>
-                <p className="feature-description">Generates pre-written social posts and on-scroll highlights with backlinks; simplifies promotion, tracks attribution.</p>
-                </div>
-                
-              <div className="feature-card">
-                <div className="feature-header">
-                  <input
-                    type="checkbox"
-                    id="customAgents"
-                    checked={selectedFeatures.customAgents}
-                    onChange={(e) => setSelectedFeatures(prev => ({...prev, customAgents: e.target.checked}))}
-                  />
-                  <label htmlFor="customAgents" className="feature-name">Custom Publisher/Creator/Promotional Agents</label>
-                </div>
-                <p className="feature-description">Build task-specific, goal-oriented AI companions (e.g., paywall support, live events); full control over scope, tone, and data.</p>
-                </div>
-                
-                </div>
+                <p className="feature-compact-description">Branded TTS and presenter options</p>
+              </div>
+            </div>
                 
             <div className="feature-actions">
               <button className="back-btn" onClick={() => setShowFeaturePage(false)}>
@@ -651,7 +597,7 @@ export default function Home() {
                 </div>
               </div>
               
-              <p className="footer-disclaimer">Enter your URL to preview on your site...</p>
+
             </div>
           </footer>
         </div>
@@ -1467,6 +1413,62 @@ export default function Home() {
           color: white;
           font-weight: bold;
           font-size: 0.9rem;
+        }
+
+        /* Compact Feature Design */
+        .features-compact-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 1rem;
+          width: 100%;
+          margin-bottom: 2rem;
+          animation: slideInUp 0.8s ease-out 0.6s both;
+        }
+
+        .feature-compact-card {
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 8px;
+          padding: 1rem;
+          transition: all 0.3s ease;
+          backdrop-filter: blur(10px);
+        }
+
+        .feature-compact-card:hover {
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(255, 255, 255, 0.2);
+          transform: translateY(-1px);
+        }
+
+        .feature-compact-header {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .feature-compact-header input[type="checkbox"] {
+          width: 16px;
+          height: 16px;
+          accent-color: #ff6b35;
+          cursor: pointer;
+        }
+
+        .feature-compact-name {
+          font-size: 1rem;
+          font-weight: 600;
+          color: white;
+          font-family: 'Inter', sans-serif;
+          cursor: pointer;
+          flex: 1;
+        }
+
+        .feature-compact-description {
+          font-size: 0.85rem;
+          line-height: 1.4;
+          color: rgba(255, 255, 255, 0.7);
+          font-family: 'Inter', sans-serif;
+          margin: 0;
         }
 
         /* Responsive Design */
