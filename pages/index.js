@@ -356,6 +356,25 @@ export default function Home() {
               Gist Answers transforms your content into an interactive knowledge base that keeps readers engaged and drives revenue without compromising editorial integrity.
             </div>
             
+            {/* YouTube Video Section */}
+            <div className="video-section">
+              <div className="video-container">
+                <iframe 
+                  width="800" 
+                  height="450" 
+                  src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                  title="YouTube video player" 
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  allowFullScreen>
+                </iframe>
+              </div>
+            </div>
+            
+            <div className="see-how-text">
+              Paste any article link to preview Ask Anything™ on your site.
+            </div>
+            
             <div className="url-input-container">
               <div className="url-input-wrapper">
                 <div className="url-input-inner">
@@ -380,25 +399,6 @@ export default function Home() {
                     {loading ? 'Generating...' : 'Generate'}
                   </button>
             </div>
-              </div>
-              
-              {/* YouTube Video Section */}
-              <div className="video-section">
-                <div className="video-container">
-                  <iframe 
-                    width="560" 
-                    height="315" 
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-                    title="YouTube video player" 
-                    frameBorder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    allowFullScreen>
-                  </iframe>
-                </div>
-              </div>
-              
-              <div className="see-how-text">
-                Paste any article link to preview Ask Anything™ on your site.
               </div>
               {error && (
                 <div className="error-message">
@@ -968,7 +968,7 @@ export default function Home() {
 
         /* Video Section */
         .video-section {
-          margin: 2rem 0 1.5rem 0;
+          margin: 2rem 0 2rem 0;
           display: flex;
           justify-content: center;
           animation: slideInUp 0.8s ease-out 0.7s both;
@@ -977,7 +977,7 @@ export default function Home() {
         .video-container {
           position: relative;
           width: 100%;
-          max-width: 560px;
+          max-width: 800px;
           aspect-ratio: 16 / 9;
           border-radius: 16px;
           overflow: hidden;
@@ -999,6 +999,12 @@ export default function Home() {
           border: none;
         }
 
+        @media (max-width: 1024px) {
+          .video-container {
+            max-width: 90%;
+          }
+        }
+
         @media (max-width: 768px) {
           .video-section {
             margin: 1.5rem 1rem;
@@ -1007,6 +1013,16 @@ export default function Home() {
           .video-container {
             max-width: 100%;
             border-radius: 12px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .video-section {
+            margin: 1rem 0.5rem;
+          }
+          
+          .video-container {
+            border-radius: 8px;
           }
         }
 
