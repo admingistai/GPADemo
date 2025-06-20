@@ -579,9 +579,14 @@ export default function Home() {
             line-height: 1.2;
           }
 
+          .main-content {
+            padding: 1rem 2rem 0.5rem;
+          }
+
           .main-title {
             font-size: 2.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
+            margin-top: 0;
           }
 
           .url-input-wrapper {
@@ -615,7 +620,7 @@ export default function Home() {
           .publishers-band {
             padding: 1rem 2rem 5rem;
             margin-bottom: 80px;
-            margin-top: -8rem;
+            margin-top: 0;
           }
 
           .publishers-message {
@@ -632,14 +637,19 @@ export default function Home() {
         }
 
         @media (max-width: 480px) {
+          .main-content {
+            padding: 0.5rem 1rem 0.25rem;
+          }
+
           .main-title {
             font-size: 2rem;
+            margin-bottom: 0.75rem;
           }
 
           .publishers-band {
             padding: 2rem 1rem;
             margin-bottom: 80px;
-            margin-top: -10rem;
+            margin-top: 0;
           }
 
           .publishers-logos,
