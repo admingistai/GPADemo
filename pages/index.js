@@ -417,24 +417,24 @@ export default function Home() {
                   <div className="benefit-item">
                     <div className="benefit-number">01</div>
                     <div className="benefit-content">
-                      <h3>Completely Free</h3>
-                      <p>No upfront costs, no hidden fees, no monthly subscriptions. Start adding value immediately.</p>
-                    </div>
-                  </div>
-                  
-                  <div className="benefit-item">
-                    <div className="benefit-number">02</div>
-                    <div className="benefit-content">
                       <h3>Drives Engagement</h3>
                       <p>Keep visitors on your site longer with interactive AI answers that boost page views and time spent.</p>
                     </div>
                   </div>
                   
                   <div className="benefit-item">
-                    <div className="benefit-number">03</div>
+                    <div className="benefit-number">02</div>
                     <div className="benefit-content">
                       <h3>Privacy-First & Ethical</h3>
                       <p>No user tracking, fully licensed content sources, and transparent attribution you can trust.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="benefit-item">
+                    <div className="benefit-number">03</div>
+                    <div className="benefit-content">
+                      <h3>Completely Free</h3>
+                      <p>No upfront costs, no hidden fees, no monthly subscriptions. Start adding value immediately.</p>
                     </div>
                   </div>
                 </div>
