@@ -968,6 +968,9 @@ export default function Home() {
           background: transparent;
           padding: 2rem 2rem 4rem;
           margin-bottom: 0;
+          opacity: 0;
+          transform: translateY(30px);
+          animation: fadeInUp 1s ease-out 1.2s both;
         }
 
         .testimonials-container {
