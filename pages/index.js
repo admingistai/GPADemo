@@ -985,12 +985,12 @@ export default function Home() {
         }
 
         .testimonial-box::before {
-          content: '{';
+          content: '"';
           left: -6rem;
         }
 
         .testimonial-box::after {
-          content: '}';
+          content: '"';
           right: -6rem;
         }
 
