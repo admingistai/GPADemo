@@ -110,22 +110,19 @@
         const currentHost = window.location.hostname;
         const currentPath = window.location.pathname;
         
-        // Apply custom favicon for gpademo.vercel.app
+        // Apply custom styling for gpademo.vercel.app but let tiered detection find the best favicon
         if (currentHost === 'gpademo.vercel.app' || currentHost === 'localhost') {
-            console.log('[GistWidget] Applying gpademo.vercel.app favicon customization');
+            console.log('[GistWidget] Applying gpademo.vercel.app styling customization');
             console.log('[GistWidget] Current host:', currentHost, 'Current path:', currentPath);
             
-            // Force use of the favicon.png from public folder
+            // Set custom styling but let the tiered favicon detection handle finding the best image
             websiteStyling = {
                 ...websiteStyling,
-                faviconUrl: '/favicon.png',
-                forceGistStyling: true
+                forceGistStyling: true,
+                // Remove hardcoded faviconUrl to allow tiered detection
             };
             
-            console.log('[GistWidget] Applied gpademo.vercel.app favicon styling:', {
-                faviconUrl: websiteStyling.faviconUrl,
-                forceGistStyling: websiteStyling.forceGistStyling
-            });
+            console.log('[GistWidget] Applied gpademo.vercel.app styling (favicon will be detected via tiered system)');
         } else {
             console.log('[GistWidget] Using default styling for other domains');
             console.log('[GistWidget] Current host:', currentHost, 'Current path:', currentPath);
@@ -963,20 +960,24 @@
                 forceGistStyling: websiteStyling.forceGistStyling
             };
             
-            // If forceGistStyling is true, preserve all the custom styling
+            // If forceGistStyling is true, preserve custom styling but use detected favicon/logo
             if (existingCustomizations.forceGistStyling) {
                 websiteStyling = {
                     ...websiteStyling,
-                    primaryColor: existingCustomizations.primaryColor,
-                    secondaryColor: existingCustomizations.secondaryColor,
-                    accentColor: existingCustomizations.accentColor,
+                    primaryColor: existingCustomizations.primaryColor || primaryColor || '#6366f1',
+                    secondaryColor: existingCustomizations.secondaryColor || finalColorVariations.secondary,
+                    accentColor: existingCustomizations.accentColor || finalColorVariations.accent,
                     backgroundColor: backgroundColor || '#ffffff',
                     textColor: textColor || '#374151',
                     fontFamily: fontFamily || '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
                     borderRadius: borderRadius || '16px',
-                    logoUrl: existingCustomizations.logoUrl,
-                    faviconUrl: existingCustomizations.faviconUrl,
-                    brandColors: [existingCustomizations.primaryColor, existingCustomizations.secondaryColor, existingCustomizations.accentColor].filter(Boolean),
+                    logoUrl: existingCustomizations.logoUrl || logos.logo, // Use detected logo
+                    faviconUrl: existingCustomizations.faviconUrl || logos.favicon, // Use detected favicon
+                    brandColors: [
+                        existingCustomizations.primaryColor || primaryColor, 
+                        existingCustomizations.secondaryColor || finalColorVariations.secondary, 
+                        existingCustomizations.accentColor || finalColorVariations.accent
+                    ].filter(Boolean),
                     shadows: 'drop-shadow(0 8px 25px rgba(0, 0, 0, 0.15))',
                     rawColorScheme: colorScheme,
                     availableIcons: logos.icons,
