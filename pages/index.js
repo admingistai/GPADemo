@@ -401,31 +401,48 @@ export default function Home() {
           </footer>
 
           {/* Why Choose Us Section */}
-          <section className="cta-section">
-            <div className="cta-container">
-              <h2 className="cta-title">Why Choose Us?</h2>
-              <div className="why-choose-grid">
-                <div className="why-choose-item">
-                  <div className="why-choose-icon">🆓</div>
-                  <h3>Free to Put on Website</h3>
-                  <p>No upfront costs or hidden fees. Start adding value to your website immediately without any financial commitment.</p>
+          <section className="why-choose-section">
+            <div className="why-choose-container">
+              <div className="why-choose-header">
+                <h2 className="why-choose-title">Why Choose Ask Anything™?</h2>
+                <p className="why-choose-subtitle">The smart choice for publishers who want results</p>
+              </div>
+              
+              <div className="why-choose-content">
+                <div className="why-choose-main">
+                  <div className="benefit-item">
+                    <div className="benefit-number">01</div>
+                    <div className="benefit-content">
+                      <h3>Completely Free</h3>
+                      <p>No upfront costs, no hidden fees, no monthly subscriptions. Start adding value immediately.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="benefit-item">
+                    <div className="benefit-number">02</div>
+                    <div className="benefit-content">
+                      <h3>Drives Engagement</h3>
+                      <p>Keep visitors on your site longer with interactive AI answers that boost page views and time spent.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="benefit-item">
+                    <div className="benefit-number">03</div>
+                    <div className="benefit-content">
+                      <h3>Privacy-First & Ethical</h3>
+                      <p>No user tracking, fully licensed content sources, and transparent attribution you can trust.</p>
+                    </div>
+                  </div>
                 </div>
                 
-                <div className="why-choose-item">
-                  <div className="why-choose-icon">📈</div>
-                  <h3>Drives More Traffic and Engagement</h3>
-                  <p>Keep visitors on your site longer, increase page views, and boost user engagement with interactive AI-powered answers.</p>
-                </div>
-                
-                <div className="why-choose-item">
-                  <div className="why-choose-icon">🤝</div>
-                  <h3>Ethical Compared to Other AI</h3>
-                  <p>Privacy-safe technology with no user tracking, fully licensed sources, and transparent content attribution.</p>
+                <div className="why-choose-cta">
+                  <button className="primary-cta-button" onClick={() => document.querySelector('.url-input').focus()}>
+                    Get Started Now
+                    <span className="cta-arrow">→</span>
+                  </button>
+                  <p className="cta-note">Setup takes less than 2 minutes</p>
                 </div>
               </div>
-              <button className="cta-button" onClick={() => document.querySelector('.url-input').focus()}>
-                Get Started Now
-              </button>
             </div>
           </section>
 
@@ -1545,10 +1562,12 @@ export default function Home() {
           }
         }
 
-        /* Call to Action Section */
-        .cta-section {
-          padding: 2.5rem 3rem;
-          text-align: center;
+        /* Why Choose Us Section - Redesigned */
+        .why-choose-section {
+          padding: 4rem 3rem;
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+          backdrop-filter: blur(20px);
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
           animation: slideInUp 0.8s ease-out 0.4s both;
         }
 
@@ -1557,91 +1576,147 @@ export default function Home() {
           to { opacity: 1; transform: translateY(0); }
         }
 
-        .cta-container {
-          max-width: 600px;
+        .why-choose-container {
+          max-width: 1200px;
           margin: 0 auto;
         }
 
-        .cta-title {
-          font-size: 2.5rem;
+        .why-choose-header {
+          text-align: center;
+          margin-bottom: 3rem;
+        }
+
+        .why-choose-title {
+          font-size: 2.75rem;
           font-weight: 700;
-          margin-bottom: 1rem;
           color: white;
+          margin-bottom: 0.75rem;
           letter-spacing: -0.02em;
           line-height: 1.1;
+          font-family: 'Inter', sans-serif;
         }
 
-        .why-choose-grid {
+        .why-choose-subtitle {
+          font-size: 1.2rem;
+          color: rgba(255, 255, 255, 0.7);
+          font-weight: 400;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .why-choose-content {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 1.25rem;
-          margin: 1.5rem 0;
-          max-width: 1000px;
-          margin-left: auto;
-          margin-right: auto;
+          grid-template-columns: 2fr 1fr;
+          gap: 4rem;
+          align-items: center;
         }
 
-        .why-choose-item {
-          background: rgba(255, 255, 255, 0.08);
+        .why-choose-main {
+          display: flex;
+          flex-direction: column;
+          gap: 2rem;
+        }
+
+        .benefit-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 1.5rem;
+          padding: 2rem;
+          background: rgba(255, 255, 255, 0.05);
           border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 16px;
-          padding: 1.5rem 1rem;
-          text-align: center;
+          border-radius: 20px;
           transition: all 0.3s ease;
           backdrop-filter: blur(10px);
         }
 
-        .why-choose-item:hover {
-          transform: translateY(-5px);
-          background: rgba(255, 255, 255, 0.12);
+        .benefit-item:hover {
+          background: rgba(255, 255, 255, 0.08);
           border-color: rgba(255, 255, 255, 0.2);
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+          transform: translateX(8px);
         }
 
-        .why-choose-icon {
-          font-size: 2rem;
-          margin-bottom: 0.75rem;
-          display: block;
+        .benefit-number {
+          background: linear-gradient(135deg, #ff6b35, #f7931e);
+          color: white;
+          width: 3rem;
+          height: 3rem;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.2rem;
+          font-weight: 700;
+          flex-shrink: 0;
+          font-family: 'Inter', sans-serif;
         }
 
-        .why-choose-item h3 {
-          font-size: 1.25rem;
+        .benefit-content h3 {
+          font-size: 1.5rem;
           font-weight: 600;
           color: white;
-          margin-bottom: 0.75rem;
+          margin-bottom: 0.5rem;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.01em;
         }
 
-        .why-choose-item p {
-          font-size: 0.9rem;
+        .benefit-content p {
+          font-size: 1rem;
           color: rgba(255, 255, 255, 0.8);
-          line-height: 1.5;
+          line-height: 1.6;
           font-family: 'Inter', sans-serif;
         }
 
-        .cta-button {
+        .why-choose-cta {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          padding: 2rem;
+        }
+
+        .primary-cta-button {
           background: linear-gradient(135deg, #ff6b35, #f7931e);
           color: white;
           border: none;
-          padding: 1.25rem 3rem;
-          border-radius: 50px;
+          padding: 1.25rem 2.5rem;
+          border-radius: 12px;
           font-size: 1.1rem;
           font-weight: 600;
           cursor: pointer;
           transition: all 0.3s ease;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.01em;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          margin-bottom: 1rem;
+          box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
         }
 
-        .cta-button:hover {
+        .primary-cta-button:hover {
           transform: translateY(-2px);
-          box-shadow: 0 15px 35px rgba(255, 107, 53, 0.4);
+          box-shadow: 0 15px 40px rgba(255, 107, 53, 0.4);
           background: linear-gradient(135deg, #f7931e, #ff6b35);
         }
 
-        .cta-button:active {
+        .primary-cta-button:active {
           transform: translateY(0);
+        }
+
+        .cta-arrow {
+          font-size: 1.2rem;
+          transition: transform 0.3s ease;
+        }
+
+        .primary-cta-button:hover .cta-arrow {
+          transform: translateX(4px);
+        }
+
+        .cta-note {
+          font-size: 0.9rem;
+          color: rgba(255, 255, 255, 0.6);
+          font-family: 'Inter', sans-serif;
+          margin: 0;
         }
 
         /* Features Section */
@@ -1723,47 +1798,57 @@ export default function Home() {
           font-family: 'Inter', sans-serif;
         }
 
-        /* Medium screen adjustments */
-        @media (max-width: 900px) {
-          .why-choose-grid {
-            grid-template-columns: 1fr;
-            gap: 1rem;
-            margin: 1rem 0;
-          }
-        }
-
-        /* Responsive Design for New Sections */
+        /* Responsive Design for Why Choose Us Section */
         @media (max-width: 768px) {
-          .cta-section {
-            padding: 2rem 2rem;
+          .why-choose-section {
+            padding: 2.5rem 2rem;
           }
 
-          .cta-title {
-            font-size: 2rem;
+          .why-choose-title {
+            font-size: 2.25rem;
           }
 
-          .why-choose-grid {
-            grid-template-columns: 1fr;
-            gap: 1rem;
-            margin: 1rem 0;
-          }
-
-          .why-choose-item {
-            padding: 1.25rem 1rem;
-          }
-
-          .why-choose-icon {
-            font-size: 1.75rem;
-            margin-bottom: 0.5rem;
-          }
-
-          .why-choose-item h3 {
+          .why-choose-subtitle {
             font-size: 1.1rem;
           }
 
-          .why-choose-item p {
-            font-size: 0.85rem;
+          .why-choose-content {
+            grid-template-columns: 1fr;
+            gap: 2.5rem;
           }
+
+          .why-choose-main {
+            gap: 1.5rem;
+          }
+
+          .benefit-item {
+            padding: 1.5rem;
+            gap: 1rem;
+          }
+
+          .benefit-number {
+            width: 2.5rem;
+            height: 2.5rem;
+            font-size: 1rem;
+          }
+
+          .benefit-content h3 {
+            font-size: 1.25rem;
+          }
+
+          .benefit-content p {
+            font-size: 0.9rem;
+          }
+
+          .why-choose-cta {
+            padding: 1.5rem;
+          }
+
+          .primary-cta-button {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+          }
+        }
 
           .cta-button {
             padding: 1rem 2.5rem;
@@ -1807,31 +1892,59 @@ export default function Home() {
         }
 
         @media (max-width: 480px) {
-          .cta-section {
-            padding: 1.5rem 1.5rem;
+          .why-choose-section {
+            padding: 2rem 1.5rem;
           }
 
-          .cta-title {
-            font-size: 1.75rem;
+          .why-choose-title {
+            font-size: 1.9rem;
           }
 
-          .why-choose-grid {
-            margin: 1rem 0;
-            gap: 0.75rem;
-          }
-
-          .why-choose-item {
-            padding: 1rem 0.75rem;
-          }
-
-          .why-choose-icon {
-            font-size: 1.5rem;
-          }
-
-          .why-choose-item h3 {
+          .why-choose-subtitle {
             font-size: 1rem;
-            margin-bottom: 0.5rem;
           }
+
+          .why-choose-content {
+            gap: 2rem;
+          }
+
+          .why-choose-main {
+            gap: 1.25rem;
+          }
+
+          .benefit-item {
+            padding: 1.25rem;
+            gap: 1rem;
+          }
+
+          .benefit-number {
+            width: 2.25rem;
+            height: 2.25rem;
+            font-size: 0.9rem;
+          }
+
+          .benefit-content h3 {
+            font-size: 1.1rem;
+          }
+
+          .benefit-content p {
+            font-size: 0.85rem;
+            line-height: 1.5;
+          }
+
+          .why-choose-cta {
+            padding: 1rem;
+          }
+
+          .primary-cta-button {
+            padding: 0.875rem 1.75rem;
+            font-size: 0.95rem;
+          }
+
+          .cta-note {
+            font-size: 0.8rem;
+          }
+        }
 
           .cta-button {
             padding: 0.875rem 2rem;
@@ -1870,12 +1983,21 @@ export default function Home() {
 
         /* Tablet Specific Adjustments */
         @media (min-width: 769px) and (max-width: 1024px) {
-          .why-choose-grid {
-            gap: 1rem;
+          .why-choose-section {
+            padding: 3rem 2.5rem;
           }
 
-          .why-choose-item {
-            padding: 1.25rem 0.75rem;
+          .why-choose-content {
+            gap: 3rem;
+          }
+
+          .benefit-item {
+            padding: 1.75rem;
+            gap: 1.25rem;
+          }
+
+          .benefit-content h3 {
+            font-size: 1.35rem;
           }
 
           .features-grid {
@@ -1883,8 +2005,8 @@ export default function Home() {
             gap: 1.5rem;
           }
 
-          .cta-title {
-            font-size: 2.25rem;
+          .why-choose-title {
+            font-size: 2.5rem;
           }
 
           .features-title {
