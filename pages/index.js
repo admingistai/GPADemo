@@ -912,7 +912,7 @@ export default function Home() {
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
-          padding: 1.9rem 2.85rem;
+          padding: 1.5rem 2.85rem;
           position: relative;
           animation: slideInDown 0.6s ease-out 0.2s both;
         }
@@ -995,7 +995,7 @@ export default function Home() {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          padding: 1rem 2rem;
+          padding: 0.5rem 2rem;
           text-align: center;
         }
 
@@ -1004,7 +1004,7 @@ export default function Home() {
           font-weight: 700;
           line-height: 1.1;
           margin-bottom: 1rem;
-          margin-top: 1.5rem;
+          margin-top: 0.5rem;
           max-width: 1100px;
           color: white;
           font-family: 'Inter', sans-serif;
