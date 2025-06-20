@@ -74,7 +74,7 @@ export default function Home() {
       'Generating button design...',
       'Adding functionality...',
       'Optimizing user experience...',
-      'Implementing Ask Anything™...',
+      'Implementing <em>Ask Anything™</em>...',
       'Configuring smart responses...',
       'Setting up AI integration...',
       'Customizing for your site...',
@@ -156,7 +156,7 @@ export default function Home() {
             <div className="loading-spinner">
               <img src="/Gist G white no background.png" alt="Gist Logo" />
             </div>
-            <h2 className="loading-title">Setting up Ask Anything™</h2>
+            <h2 className="loading-title">Setting up <em>Ask Anything™</em></h2>
             <p className="loading-message">{loadingMessage}</p>
             <div className="loading-progress">
               <div className="progress-bar"></div>
@@ -183,7 +183,7 @@ export default function Home() {
               Choose Your Features
             </h1>
             <p className="feature-subtitle">
-              Select the Ask Anything™ features you'd like to enable for {targetUrl}
+              Select the <em>Ask Anything™</em> features you'd like to enable for {targetUrl}
             </p>
             
             <div className="features-grid">
@@ -196,7 +196,7 @@ export default function Home() {
                     disabled={true}
                     style={{opacity: 0.6}}
                   />
-                  <label htmlFor="ask" className="feature-name">Ask Anything™</label>
+                  <label htmlFor="ask" className="feature-name"><em>Ask Anything™</em></label>
                 </div>
                 <p className="feature-description">Core AI-powered question answering functionality. Always enabled for your users.</p>
               </div>
@@ -349,7 +349,7 @@ export default function Home() {
           {/* Main Content */}
           <main className="main-content">
             <h1 className="main-title">
-              Add the Ask Anything™ button<br />
+              Add the <em>Ask Anything™</em> button<br />
               to your website.
             </h1>
             
@@ -408,7 +408,7 @@ export default function Home() {
           <section className="why-choose-section">
             <div className="why-choose-container">
               <div className="why-choose-header">
-                <h2 className="why-choose-title">Why Choose Ask Anything™?</h2>
+                                 <h2 className="why-choose-title">Why Choose <em>Ask Anything™</em>?</h2>
                 <p className="why-choose-subtitle">The smart choice for publishers who want results</p>
               </div>
               
@@ -455,7 +455,7 @@ export default function Home() {
             <div className="features-container">
               <h2 className="features-title">Everything You Need to Succeed</h2>
               <p className="features-subtitle">
-                Ask Anything™ delivers powerful features that keep users engaged while driving revenue
+                <em>Ask Anything™</em> delivers powerful features that keep users engaged while driving revenue
               </p>
               
               <div className="features-grid">
@@ -525,7 +525,7 @@ export default function Home() {
             <button className="login-close-btn" onClick={() => setShowLoginPage(false)}>×</button>
             
             <div className="login-header">
-              <h2 className="login-title">Welcome to Ask Anything™</h2>
+              <h2 className="login-title">Welcome to <em>Ask Anything™</em></h2>
               <p className="login-subtitle">Sign in to unlock premium features</p>
             </div>
             
@@ -796,7 +796,7 @@ export default function Home() {
           color: rgba(255, 255, 255, 0.9);
           margin-bottom: 2rem;
           font-family: 'Inter', sans-serif;
-          font-weight: 500;
+          font-weight: 700;
           text-align: center;
           animation: slideInUp 0.8s ease-out 0.5s both;
         }
