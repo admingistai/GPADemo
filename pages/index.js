@@ -1549,7 +1549,7 @@ export default function Home() {
 
         /* Why Choose Us Section - Redesigned */
         .why-choose-section {
-          padding: 1.75rem 3rem 4rem;
+          padding: 1rem 3rem 4rem;
           background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
           backdrop-filter: blur(20px);
           border-top: 1px solid rgba(255, 255, 255, 0.1);
