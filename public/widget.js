@@ -691,55 +691,123 @@
             accentColors: new Set()
         };
         
-        // Sample key elements for colors
+        // More comprehensive element sampling for better color detection
         const sampleElements = [
-            ...document.querySelectorAll('header, nav, .header, .navbar'),
-            ...document.querySelectorAll('button, .btn, .button'),
-            ...document.querySelectorAll('a[href], .link'),
-            ...document.querySelectorAll('.card, .panel, .box'),
-            ...document.querySelectorAll('h1, h2, h3'),
-            ...document.querySelectorAll('main, .main, .content'),
-            document.body
+            // Primary structure elements
+            ...document.querySelectorAll('header, nav, .header, .navbar, .nav'),
+            ...document.querySelectorAll('footer, .footer'),
+            ...document.querySelectorAll('main, .main, .content, .container'),
+            
+            // Interactive elements
+            ...document.querySelectorAll('button, .btn, .button, input[type="button"], input[type="submit"]'),
+            ...document.querySelectorAll('a[href], .link, .nav-link'),
+            
+            // Content elements
+            ...document.querySelectorAll('.card, .panel, .box, .section'),
+            ...document.querySelectorAll('h1, h2, h3, h4, h5, h6'),
+            ...document.querySelectorAll('div[class*="bg-"], div[class*="background"], div[style*="background"]'),
+            
+            // Common utility classes
+            ...document.querySelectorAll('[class*="color-"], [class*="text-"], [class*="bg-"]'),
+            ...document.querySelectorAll('[style*="background"], [style*="color"]'),
+            
+            // Body element
+            document.body,
+            document.documentElement
         ];
+        
+        console.log('[GistWidget] Analyzing', sampleElements.length, 'elements for color extraction');
         
         sampleElements.forEach(element => {
             if (!element) return;
             
             const style = window.getComputedStyle(element);
             
-            // Extract background colors
+            // Extract background colors (more permissive)
             const bgColor = style.backgroundColor;
-            if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
+            if (bgColor && 
+                bgColor !== 'rgba(0, 0, 0, 0)' && 
+                bgColor !== 'transparent' && 
+                bgColor !== 'rgb(255, 255, 255)' && // Ignore pure white
+                bgColor !== 'rgba(255, 255, 255, 1)') {
                 colors.backgrounds.add(bgColor);
             }
             
-            // Extract text colors
+            // Extract text colors (ignore default black and white)
             const textColor = style.color;
-            if (textColor && textColor !== 'rgb(0, 0, 0)') {
+            if (textColor && 
+                textColor !== 'rgb(0, 0, 0)' && 
+                textColor !== 'rgba(0, 0, 0, 1)' &&
+                textColor !== 'rgb(255, 255, 255)' && 
+                textColor !== 'rgba(255, 255, 255, 1)') {
                 colors.textColors.add(textColor);
             }
             
             // Extract border colors
             const borderColor = style.borderColor;
-            if (borderColor && borderColor !== 'rgb(0, 0, 0)') {
+            if (borderColor && 
+                borderColor !== 'rgb(0, 0, 0)' && 
+                borderColor !== 'rgba(0, 0, 0, 1)' &&
+                borderColor !== 'rgb(255, 255, 255)' && 
+                borderColor !== 'rgba(255, 255, 255, 1)') {
                 colors.borderColors.add(borderColor);
             }
             
-            // Check for accent colors in buttons and links
-            if (element.tagName === 'BUTTON' || element.tagName === 'A' || 
-                element.classList.contains('btn') || element.classList.contains('button')) {
-                if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)') {
+            // Look for accent colors in interactive elements
+            if (element.tagName === 'BUTTON' || 
+                element.tagName === 'A' || 
+                element.classList.contains('btn') || 
+                element.classList.contains('button') ||
+                element.classList.contains('link') ||
+                element.type === 'button' ||
+                element.type === 'submit') {
+                
+                if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
                     colors.accentColors.add(bgColor);
                 }
+                if (textColor && textColor !== 'rgb(0, 0, 0)') {
+                    colors.accentColors.add(textColor);
+                }
+            }
+            
+            // Also check for hover states and CSS custom properties
+            try {
+                const cssText = style.cssText;
+                if (cssText) {
+                    // Look for color values in the CSS text
+                    const colorMatches = cssText.match(/(rgb\([^)]+\)|#[a-fA-F0-9]{6}|#[a-fA-F0-9]{3})/g);
+                    if (colorMatches) {
+                        colorMatches.forEach(color => {
+                            if (!color.includes('0, 0, 0') && !color.includes('255, 255, 255')) {
+                                colors.accentColors.add(color);
+                            }
+                        });
+                    }
+                }
+            } catch (e) {
+                // Ignore CSS parsing errors
             }
         });
         
-            return {
+        const result = {
             backgrounds: Array.from(colors.backgrounds),
             textColors: Array.from(colors.textColors),
             borderColors: Array.from(colors.borderColors),
             accentColors: Array.from(colors.accentColors)
         };
+        
+        console.log('[GistWidget] Extracted colors:', {
+            backgrounds: result.backgrounds.length,
+            textColors: result.textColors.length,
+            borderColors: result.borderColors.length,
+            accentColors: result.accentColors.length,
+            samples: {
+                backgrounds: result.backgrounds.slice(0, 3),
+                accentColors: result.accentColors.slice(0, 3)
+            }
+        });
+        
+        return result;
     }
     
     // Convert RGB to hex
@@ -793,105 +861,102 @@
             // Extract border radius
             const borderRadius = extractBorderRadius();
             
-                        // Process and assign colors
-            let primaryColor = colorScheme.accentColors.length > 0 ? 
-                rgbToHex(colorScheme.accentColors[0]) : '#6366f1';
+                        // Process and assign colors with improved detection logic
+            let primaryColor = '#6366f1'; // Default fallback
             
-            // Enhanced color detection - check header background specifically
-            const headerElement = document.querySelector('header, .header');
-            console.log('[GistWidget] Header element found:', headerElement);
+            console.log('[GistWidget] Starting primary color detection with extracted colors:', {
+                backgrounds: colorScheme.backgrounds.length,
+                accentColors: colorScheme.accentColors.length,
+                textColors: colorScheme.textColors.length
+            });
             
-            if (headerElement) {
-                const headerStyle = window.getComputedStyle(headerElement);
-                const headerBg = headerStyle.backgroundColor;
-                const headerBgImage = headerStyle.backgroundImage;
-                
-                console.log('[GistWidget] Header color detection:', {
-                    headerElement: headerElement,
-                    headerBg: headerBg,
-                    headerBgImage: headerBgImage,
-                    converted: rgbToHex(headerBg)
-                });
-                
-                // For gradient backgrounds, extract color from CSS if backgroundColor is transparent
-                if (headerBgImage && headerBgImage.includes('gradient') && 
-                    (headerBg === 'rgba(0, 0, 0, 0)' || headerBg === 'transparent')) {
-                    // Try to extract a color from the gradient
-                    const gradientMatch = headerBgImage.match(/rgba?\([^)]+\)|#[a-fA-F0-9]{6}|#[a-fA-F0-9]{3}/);
-                    if (gradientMatch) {
-                        const extractedColor = rgbToHex(gradientMatch[0]) || gradientMatch[0];
-                        if (extractedColor && extractedColor !== '#ffffff' && extractedColor !== '#000000') {
-                            primaryColor = extractedColor;
-                            console.log('[GistWidget] Using gradient color as primary:', extractedColor);
-                        }
-                    }
-                } else if (headerBg && !headerBg.includes('rgba(0, 0, 0, 0)') && headerBg !== 'transparent') {
-                    const headerColor = rgbToHex(headerBg);
-                    if (headerColor && headerColor !== '#ffffff' && headerColor !== '#000000') {
-                        primaryColor = headerColor;
-                        console.log('[GistWidget] Using header color as primary:', headerColor);
-                    }
-                }
-                
-                // If still no color detected, check the computed styles for any green colors
-                if (primaryColor === '#6366f1' || (colorScheme.accentColors.length === 0 && primaryColor === colorScheme.accentColors[0])) {
-                    // Check if we can find green colors in the header's CSS rules
-                    const headerClasses = headerElement.className;
-                    const headerStyles = document.styleSheets;
-                    
-                    // Manual check for green colors since this is a green-themed page
-                    for (let sheet of headerStyles) {
-                        try {
-                            for (let rule of sheet.cssRules || sheet.rules || []) {
-                                if (rule.selectorText && rule.selectorText.includes('header')) {
-                                    const bg = rule.style.background || rule.style.backgroundColor;
-                                    if (bg && (bg.includes('#14532d') || bg.includes('#166534') || bg.includes('green'))) {
-                                        primaryColor = '#14532d'; // Use the dark green from the gradient
-                                        console.log('[GistWidget] Found green color in CSS rules:', primaryColor);
-                                        break;
-                                    }
-                                }
-                            }
-                        } catch (e) {
-                            // Skip inaccessible stylesheets
-                        }
-                    }
+            // Priority 1: Use most prominent accent color (from buttons, links, etc.)
+            if (colorScheme.accentColors.length > 0) {
+                const accentHex = rgbToHex(colorScheme.accentColors[0]);
+                if (accentHex && accentHex !== '#ffffff' && accentHex !== '#000000') {
+                    primaryColor = accentHex;
+                    console.log('[GistWidget] ✓ Using accent color as primary:', primaryColor);
                 }
             }
             
-            // Fallback: if no custom color detected, check for common theme colors
+            // Priority 2: Check header/nav background colors
             if (primaryColor === '#6366f1') {
-                // Check for green theme colors in the page
-                const allElements = document.querySelectorAll('*');
-                for (let element of allElements) {
-                    const style = window.getComputedStyle(element);
-                    const bg = style.backgroundColor;
-                    const borderColor = style.borderColor;
+                const headerElements = document.querySelectorAll('header, nav, .header, .navbar, .nav');
+                for (const headerElement of headerElements) {
+                    const headerStyle = window.getComputedStyle(headerElement);
+                    const headerBg = headerStyle.backgroundColor;
+                    const headerBgImage = headerStyle.backgroundImage;
                     
-                    // Check for green colors
-                    const greenHex = rgbToHex(bg);
-                    if (greenHex && (greenHex.includes('14532d') || greenHex.includes('166534') || greenHex.includes('16a34a'))) {
-                        primaryColor = greenHex;
-                        console.log('[GistWidget] Found green theme color:', greenHex);
-                        break;
+                    // Check solid background color
+                    if (headerBg && !headerBg.includes('rgba(0, 0, 0, 0)') && headerBg !== 'transparent') {
+                        const headerColor = rgbToHex(headerBg);
+                        if (headerColor && headerColor !== '#ffffff' && headerColor !== '#000000') {
+                            primaryColor = headerColor;
+                            console.log('[GistWidget] ✓ Using header background as primary:', primaryColor);
+                            break;
+                        }
                     }
                     
-                    const borderHex = rgbToHex(borderColor);
-                    if (borderHex && (borderHex.includes('14532d') || borderHex.includes('166534') || borderHex.includes('16a34a'))) {
-                        primaryColor = borderHex;
-                        console.log('[GistWidget] Found green border color:', borderHex);
-                        break;
+                    // Check gradient background
+                    if (headerBgImage && headerBgImage.includes('gradient')) {
+                        const gradientMatch = headerBgImage.match(/rgba?\([^)]+\)|#[a-fA-F0-9]{6}|#[a-fA-F0-9]{3}/);
+                        if (gradientMatch) {
+                            const extractedColor = rgbToHex(gradientMatch[0]) || gradientMatch[0];
+                            if (extractedColor && extractedColor !== '#ffffff' && extractedColor !== '#000000') {
+                                primaryColor = extractedColor;
+                                console.log('[GistWidget] ✓ Using gradient color as primary:', primaryColor);
+                                break;
+                            }
+                        }
                     }
-                }
-                
-                // If still no green detected, force green theme for this page
-                if (primaryColor === '#6366f1' && (document.body.style.background.includes('green') || 
-                    document.querySelector('h1')?.style.color.includes('green') ||
-                    window.location.href.includes('science_article'))) {
-                    primaryColor = '#14532d';
-                    console.log('[GistWidget] Applied fallback green theme');
                 }
             }
+            
+            // Priority 3: Use most prominent background color
+            if (primaryColor === '#6366f1' && colorScheme.backgrounds.length > 0) {
+                const bgHex = rgbToHex(colorScheme.backgrounds[0]);
+                if (bgHex && bgHex !== '#ffffff' && bgHex !== '#000000') {
+                    primaryColor = bgHex;
+                    console.log('[GistWidget] ✓ Using background color as primary:', primaryColor);
+                }
+            }
+            
+            // Priority 4: Use most prominent text color (if it's not default)
+            if (primaryColor === '#6366f1' && colorScheme.textColors.length > 0) {
+                const textHex = rgbToHex(colorScheme.textColors[0]);
+                if (textHex && textHex !== '#ffffff' && textHex !== '#000000' && textHex !== '#333333') {
+                    primaryColor = textHex;
+                    console.log('[GistWidget] ✓ Using text color as primary:', primaryColor);
+                }
+            }
+            
+            // Priority 5: Check CSS custom properties for brand colors
+            if (primaryColor === '#6366f1') {
+                try {
+                    const rootStyle = getComputedStyle(document.documentElement);
+                    const customProps = [
+                        '--primary-color', '--brand-color', '--accent-color', '--theme-color',
+                        '--color-primary', '--color-brand', '--color-accent', '--color-theme'
+                    ];
+                    
+                    for (const prop of customProps) {
+                        const value = rootStyle.getPropertyValue(prop).trim();
+                        if (value) {
+                            const customHex = value.startsWith('#') ? value : rgbToHex(value);
+                            if (customHex && customHex !== '#ffffff' && customHex !== '#000000') {
+                                primaryColor = customHex;
+                                console.log('[GistWidget] ✓ Using CSS custom property', prop, 'as primary:', primaryColor);
+                                break;
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.log('[GistWidget] Could not check CSS custom properties:', e.message);
+                }
+            }
+            
+            console.log('[GistWidget] Final primary color selected:', primaryColor, 
+                       primaryColor === '#6366f1' ? '(using default)' : '(detected from website)');
 
             const backgroundColor = colorScheme.backgrounds.length > 0 ? 
                 rgbToHex(colorScheme.backgrounds.find(bg => 
@@ -960,29 +1025,24 @@
                 forceGistStyling: websiteStyling.forceGistStyling
             };
             
-            // If forceGistStyling is true, preserve custom styling but use detected favicon/logo
+            // If forceGistStyling is true, still use detected colors but preserve any manual overrides
             if (existingCustomizations.forceGistStyling) {
                 websiteStyling = {
                     ...websiteStyling,
-                    primaryColor: existingCustomizations.primaryColor || primaryColor || '#6366f1',
-                    secondaryColor: existingCustomizations.secondaryColor || finalColorVariations.secondary,
-                    accentColor: existingCustomizations.accentColor || finalColorVariations.accent,
+                    primaryColor: primaryColor, // Always use detected color
+                    secondaryColor: finalColorVariations.secondary,
+                    accentColor: finalColorVariations.accent,
                     backgroundColor: backgroundColor || '#ffffff',
                     textColor: textColor || '#374151',
                     fontFamily: fontFamily || '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
                     borderRadius: borderRadius || '16px',
                     logoUrl: existingCustomizations.logoUrl || logos.logo, // Use detected logo
                     faviconUrl: existingCustomizations.faviconUrl || logos.favicon, // Use detected favicon
-                    brandColors: [
-                        existingCustomizations.primaryColor || primaryColor, 
-                        existingCustomizations.secondaryColor || finalColorVariations.secondary, 
-                        existingCustomizations.accentColor || finalColorVariations.accent
-                    ].filter(Boolean),
+                    brandColors: [primaryColor, finalColorVariations.secondary, finalColorVariations.accent].filter(Boolean),
                     shadows: 'drop-shadow(0 8px 25px rgba(0, 0, 0, 0.15))',
                     rawColorScheme: colorScheme,
                     availableIcons: logos.icons,
                     forceDefaultFavicon: existingCustomizations.forceDefaultFavicon,
-    
                     forceGistStyling: existingCustomizations.forceGistStyling
                 };
             } else {
@@ -1046,29 +1106,29 @@
             secondary: styling.secondaryColor,
             accent: styling.accentColor,
             brand: styling.brandColors[0],
-
         });
         
-        // Handle rainbow gradients for gpademo.vercel.app
-        let primaryColor = styling.primaryColor || '#6366f1';
-        let rgba40, rgba0;
+        // Determine if we should use rainbow animation
+        const primaryColor = styling.primaryColor || '#6366f1';
+        const isDefaultColor = primaryColor === '#6366f1';
+        const rainbowAnimation = isDefaultColor ? 'rainbowShimmer 6s ease-in-out infinite' : 'none';
         
-        if (styling.isRainbowMode) {
-            // For rainbow mode, use a single color for rgba calculations
-            rgba40 = 'rgba(255, 107, 53, 0.4)'; // Orange-ish with transparency
-            rgba0 = 'rgba(255, 107, 53, 0)';
-        } else {
-            // Extract RGB values for rgba variations (normal mode)
-            const hex = primaryColor.replace('#', '');
-            const r = parseInt(hex.substr(0, 2), 16);
-            const g = parseInt(hex.substr(2, 2), 16);
-            const b = parseInt(hex.substr(4, 2), 16);
-            rgba40 = `rgba(${r}, ${g}, ${b}, 0.4)`;
-            rgba0 = `rgba(${r}, ${g}, ${b}, 0)`;
-        }
+        console.log('[GistWidget] Animation control:', {
+            primaryColor: primaryColor,
+            isDefaultColor: isDefaultColor,
+            animation: rainbowAnimation
+        });
         
-        // Ensure we have a font family - fallback to Comic Sans if detection failed
-        const widgetFont = styling.fontFamily || '"Comic Sans MS", cursive';
+        // Extract RGB values for rgba variations 
+        const hex = primaryColor.replace('#', '');
+        const r = parseInt(hex.substr(0, 2), 16);
+        const g = parseInt(hex.substr(2, 2), 16);
+        const b = parseInt(hex.substr(4, 2), 16);
+        const rgba40 = `rgba(${r}, ${g}, ${b}, 0.4)`;
+        const rgba0 = `rgba(${r}, ${g}, ${b}, 0)`;
+        
+        // Ensure we have a font family - fallback to system fonts if detection failed
+        const widgetFont = styling.fontFamily || '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         console.log('[GistWidget] Widget font being applied:', widgetFont);
         
         return `
@@ -1081,7 +1141,7 @@
                 --widget-brand-color: ${styling.brandColors[0] || '#f59e0b'};
                 --widget-primary-color-40: ${rgba40};
                 --widget-primary-color-0: ${rgba0};
-                --widget-animation: ${(styling.primaryColor && styling.primaryColor !== '#6366f1') ? 'none' : 'rainbowShimmer 6s ease-in-out infinite'};
+                --widget-animation: ${rainbowAnimation};
             }
             
             .gist-widget {
