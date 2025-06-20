@@ -482,23 +482,26 @@ export default function Home() {
                 <div className="step-item">
                   <div className="step-number">01</div>
                   <h3 className="step-title">One line: live in minutes</h3>
+                  <p className="step-description">Drop a single line of code into your site and Gist Answers is instantly live. No complex setup, no technical expertise required.</p>
                 </div>
                 
                 <div className="step-item">
                   <div className="step-number">02</div>
                   <h3 className="step-title">Choose theme</h3>
+                  <p className="step-description">Customize colors, fonts, and positioning to match your brand perfectly. Your answers, your style, your site.</p>
                 </div>
                 
                 <div className="step-item">
                   <div className="step-number">03</div>
                   <h3 className="step-title">Integrate with ads</h3>
+                  <p className="step-description">Start earning revenue immediately with privacy-safe ads that complement your content without disrupting the user experience.</p>
                 </div>
               </div>
             </div>
           </section>
 
           {/* Features Page */}
-          <section className="features-page">
+          <section className="features-page white-section">
             <div className="features-page-container">
               <h2 className="features-page-title">Core Features</h2>
               
@@ -2052,9 +2055,17 @@ export default function Home() {
           font-size: 1.4rem;
           font-weight: 600;
           color: white;
-          margin: 0;
+          margin: 0 0 1rem 0;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.01em;
+        }
+
+        .step-description {
+          font-size: 1rem;
+          line-height: 1.5;
+          color: rgba(255, 255, 255, 0.8);
+          margin: 0;
+          font-family: 'Inter', sans-serif;
         }
 
         @media (max-width: 768px) {
@@ -2080,12 +2091,31 @@ export default function Home() {
           .step-title {
             font-size: 1.2rem;
           }
+          
+          .step-description {
+            font-size: 0.9rem;
+          }
         }
 
         /* Features Page */
         .features-page {
           padding: 3rem 3rem 4rem;
           background: rgba(255, 255, 255, 0.03);
+        }
+
+        .features-page.white-section {
+          background: 
+            radial-gradient(circle at 20% 80%, rgba(255, 107, 53, 0.15) 0%, transparent 35%),
+            radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.15) 0%, transparent 35%),
+            linear-gradient(135deg, rgba(0, 0, 0, 0.03) 0%, transparent 100%),
+            #f8f9fa !important;
+          backdrop-filter: none !important;
+          border-top: 1px solid rgba(0, 0, 0, 0.1);
+          padding: 4rem 3rem 5rem;
+          position: relative;
+          box-shadow: 
+            inset 0 0 120px rgba(0, 0, 0, 0.08),
+            0 0 0 1px rgba(0, 0, 0, 0.05) !important;
         }
 
         .features-page-container {
@@ -2102,6 +2132,10 @@ export default function Home() {
           letter-spacing: -0.02em;
           font-family: 'Inter', sans-serif;
          }
+
+        .features-page.white-section .features-page-title {
+          color: #333 !important;
+        }
 
         .features-grid {
           display: grid;
@@ -2123,6 +2157,17 @@ export default function Home() {
           transform: translateY(-2px);
           }
 
+        .features-page.white-section .feature-group {
+          background: rgba(0, 0, 0, 0.02) !important;
+          border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .features-page.white-section .feature-group:hover {
+          background: rgba(0, 0, 0, 0.05) !important;
+          border-color: rgba(0, 0, 0, 0.2) !important;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+        }
+
         .feature-group-title {
             font-size: 1.1rem;
           font-weight: 600;
@@ -2131,6 +2176,10 @@ export default function Home() {
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.01em;
           }
+
+        .features-page.white-section .feature-group-title {
+          color: #333 !important;
+        }
 
         .feature-list {
           list-style: none;
@@ -2146,6 +2195,10 @@ export default function Home() {
           padding-left: 1rem;
           position: relative;
           font-family: 'Inter', sans-serif;
+        }
+
+        .features-page.white-section .feature-list li {
+          color: #666 !important;
         }
 
         .feature-list li:last-child {
