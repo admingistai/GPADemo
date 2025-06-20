@@ -2221,7 +2221,7 @@ export default function Home() {
         }
 
         .step-description {
-          font-size: 1rem;
+          font-size: 1.1rem;
           line-height: 1.5;
           color: rgba(255, 255, 255, 0.8);
           margin: 0;
@@ -2330,7 +2330,7 @@ export default function Home() {
         }
 
         .copy-feature p {
-          font-size: 1rem;
+          font-size: 1.1rem;
           color: #555;
           margin: 0;
           font-family: 'Inter', sans-serif;
@@ -2454,7 +2454,7 @@ export default function Home() {
         }
 
         .revenue-feature p {
-          font-size: 1rem;
+          font-size: 1.1rem;
           color: rgba(255, 255, 255, 0.9);
           margin: 0;
           font-family: 'Inter', sans-serif;
@@ -2467,7 +2467,7 @@ export default function Home() {
         }
 
         .calculate-revenue-btn {
-          background: linear-gradient(135deg, #10b981, #059669);
+          background: linear-gradient(135deg, #ff6b35, #f7931e);
           color: white;
           border: none;
           padding: 1.25rem 2.5rem;
@@ -2478,13 +2478,13 @@ export default function Home() {
           transition: all 0.3s ease;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.01em;
-          box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+          box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
         }
 
         .calculate-revenue-btn:hover {
           transform: translateY(-2px);
-          box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4);
-          background: linear-gradient(135deg, #059669, #047857);
+          box-shadow: 0 15px 40px rgba(255, 107, 53, 0.4);
+          background: linear-gradient(135deg, #e55a2b, #e0821a);
         }
 
         @media (max-width: 768px) {
