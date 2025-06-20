@@ -383,7 +383,7 @@ export default function Home() {
             </div>
               </div>
               <div className="see-how-text">
-                See how this will look on your website.
+                Enter your URL to see it on your website.
               </div>
               {error && (
                 <div className="error-message">
