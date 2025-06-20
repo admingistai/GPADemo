@@ -612,6 +612,11 @@ export default function Home() {
             font-size: 0.9rem;
           }
 
+          .publishers-band {
+            padding: 1rem 2rem 2rem;
+            margin-bottom: 40px;
+          }
+
           .publishers-message {
             font-size: 1.2rem;
             max-width: 250px;
@@ -631,7 +636,8 @@ export default function Home() {
           }
 
           .publishers-band {
-            padding: 2rem 1rem;
+            padding: 1rem 1rem 1.5rem;
+            margin-bottom: 30px;
           }
 
           .publishers-logos,
