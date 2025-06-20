@@ -11,6 +11,7 @@ export default function Home() {
   const [showWebsite, setShowWebsite] = useState(false);
   const [showLoadingPage, setShowLoadingPage] = useState(false);
   const [showFeaturePage, setShowFeaturePage] = useState(false);
+  const [showLoginPage, setShowLoginPage] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
   const [selectedFeatures, setSelectedFeatures] = useState({
     ask: true, // Always enabled, non-toggleable
@@ -176,7 +177,7 @@ export default function Home() {
             </div>
             <div className="header-right">
               <span className="tagline">100% ethical, uses fully licensed sources</span>
-              <button className="login-btn">Login</button>
+              <button className="login-btn" onClick={() => setShowLoginPage(true)}>Login</button>
             </div>
           </header>
 
@@ -383,7 +384,7 @@ export default function Home() {
             </div>
             <div className="header-right">
               <span className="tagline">100% ethical, uses fully licensed sources</span>
-              <button className="login-btn">Login</button>
+              <button className="login-btn" onClick={() => setShowLoginPage(true)}>Login</button>
             </div>
           </header>
 
@@ -440,6 +441,81 @@ export default function Home() {
               />
             </div>
           </footer>
+        </div>
+      )}
+
+      {/* Login Page Modal */}
+      {showLoginPage && (
+        <div className="login-modal-overlay" onClick={() => setShowLoginPage(false)}>
+          <div className="login-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="login-close-btn" onClick={() => setShowLoginPage(false)}>×</button>
+            
+            <div className="login-header">
+              <h2 className="login-title">Welcome to Ask Anything™</h2>
+              <p className="login-subtitle">Sign in to unlock premium features</p>
+            </div>
+            
+            <form className="login-form" onSubmit={(e) => e.preventDefault()}>
+              <div className="login-field">
+                <label htmlFor="email">Email</label>
+                <input 
+                  type="email" 
+                  id="email" 
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+              
+              <div className="login-field">
+                <label htmlFor="password">Password</label>
+                <input 
+                  type="password" 
+                  id="password" 
+                  placeholder="Enter your password"
+                  required
+                />
+              </div>
+              
+              <div className="login-options">
+                <label className="remember-me">
+                  <input type="checkbox" />
+                  <span>Remember me</span>
+                </label>
+                <a href="#" className="forgot-password">Forgot password?</a>
+              </div>
+              
+              <button type="submit" className="login-submit-btn">
+                Sign In
+              </button>
+              
+              <div className="login-divider">
+                <span>or</span>
+              </div>
+              
+              <div className="social-login">
+                <button type="button" className="social-btn google-btn">
+                  <svg width="20" height="20" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                  </svg>
+                  Continue with Google
+                </button>
+                
+                <button type="button" className="social-btn apple-btn">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+                  </svg>
+                  Continue with Apple
+                </button>
+              </div>
+              
+              <div className="login-footer">
+                <p>Don't have an account? <a href="#" className="signup-link">Sign up</a></p>
+              </div>
+            </form>
+          </div>
         </div>
       )}
 
@@ -1153,6 +1229,265 @@ export default function Home() {
           }
 
           .feature-description {
+            font-size: 0.9rem;
+          }
+        }
+
+        /* Login Modal Styles */
+        .login-modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.8);
+          backdrop-filter: blur(8px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          padding: 1rem;
+          animation: fadeIn 0.3s ease-out;
+        }
+
+        .login-modal {
+          background: white;
+          border-radius: 20px;
+          padding: 2.5rem;
+          width: 100%;
+          max-width: 420px;
+          position: relative;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+          animation: slideInUp 0.4s ease-out;
+        }
+
+        @keyframes slideInUp {
+          from { opacity: 0; transform: translateY(40px) scale(0.95); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .login-close-btn {
+          position: absolute;
+          top: 1rem;
+          right: 1rem;
+          background: none;
+          border: none;
+          font-size: 1.5rem;
+          color: #9ca3af;
+          cursor: pointer;
+          padding: 0.5rem;
+          border-radius: 50%;
+          transition: all 0.2s ease;
+        }
+
+        .login-close-btn:hover {
+          color: #374151;
+          background: #f3f4f6;
+        }
+
+        .login-header {
+          text-align: center;
+          margin-bottom: 2rem;
+        }
+
+        .login-title {
+          font-size: 1.75rem;
+          font-weight: 700;
+          color: #111827;
+          margin-bottom: 0.5rem;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .login-subtitle {
+          color: #6b7280;
+          font-size: 0.95rem;
+        }
+
+        .login-form {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+
+        .login-field {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .login-field label {
+          font-weight: 500;
+          color: #374151;
+          font-size: 0.9rem;
+        }
+
+        .login-field input {
+          padding: 0.875rem 1rem;
+          border: 1.5px solid #e5e7eb;
+          border-radius: 12px;
+          font-size: 0.95rem;
+          transition: all 0.2s ease;
+          font-family: inherit;
+        }
+
+        .login-field input:focus {
+          outline: none;
+          border-color: #3742fa;
+          box-shadow: 0 0 0 3px rgba(55, 66, 250, 0.1);
+        }
+
+        .login-options {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin: -0.5rem 0;
+        }
+
+        .remember-me {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.9rem;
+          color: #6b7280;
+          cursor: pointer;
+        }
+
+        .remember-me input {
+          margin: 0;
+        }
+
+        .forgot-password {
+          color: #3742fa;
+          text-decoration: none;
+          font-size: 0.9rem;
+          font-weight: 500;
+        }
+
+        .forgot-password:hover {
+          text-decoration: underline;
+        }
+
+        .login-submit-btn {
+          background: linear-gradient(135deg, #3742fa, #5b6cfa);
+          color: white;
+          border: none;
+          padding: 1rem;
+          border-radius: 12px;
+          font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          font-family: inherit;
+        }
+
+        .login-submit-btn:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 10px 25px rgba(55, 66, 250, 0.3);
+        }
+
+        .login-divider {
+          text-align: center;
+          position: relative;
+          color: #9ca3af;
+          font-size: 0.9rem;
+          margin: 0.5rem 0;
+        }
+
+        .login-divider::before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: #e5e7eb;
+          z-index: 1;
+        }
+
+        .login-divider span {
+          background: white;
+          padding: 0 1rem;
+          position: relative;
+          z-index: 2;
+        }
+
+        .social-login {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+
+        .social-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.75rem;
+          padding: 0.875rem;
+          border: 1.5px solid #e5e7eb;
+          border-radius: 12px;
+          background: white;
+          color: #374151;
+          font-size: 0.95rem;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          font-family: inherit;
+        }
+
+        .social-btn:hover {
+          border-color: #d1d5db;
+          background: #f9fafb;
+        }
+
+        .login-footer {
+          text-align: center;
+          margin-top: 1rem;
+        }
+
+        .login-footer p {
+          color: #6b7280;
+          font-size: 0.9rem;
+        }
+
+        .signup-link {
+          color: #3742fa;
+          text-decoration: none;
+          font-weight: 500;
+        }
+
+        .signup-link:hover {
+          text-decoration: underline;
+        }
+
+        /* Responsive Login Modal */
+        @media (max-width: 768px) {
+          .login-modal {
+            padding: 2rem;
+            margin: 1rem;
+            max-width: 100%;
+          }
+
+          .login-title {
+            font-size: 1.5rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .login-modal {
+            padding: 1.5rem;
+            border-radius: 16px;
+          }
+
+          .login-title {
+            font-size: 1.25rem;
+          }
+
+          .social-login {
+            gap: 0.5rem;
+          }
+
+          .social-btn {
+            padding: 0.75rem;
             font-size: 0.9rem;
           }
         }
