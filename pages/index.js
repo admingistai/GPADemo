@@ -1583,7 +1583,7 @@ export default function Home() {
         }
 
         .why-choose-section.white-section {
-          background: linear-gradient(135deg, #fafafa 0%, #ffffff 50%, #f8f9fa 100%) !important;
+          background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 30%, #f5f6f7 100%) !important;
           backdrop-filter: none;
           border-top: 1px solid rgba(0, 0, 0, 0.1);
           padding: 4rem 3rem 5rem;
@@ -1597,7 +1597,7 @@ export default function Home() {
           left: 0;
           right: 0;
           bottom: 0;
-          background: radial-gradient(ellipse at center, transparent 0%, transparent 70%, rgba(0, 0, 0, 0.02) 100%);
+          background: radial-gradient(ellipse at center, transparent 0%, transparent 60%, rgba(0, 0, 0, 0.06) 100%);
           pointer-events: none;
         }
 
@@ -1609,8 +1609,8 @@ export default function Home() {
           right: 0;
           bottom: 0;
           background: 
-            radial-gradient(circle at 20% 80%, rgba(255, 107, 53, 0.03) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.03) 0%, transparent 50%);
+            radial-gradient(circle at 15% 85%, rgba(255, 107, 53, 0.08) 0%, transparent 40%),
+            radial-gradient(circle at 85% 15%, rgba(168, 85, 247, 0.08) 0%, transparent 40%);
           pointer-events: none;
         }
 
