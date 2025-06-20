@@ -977,9 +977,9 @@ export default function Home() {
           top: 50%;
           transform: translateY(-50%);
           font-size: 12rem;
-          font-weight: 400;
+          font-weight: 100;
           color: white;
-          font-family: 'Playfair Display', 'Crimson Text', 'Libre Baskerville', serif;
+          font-family: 'Helvetica Neue', 'Arial', sans-serif;
           line-height: 1;
           pointer-events: none;
         }
