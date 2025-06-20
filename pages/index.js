@@ -977,9 +977,9 @@ export default function Home() {
           top: 50%;
           transform: translateY(-50%);
           font-size: 12rem;
-          font-weight: 300;
+          font-weight: 400;
           color: white;
-          font-family: 'Georgia', 'Times New Roman', serif;
+          font-family: 'Playfair Display', 'Crimson Text', 'Libre Baskerville', serif;
           line-height: 1;
           pointer-events: none;
         }
@@ -999,7 +999,7 @@ export default function Home() {
           line-height: 1.5;
           color: rgba(255, 255, 255, 0.95);
           font-family: 'Inter', sans-serif;
-          margin-bottom: 2rem;
+          margin-bottom: 1rem;
           font-style: italic;
           font-weight: 300;
           max-width: 100%;
