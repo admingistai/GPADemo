@@ -1185,7 +1185,7 @@ export default function Home() {
           .publishers-band {
             padding: 1rem 2rem 5rem;
             margin-bottom: 80px;
-            transform: translateY(-6rem);
+            transform: translateY(-1rem);
             animation: none;
           }
 
@@ -1260,7 +1260,7 @@ export default function Home() {
           .publishers-band {
             padding: 2rem 1rem;
             margin-bottom: 80px;
-            transform: translateY(-8rem);
+            transform: translateY(0);
             animation: none;
           }
 
