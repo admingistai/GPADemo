@@ -13,7 +13,6 @@ export default function Home() {
   const [showFeaturePage, setShowFeaturePage] = useState(false);
   const [showLoginPage, setShowLoginPage] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
-  const [showTestimonial, setShowTestimonial] = useState(false);
   const [selectedFeatures, setSelectedFeatures] = useState({
     ask: true, // Always enabled, non-toggleable
     theGist: true,
@@ -30,13 +29,6 @@ export default function Home() {
   // Simplified scroll animation effects
   useEffect(() => {
     const handleScroll = () => {
-      const scrollY = window.scrollY;
-      
-      // Show testimonial when user scrolls down
-      if (scrollY > 100 && !showTestimonial) {
-        setShowTestimonial(true);
-      }
-      
       const animateOnScroll = document.querySelectorAll('.animate-on-scroll');
       animateOnScroll.forEach((element) => {
         const elementTop = element.getBoundingClientRect().top;
@@ -52,7 +44,7 @@ export default function Home() {
     handleScroll(); // Run once on mount
     
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [showWebsite, showTestimonial]);
+  }, [showWebsite]);
 
   const formatUrl = (inputUrl) => {
     let formattedUrl = inputUrl.trim();
@@ -361,7 +353,7 @@ export default function Home() {
             </h1>
             
             <div className="drive-growth-text hoverable-text">
-              Instant, source-backed answers. 2-minute install. Private and secure, ad-supported.
+              Gist Answers transforms your content into an interactive knowledge base that keeps readers engaged and drives revenue without compromising editorial integrity.
             </div>
             
             <div className="url-input-container">
@@ -412,21 +404,19 @@ export default function Home() {
           </footer>
 
           {/* Testimonials Section */}
-          {showTestimonial && (
-            <section className="testimonials-section">
-              <div className="testimonials-container">
-                <div className="testimonial-box">
-                  <div className="testimonial-content">
-                    <p>"With Gist Answers, we can combine our award-winning journalism with trusted external sources to deliver deeper context and smarter discovery in response to user questions."</p>
-                    <div className="testimonial-author">
-                      <strong>Will Lee</strong>
-                      <span>CEO, AdWeek</span>
-                    </div>
+          <section className="testimonials-section">
+            <div className="testimonials-container">
+              <div className="testimonial-box">
+                <div className="testimonial-content">
+                  <p>"With Gist Answers, we can combine our award-winning journalism with trusted external sources to deliver deeper context and smarter discovery in response to user questions."</p>
+                  <div className="testimonial-author">
+                    <strong>Will Lee</strong>
+                    <span>CEO, AdWeek</span>
                   </div>
                 </div>
               </div>
-            </section>
-          )}
+            </div>
+          </section>
 
           {/* Why Choose Us Section */}
           <section className="why-choose-section white-section">
@@ -777,7 +767,7 @@ export default function Home() {
         }
 
         .drive-growth-text {
-          font-size: 1.3rem;
+          font-size: 1.1rem;
           color: rgba(255, 255, 255, 0.9);
           margin-bottom: 2rem;
           font-family: 'Inter', sans-serif;
@@ -960,7 +950,7 @@ export default function Home() {
           margin-bottom: 0;
           opacity: 0;
           transform: translateY(40px);
-          animation: fadeInUp 1s ease-out 0.1s both;
+          animation: fadeInUp 1s ease-out 2s both;
         }
 
         .testimonials-container {
