@@ -203,27 +203,27 @@
         });
         
         // Add common favicon fallback locations 
-        const fallbackPaths = [
-            '/favicon.ico',
-            '/favicon.png', 
-            '/favicon.svg',
-            '/assets/favicon.ico',
-            '/assets/images/favicon.ico',
-            '/images/favicon.ico',
-            '/static/favicon.ico',
-            '/public/favicon.ico'
-        ];
-        
-        fallbackPaths.forEach((path, index) => {
-            faviconCandidates.push({
-                url: window.location.origin + path,
-                priority: 25 - index, // Decreasing priority
-                expectedSize: 32,
-                element: null,
-                selector: 'fallback-' + path.replace('/', '')
-            });
-        });
-        
+             const fallbackPaths = [
+                 '/favicon.ico',
+                 '/favicon.png', 
+                 '/favicon.svg',
+                 '/assets/favicon.ico',
+                 '/assets/images/favicon.ico',
+                 '/images/favicon.ico',
+                 '/static/favicon.ico',
+                 '/public/favicon.ico'
+             ];
+             
+             fallbackPaths.forEach((path, index) => {
+                 faviconCandidates.push({
+                     url: window.location.origin + path,
+                     priority: 25 - index, // Decreasing priority
+                     expectedSize: 32,
+                     element: null,
+                     selector: 'fallback-' + path.replace('/', '')
+                 });
+             });
+         
         // Sort candidates by priority and test them
         faviconCandidates.sort((a, b) => b.priority - a.priority);
         
@@ -236,31 +236,31 @@
                 console.log('[GistWidget] ✓ Found working favicon:', candidate.url, 'Priority:', candidate.priority);
                 break;
             }
-        }
+         }
         
         // TIER 2: META TAG LOGO EXTRACTION
         if (!results.favicon) {
             console.log('[GistWidget] TIER 2: Checking for meta tag logos...');
-            const metaImageSelectors = [
-                'meta[property="og:logo"]', // Explicit logo
-                'meta[name="twitter:image"]', // Twitter card image
-                'meta[property="twitter:image"]',
+        const metaImageSelectors = [
+            'meta[property="og:logo"]', // Explicit logo
+            'meta[name="twitter:image"]', // Twitter card image
+            'meta[property="twitter:image"]',
                 'meta[property="og:image"]' // Facebook Open Graph image
-            ];
-            
-            for (const selector of metaImageSelectors) {
-                const meta = document.querySelector(selector);
-                if (meta && meta.content && isValidImageUrl(meta.content)) {
+        ];
+        
+        for (const selector of metaImageSelectors) {
+            const meta = document.querySelector(selector);
+            if (meta && meta.content && isValidImageUrl(meta.content)) {
                     const isWorking = await testImageUrl(meta.content);
                     if (isWorking) {
-                        const imageUrl = meta.content.toLowerCase();
+                const imageUrl = meta.content.toLowerCase();
                         // Prefer explicit logos, but accept any working image from meta tags
-                        if (imageUrl.includes('logo') || imageUrl.includes('brand') || 
+                if (imageUrl.includes('logo') || imageUrl.includes('brand') || 
                             selector === 'meta[property="og:logo"]' || !results.logo) {
-                            results.logo = meta.content;
+                    results.logo = meta.content;
                             results.foundImageTier = 'TIER 2: Meta Tag Logo';
                             console.log('[GistWidget] ✓ Found working meta logo:', meta.content);
-                            break;
+                    break;
                         }
                     }
                 }
@@ -370,7 +370,7 @@
             ];
             
             for (const selector of structuralLogoSelectors) {
-                const element = document.querySelector(selector);
+            const element = document.querySelector(selector);
                 if (element && element.src && isValidImageUrl(element.src)) {
                     const rect = element.getBoundingClientRect();
                     const width = element.width || rect.width;
@@ -384,10 +384,10 @@
                     if (isReasonablePosition && isReasonableSize && isVisible) {
                         const isWorking = await testImageUrl(element.src);
                         if (isWorking) {
-                            results.logo = element.src;
+                results.logo = element.src;
                             results.foundImageTier = 'TIER 4: Structural Logo';
                             console.log('[GistWidget] ✓ Found working structural logo:', element.src);
-                            break;
+                break;
                         }
                     }
                 }
@@ -404,7 +404,7 @@
                 console.log('[GistWidget] ✓ Using high-quality favicon as logo:', results.favicon);
             }
         }
-        
+
         // TIER 6: EXPANDED IMAGE SEARCH - Look for ANY reasonable images
         if (!results.favicon && !results.logo) {
             console.log('[GistWidget] TIER 6: Checking for any reasonable images...');
@@ -479,7 +479,7 @@
             if (existingGistLogo && existingGistLogo.src) {
                 const isWorking = await testImageUrl(existingGistLogo.src);
                 if (isWorking) {
-                    results.logo = existingGistLogo.src;
+                results.logo = existingGistLogo.src;
                     results.foundImageTier = 'TIER 7: Existing Gist Logo';
                     console.log('[GistWidget] ✓ Found existing gist-logo.png in DOM:', existingGistLogo.src);
                 }
@@ -515,7 +515,7 @@
             results.foundImageTier = 'TIER 8: Absolute Fallback';
             console.log('[GistWidget] ✓ Using fallback gist-logo.png:', results.logo);
         }
-        
+
         // Set favicon to logo if no favicon was found
         if (!results.favicon && results.logo) {
             results.favicon = results.logo;
@@ -535,12 +535,12 @@
                     src.includes('logo') ||
                     src.includes('brand')) {
                     
-                    results.icons.push({
-                        src: img.src,
+                results.icons.push({
+                    src: img.src,
                         alt: img.alt || '',
-                        width: img.width,
-                        height: img.height
-                    });
+                    width: img.width,
+                    height: img.height
+                });
                 }
             }
         });

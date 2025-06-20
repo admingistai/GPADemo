@@ -393,7 +393,7 @@ export default function Home() {
           </main>
 
           {/* Publishers Band */}
-          <footer className="publishers-band white-section">
+          <footer className="publishers-band">
             <div className="publishers-content">
               <img 
                 src="/publishers-logos.png?v=1" 
