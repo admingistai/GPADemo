@@ -353,7 +353,7 @@ export default function Home() {
             </h1>
             
             <div className="drive-growth-text hoverable-text">
-              Drive growth, boost engagement, and earn more today.
+              Instant, source-backed answers. 2-minute install. Private and secure, ad-supported.
             </div>
             
             <div className="url-input-container">
