@@ -458,59 +458,95 @@ export default function Home() {
                 <em>Ask Anything™</em> delivers powerful features that keep users engaged while driving revenue
               </p>
               
-              <div className="features-grid">
-                <div className="feature-item">
-                  <div className="feature-icon">🎯</div>
-                  <h3>Accurate Answers</h3>
-                  <p>Provide precise responses to user questions with AI-powered accuracy</p>
+              <div className="features-categories">
+                <div className="category">
+                  <div className="category-header">
+                    <div className="category-icon">🚀</div>
+                    <h3 className="category-title">Performance & Engagement</h3>
+                  </div>
+                  <div className="category-features">
+                    <div className="feature-item-small">
+                      <div className="feature-icon">🎯</div>
+                      <div className="feature-content">
+                        <h4>Accurate Answers</h4>
+                        <p>Provide precise responses to user questions with AI-powered accuracy</p>
+                      </div>
+                    </div>
+                    <div className="feature-item-small">
+                      <div className="feature-icon">🏠</div>
+                      <div className="feature-content">
+                        <h4>Keep Users Engaged</h4>
+                        <p>Prevent users from leaving for Google, ChatGPT, or other sites</p>
+                      </div>
+                    </div>
+                    <div className="feature-item-small">
+                      <div className="feature-icon">💰</div>
+                      <div className="feature-content">
+                        <h4>New Revenue Stream</h4>
+                        <p>Generate high-value revenue from ethically-placed advertisements</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                
-                <div className="feature-item">
-                  <div className="feature-icon">🔗</div>
-                  <h3>Promotes Your Content First</h3>
-                  <p>Your content appears first in answers with direct links back to sources</p>
+
+                <div className="category">
+                  <div className="category-header">
+                    <div className="category-icon">📚</div>
+                    <h3 className="category-title">Content & Sources</h3>
+                  </div>
+                  <div className="category-features">
+                    <div className="feature-item-small">
+                      <div className="feature-icon">🔗</div>
+                      <div className="feature-content">
+                        <h4>Promotes Your Content First</h4>
+                        <p>Your content appears first in answers with direct links back to sources</p>
+                      </div>
+                    </div>
+                    <div className="feature-item-small">
+                      <div className="feature-icon">📰</div>
+                      <div className="feature-content">
+                        <h4>Leading Publication Integration</h4>
+                        <p>Supplement answers with content from top-tier publications</p>
+                      </div>
+                    </div>
+                    <div className="feature-item-small">
+                      <div className="feature-icon">⚙️</div>
+                      <div className="feature-content">
+                        <h4>Source Control</h4>
+                        <p>Choose which third-party publications can be used as sources</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                
-                <div className="feature-item">
-                  <div className="feature-icon">📰</div>
-                  <h3>Leading Publication Integration</h3>
-                  <p>Supplement answers with content from top-tier publications</p>
-                </div>
-                
-                <div className="feature-item">
-                  <div className="feature-icon">⚙️</div>
-                  <h3>Source Control</h3>
-                  <p>Choose which third-party publications can be used as sources</p>
-                </div>
-                
-                <div className="feature-item">
-                  <div className="feature-icon">🔒</div>
-                  <h3>Privacy-Safe</h3>
-                  <p>No user-level tracking - protect your audience's privacy</p>
-                </div>
-                
-                <div className="feature-item">
-                  <div className="feature-icon">💰</div>
-                  <h3>New Revenue Stream</h3>
-                  <p>Generate high-value revenue from ethically-placed advertisements</p>
-                </div>
-                
-                <div className="feature-item">
-                  <div className="feature-icon">⚡</div>
-                  <h3>Easy Installation</h3>
-                  <p>Quick setup with a simple plug-in or just one line of code</p>
-                </div>
-                
-                <div className="feature-item">
-                  <div className="feature-icon">🎨</div>
-                  <h3>Full Customization</h3>
-                  <p>Control colors, fonts, and overall look and feel to match your brand</p>
-                </div>
-                
-                <div className="feature-item">
-                  <div className="feature-icon">🏠</div>
-                  <h3>Keep Users Engaged</h3>
-                  <p>Prevent users from leaving for Google, ChatGPT, or other sites</p>
+
+                <div className="category">
+                  <div className="category-header">
+                    <div className="category-icon">🛡️</div>
+                    <h3 className="category-title">Setup & Control</h3>
+                  </div>
+                  <div className="category-features">
+                    <div className="feature-item-small">
+                      <div className="feature-icon">⚡</div>
+                      <div className="feature-content">
+                        <h4>Easy Installation</h4>
+                        <p>Quick setup with a simple plug-in or just one line of code</p>
+                      </div>
+                    </div>
+                    <div className="feature-item-small">
+                      <div className="feature-icon">🎨</div>
+                      <div className="feature-content">
+                        <h4>Full Customization</h4>
+                        <p>Control colors, fonts, and overall look and feel to match your brand</p>
+                      </div>
+                    </div>
+                    <div className="feature-item-small">
+                      <div className="feature-icon">🔒</div>
+                      <div className="feature-content">
+                        <h4>Privacy-Safe</h4>
+                        <p>No user-level tracking - protect your audience's privacy</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1775,49 +1811,100 @@ export default function Home() {
           line-height: 1.4;
         }
 
-        .features-grid {
+        .features-categories {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: 1.25rem;
-          margin-top: 0.5rem;
+          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+          gap: 2rem;
+          margin-top: 1rem;
         }
 
-        .feature-item {
-          background: rgba(255, 255, 255, 0.08);
+        .category {
+          background: rgba(255, 255, 255, 0.05);
           border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 16px;
-          padding: 1.5rem 1rem;
-          text-align: center;
+          border-radius: 20px;
+          padding: 2rem;
           transition: all 0.3s ease;
           backdrop-filter: blur(10px);
         }
 
-        .feature-item:hover {
-          transform: translateY(-5px);
-          background: rgba(255, 255, 255, 0.12);
+        .category:hover {
+          background: rgba(255, 255, 255, 0.08);
           border-color: rgba(255, 255, 255, 0.2);
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+          transform: translateY(-3px);
+          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
         }
 
-        .feature-icon {
+        .category-header {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          margin-bottom: 1.5rem;
+          padding-bottom: 1rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .category-icon {
           font-size: 2rem;
-          margin-bottom: 0.75rem;
-          display: block;
+          background: linear-gradient(135deg, #ff6b35, #f7931e);
+          padding: 0.75rem;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
-        .feature-item h3 {
-          font-size: 1.2rem;
+        .category-title {
+          font-size: 1.4rem;
           font-weight: 600;
           color: white;
-          margin-bottom: 0.5rem;
+          margin: 0;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.01em;
         }
 
-        .feature-item p {
+        .category-features {
+          display: flex;
+          flex-direction: column;
+          gap: 1.25rem;
+        }
+
+        .feature-item-small {
+          display: flex;
+          align-items: flex-start;
+          gap: 1rem;
+          padding: 1.25rem;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 12px;
+          transition: all 0.3s ease;
+        }
+
+        .feature-item-small:hover {
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(255, 255, 255, 0.15);
+          transform: translateX(5px);
+        }
+
+        .feature-icon {
+          font-size: 1.5rem;
+          flex-shrink: 0;
+          margin-top: 0.25rem;
+        }
+
+        .feature-content h4 {
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: white;
+          margin: 0 0 0.5rem 0;
+          font-family: 'Inter', sans-serif;
+          letter-spacing: -0.01em;
+        }
+
+        .feature-content p {
           font-size: 0.9rem;
-          color: rgba(255, 255, 255, 0.8);
+          color: rgba(255, 255, 255, 0.75);
           line-height: 1.4;
+          margin: 0;
           font-family: 'Inter', sans-serif;
         }
 
@@ -1891,25 +1978,43 @@ export default function Home() {
             margin-bottom: 1rem;
           }
 
-          .features-grid {
+          .features-categories {
             grid-template-columns: 1fr;
-            gap: 1rem;
+            gap: 1.5rem;
           }
 
-          .feature-item {
-            padding: 1.25rem 1rem;
+          .category {
+            padding: 1.5rem;
+          }
+
+          .category-header {
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+          }
+
+          .category-icon {
+            font-size: 1.75rem;
+            padding: 0.5rem;
+          }
+
+          .category-title {
+            font-size: 1.25rem;
+          }
+
+          .feature-item-small {
+            padding: 1rem;
+            gap: 0.75rem;
           }
 
           .feature-icon {
-            font-size: 1.75rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
           }
 
-          .feature-item h3 {
-            font-size: 1.1rem;
+          .feature-content h4 {
+            font-size: 1rem;
           }
 
-          .feature-item p {
+          .feature-content p {
             font-size: 0.85rem;
           }
         }
@@ -1986,21 +2091,43 @@ export default function Home() {
             font-size: 0.9rem;
           }
 
-          .feature-item {
-            padding: 1rem 0.75rem;
+          .category {
+            padding: 1.25rem;
+          }
+
+          .category-header {
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+          }
+
+          .category-icon {
+            font-size: 1.5rem;
+            padding: 0.5rem;
+          }
+
+          .category-title {
+            font-size: 1.1rem;
+          }
+
+          .feature-item-small {
+            padding: 0.875rem;
+            gap: 0.75rem;
           }
 
           .feature-icon {
-            font-size: 1.5rem;
+            font-size: 1.125rem;
           }
 
-          .feature-item h3 {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
+          .feature-content h4 {
+            font-size: 0.95rem;
           }
 
-          .features-grid {
-            gap: 0.75rem;
+          .feature-content p {
+            font-size: 0.8rem;
+          }
+
+          .features-categories {
+            gap: 1.25rem;
           }
         }
 
@@ -2023,9 +2150,13 @@ export default function Home() {
             font-size: 1.35rem;
           }
 
-          .features-grid {
+          .features-categories {
             grid-template-columns: repeat(2, 1fr);
             gap: 1.5rem;
+          }
+
+          .category {
+            padding: 1.75rem;
           }
 
           .why-choose-title {
