@@ -568,23 +568,22 @@ export default function Home() {
           }
 
           .url-input-wrapper {
-            flex-direction: column;
-            gap: 1rem;
             padding: 3px;
           }
 
           .url-input-inner {
-            flex-direction: column;
-            gap: 0.75rem;
-            padding: 0.75rem;
+            padding: 3px;
           }
 
           .url-input {
-            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
           }
 
           .generate-btn {
-            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            border-radius: 37px;
           }
 
           .publishers-logos,
