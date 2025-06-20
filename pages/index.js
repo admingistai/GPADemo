@@ -393,7 +393,7 @@ export default function Home() {
           </main>
 
           {/* Publishers Band */}
-          <footer className="publishers-band">
+          <footer className="publishers-band white-section">
             <div className="publishers-content">
               <img 
                 src="/publishers-logos.png?v=1" 
@@ -404,7 +404,7 @@ export default function Home() {
           </footer>
 
           {/* Why Choose Us Section */}
-          <section className="why-choose-section">
+          <section className="why-choose-section white-section">
             <div className="why-choose-container">
               <div className="why-choose-header">
                 <h2 className="why-choose-title">Why Choose <em>Ask Anything™</em>?</h2>
@@ -436,7 +436,6 @@ export default function Home() {
                   Get the code—live in 2 minutes
                   <span className="cta-arrow">→</span>
                 </button>
-                <p className="cta-note">Setup takes less than 2 minutes</p>
               </div>
             </div>
           </section>
@@ -885,12 +884,24 @@ export default function Home() {
           margin-top: 1rem;
         }
 
+        /* White sections for contrast */
+        .white-section {
+          background: white !important;
+          color: #333 !important;
+        }
+
         /* Publishers Band */
         .publishers-band {
           background: transparent;
           padding: 1rem 2rem 5rem;
           margin-bottom: 80px;
           animation: fadeInUp 1s ease-out 0.8s both;
+        }
+
+        .publishers-band.white-section {
+          background: white !important;
+          padding: 4rem 2rem 5rem;
+          margin-bottom: 0;
         }
 
         @keyframes fadeInUp {
@@ -1569,6 +1580,40 @@ export default function Home() {
           backdrop-filter: blur(20px);
           border-top: 1px solid rgba(255, 255, 255, 0.1);
           animation: slideInUp 0.8s ease-out 0.4s both;
+        }
+
+        .why-choose-section.white-section {
+          background: white !important;
+          backdrop-filter: none;
+          border-top: 1px solid rgba(0, 0, 0, 0.1);
+          padding: 4rem 3rem 5rem;
+        }
+
+        .why-choose-section.white-section .why-choose-title {
+          color: #333 !important;
+        }
+
+        .why-choose-section.white-section .why-choose-subtitle {
+          color: #666 !important;
+        }
+
+        .why-choose-section.white-section .benefit-item-horizontal {
+          background: rgba(0, 0, 0, 0.02) !important;
+          border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .why-choose-section.white-section .benefit-item-horizontal:hover {
+          background: rgba(0, 0, 0, 0.05) !important;
+          border-color: rgba(0, 0, 0, 0.2) !important;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .why-choose-section.white-section .benefit-item-horizontal h3 {
+          color: #333 !important;
+        }
+
+        .why-choose-section.white-section .benefit-item-horizontal p {
+          color: #666 !important;
         }
 
         @keyframes slideInUp {
