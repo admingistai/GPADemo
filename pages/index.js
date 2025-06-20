@@ -386,131 +386,6 @@ export default function Home() {
             </div>
           </main>
 
-          {/* Call to Action Section */}
-          <section className="cta-section animate-on-scroll">
-            <div className="cta-content">
-              <h2 className="cta-title">Transform Your Website Today</h2>
-              <p className="cta-description">
-                Keep your visitors engaged and informed with AI-powered answers that prioritize your content. 
-                No more losing traffic to search engines or competitors.
-              </p>
-              <button className="cta-button" onClick={() => handleUrlSubmit('')}>
-                Get Started Now
-              </button>
-            </div>
-          </section>
-
-          {/* Features Section */}
-          <section className="features-section animate-on-scroll">
-            <div className="features-content">
-              <h2 className="features-title">Why Choose Ask Anything™?</h2>
-              <div className="features-grid">
-                <div className="feature-item">
-                  <div className="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-4"/>
-                      <path d="M9 11V5a4 4 0 1 1 8 0v6"/>
-                    </svg>
-                  </div>
-                  <h3 className="feature-name">Accurate Answers</h3>
-                  <p className="feature-desc">Provides precise, reliable answers to user questions using advanced AI technology.</p>
-                </div>
-
-                <div className="feature-item">
-                  <div className="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                      <polyline points="3.27,6.96 12,12.01 20.73,6.96"/>
-                      <line x1="12" y1="22.08" x2="12" y2="12"/>
-                    </svg>
-                  </div>
-                  <h3 className="feature-name">Your Content First</h3>
-                  <p className="feature-desc">Promotes your content first in answers with direct links back to each source.</p>
-                </div>
-
-                <div className="feature-item">
-                  <div className="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                      <polyline points="14,2 14,8 20,8"/>
-                      <line x1="16" y1="13" x2="8" y2="13"/>
-                      <line x1="16" y1="17" x2="8" y2="17"/>
-                      <polyline points="10,9 9,9 8,9"/>
-                    </svg>
-                  </div>
-                  <h3 className="feature-name">Premium Sources</h3>
-                  <p className="feature-desc">Supplement answers with content from leading publications you choose.</p>
-                </div>
-
-                <div className="feature-item">
-                  <div className="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                    </svg>
-                  </div>
-                  <h3 className="feature-name">Privacy-Safe</h3>
-                  <p className="feature-desc">No user-level tracking ensures complete privacy protection for your visitors.</p>
-                </div>
-
-                <div className="feature-item">
-                  <div className="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <line x1="12" y1="1" x2="12" y2="23"/>
-                      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                    </svg>
-                  </div>
-                  <h3 className="feature-name">New Revenue Stream</h3>
-                  <p className="feature-desc">Generate high-value revenue from privacy-safe ads matched to content intent.</p>
-                </div>
-
-                <div className="feature-item">
-                  <div className="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <polyline points="16 18 22 12 16 6"/>
-                      <polyline points="8 6 2 12 8 18"/>
-                    </svg>
-                  </div>
-                  <h3 className="feature-name">Easy Installation</h3>
-                  <p className="feature-desc">Install with a simple plug-in or just one line of code - no technical expertise required.</p>
-                </div>
-
-                <div className="feature-item">
-                  <div className="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="3"/>
-                      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-                    </svg>
-                  </div>
-                  <h3 className="feature-name">Customizable Design</h3>
-                  <p className="feature-desc">Full control over look and feel including colors, fonts, and styling to match your brand.</p>
-                </div>
-
-                <div className="feature-item">
-                  <div className="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                    </svg>
-                  </div>
-                  <h3 className="feature-name">Retain Your Audience</h3>
-                  <p className="feature-desc">Keeps users on your site instead of losing them to Google, ChatGPT, or competitors.</p>
-                </div>
-
-                <div className="feature-item">
-                  <div className="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                      <circle cx="9" cy="7" r="4"/>
-                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                    </svg>
-                  </div>
-                  <h3 className="feature-name">Source Control</h3>
-                  <p className="feature-desc">Choose exactly which third-party publications can be used as sources for answers.</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
           {/* Publishers Band */}
           <footer className="publishers-band">
             <div className="publishers-content">
@@ -524,6 +399,86 @@ export default function Home() {
               />
             </div>
           </footer>
+
+          {/* Call to Action Section */}
+          <section className="cta-section">
+            <div className="cta-container">
+              <h2 className="cta-title">Transform Your Website Today</h2>
+              <p className="cta-description">
+                Join thousands of publishers already using Ask Anything™ to engage visitors, 
+                increase time on site, and unlock new revenue streams.
+              </p>
+              <button className="cta-button" onClick={() => document.querySelector('.url-input').focus()}>
+                Get Started Now
+              </button>
+            </div>
+          </section>
+
+          {/* Features Section */}
+          <section className="features-section">
+            <div className="features-container">
+              <h2 className="features-title">Everything You Need to Succeed</h2>
+              <p className="features-subtitle">
+                Ask Anything™ delivers powerful features that keep users engaged while driving revenue
+              </p>
+              
+              <div className="features-grid">
+                <div className="feature-item">
+                  <div className="feature-icon">🎯</div>
+                  <h3>Accurate Answers</h3>
+                  <p>Provide precise responses to user questions with AI-powered accuracy</p>
+                </div>
+                
+                <div className="feature-item">
+                  <div className="feature-icon">🔗</div>
+                  <h3>Promotes Your Content First</h3>
+                  <p>Your content appears first in answers with direct links back to sources</p>
+                </div>
+                
+                <div className="feature-item">
+                  <div className="feature-icon">📰</div>
+                  <h3>Leading Publication Integration</h3>
+                  <p>Supplement answers with content from top-tier publications</p>
+                </div>
+                
+                <div className="feature-item">
+                  <div className="feature-icon">⚙️</div>
+                  <h3>Source Control</h3>
+                  <p>Choose which third-party publications can be used as sources</p>
+                </div>
+                
+                <div className="feature-item">
+                  <div className="feature-icon">🔒</div>
+                  <h3>Privacy-Safe</h3>
+                  <p>No user-level tracking - protect your audience's privacy</p>
+                </div>
+                
+                <div className="feature-item">
+                  <div className="feature-icon">💰</div>
+                  <h3>New Revenue Stream</h3>
+                  <p>Generate high-value revenue from ethically-placed advertisements</p>
+                </div>
+                
+                <div className="feature-item">
+                  <div className="feature-icon">⚡</div>
+                  <h3>Easy Installation</h3>
+                  <p>Quick setup with a simple plug-in or just one line of code</p>
+                </div>
+                
+                <div className="feature-item">
+                  <div className="feature-icon">🎨</div>
+                  <h3>Full Customization</h3>
+                  <p>Control colors, fonts, and overall look and feel to match your brand</p>
+                </div>
+                
+                <div className="feature-item">
+                  <div className="feature-icon">🏠</div>
+                  <h3>Keep Users Engaged</h3>
+                  <p>Prevent users from leaving for Google, ChatGPT, or other sites</p>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       )}
 
@@ -898,141 +853,6 @@ export default function Home() {
           margin-top: 1rem;
         }
 
-        /* Call to Action Section */
-        .cta-section {
-          padding: 5rem 2rem;
-          text-align: center;
-          animation: fadeInUp 1s ease-out 0.6s both;
-        }
-
-        .cta-content {
-          max-width: 800px;
-          margin: 0 auto;
-        }
-
-        .cta-title {
-          font-size: 2.5rem;
-          font-weight: 700;
-          line-height: 1.2;
-          margin-bottom: 1.5rem;
-          color: white;
-          font-family: 'Inter', sans-serif;
-          letter-spacing: -0.02em;
-        }
-
-        .cta-description {
-          font-size: 1.25rem;
-          line-height: 1.6;
-          margin-bottom: 2.5rem;
-          color: rgba(255, 255, 255, 0.9);
-          font-family: 'Inter', sans-serif;
-        }
-
-        .cta-button {
-          background: linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7);
-          color: white;
-          border: none;
-          padding: 1rem 2.5rem;
-          font-size: 1.1rem;
-          font-weight: 600;
-          border-radius: 50px;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          font-family: 'Inter', sans-serif;
-          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .cta-button:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
-          filter: brightness(1.1);
-        }
-
-        .cta-button:active {
-          transform: translateY(0);
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Features Section */
-        .features-section {
-          padding: 5rem 2rem;
-          animation: fadeInUp 1s ease-out 0.8s both;
-        }
-
-        .features-content {
-          max-width: 1200px;
-          margin: 0 auto;
-        }
-
-        .features-title {
-          font-size: 2.5rem;
-          font-weight: 700;
-          line-height: 1.2;
-          margin-bottom: 3rem;
-          color: white;
-          font-family: 'Inter', sans-serif;
-          letter-spacing: -0.02em;
-          text-align: center;
-        }
-
-        .features-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 2rem;
-        }
-
-        .feature-item {
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 12px;
-          padding: 2rem;
-          text-align: center;
-          transition: all 0.3s ease;
-          backdrop-filter: blur(10px);
-        }
-
-        .feature-item:hover {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(255, 255, 255, 0.2);
-          transform: translateY(-4px);
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .feature-icon {
-          width: 60px;
-          height: 60px;
-          background: linear-gradient(135deg, #ff6b35, #f7931e);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin: 0 auto 1.5rem;
-          color: white;
-          transition: all 0.3s ease;
-        }
-
-        .feature-item:hover .feature-icon {
-          transform: scale(1.1);
-          box-shadow: 0 5px 20px rgba(255, 107, 53, 0.3);
-        }
-
-        .feature-name {
-          font-size: 1.25rem;
-          font-weight: 600;
-          margin-bottom: 1rem;
-          color: white;
-          font-family: 'Inter', sans-serif;
-        }
-
-        .feature-desc {
-          font-size: 1rem;
-          line-height: 1.6;
-          color: rgba(255, 255, 255, 0.8);
-          font-family: 'Inter', sans-serif;
-          margin: 0;
-        }
-
         /* Publishers Band */
         .publishers-band {
           background: transparent;
@@ -1400,59 +1220,6 @@ export default function Home() {
             flex-direction: column;
             gap: 1rem;
           }
-
-          /* CTA Section Mobile */
-          .cta-section {
-            padding: 3rem 1.5rem;
-          }
-
-          .cta-title {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-          }
-
-          .cta-description {
-            font-size: 1rem;
-            margin-bottom: 2rem;
-          }
-
-          .cta-button {
-            padding: 0.875rem 2rem;
-            font-size: 1rem;
-          }
-
-          /* Features Section Mobile */
-          .features-section {
-            padding: 3rem 1.5rem;
-          }
-
-          .features-title {
-            font-size: 2rem;
-            margin-bottom: 2rem;
-          }
-
-          .features-grid {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-          }
-
-          .feature-item {
-            padding: 1.5rem;
-          }
-
-          .feature-icon {
-            width: 50px;
-            height: 50px;
-            margin-bottom: 1rem;
-          }
-
-          .feature-name {
-            font-size: 1.1rem;
-          }
-
-          .feature-desc {
-            font-size: 0.9rem;
-          }
         }
 
         @media (max-width: 480px) {
@@ -1501,58 +1268,6 @@ export default function Home() {
 
           .feature-description {
             font-size: 0.9rem;
-          }
-
-          /* CTA Section Small Mobile */
-          .cta-section {
-            padding: 2.5rem 1rem;
-          }
-
-          .cta-title {
-            font-size: 1.75rem;
-            margin-bottom: 0.75rem;
-          }
-
-          .cta-description {
-            font-size: 0.95rem;
-            margin-bottom: 1.5rem;
-          }
-
-          .cta-button {
-            padding: 0.75rem 1.5rem;
-            font-size: 0.95rem;
-          }
-
-          /* Features Section Small Mobile */
-          .features-section {
-            padding: 2.5rem 1rem;
-          }
-
-          .features-title {
-            font-size: 1.75rem;
-            margin-bottom: 1.5rem;
-          }
-
-          .features-grid {
-            gap: 1.25rem;
-          }
-
-          .feature-item {
-            padding: 1.25rem;
-          }
-
-          .feature-icon {
-            width: 45px;
-            height: 45px;
-          }
-
-          .feature-name {
-            font-size: 1rem;
-            margin-bottom: 0.75rem;
-          }
-
-          .feature-desc {
-            font-size: 0.85rem;
           }
         }
 
@@ -1812,6 +1527,261 @@ export default function Home() {
           .social-btn {
             padding: 0.75rem;
             font-size: 0.9rem;
+          }
+        }
+
+        /* Call to Action Section */
+        .cta-section {
+          padding: 8rem 3rem;
+          text-align: center;
+          animation: slideInUp 0.8s ease-out 0.4s both;
+        }
+
+        @keyframes slideInUp {
+          from { opacity: 0; transform: translateY(40px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .cta-container {
+          max-width: 600px;
+          margin: 0 auto;
+        }
+
+        .cta-title {
+          font-size: 3rem;
+          font-weight: 700;
+          margin-bottom: 1.5rem;
+          color: white;
+          letter-spacing: -0.02em;
+          line-height: 1.1;
+        }
+
+        .cta-description {
+          font-size: 1.25rem;
+          color: rgba(255, 255, 255, 0.9);
+          margin-bottom: 2.5rem;
+          line-height: 1.6;
+          max-width: 500px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .cta-button {
+          background: linear-gradient(135deg, #ff6b35, #f7931e);
+          color: white;
+          border: none;
+          padding: 1.25rem 3rem;
+          border-radius: 50px;
+          font-size: 1.1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          font-family: 'Inter', sans-serif;
+          letter-spacing: -0.01em;
+        }
+
+        .cta-button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 15px 35px rgba(255, 107, 53, 0.4);
+          background: linear-gradient(135deg, #f7931e, #ff6b35);
+        }
+
+        .cta-button:active {
+          transform: translateY(0);
+        }
+
+        /* Features Section */
+        .features-section {
+          padding: 6rem 3rem 8rem;
+          background: rgba(255, 255, 255, 0.05);
+          backdrop-filter: blur(10px);
+          animation: slideInUp 0.8s ease-out 0.6s both;
+        }
+
+        .features-container {
+          max-width: 1200px;
+          margin: 0 auto;
+          text-align: center;
+        }
+
+        .features-title {
+          font-size: 2.75rem;
+          font-weight: 700;
+          color: white;
+          margin-bottom: 1rem;
+          letter-spacing: -0.02em;
+          line-height: 1.1;
+        }
+
+        .features-subtitle {
+          font-size: 1.2rem;
+          color: rgba(255, 255, 255, 0.8);
+          margin-bottom: 4rem;
+          max-width: 600px;
+          margin-left: auto;
+          margin-right: auto;
+          line-height: 1.5;
+        }
+
+        .features-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+          gap: 2.5rem;
+          margin-top: 3rem;
+        }
+
+        .feature-item {
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 20px;
+          padding: 2.5rem 2rem;
+          text-align: center;
+          transition: all 0.3s ease;
+          backdrop-filter: blur(10px);
+        }
+
+        .feature-item:hover {
+          transform: translateY(-5px);
+          background: rgba(255, 255, 255, 0.12);
+          border-color: rgba(255, 255, 255, 0.2);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+          font-size: 3rem;
+          margin-bottom: 1.5rem;
+          display: block;
+        }
+
+        .feature-item h3 {
+          font-size: 1.4rem;
+          font-weight: 600;
+          color: white;
+          margin-bottom: 1rem;
+          font-family: 'Inter', sans-serif;
+          letter-spacing: -0.01em;
+        }
+
+        .feature-item p {
+          font-size: 1rem;
+          color: rgba(255, 255, 255, 0.8);
+          line-height: 1.6;
+          font-family: 'Inter', sans-serif;
+        }
+
+        /* Responsive Design for New Sections */
+        @media (max-width: 768px) {
+          .cta-section {
+            padding: 5rem 2rem;
+          }
+
+          .cta-title {
+            font-size: 2.25rem;
+          }
+
+          .cta-description {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+          }
+
+          .cta-button {
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+          }
+
+          .features-section {
+            padding: 4rem 2rem 6rem;
+          }
+
+          .features-title {
+            font-size: 2.25rem;
+          }
+
+          .features-subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+          }
+
+          .features-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+          }
+
+          .feature-item {
+            padding: 2rem 1.5rem;
+          }
+
+          .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+          }
+
+          .feature-item h3 {
+            font-size: 1.25rem;
+          }
+
+          .feature-item p {
+            font-size: 0.95rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .cta-section {
+            padding: 4rem 1.5rem;
+          }
+
+          .cta-title {
+            font-size: 1.9rem;
+          }
+
+          .cta-description {
+            font-size: 1rem;
+          }
+
+          .cta-button {
+            padding: 0.875rem 2rem;
+            font-size: 0.95rem;
+          }
+
+          .features-section {
+            padding: 3rem 1.5rem 5rem;
+          }
+
+          .features-title {
+            font-size: 1.9rem;
+          }
+
+          .features-subtitle {
+            font-size: 1rem;
+          }
+
+          .feature-item {
+            padding: 1.5rem 1rem;
+          }
+
+          .feature-icon {
+            font-size: 2.25rem;
+          }
+
+          .feature-item h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+          }
+        }
+
+        /* Tablet Specific Adjustments */
+        @media (min-width: 769px) and (max-width: 1024px) {
+          .features-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+          }
+
+          .cta-title {
+            font-size: 2.75rem;
+          }
+
+          .features-title {
+            font-size: 2.5rem;
           }
         }
       `}</style>
