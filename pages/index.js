@@ -970,8 +970,12 @@ export default function Home() {
           text-align: center;
         }
 
-        .testimonial-box::before,
-        .testimonial-box::after {
+        .testimonial-content {
+          position: relative;
+        }
+
+        .testimonial-content::before,
+        .testimonial-content::after {
           content: '';
           position: absolute;
           font-size: 12rem;
@@ -982,16 +986,16 @@ export default function Home() {
           pointer-events: none;
         }
 
-        .testimonial-box::before {
+        .testimonial-content::before {
           content: '"';
-          top: 0;
-          left: -6rem;
+          top: -3rem;
+          left: -3rem;
         }
 
-        .testimonial-box::after {
+        .testimonial-content::after {
           content: '"';
-          bottom: 0;
-          right: -6rem;
+          bottom: -3rem;
+          right: -3rem;
         }
 
         .testimonial-content p {
@@ -1047,19 +1051,19 @@ export default function Home() {
             font-size: 0.9rem;
           }
           
-          .testimonial-box::before,
-          .testimonial-box::after {
+          .testimonial-content::before,
+          .testimonial-content::after {
             font-size: 8rem;
           }
           
-          .testimonial-box::before {
-            top: 0;
-            left: -3rem;
+          .testimonial-content::before {
+            top: -2rem;
+            left: -1.5rem;
           }
           
-          .testimonial-box::after {
-            bottom: 0;
-            right: -3rem;
+          .testimonial-content::after {
+            bottom: -2rem;
+            right: -1.5rem;
           }
         }
 
