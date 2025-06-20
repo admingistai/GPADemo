@@ -1,5 +1,5 @@
 (function() {
-    'use strict';
+  'use strict';
 
     // ================================
     // CONFIGURATION - Add your API key here
@@ -35,7 +35,7 @@
         
         // Last resort fallback - this should rarely be used
         console.warn('[GistWidget] Could not auto-detect backend URL, using fallback');
-        return 'https://gpademo.vercel.app';
+        return 'https://gpa-topaz.vercel.app';
     }
 
     const BACKEND_BASE_URL = getBackendBaseUrl();
@@ -55,33 +55,12 @@
     // ================================
     // Configure which tools are enabled/disabled
     // Can be modified via console: TOOLS_CONFIG.remix = false
-    
-    // Parse configuration from URL parameters
-    function parseConfigFromUrl() {
-        try {
-            const urlParams = new URLSearchParams(window.location.search);
-            const configParam = urlParams.get('config');
-            if (configParam) {
-                const config = JSON.parse(decodeURIComponent(configParam));
-                console.log('[GistWidget] Parsed config from URL:', config);
-                return config;
-            }
-        } catch (error) {
-            console.warn('[GistWidget] Failed to parse config from URL:', error);
-        }
-        return null;
-    }
-    
-    // Get initial configuration
-    const urlConfig = parseConfigFromUrl();
-    const TOOLS_CONFIG = {  
+    const TOOLS_CONFIG = {
         ask: true,      // Always enabled - core functionality
-        gist: urlConfig?.gist !== undefined ? urlConfig.gist : true,     // Summary tool
-        remix: urlConfig?.remix !== undefined ? urlConfig.remix : true,    // Content remix tool  
-        share: urlConfig?.share !== undefined ? urlConfig.share : true     // Share functionality
+        gist: true,     // Summary tool
+        remix: true,    // Content remix tool  
+        share: true     // Share functionality
     };
-    
-    console.log('[GistWidget] Applied tools configuration:', TOOLS_CONFIG);
     
     // Expose TOOLS_CONFIG globally for console access
     window.TOOLS_CONFIG = TOOLS_CONFIG;
@@ -104,175 +83,58 @@
         shadows: 'drop-shadow(0 8px 25px rgba(0, 0, 0, 0.15))',
         accentColor: '#ec4899'
     };
-
-    // Domain-specific customization for gpademo.vercel.app
-    function applyDomainSpecificStyling() {
-        const currentHost = window.location.hostname;
-        const currentPath = window.location.pathname;
-        
-        // Apply custom favicon for gpademo.vercel.app
-        if (currentHost === 'gpademo.vercel.app' || currentHost === 'localhost') {
-            console.log('[GistWidget] Applying gpademo.vercel.app favicon customization');
-            console.log('[GistWidget] Current host:', currentHost, 'Current path:', currentPath);
-            
-            // Force use of the favicon.png from public folder
-            websiteStyling = {
-                ...websiteStyling,
-                faviconUrl: '/favicon.png',
-                forceGistStyling: true
-            };
-            
-            console.log('[GistWidget] Applied gpademo.vercel.app favicon styling:', {
-                faviconUrl: websiteStyling.faviconUrl,
-                forceGistStyling: websiteStyling.forceGistStyling
-            });
-        } else {
-            console.log('[GistWidget] Using default styling for other domains');
-            console.log('[GistWidget] Current host:', currentHost, 'Current path:', currentPath);
-        }
-    }
-
-    // Apply domain-specific styling immediately
-    applyDomainSpecificStyling();
     
-    // Extract website favicon and logo with comprehensive tiered detection
-    async function extractLogosAndIcons() {
+    // Extract website favicon and logo with reliable, simple detection
+    function extractLogosAndIcons() {
         const results = {
             favicon: null,
             logo: null,
-            icons: [],
-            foundImageTier: null // Track which tier found the image
+            icons: []
         };
         
-        console.log('[GistWidget] Starting tiered favicon/logo detection...');
-        
-        // TIER 1: DIRECT FAVICON EXTRACTION - Highest priority
-        console.log('[GistWidget] TIER 1: Checking for direct favicons...');
-        const faviconCandidates = [];
-        
-        // High-priority favicon sources with size scoring
+        // 1. FAVICON EXTRACTION - Most reliable source for brand identity
         const faviconSelectors = [
-            // Apple touch icons (usually high quality)
-            { selector: 'link[rel="apple-touch-icon"][sizes="180x180"]', priority: 100, expectedSize: 180 },
-            { selector: 'link[rel="apple-touch-icon"][sizes="192x192"]', priority: 95, expectedSize: 192 },
-            { selector: 'link[rel="apple-touch-icon"][sizes="167x167"]', priority: 90, expectedSize: 167 },
-            { selector: 'link[rel="apple-touch-icon"][sizes="152x152"]', priority: 85, expectedSize: 152 },
-            { selector: 'link[rel="apple-touch-icon"][sizes="120x120"]', priority: 80, expectedSize: 120 },
-            { selector: 'link[rel="apple-touch-icon"]', priority: 75, expectedSize: 180 },
-            
-            // Modern favicon formats
-            { selector: 'link[rel="icon"][type="image/svg+xml"]', priority: 70, expectedSize: 'vector' },
-            { selector: 'link[rel="icon"][sizes="192x192"]', priority: 90, expectedSize: 192 },
-            { selector: 'link[rel="icon"][sizes="180x180"]', priority: 85, expectedSize: 180 },
-            { selector: 'link[rel="icon"][sizes="96x96"]', priority: 65, expectedSize: 96 },
-            { selector: 'link[rel="icon"][sizes="48x48"]', priority: 60, expectedSize: 48 },
-            { selector: 'link[rel="icon"][sizes="32x32"]', priority: 55, expectedSize: 32 },
-            { selector: 'link[rel="icon"][sizes="16x16"]', priority: 50, expectedSize: 16 },
-            
-            // Fallback favicon sources
-            { selector: 'link[rel="icon"]', priority: 45, expectedSize: 32 },
-            { selector: 'link[rel="shortcut icon"]', priority: 40, expectedSize: 32 },
-            
-            // Microsoft tiles
-            { selector: 'meta[name="msapplication-TileImage"]', priority: 35, expectedSize: 144, isMetaContent: true },
-            
-            // Mask icons (Safari pinned tabs)
-            { selector: 'link[rel="mask-icon"]', priority: 30, expectedSize: 'vector' }
+            'link[rel="apple-touch-icon"][sizes="180x180"]', // High res iPhone
+            'link[rel="apple-touch-icon"][sizes="192x192"]', // High res Android
+            'link[rel="apple-touch-icon"]', // General Apple touch icon
+            'link[rel="icon"][sizes*="192"]', // High res favicon
+            'link[rel="icon"][sizes*="180"]',
+            'link[rel="icon"][sizes*="96"]',
+            'link[rel="icon"]',
+            'link[rel="shortcut icon"]'
         ];
         
-        // Collect all favicon candidates with scoring
-        faviconSelectors.forEach(({ selector, priority, expectedSize, isMetaContent }) => {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(element => {
-                let url = isMetaContent ? element.content : element.href;
-                
-                if (url && isValidImageUrl(url)) {
-                    // Convert relative URLs to absolute
-                    if (url.startsWith('/')) {
-                        url = window.location.origin + url;
-                    } else if (url.startsWith('./') || !url.includes('://')) {
-                        url = new URL(url, window.location.href).href;
-                    }
-                    
-                    faviconCandidates.push({
-                        url: url,
-                        priority: priority,
-                        expectedSize: expectedSize,
-                        element: element,
-                        selector: selector
-                    });
-                }
-            });
-        });
-        
-        // Add common favicon fallback locations 
-        const fallbackPaths = [
-            '/favicon.ico',
-            '/favicon.png', 
-            '/favicon.svg',
-            '/assets/favicon.ico',
-            '/assets/images/favicon.ico',
-            '/images/favicon.ico',
-            '/static/favicon.ico',
-            '/public/favicon.ico'
-        ];
-        
-        fallbackPaths.forEach((path, index) => {
-            faviconCandidates.push({
-                url: window.location.origin + path,
-                priority: 25 - index, // Decreasing priority
-                expectedSize: 32,
-                element: null,
-                selector: 'fallback-' + path.replace('/', '')
-            });
-        });
-        
-        // Sort candidates by priority and test them
-        faviconCandidates.sort((a, b) => b.priority - a.priority);
-        
-        // Test favicon candidates and select the first working one
-        for (const candidate of faviconCandidates) {
-            const isWorking = await testImageUrl(candidate.url);
-            if (isWorking) {
-                results.favicon = candidate.url;
-                results.foundImageTier = 'TIER 1: Direct Favicon';
-                console.log('[GistWidget] ✓ Found working favicon:', candidate.url, 'Priority:', candidate.priority);
+        for (const selector of faviconSelectors) {
+            const element = document.querySelector(selector);
+            if (element && element.href && isValidImageUrl(element.href)) {
+                results.favicon = element.href;
                 break;
             }
         }
         
-        // TIER 2: META TAG LOGO EXTRACTION
-        if (!results.favicon) {
-            console.log('[GistWidget] TIER 2: Checking for meta tag logos...');
-            const metaImageSelectors = [
-                'meta[property="og:logo"]', // Explicit logo
-                'meta[name="twitter:image"]', // Twitter card image
-                'meta[property="twitter:image"]',
-                'meta[property="og:image"]' // Facebook Open Graph image
-            ];
-            
-            for (const selector of metaImageSelectors) {
-                const meta = document.querySelector(selector);
-                if (meta && meta.content && isValidImageUrl(meta.content)) {
-                    const isWorking = await testImageUrl(meta.content);
-                    if (isWorking) {
-                        const imageUrl = meta.content.toLowerCase();
-                        // Prefer explicit logos, but accept any working image from meta tags
-                        if (imageUrl.includes('logo') || imageUrl.includes('brand') || 
-                            selector === 'meta[property="og:logo"]' || !results.logo) {
-                            results.logo = meta.content;
-                            results.foundImageTier = 'TIER 2: Meta Tag Logo';
-                            console.log('[GistWidget] ✓ Found working meta logo:', meta.content);
-                            break;
-                        }
-                    }
+        // 2. META TAG EXTRACTION - Social media images often represent brand well
+        const metaImageSelectors = [
+            'meta[property="og:logo"]', // Explicit logo
+            'meta[name="twitter:image"]', // Twitter card image
+            'meta[property="twitter:image"]',
+            'meta[property="og:image"]' // Facebook Open Graph image (but might be article images)
+        ];
+        
+        for (const selector of metaImageSelectors) {
+            const meta = document.querySelector(selector);
+            if (meta && meta.content && isValidImageUrl(meta.content)) {
+                const imageUrl = meta.content.toLowerCase();
+                // Only use if it looks like a logo (has "logo" in name or is small enough)
+                if (imageUrl.includes('logo') || imageUrl.includes('brand') || 
+                    selector === 'meta[property="og:logo"]') {
+                    results.logo = meta.content;
+                    break;
                 }
             }
         }
         
-        // TIER 3: URL-BASED LOGO DETECTION
-        if (!results.favicon && !results.logo) {
-            console.log('[GistWidget] TIER 3: Checking for URL-based logos...');
+        // 3. URL-BASED LOGO DETECTION - Look for logo in filename/path first
+        if (!results.logo) {
             const allImages = document.querySelectorAll('img');
             const logoUrlCandidates = [];
             
@@ -294,10 +156,6 @@
                     // Medium priority: header images
                     else if (src.includes('/header') || src.includes('header.')) {
                         priority = 70;
-                    }
-                    // Lower priority: any image that might be a logo
-                    else if (src.includes('/icon') || src.includes('icon.') || src.includes('symbol')) {
-                        priority = 50;
                     }
                     
                     if (priority > 0) {
@@ -331,21 +189,13 @@
                 return bScore - aScore;
             });
             
-            // Test URL-based logo candidates
-            for (const candidate of logoUrlCandidates) {
-                const isWorking = await testImageUrl(candidate.src);
-                if (isWorking) {
-                    results.logo = candidate.src;
-                    results.foundImageTier = 'TIER 3: URL-based Logo';
-                    console.log('[GistWidget] ✓ Found working URL-based logo:', candidate.src);
-                    break;
-                }
+            if (logoUrlCandidates.length > 0) {
+                results.logo = logoUrlCandidates[0].src;
             }
         }
         
-        // TIER 4: STRUCTURAL LOGO DETECTION
-        if (!results.favicon && !results.logo) {
-            console.log('[GistWidget] TIER 4: Checking for structural logos...');
+        // 4. STRUCTURAL LOGO DETECTION - Most reliable DOM patterns
+        if (!results.logo) {
             const structuralLogoSelectors = [
                 // Highest confidence: explicit logo classes
                 '.logo img[src]',
@@ -373,7 +223,7 @@
             ];
             
             for (const selector of structuralLogoSelectors) {
-                const element = document.querySelector(selector);
+            const element = document.querySelector(selector);
                 if (element && element.src && isValidImageUrl(element.src)) {
                     const rect = element.getBoundingClientRect();
                     const width = element.width || rect.width;
@@ -385,146 +235,23 @@
                     const isVisible = rect.width > 0 && rect.height > 0;
                     
                     if (isReasonablePosition && isReasonableSize && isVisible) {
-                        const isWorking = await testImageUrl(element.src);
-                        if (isWorking) {
-                            results.logo = element.src;
-                            results.foundImageTier = 'TIER 4: Structural Logo';
-                            console.log('[GistWidget] ✓ Found working structural logo:', element.src);
-                            break;
-                        }
+                results.logo = element.src;
+                break;
                     }
                 }
             }
         }
         
-        // TIER 5: HIGH-QUALITY FAVICON AS LOGO
+        // 5. FALLBACK TO HIGH-QUALITY FAVICON
         if (!results.logo && results.favicon) {
-            console.log('[GistWidget] TIER 5: Using high-quality favicon as logo...');
+            // Use favicon as logo if it's high quality
             const favicon = results.favicon.toLowerCase();
             if (favicon.includes('192') || favicon.includes('180') || favicon.includes('apple-touch-icon')) {
                 results.logo = results.favicon;
-                results.foundImageTier = 'TIER 5: High-Quality Favicon';
-                console.log('[GistWidget] ✓ Using high-quality favicon as logo:', results.favicon);
             }
         }
         
-        // TIER 6: EXPANDED IMAGE SEARCH - Look for ANY reasonable images
-        if (!results.favicon && !results.logo) {
-            console.log('[GistWidget] TIER 6: Checking for any reasonable images...');
-            const allImages = document.querySelectorAll('img[src]');
-            const reasonableImageCandidates = [];
-            
-            allImages.forEach(img => {
-                if (img.src && isValidImageUrl(img.src)) {
-                    const rect = img.getBoundingClientRect();
-                    const width = img.width || rect.width;
-                    const height = img.height || rect.height;
-                    const alt = (img.alt || '').toLowerCase();
-                    const className = (img.className || '').toLowerCase();
-                    const src = img.src.toLowerCase();
-                    
-                    // Look for any image that could potentially represent the brand
-                    let score = 0;
-                    
-                    // Position scoring - header area images are better
-                    if (rect.top < 200) score += 30;
-                    if (rect.left < 600) score += 20;
-                    
-                    // Size scoring - reasonable logo sizes
-                    if (width > 30 && width < 400 && height > 20 && height < 200) score += 25;
-                    
-                    // Content scoring - look for brand-related terms
-                    if (alt.includes('company') || alt.includes('brand') || alt.includes('site') || 
-                        className.includes('brand') || className.includes('site') ||
-                        src.includes('company') || src.includes('brand') || src.includes('site')) {
-                        score += 20;
-                    }
-                    
-                    // Avoid obvious content images
-                    if (alt.includes('article') || alt.includes('post') || alt.includes('content') ||
-                        src.includes('article') || src.includes('post') || src.includes('content') ||
-                        width > 500 || height > 300) {
-                        score -= 30;
-                    }
-                    
-                    // Only consider images with a reasonable score
-                    if (score > 20) {
-                        reasonableImageCandidates.push({
-                            src: img.src,
-                            score: score,
-                            width: width,
-                            height: height,
-                            alt: alt
-                        });
-                    }
-                }
-            });
-            
-            // Sort by score and test candidates
-            reasonableImageCandidates.sort((a, b) => b.score - a.score);
-            
-            for (const candidate of reasonableImageCandidates.slice(0, 5)) { // Test top 5 candidates
-                const isWorking = await testImageUrl(candidate.src);
-                if (isWorking) {
-                    results.logo = candidate.src;
-                    results.foundImageTier = 'TIER 6: Expanded Image Search';
-                    console.log('[GistWidget] ✓ Found working image from expanded search:', candidate.src, 'Score:', candidate.score);
-                    break;
-                }
-            }
-        }
-        
-        // TIER 7: CHECK FOR EXISTING GIST-LOGO.PNG ON THE WEBSITE
-        if (!results.favicon && !results.logo) {
-            console.log('[GistWidget] TIER 7: Checking for existing gist-logo.png on website...');
-            // First check if there's already an image with gist-logo.png in the DOM
-            const existingGistLogo = document.querySelector('img[src*="gist-logo.png"]');
-            if (existingGistLogo && existingGistLogo.src) {
-                const isWorking = await testImageUrl(existingGistLogo.src);
-                if (isWorking) {
-                    results.logo = existingGistLogo.src;
-                    results.foundImageTier = 'TIER 7: Existing Gist Logo';
-                    console.log('[GistWidget] ✓ Found existing gist-logo.png in DOM:', existingGistLogo.src);
-                }
-            } else {
-                // Check common paths for gist-logo.png
-                const gistLogoPaths = [
-                    '/gist-logo.png',
-                    '/assets/gist-logo.png',
-                    '/images/gist-logo.png',
-                    '/static/gist-logo.png',
-                    '/public/gist-logo.png',
-                    '/uploads/gist-logo.png'
-                ];
-                
-                for (const path of gistLogoPaths) {
-                    const gistLogoUrl = window.location.origin + path;
-                    const isWorking = await testImageUrl(gistLogoUrl);
-                    if (isWorking) {
-                        results.logo = gistLogoUrl;
-                        results.foundImageTier = 'TIER 7: Website Gist Logo';
-                        console.log('[GistWidget] ✓ Found gist-logo.png on website:', gistLogoUrl);
-                        break;
-                    }
-                }
-            }
-        }
-        
-        // TIER 8: ABSOLUTE FALLBACK - Use backend gist-logo.png
-        if (!results.favicon && !results.logo) {
-            console.log('[GistWidget] TIER 8: Using absolute fallback gist-logo.png...');
-            const backendBaseUrl = getBackendBaseUrl();
-            results.logo = `${backendBaseUrl}/gist-logo.png`;
-            results.foundImageTier = 'TIER 8: Absolute Fallback';
-            console.log('[GistWidget] ✓ Using fallback gist-logo.png:', results.logo);
-        }
-        
-        // Set favicon to logo if no favicon was found
-        if (!results.favicon && results.logo) {
-            results.favicon = results.logo;
-        }
-        
-        // COLLECT ALL POTENTIAL LOGO CANDIDATES FOR REFERENCE
+        // 6. COLLECT ALL POTENTIAL LOGO CANDIDATES
         const allImages = document.querySelectorAll('img[src]');
         allImages.forEach(img => {
             if (img.src && isValidImageUrl(img.src)) {
@@ -538,108 +265,33 @@
                     src.includes('logo') ||
                     src.includes('brand')) {
                     
-                    results.icons.push({
-                        src: img.src,
+                results.icons.push({
+                    src: img.src,
                         alt: img.alt || '',
-                        width: img.width,
-                        height: img.height
-                    });
+                    width: img.width,
+                    height: img.height
+                });
                 }
             }
         });
         
-        console.log('[GistWidget] Final results:', {
-            favicon: results.favicon,
-            logo: results.logo,
-            foundImageTier: results.foundImageTier,
-            totalIcons: results.icons.length
-        });
-        
         return results;
-    }
-    
-    // Helper function to test if an image URL actually works
-    async function testImageUrl(url) {
-        if (!url || typeof url !== 'string') return false;
-        
-        return new Promise((resolve) => {
-            const img = new Image();
-            const timeout = setTimeout(() => {
-                resolve(false);
-            }, 3000); // 3 second timeout
-            
-            img.onload = () => {
-                clearTimeout(timeout);
-                // Additional check: make sure it's not a 1x1 tracking pixel
-                resolve(img.width > 1 && img.height > 1);
-            };
-            
-            img.onerror = () => {
-                clearTimeout(timeout);
-                resolve(false);
-            };
-            
-            img.src = url;
-        });
     }
     
     // Helper function to validate image URLs
     function isValidImageUrl(url) {
         if (!url || typeof url !== 'string') return false;
         
-        // Clean the URL
-        url = url.trim();
+        // Skip data URLs, SVGs embedded as data, and suspicious URLs
+        if (url.startsWith('data:')) return false;
+        if (url.includes('base64')) return false;
+        if (url.length > 1000) return false; // Suspiciously long URLs
         
-        // Skip empty URLs
-        if (url.length === 0) return false;
+        // Check for common image extensions or image-serving domains
+        const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg)(\?|$)/i;
+        const imageServingDomains = /(cloudfront|cloudinary|imgix|amazonaws|googleusercontent|gravatar)/i;
         
-        // Skip data URLs (but allow SVG data URLs for favicons in some cases)
-        if (url.startsWith('data:')) {
-            // Allow SVG data URLs for favicons as they're common
-            return url.startsWith('data:image/svg+xml');
-        }
-        
-        // Skip suspiciously long URLs (except for legitimate image services)
-        if (url.length > 2000) return false;
-        
-        // Allow relative URLs (they'll be converted to absolute)
-        if (url.startsWith('/') || url.startsWith('./') || url.startsWith('../')) {
-            return true;
-        }
-        
-        // Check for valid URL protocol
-        if (!url.includes('://') && !url.startsWith('/')) {
-            // Might be a relative URL without ./
-            return true;
-        }
-        
-        // Validate URL protocol
-        if (!url.match(/^https?:\/\//i)) {
-            return false;
-        }
-        
-        // Check for common image extensions
-        const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|ico|bmp|tiff?)(\?.*)?$/i;
-        
-        // Check for image-serving domains and CDNs
-        const imageServingDomains = /(cloudfront|cloudinary|imgix|amazonaws|googleusercontent|gravatar|imgur|flickr|unsplash|pexels|shutterstock|gettyimages|istockphoto|akamaihd|fastly|jsdelivr|unpkg|cdnjs)/i;
-        
-        // Check for logo/brand indicators in URL
-        const logoIndicators = /(\/logo|\/brand|\/icon|favicon|apple-touch|android-chrome|mstile)/i;
-        
-        // Check for WordPress/CMS upload patterns
-        const cmsPatterns = /(\/wp-content\/uploads|\/uploads|\/media|\/assets|\/images)/i;
-        
-        // Allow if it matches any of these patterns
-        return imageExtensions.test(url) || 
-               imageServingDomains.test(url) || 
-               logoIndicators.test(url) ||
-               cmsPatterns.test(url) ||
-               // Allow URLs that end with image-like query parameters
-               /\.(jpg|jpeg|png|gif|webp|svg|ico)$/i.test(url.split('?')[0]) ||
-               // Allow common favicon paths
-               url.includes('favicon') ||
-               url.endsWith('/favicon.ico');
+        return imageExtensions.test(url) || imageServingDomains.test(url) || url.includes('/logo') || url.includes('/brand');
     }
     
     // Extract font families from the website
@@ -737,7 +389,7 @@
             }
         });
         
-            return {
+        return {
             backgrounds: Array.from(colors.backgrounds),
             textColors: Array.from(colors.textColors),
             borderColors: Array.from(colors.borderColors),
@@ -779,12 +431,12 @@
     }
     
     // Main function to analyze website styling
-    async function analyzeWebsiteStyling() {
+    function analyzeWebsiteStyling() {
         log('info', 'Starting website styling analysis...');
         
         try {
             // Extract logos and icons
-            const logos = await extractLogosAndIcons();
+            const logos = extractLogosAndIcons();
             
             // Extract font family
             const fontFamily = extractFontFamilies();
@@ -951,58 +603,22 @@
             // Regenerate color variations with the final primary color
             const finalColorVariations = generateColorVariations(primaryColor);
             
-            // Update website styling object, preserving domain-specific customizations
-            const existingCustomizations = {
-                logoUrl: websiteStyling.logoUrl,
-                faviconUrl: websiteStyling.faviconUrl,
-                primaryColor: websiteStyling.primaryColor,
-                secondaryColor: websiteStyling.secondaryColor,
-                accentColor: websiteStyling.accentColor,
-                forceDefaultFavicon: websiteStyling.forceDefaultFavicon,
-    
-                forceGistStyling: websiteStyling.forceGistStyling
+            // Update website styling object
+            websiteStyling = {
+                primaryColor: primaryColor || '#6366f1',
+                secondaryColor: finalColorVariations.secondary,
+                backgroundColor: backgroundColor || '#ffffff',
+                textColor: textColor || '#374151',
+                fontFamily: fontFamily || '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                borderRadius: borderRadius || '16px',
+                logoUrl: logos.logo,
+                faviconUrl: logos.favicon,
+                brandColors: [primaryColor, finalColorVariations.secondary, finalColorVariations.accent, finalColorVariations.brand].filter(Boolean),
+                shadows: 'drop-shadow(0 8px 25px rgba(0, 0, 0, 0.15))',
+                accentColor: finalColorVariations.accent,
+                rawColorScheme: colorScheme,
+                availableIcons: logos.icons
             };
-            
-            // If forceGistStyling is true, preserve all the custom styling
-            if (existingCustomizations.forceGistStyling) {
-                websiteStyling = {
-                    ...websiteStyling,
-                    primaryColor: existingCustomizations.primaryColor,
-                    secondaryColor: existingCustomizations.secondaryColor,
-                    accentColor: existingCustomizations.accentColor,
-                    backgroundColor: backgroundColor || '#ffffff',
-                    textColor: textColor || '#374151',
-                    fontFamily: fontFamily || '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                    borderRadius: borderRadius || '16px',
-                    logoUrl: existingCustomizations.logoUrl,
-                    faviconUrl: existingCustomizations.faviconUrl,
-                    brandColors: [existingCustomizations.primaryColor, existingCustomizations.secondaryColor, existingCustomizations.accentColor].filter(Boolean),
-                    shadows: 'drop-shadow(0 8px 25px rgba(0, 0, 0, 0.15))',
-                    rawColorScheme: colorScheme,
-                    availableIcons: logos.icons,
-                    forceDefaultFavicon: existingCustomizations.forceDefaultFavicon,
-    
-                    forceGistStyling: existingCustomizations.forceGistStyling
-                };
-            } else {
-                websiteStyling = {
-                    primaryColor: primaryColor || '#6366f1',
-                    secondaryColor: finalColorVariations.secondary,
-                    backgroundColor: backgroundColor || '#ffffff',
-                    textColor: textColor || '#374151',
-                    fontFamily: fontFamily || '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                    borderRadius: borderRadius || '16px',
-                    logoUrl: existingCustomizations.logoUrl || logos.logo,
-                    faviconUrl: existingCustomizations.faviconUrl || logos.favicon,
-                    brandColors: [primaryColor, finalColorVariations.secondary, finalColorVariations.accent, finalColorVariations.brand].filter(Boolean),
-                    shadows: 'drop-shadow(0 8px 25px rgba(0, 0, 0, 0.15))',
-                    accentColor: finalColorVariations.accent,
-                    rawColorScheme: colorScheme,
-                    availableIcons: logos.icons,
-                    forceDefaultFavicon: existingCustomizations.forceDefaultFavicon,
-    
-                };
-            }
             
             log('info', 'Website styling analysis complete', websiteStyling);
             
@@ -1032,7 +648,7 @@
             }));
             
             return websiteStyling;
-            } catch (error) {
+        } catch (error) {
             log('error', 'Failed to analyze website styling', { error: error.message });
             return websiteStyling; // Return defaults
         }
@@ -1044,27 +660,17 @@
             primary: styling.primaryColor,
             secondary: styling.secondaryColor,
             accent: styling.accentColor,
-            brand: styling.brandColors[0],
-
+            brand: styling.brandColors[0]
         });
         
-        // Handle rainbow gradients for gpademo.vercel.app
-        let primaryColor = styling.primaryColor || '#6366f1';
-        let rgba40, rgba0;
-        
-        if (styling.isRainbowMode) {
-            // For rainbow mode, use a single color for rgba calculations
-            rgba40 = 'rgba(255, 107, 53, 0.4)'; // Orange-ish with transparency
-            rgba0 = 'rgba(255, 107, 53, 0)';
-        } else {
-            // Extract RGB values for rgba variations (normal mode)
-            const hex = primaryColor.replace('#', '');
-            const r = parseInt(hex.substr(0, 2), 16);
-            const g = parseInt(hex.substr(2, 2), 16);
-            const b = parseInt(hex.substr(4, 2), 16);
-            rgba40 = `rgba(${r}, ${g}, ${b}, 0.4)`;
-            rgba0 = `rgba(${r}, ${g}, ${b}, 0)`;
-        }
+        // Extract RGB values for rgba variations
+        const primaryColor = styling.primaryColor || '#6366f1';
+        const hex = primaryColor.replace('#', '');
+        const r = parseInt(hex.substr(0, 2), 16);
+        const g = parseInt(hex.substr(2, 2), 16);
+        const b = parseInt(hex.substr(4, 2), 16);
+        const rgba40 = `rgba(${r}, ${g}, ${b}, 0.4)`;
+        const rgba0 = `rgba(${r}, ${g}, ${b}, 0)`;
         
         // Ensure we have a font family - fallback to Comic Sans if detection failed
         const widgetFont = styling.fontFamily || '"Comic Sans MS", cursive';
@@ -1158,7 +764,7 @@
                 justify-content: center;
                 cursor: pointer;
                 transition: all 0.2s ease;
-                color: white;
+        color: white;
             }
             
             .gist-pill-submit:hover {
@@ -1177,9 +783,7 @@
                 opacity: 1;
                 transform: scale(1) translateX(0);
                 transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-
             }
-
             ` : `
             .gist-pill-logo {
                 width: 24px;
@@ -1328,9 +932,9 @@
      }
      
      // Function to update widget styling dynamically
-     async function updateWidgetStyling(shadowRoot) {
+     function updateWidgetStyling(shadowRoot) {
          try {
-             const newStyling = await analyzeWebsiteStyling();
+             const newStyling = analyzeWebsiteStyling();
              const websiteType = detectWebsiteType();
              const enhancedStyling = getEnhancedStylingForType(newStyling, websiteType);
              
@@ -1354,7 +958,7 @@
     window.__gistWidgetLoaded = true;
 
     // Create shadow DOM container to avoid style conflicts
-    async function createWidget() {
+    function createWidget() {
         const widgetContainer = document.createElement('div');
         widgetContainer.id = 'gist-widget-container';
         
@@ -1362,7 +966,7 @@
         const shadowRoot = widgetContainer.attachShadow({ mode: 'closed' });
         
         // Analyze website styling first
-        const extractedStyling = await analyzeWebsiteStyling();
+        const extractedStyling = analyzeWebsiteStyling();
         
         // Detect website type and enhance styling
         const websiteType = detectWebsiteType();
@@ -2199,164 +1803,6 @@
                     transform: scale(0.95);
                 }
                 
-                /* Secret settings button styling */
-                .gist-secret-settings-btn {
-                    position: absolute;
-                    top: 8px;
-                    left: 8px;
-                    width: 24px;
-                    height: 24px;
-                    border-radius: 50%;
-                    background: rgba(107, 114, 128, 0.05);
-                    border: none;
-                    color: #9ca3af;
-                    font-size: 12px;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    transition: all 0.2s ease;
-                    z-index: 10;
-                    line-height: 1;
-                    opacity: 0;
-                }
-                
-                .gist-secret-settings-btn:hover {
-                    background: rgba(107, 114, 128, 0.15);
-                    color: #6b7280;
-                    transform: scale(1.1) rotate(90deg);
-                    opacity: 1;
-                }
-                
-                .gist-secret-settings-btn:active {
-                    transform: scale(0.95) rotate(90deg);
-                }
-                
-                /* Settings menu styling */
-                .gist-settings-menu {
-                    padding: 16px;
-                    background: white;
-                    border-radius: 14.5px;
-                    font-family: inherit;
-                }
-                
-                .gist-settings-header {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    margin-bottom: 20px;
-                    padding-bottom: 12px;
-                    border-bottom: 1px solid #e2e8f0;
-                }
-                
-                .gist-settings-title {
-                    font-size: 16px;
-                    font-weight: 600;
-                    color: #374151;
-                    margin: 0;
-                }
-                
-                .gist-settings-close {
-                    background: none;
-                    border: none;
-                    color: #9ca3af;
-                    font-size: 14px;
-                    cursor: pointer;
-                    padding: 4px;
-                }
-                
-                .gist-settings-close:hover {
-                    color: #6b7280;
-                }
-                
-                .gist-settings-section {
-                    margin-bottom: 20px;
-                }
-                
-                .gist-settings-section:last-child {
-                    margin-bottom: 0;
-                }
-                
-                .gist-settings-section-title {
-                    font-size: 14px;
-                    font-weight: 600;
-                    color: #374151;
-                    margin-bottom: 12px;
-                }
-                
-                .gist-settings-option {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    padding: 8px 0;
-                    border-bottom: 1px solid #f1f5f9;
-                }
-                
-                .gist-settings-option:last-child {
-                    border-bottom: none;
-                }
-                
-                .gist-settings-option-label {
-                    font-size: 13px;
-                    color: #374151;
-                    flex: 1;
-                }
-                
-                .gist-settings-toggle {
-                    width: 36px;
-                    height: 20px;
-                    background: #e2e8f0;
-                    border-radius: 10px;
-                    border: none;
-                    position: relative;
-                    cursor: pointer;
-                    transition: background-color 0.2s ease;
-                }
-                
-                .gist-settings-toggle.enabled {
-                    background: #22c55e;
-                }
-                
-                .gist-settings-toggle::after {
-                    content: '';
-                    position: absolute;
-                    top: 2px;
-                    left: 2px;
-                    width: 16px;
-                    height: 16px;
-                    background: white;
-                    border-radius: 50%;
-                    transition: transform 0.2s ease;
-                }
-                
-                .gist-settings-toggle.enabled::after {
-                    transform: translateX(16px);
-                }
-                
-                .gist-color-picker {
-                    display: flex;
-                    gap: 8px;
-                    flex-wrap: wrap;
-                    margin-top: 8px;
-                }
-                
-                .gist-color-option {
-                    width: 32px;
-                    height: 32px;
-                    border-radius: 8px;
-                    border: 2px solid transparent;
-                    cursor: pointer;
-                    transition: all 0.2s ease;
-                }
-                
-                .gist-color-option:hover {
-                    transform: scale(1.1);
-                }
-                
-                .gist-color-option.selected {
-                    border-color: #374151;
-                    transform: scale(1.1);
-                }
 
                 
                 /* Desktop mode styles */
@@ -3234,7 +2680,7 @@
                 
                 .gist-follow-up-header h4 {
                     margin: 0;
-                        font-size: 16px;
+                    font-size: 16px;
                     font-weight: 600;
                     color: #1f2937;
                 }
@@ -3366,7 +2812,7 @@
                 
                 .gist-questions-loading-subtitle {
                     margin: 0;
-                        font-size: 14px;
+                    font-size: 14px;
                     color: #6b7280;
                     line-height: 1.5;
                 }
@@ -3606,7 +3052,6 @@
                 </div>
                 <div class="gist-answer-container" id="gist-answer-container">
                     <button class="gist-close-btn" id="gist-close-btn" title="Minimize">×</button>
-                    <button class="gist-secret-settings-btn" id="gist-secret-settings-btn" title="Widget Settings">⚙️</button>
                     <div class="gist-answer-content">
                         <div class="gist-answer-placeholder">
                             Ask a question to see the answer here!
@@ -3617,7 +3062,7 @@
                             <img src="${BACKEND_BASE_URL}/gist-logo.png" alt="Gist Logo" class="gist-footer-logo">
                             <span class="gist-powered-text">Powered by Gist Answers</span>
                         </div>
-                        <a href="https://gpademo.vercel.app" target="_blank" class="gist-add-to-site">Add to your site</a>
+                        <a href="/" target="_blank" class="gist-add-to-site">Add to your site</a>
                     </div>
                 </div>
             </div>
@@ -3633,9 +3078,9 @@
         function generateToolboxTabs() {
             const toolboxTabsContainer = shadowRoot.getElementById('gist-toolbox-tabs');
             const toolLabels = {
-                ask: 'Explore',
-                gist: 'Summarize', 
-                remix: 'Listen',
+                ask: 'Ask',
+                gist: 'The Gist', 
+                remix: 'Remix',
                 share: 'Share'
             };
             
@@ -3674,7 +3119,6 @@
         const submitBtn = shadowRoot.getElementById('gist-submit');
         const desktopModeBtn = shadowRoot.getElementById('gist-desktop-mode-btn');
         const closeBtn = shadowRoot.getElementById('gist-close-btn');
-        const settingsBtn = shadowRoot.getElementById('gist-secret-settings-btn');
         const answerContainer = shadowRoot.getElementById('gist-answer-container');
         const answerContent = answerContainer.querySelector('.gist-answer-content');
         const widget = shadowRoot.getElementById('gist-widget');
@@ -4222,12 +3666,12 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
                     <div class="gist-attribution-source">
                         <div class="gist-attribution-dot" style="background-color: ${attribution.color};"></div>
                         <span>${attribution.source} (${(attribution.percentage * 100).toFixed(1)}%)</span>
-                </div>
+                    </div>
                 `;
             }
             
             html += `
-                </div>
+                    </div>
                 </div>
             `;
             
@@ -4238,7 +3682,7 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
                         <h4>Explore Further</h4>
                         <div class="gist-loading-dots">
                             <span></span><span></span><span></span>
-                </div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -4632,7 +4076,7 @@ Instructions:
                 } else if (data.choices && data.choices[0] && data.choices[0].message) {
                     // Direct OpenAI format
                     responseText = data.choices[0].message.content;
-                        } else {
+                } else {
                     throw new Error('Invalid response format from API');
                 }
                 
@@ -4883,157 +4327,6 @@ Instructions:
                     showExternalAds('error recovery and troubleshooting');
                 }, 200);
             }, 50);
-        }
-        
-        // Settings functionality
-        function showSettingsMenu() {
-            // Mock current settings state
-            const mockSettings = {
-                tools: {
-                    ask: true,
-                    gist: TOOLS_CONFIG.gist,
-                    remix: TOOLS_CONFIG.remix,
-                    share: TOOLS_CONFIG.share
-                },
-                appearance: {
-                    selectedColor: '#6366f1'
-                }
-            };
-            
-            const colorOptions = [
-                { name: 'Blue', value: '#6366f1' },
-                { name: 'Purple', value: '#8b5cf6' },
-                { name: 'Pink', value: '#ec4899' },
-                { name: 'Green', value: '#22c55e' },
-                { name: 'Orange', value: '#f59e0b' },
-                { name: 'Red', value: '#ef4444' }
-            ];
-            
-            let html = `
-                <div class="gist-settings-menu gist-content-entering">
-                    <div class="gist-settings-header">
-                        <h3 class="gist-settings-title">Widget Settings</h3>
-                        <button class="gist-settings-close" id="settings-close">✕</button>
-                    </div>
-                    
-                    <div class="gist-settings-section">
-                        <div class="gist-settings-section-title">Tools</div>
-                        
-                        <div class="gist-settings-option">
-                            <span class="gist-settings-option-label">Ask Anything™ (Always Enabled)</span>
-                            <button class="gist-settings-toggle enabled" disabled>
-                            </button>
-                        </div>
-                        
-                        <div class="gist-settings-option">
-                            <span class="gist-settings-option-label">The Gist - AI Summaries</span>
-                            <button class="gist-settings-toggle ${mockSettings.tools.gist ? 'enabled' : ''}" data-tool="gist">
-                            </button>
-                        </div>
-                        
-                        <div class="gist-settings-option">
-                            <span class="gist-settings-option-label">Remix - Content Transformation</span>
-                            <button class="gist-settings-toggle ${mockSettings.tools.remix ? 'enabled' : ''}" data-tool="remix">
-                            </button>
-                        </div>
-                        
-                        <div class="gist-settings-option">
-                            <span class="gist-settings-option-label">Share - Social Integration</span>
-                            <button class="gist-settings-toggle ${mockSettings.tools.share ? 'enabled' : ''}" data-tool="share">
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="gist-settings-section">
-                        <div class="gist-settings-section-title">Widget Color Theme</div>
-                        <div class="gist-color-picker">
-            `;
-            
-            colorOptions.forEach(color => {
-                const isSelected = color.value === mockSettings.appearance.selectedColor;
-                html += `
-                    <div class="gist-color-option ${isSelected ? 'selected' : ''}" 
-                         data-color="${color.value}" 
-                         style="background-color: ${color.value};"
-                         title="${color.name}">
-                    </div>
-                `;
-            });
-            
-            html += `
-                        </div>
-                    </div>
-                    
-                    <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #9ca3af; font-style: italic;">
-                        🚧 Demo Mode - Changes won't be saved
-                    </div>
-                </div>
-            `;
-            
-            answerContent.innerHTML = html;
-            hasAnswer = false;
-            
-            // Add event listeners for mock functionality
-            const closeButton = answerContent.querySelector('#settings-close');
-            const toggleButtons = answerContent.querySelectorAll('.gist-settings-toggle[data-tool]');
-            const colorElements = answerContent.querySelectorAll('.gist-color-option');
-            
-            // Close settings menu
-            closeButton.addEventListener('click', () => {
-                // Return to the previous tool's content
-                updateContentForTool(currentTool);
-            });
-            
-            // Mock toggle functionality (visual only)
-            toggleButtons.forEach(toggle => {
-                if (!toggle.disabled) {
-                    toggle.addEventListener('click', () => {
-                        toggle.classList.toggle('enabled');
-                        const toolName = toggle.dataset.tool;
-                        const isEnabled = toggle.classList.contains('enabled');
-                        
-                        // Show feedback (but don't actually change anything)
-                        console.log(`[Mock Settings] ${toolName} would be ${isEnabled ? 'enabled' : 'disabled'}`);
-                        
-                        // Add visual feedback
-                        toggle.style.transform = 'scale(0.9)';
-                        setTimeout(() => {
-                            toggle.style.transform = '';
-                        }, 150);
-                    });
-                }
-            });
-            
-            // Mock color selection (visual only)
-            colorElements.forEach(colorElement => {
-                colorElement.addEventListener('click', () => {
-                    // Remove selected from all options
-                    colorElements.forEach(opt => opt.classList.remove('selected'));
-                    // Add selected to clicked option
-                    colorElement.classList.add('selected');
-                    
-                    const color = colorElement.dataset.color;
-                    console.log(`[Mock Settings] Widget color would change to ${color}`);
-                    
-                    // Add visual feedback
-                    colorElement.style.transform = 'scale(1.2)';
-                    setTimeout(() => {
-                        colorElement.style.transform = '';
-                    }, 200);
-                });
-            });
-            
-            // Trigger animation
-            setTimeout(() => {
-                const elements = answerContent.querySelectorAll('.gist-content-entering');
-                elements.forEach(el => {
-                    el.classList.remove('gist-content-entering');
-                    el.classList.add('gist-content-entered');
-                });
-            }, 50);
-            
-            // Show answer container
-            answerContainer.classList.add('visible');
         }
         
         // Remix functionality
@@ -5465,10 +4758,10 @@ Instructions:
                     <div class="gist-attribution-segment" 
                          style="width: ${width}%; background-color: ${attribution.color};"
                          title="${attribution.source}: ${(attribution.percentage * 100).toFixed(1)}%">
-                </div>
-            `;
-        }
-
+                    </div>
+                `;
+            }
+            
             html += `
                     </div>
                     <div class="gist-attribution-sources">
@@ -5480,10 +4773,10 @@ Instructions:
                     <div class="gist-attribution-source">
                         <div class="gist-attribution-dot" style="background-color: ${attribution.color};"></div>
                         <span>${attribution.source} (${(attribution.percentage * 100).toFixed(1)}%)</span>
-                </div>
-            `;
-        }
-
+                    </div>
+                `;
+            }
+            
             html += `
                     </div>
                     <div class="gist-source-previews">
@@ -5613,7 +4906,7 @@ Instructions:
                 try {
                     textToRead = extractContentForTTS();
                     console.log('Successfully extracted content for TTS:', textToRead.length, 'characters');
-            } catch (error) {
+                } catch (error) {
                     console.warn('TTS content extraction failed, falling back to basic extraction:', error.message);
                     // Fallback to basic extraction
                     const context = extractPageContext();
@@ -6144,7 +5437,7 @@ Instructions:
                 throw error;
             }
         }
-
+        
         function showLoading() {
             // Ensure answer container and toolbox are visible
             answerContainer.classList.add('visible');
@@ -6291,7 +5584,7 @@ Instructions:
                 };
                 
                 html += `
-                    <div class="gist-source-preview" style="--source-color: ${attribution.color};" data-url="${attribution.url}">
+                    <div class="gist-source-preview" style="--source-color: ${attribution.color};">
                         <div class="gist-source-preview-image">
                             <div class="gist-source-preview-icon">${attribution.icon}</div>
                         </div>
@@ -6315,19 +5608,6 @@ Instructions:
             
             answerContent.innerHTML = html;
             hasAnswer = true;
-            
-            // Add click handlers to source preview cards
-            setTimeout(() => {
-                const sourcePreviewCards = answerContent.querySelectorAll('.gist-source-preview[data-url]');
-                sourcePreviewCards.forEach(card => {
-                    card.addEventListener('click', () => {
-                        const url = card.dataset.url;
-                        if (url) {
-                            window.open(url, '_blank', 'noopener,noreferrer');
-                        }
-                    });
-                });
-            }, 100);
             
             // Trigger animations after a brief delay to ensure DOM is updated
             setTimeout(() => {
@@ -6674,7 +5954,6 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 { 
                     name: 'Wikipedia', 
                     icon: 'W',
-                    url: 'https://en.wikipedia.org',
                     titles: [
                         'Stock market',
                         'Financial markets',
@@ -6693,7 +5972,6 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 { 
                     name: 'Stanford Research', 
                     icon: 'S',
-                    url: 'https://www.stanford.edu',
                     titles: [
                         'Market Efficiency and Information Theory',
                         'Behavioral Finance in Modern Markets',
@@ -6712,7 +5990,6 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 { 
                     name: 'MIT OpenCourseWare', 
                     icon: 'M',
-                    url: 'https://ocw.mit.edu',
                     titles: [
                         'Financial Theory I',
                         'Introduction to Financial Markets',
@@ -6731,7 +6008,6 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 { 
                     name: 'Nature Journal', 
                     icon: 'N',
-                    url: 'https://www.nature.com',
                     titles: [
                         'Network analysis of financial markets',
                         'Complexity science in economics',
@@ -6750,7 +6026,6 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 { 
                     name: 'Scientific American', 
                     icon: 'SA',
-                    url: 'https://www.scientificamerican.com',
                     titles: [
                         'The Psychology of Market Bubbles',
                         'How AI is Reshaping Finance',
@@ -6769,7 +6044,6 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 { 
                     name: 'MoneyWeek', 
                     icon: 'MW',
-                    url: 'https://moneyweek.com',
                     titles: [
                         'How to navigate the financial markets',
                         'Investment strategies for beginners',
@@ -6788,7 +6062,6 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 { 
                     name: 'Prospect Magazine', 
                     icon: 'P',
-                    url: 'https://www.prospectmagazine.co.uk',
                     titles: [
                         'Making banks boring again',
                         'The future of financial regulation',
@@ -6807,7 +6080,6 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 { 
                     name: 'Harvard Business Review', 
                     icon: 'H',
-                    url: 'https://hbr.org',
                     titles: [
                         'Strategic Asset Allocation',
                         'ESG Investing Trends',
@@ -6862,7 +6134,6 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 selectedSources.push({
                     source: sourceData.name,
                     icon: sourceData.icon,
-                    url: sourceData.url,
                     title: sourceData.titles[titleIndex],
                     description: sourceData.descriptions[descIndex],
                     date: randomDate,
@@ -7063,16 +6334,6 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             minimizeWidget();
         });
         
-        // Handle secret settings button click
-        settingsBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            userIsInteracting = true;
-            isActive = true;
-            
-            // Show mock settings menu
-            showSettingsMenu();
-        });
-        
         // Prevent clicks on answer container from bubbling
         answerContainer.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -7177,8 +6438,8 @@ Make the ad relevant to the article topic but appealing and professional. Use em
         },
         
         // Debug: Show styling analysis
-        debugStyling: async function() {
-            const current = await analyzeWebsiteStyling();
+        debugStyling: function() {
+            const current = analyzeWebsiteStyling();
             console.group('🔍 Current Website Styling Analysis');
             console.log('Current Analysis:', current);
             console.log('Applied Styling:', window.gistWidgetStyling);
@@ -7203,7 +6464,7 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             Object.keys(toolsConfig).forEach(tool => {
                 if (TOOLS_CONFIG.hasOwnProperty(tool)) {
                     TOOLS_CONFIG[tool] = Boolean(toolsConfig[tool]);
-            } else {
+                } else {
                     console.warn(`[GistWidget] Unknown tool '${tool}' ignored.`);
                 }
             });
@@ -7278,7 +6539,7 @@ Make the ad relevant to the article topic but appealing and professional. Use em
     // Initialize widget when DOM is ready
     function initWidget() {
   if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => createWidget());
+            document.addEventListener('DOMContentLoaded', createWidget);
   } else {
             createWidget();
         }
