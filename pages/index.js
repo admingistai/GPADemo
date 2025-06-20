@@ -994,7 +994,7 @@ export default function Home() {
 
         .testimonial-content::after {
           content: '"';
-          bottom: -3rem;
+          bottom: -5rem;
           right: -3rem;
         }
 
@@ -1062,7 +1062,7 @@ export default function Home() {
           }
           
           .testimonial-content::after {
-            bottom: -2rem;
+            bottom: -3rem;
             right: -1.5rem;
           }
         }
