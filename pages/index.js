@@ -415,7 +415,7 @@ export default function Home() {
                 <div className="benefit-item-horizontal">
                   <div className="benefit-number">01</div>
                   <h3>Boost Engagement</h3>
-                  <p>Avg session length ↑ 2.3× with interactive answers.</p>
+                  <p>Drive more traffic than ever before with interactive answers.</p>
                   </div>
                   
                 <div className="benefit-item-horizontal">
