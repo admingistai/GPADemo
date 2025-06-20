@@ -170,7 +170,7 @@ export default function Home() {
         <div className="feature-page">
           <header className="header">
             <div className="header-left">
-              <img src="/Gist G white no background.png" alt="Gist" className="gist-logo" />
+              <img src="/Gist G white no background.png" alt="Gist" className="gist-logo" onClick={() => window.open('https://about.gist.ai', '_blank')} />
               <h1 className="logo">Ask<br />Anything™</h1>
             </div>
             <div className="header-right">
@@ -285,7 +285,7 @@ export default function Home() {
           {/* Header */}
           <header className="header">
             <div className="header-left">
-              <img src="/Gist G white no background.png" alt="Gist" className="gist-logo" />
+              <img src="/Gist G white no background.png" alt="Gist" className="gist-logo" onClick={() => window.open('https://about.gist.ai', '_blank')} />
               <h1 className="logo">Ask<br />Anything™</h1>
                 </div>
             <div className="header-right">
@@ -831,8 +831,8 @@ export default function Home() {
         }
 
         .gist-logo {
-          width: 32px;
-          height: 32px;
+          height: 1.5rem;
+          width: auto;
           transition: all 0.3s ease;
           cursor: pointer;
         }
@@ -957,7 +957,7 @@ export default function Home() {
 
         /* Video Section */
         .video-section {
-          margin: 2rem 0 0.5rem 0;
+          margin: 2rem 0 0.25rem 0;
           display: flex;
           justify-content: center;
           animation: slideInUp 0.8s ease-out 0.7s both;
@@ -2967,7 +2967,71 @@ export default function Home() {
             font-size: 2.5rem;
            }
          }
+
+        /* Legal Footer */
+        .legal-footer {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 2rem 0 1rem 0;
+          margin-top: 2rem;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          font-family: 'Inter', sans-serif;
+        }
+
+        .copyright {
+          color: rgba(255, 255, 255, 0.7);
+          font-size: 0.9rem;
+        }
+
+        .legal-links {
+          display: flex;
+          gap: 2rem;
+        }
+
+        .legal-link {
+          background: none;
+          border: none;
+          color: rgba(255, 255, 255, 0.7);
+          font-size: 0.9rem;
+          cursor: pointer;
+          transition: color 0.3s ease;
+          text-decoration: underline;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .legal-link:hover {
+          color: rgba(255, 255, 255, 0.9);
+        }
+
+        @media (max-width: 768px) {
+          .legal-footer {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+            padding: 1.5rem 0 1rem 0;
+          }
+
+          .legal-links {
+            gap: 1.5rem;
+          }
+        }
       `}</style>
+
+        {/* Copyright and Legal Footer */}
+        <div className="legal-footer">
+          <div className="copyright">
+            © 2024 Gist AI, Inc. All rights reserved.
+          </div>
+          <div className="legal-links">
+            <button onClick={() => window.open('https://gist.ai/terms', '_blank')} className="legal-link">
+              Terms of Service
+            </button>
+            <button onClick={() => window.open('https://gist.ai/privacy', '_blank')} className="legal-link">
+              Privacy Policy
+            </button>
+          </div>
+        </div>
     </div>
     </>
   );
