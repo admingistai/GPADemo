@@ -353,6 +353,10 @@ export default function Home() {
               to your website.
             </h1>
             
+            <div className="drive-growth-text">
+              Drive growth, boost engagement, and earn more today.
+            </div>
+            
             <div className="url-input-container">
               <div className="url-input-wrapper">
                 <div className="url-input-inner">
@@ -378,6 +382,9 @@ export default function Home() {
                   </button>
                 </div>
               </div>
+              <div className="see-how-text">
+                See how this will look on your website.
+              </div>
               {error && (
                 <div className="error-message">
                   {error}
@@ -389,9 +396,6 @@ export default function Home() {
           {/* Publishers Band */}
           <footer className="publishers-band">
             <div className="publishers-content">
-              <div className="publishers-message">
-                Drive growth, boost engagement, and earn more today.
-              </div>
               <img 
                 src="/publishers-logos.png?v=1" 
                 alt="Publishers logos" 
@@ -787,10 +791,29 @@ export default function Home() {
           to { opacity: 1; transform: translateY(0); }
         }
 
+        .drive-growth-text {
+          font-size: 1.3rem;
+          color: rgba(255, 255, 255, 0.9);
+          margin-bottom: 2rem;
+          font-family: 'Inter', sans-serif;
+          font-weight: 500;
+          text-align: center;
+          animation: slideInUp 0.8s ease-out 0.5s both;
+        }
+
         .url-input-container {
           width: 100%;
           max-width: 500px;
           animation: slideInUp 0.8s ease-out 0.6s both;
+        }
+
+        .see-how-text {
+          font-size: 0.95rem;
+          color: rgba(255, 255, 255, 0.7);
+          margin-top: 0.75rem;
+          text-align: center;
+          font-family: 'Inter', sans-serif;
+          font-style: italic;
         }
 
         .url-input-wrapper {
@@ -918,25 +941,7 @@ export default function Home() {
           filter: brightness(1.1);
         }
 
-        .publishers-message {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          font-size: 1.5rem;
-          font-weight: 700;
-          color: white;
-          font-family: 'Inter', sans-serif;
-          z-index: 10;
-          text-shadow: 0 3px 8px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9);
-          white-space: nowrap;
-          animation: textGlow 3s ease-in-out infinite alternate;
-        }
 
-        @keyframes textGlow {
-          from { text-shadow: 0 3px 8px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9); }
-          to { text-shadow: 0 3px 8px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 20px rgba(255, 255, 255, 0.1); }
-        }
 
         /* Feature Page Styles */
         .feature-page {
@@ -1169,6 +1174,15 @@ export default function Home() {
             margin-top: 0;
           }
 
+          .drive-growth-text {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+          }
+
+          .see-how-text {
+            font-size: 0.9rem;
+          }
+
           .url-input-wrapper {
             padding: 3px;
             margin-top: 0.5rem;
@@ -1262,6 +1276,15 @@ export default function Home() {
           .main-title {
             font-size: 2rem;
             margin-bottom: 0.75rem;
+          }
+
+          .drive-growth-text {
+            font-size: 1rem;
+            margin-bottom: 1.25rem;
+          }
+
+          .see-how-text {
+            font-size: 0.85rem;
           }
 
           .publishers-band {
