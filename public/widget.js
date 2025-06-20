@@ -2071,6 +2071,164 @@
                     transform: scale(0.95);
                 }
                 
+                /* Secret settings button styling */
+                .gist-secret-settings-btn {
+                    position: absolute;
+                    top: 8px;
+                    left: 8px;
+                    width: 24px;
+                    height: 24px;
+                    border-radius: 50%;
+                    background: rgba(107, 114, 128, 0.05);
+                    border: none;
+                    color: #9ca3af;
+                    font-size: 12px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.2s ease;
+                    z-index: 10;
+                    line-height: 1;
+                    opacity: 0.3;
+                }
+                
+                .gist-secret-settings-btn:hover {
+                    background: rgba(107, 114, 128, 0.15);
+                    color: #6b7280;
+                    transform: scale(1.1) rotate(90deg);
+                    opacity: 1;
+                }
+                
+                .gist-secret-settings-btn:active {
+                    transform: scale(0.95) rotate(90deg);
+                }
+                
+                /* Settings menu styling */
+                .gist-settings-menu {
+                    padding: 16px;
+                    background: white;
+                    border-radius: 14.5px;
+                    font-family: inherit;
+                }
+                
+                .gist-settings-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 20px;
+                    padding-bottom: 12px;
+                    border-bottom: 1px solid #e2e8f0;
+                }
+                
+                .gist-settings-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #374151;
+                    margin: 0;
+                }
+                
+                .gist-settings-close {
+                    background: none;
+                    border: none;
+                    color: #9ca3af;
+                    font-size: 14px;
+                    cursor: pointer;
+                    padding: 4px;
+                }
+                
+                .gist-settings-close:hover {
+                    color: #6b7280;
+                }
+                
+                .gist-settings-section {
+                    margin-bottom: 20px;
+                }
+                
+                .gist-settings-section:last-child {
+                    margin-bottom: 0;
+                }
+                
+                .gist-settings-section-title {
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: #374151;
+                    margin-bottom: 12px;
+                }
+                
+                .gist-settings-option {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 8px 0;
+                    border-bottom: 1px solid #f1f5f9;
+                }
+                
+                .gist-settings-option:last-child {
+                    border-bottom: none;
+                }
+                
+                .gist-settings-option-label {
+                    font-size: 13px;
+                    color: #374151;
+                    flex: 1;
+                }
+                
+                .gist-settings-toggle {
+                    width: 36px;
+                    height: 20px;
+                    background: #e2e8f0;
+                    border-radius: 10px;
+                    border: none;
+                    position: relative;
+                    cursor: pointer;
+                    transition: background-color 0.2s ease;
+                }
+                
+                .gist-settings-toggle.enabled {
+                    background: #22c55e;
+                }
+                
+                .gist-settings-toggle::after {
+                    content: '';
+                    position: absolute;
+                    top: 2px;
+                    left: 2px;
+                    width: 16px;
+                    height: 16px;
+                    background: white;
+                    border-radius: 50%;
+                    transition: transform 0.2s ease;
+                }
+                
+                .gist-settings-toggle.enabled::after {
+                    transform: translateX(16px);
+                }
+                
+                .gist-color-picker {
+                    display: flex;
+                    gap: 8px;
+                    flex-wrap: wrap;
+                    margin-top: 8px;
+                }
+                
+                .gist-color-option {
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 8px;
+                    border: 2px solid transparent;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                }
+                
+                .gist-color-option:hover {
+                    transform: scale(1.1);
+                }
+                
+                .gist-color-option.selected {
+                    border-color: #374151;
+                    transform: scale(1.1);
+                }
 
                 
                 /* Desktop mode styles */
@@ -3320,6 +3478,7 @@
                 </div>
                 <div class="gist-answer-container" id="gist-answer-container">
                     <button class="gist-close-btn" id="gist-close-btn" title="Minimize">×</button>
+                    <button class="gist-secret-settings-btn" id="gist-secret-settings-btn" title="Widget Settings">⚙️</button>
                     <div class="gist-answer-content">
                         <div class="gist-answer-placeholder">
                             Ask a question to see the answer here!
@@ -3387,6 +3546,7 @@
         const submitBtn = shadowRoot.getElementById('gist-submit');
         const desktopModeBtn = shadowRoot.getElementById('gist-desktop-mode-btn');
         const closeBtn = shadowRoot.getElementById('gist-close-btn');
+        const settingsBtn = shadowRoot.getElementById('gist-secret-settings-btn');
         const answerContainer = shadowRoot.getElementById('gist-answer-container');
         const answerContent = answerContainer.querySelector('.gist-answer-content');
         const widget = shadowRoot.getElementById('gist-widget');
@@ -4595,6 +4755,157 @@ Instructions:
                     showExternalAds('error recovery and troubleshooting');
                 }, 200);
             }, 50);
+        }
+        
+        // Settings functionality
+        function showSettingsMenu() {
+            // Mock current settings state
+            const mockSettings = {
+                tools: {
+                    ask: true,
+                    gist: TOOLS_CONFIG.gist,
+                    remix: TOOLS_CONFIG.remix,
+                    share: TOOLS_CONFIG.share
+                },
+                appearance: {
+                    selectedColor: '#6366f1'
+                }
+            };
+            
+            const colorOptions = [
+                { name: 'Blue', value: '#6366f1' },
+                { name: 'Purple', value: '#8b5cf6' },
+                { name: 'Pink', value: '#ec4899' },
+                { name: 'Green', value: '#22c55e' },
+                { name: 'Orange', value: '#f59e0b' },
+                { name: 'Red', value: '#ef4444' }
+            ];
+            
+            let html = `
+                <div class="gist-settings-menu gist-content-entering">
+                    <div class="gist-settings-header">
+                        <h3 class="gist-settings-title">Widget Settings</h3>
+                        <button class="gist-settings-close" id="settings-close">✕</button>
+                    </div>
+                    
+                    <div class="gist-settings-section">
+                        <div class="gist-settings-section-title">Tools</div>
+                        
+                        <div class="gist-settings-option">
+                            <span class="gist-settings-option-label">Ask Anything™ (Always Enabled)</span>
+                            <button class="gist-settings-toggle enabled" disabled>
+                            </button>
+                        </div>
+                        
+                        <div class="gist-settings-option">
+                            <span class="gist-settings-option-label">The Gist - AI Summaries</span>
+                            <button class="gist-settings-toggle ${mockSettings.tools.gist ? 'enabled' : ''}" data-tool="gist">
+                            </button>
+                        </div>
+                        
+                        <div class="gist-settings-option">
+                            <span class="gist-settings-option-label">Remix - Content Transformation</span>
+                            <button class="gist-settings-toggle ${mockSettings.tools.remix ? 'enabled' : ''}" data-tool="remix">
+                            </button>
+                        </div>
+                        
+                        <div class="gist-settings-option">
+                            <span class="gist-settings-option-label">Share - Social Integration</span>
+                            <button class="gist-settings-toggle ${mockSettings.tools.share ? 'enabled' : ''}" data-tool="share">
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="gist-settings-section">
+                        <div class="gist-settings-section-title">Widget Color Theme</div>
+                        <div class="gist-color-picker">
+            `;
+            
+            colorOptions.forEach(color => {
+                const isSelected = color.value === mockSettings.appearance.selectedColor;
+                html += `
+                    <div class="gist-color-option ${isSelected ? 'selected' : ''}" 
+                         data-color="${color.value}" 
+                         style="background-color: ${color.value};"
+                         title="${color.name}">
+                    </div>
+                `;
+            });
+            
+            html += `
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #9ca3af; font-style: italic;">
+                        🚧 Demo Mode - Changes won't be saved
+                    </div>
+                </div>
+            `;
+            
+            answerContent.innerHTML = html;
+            hasAnswer = false;
+            
+            // Add event listeners for mock functionality
+            const closeButton = answerContent.querySelector('#settings-close');
+            const toggleButtons = answerContent.querySelectorAll('.gist-settings-toggle[data-tool]');
+            const colorElements = answerContent.querySelectorAll('.gist-color-option');
+            
+            // Close settings menu
+            closeButton.addEventListener('click', () => {
+                // Return to the previous tool's content
+                updateContentForTool(currentTool);
+            });
+            
+            // Mock toggle functionality (visual only)
+            toggleButtons.forEach(toggle => {
+                if (!toggle.disabled) {
+                    toggle.addEventListener('click', () => {
+                        toggle.classList.toggle('enabled');
+                        const toolName = toggle.dataset.tool;
+                        const isEnabled = toggle.classList.contains('enabled');
+                        
+                        // Show feedback (but don't actually change anything)
+                        console.log(`[Mock Settings] ${toolName} would be ${isEnabled ? 'enabled' : 'disabled'}`);
+                        
+                        // Add visual feedback
+                        toggle.style.transform = 'scale(0.9)';
+                        setTimeout(() => {
+                            toggle.style.transform = '';
+                        }, 150);
+                    });
+                }
+            });
+            
+            // Mock color selection (visual only)
+            colorElements.forEach(colorElement => {
+                colorElement.addEventListener('click', () => {
+                    // Remove selected from all options
+                    colorElements.forEach(opt => opt.classList.remove('selected'));
+                    // Add selected to clicked option
+                    colorElement.classList.add('selected');
+                    
+                    const color = colorElement.dataset.color;
+                    console.log(`[Mock Settings] Widget color would change to ${color}`);
+                    
+                    // Add visual feedback
+                    colorElement.style.transform = 'scale(1.2)';
+                    setTimeout(() => {
+                        colorElement.style.transform = '';
+                    }, 200);
+                });
+            });
+            
+            // Trigger animation
+            setTimeout(() => {
+                const elements = answerContent.querySelectorAll('.gist-content-entering');
+                elements.forEach(el => {
+                    el.classList.remove('gist-content-entering');
+                    el.classList.add('gist-content-entered');
+                });
+            }, 50);
+            
+            // Show answer container
+            answerContainer.classList.add('visible');
         }
         
         // Remix functionality
@@ -6622,6 +6933,16 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             userIsInteracting = false;
             input.blur();
             minimizeWidget();
+        });
+        
+        // Handle secret settings button click
+        settingsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userIsInteracting = true;
+            isActive = true;
+            
+            // Show mock settings menu
+            showSettingsMenu();
         });
         
         // Prevent clicks on answer container from bubbling
