@@ -403,23 +403,36 @@ export default function Home() {
                   </div>
           </footer>
 
-          {/* Join Publishers Section */}
-          <section className="join-publishers-section">
-            <div className="join-publishers-container">
-              <h2 className="join-publishers-title">Join hundreds of publishers already boosting engagement and revenue</h2>
-              <p className="join-publishers-subtitle">From independent blogs to major media companies—they're all keeping readers engaged and earning new revenue streams.</p>
-              <div className="join-publishers-stats">
-                <div className="stat-item">
-                  <span className="stat-number">2.3×</span>
-                  <span className="stat-label">Average session length increase</span>
+          {/* Testimonials Section */}
+          <section className="testimonials-section">
+            <div className="testimonials-container">
+              <div className="testimonial-box">
+                <div className="testimonial-content">
+                  <p>"Ask Anything™ increased our page views by 340% in the first month. Readers stay longer and engage more with our content."</p>
+                  <div className="testimonial-author">
+                    <strong>Sarah Chen</strong>
+                    <span>Editor-in-Chief, TechDaily</span>
+                  </div>
                 </div>
-                <div className="stat-item">
-                  <span className="stat-number">47%</span>
-                  <span className="stat-label">Boost in page engagement</span>
+              </div>
+              
+              <div className="testimonial-box">
+                <div className="testimonial-content">
+                  <p>"The ad revenue alone pays for our hosting costs. It's like having a 24/7 expert answering reader questions on every article."</p>
+                  <div className="testimonial-author">
+                    <strong>Mike Rodriguez</strong>
+                    <span>Publisher, HealthToday</span>
+                  </div>
                 </div>
-                <div className="stat-item">
-                  <span className="stat-number">$1,200</span>
-                  <span className="stat-label">Average monthly revenue per site</span>
+              </div>
+              
+              <div className="testimonial-box">
+                <div className="testimonial-content">
+                  <p>"Setup took literally 2 minutes. Our bounce rate dropped 60% and readers are discovering content they never would have found before."</p>
+                  <div className="testimonial-author">
+                    <strong>Emma Thompson</strong>
+                    <span>Content Director, LifestyleMag</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -950,85 +963,75 @@ export default function Home() {
           filter: brightness(1.1);
         }
 
-        /* Join Publishers Section */
-        .join-publishers-section {
-          background: linear-gradient(135deg, #3742fa 0%, #0c1426 100%);
-          padding: 4rem 2rem 5rem;
-          color: white;
-          text-align: center;
-          animation: fadeInUp 1s ease-out 1s both;
+        /* Testimonials Section */
+        .testimonials-section {
+          background: transparent;
+          padding: 4rem 2rem;
+          margin-bottom: 0;
         }
 
-        .join-publishers-container {
+        .testimonials-container {
           max-width: 1200px;
           margin: 0 auto;
-        }
-
-        .join-publishers-title {
-          font-size: 2.5rem;
-          font-weight: 700;
-          line-height: 1.2;
-          margin-bottom: 1rem;
-          font-family: 'Inter', sans-serif;
-          letter-spacing: -0.02em;
-          background: linear-gradient(135deg, #ffffff, #e2e8f0);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .join-publishers-subtitle {
-          font-size: 1.2rem;
-          color: rgba(255, 255, 255, 0.8);
-          margin-bottom: 3rem;
-          font-family: 'Inter', sans-serif;
-          max-width: 700px;
-          margin-left: auto;
-          margin-right: auto;
-          line-height: 1.5;
-        }
-
-        .join-publishers-stats {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          grid-template-columns: repeat(3, 1fr);
           gap: 2rem;
-          margin-top: 3rem;
         }
 
-        .stat-item {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          padding: 1.5rem;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+        .testimonial-box {
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.12);
           border-radius: 16px;
+          padding: 2rem;
           transition: all 0.3s ease;
           backdrop-filter: blur(10px);
+          position: relative;
         }
 
-        .stat-item:hover {
-          background: rgba(255, 255, 255, 0.08);
+        .testimonial-box:hover {
+          background: rgba(255, 255, 255, 0.12);
           border-color: rgba(255, 255, 255, 0.2);
-          transform: translateY(-2px);
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+          transform: translateY(-4px);
+          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
 
-        .stat-number {
-          font-size: 2.5rem;
-          font-weight: 700;
-          color: #ff6b35;
+        .testimonial-content p {
+          font-size: 1rem;
+          line-height: 1.6;
+          color: rgba(255, 255, 255, 0.9);
           font-family: 'Inter', sans-serif;
-          margin-bottom: 0.5rem;
-          line-height: 1;
+          margin-bottom: 1.5rem;
+          font-style: italic;
         }
 
-        .stat-label {
-          font-size: 0.95rem;
-          color: rgba(255, 255, 255, 0.8);
+        .testimonial-author {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+        }
+
+        .testimonial-author strong {
+          font-size: 1rem;
+          font-weight: 600;
+          color: white;
           font-family: 'Inter', sans-serif;
-          text-align: center;
-          line-height: 1.4;
+        }
+
+        .testimonial-author span {
+          font-size: 0.85rem;
+          color: rgba(255, 255, 255, 0.6);
+          font-family: 'Inter', sans-serif;
+        }
+
+        @media (max-width: 768px) {
+          .testimonials-container {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+          }
+          
+          .testimonials-section {
+            padding: 3rem 1rem;
+          }
         }
 
         /* Feature Page Styles */
