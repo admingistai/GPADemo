@@ -170,6 +170,7 @@ export default function Home() {
         <div className="feature-page">
           <header className="header">
             <div className="header-left">
+              <img src="/Gist G white no background.png" alt="Gist" className="gist-logo" />
               <h1 className="logo">Ask<br />Anything™</h1>
             </div>
             <div className="header-right">
@@ -284,6 +285,7 @@ export default function Home() {
           {/* Header */}
           <header className="header">
             <div className="header-left">
+              <img src="/Gist G white no background.png" alt="Gist" className="gist-logo" />
               <h1 className="logo">Ask<br />Anything™</h1>
                 </div>
             <div className="header-right">
@@ -820,6 +822,24 @@ export default function Home() {
         @keyframes slideInDown {
           from { opacity: 0; transform: translateY(-30px); }
           to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header-left {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        }
+
+        .gist-logo {
+          width: 32px;
+          height: 32px;
+          transition: all 0.3s ease;
+          cursor: pointer;
+        }
+
+        .gist-logo:hover {
+          transform: scale(1.1);
+          filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
         }
 
         .header-left .logo {
