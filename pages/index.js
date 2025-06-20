@@ -1623,7 +1623,7 @@ export default function Home() {
 
         /* Why Choose Us Section - Redesigned */
         .why-choose-section {
-          padding: 4rem 3rem;
+          padding: 1.5rem 3rem;
           background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
           backdrop-filter: blur(20px);
           border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -1642,21 +1642,21 @@ export default function Home() {
 
         .why-choose-header {
           text-align: center;
-          margin-bottom: 3rem;
+          margin-bottom: 1.5rem;
         }
 
         .why-choose-title {
-          font-size: 2.75rem;
+          font-size: 2.25rem;
           font-weight: 700;
           color: white;
-          margin-bottom: 0.75rem;
+          margin-bottom: 0.5rem;
           letter-spacing: -0.02em;
           line-height: 1.1;
           font-family: 'Inter', sans-serif;
         }
 
         .why-choose-subtitle {
-          font-size: 1.2rem;
+          font-size: 1rem;
           color: rgba(255, 255, 255, 0.7);
           font-weight: 400;
           font-family: 'Inter', sans-serif;
@@ -1665,24 +1665,24 @@ export default function Home() {
         .why-choose-content {
           display: grid;
           grid-template-columns: 2fr 1fr;
-          gap: 4rem;
+          gap: 2rem;
           align-items: center;
         }
 
         .why-choose-main {
           display: flex;
           flex-direction: column;
-          gap: 2rem;
+          gap: 1rem;
         }
 
         .benefit-item {
           display: flex;
           align-items: flex-start;
-          gap: 1.5rem;
-          padding: 2rem;
+          gap: 1rem;
+          padding: 1.25rem;
           background: rgba(255, 255, 255, 0.05);
           border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 20px;
+          border-radius: 16px;
           transition: all 0.3s ease;
           backdrop-filter: blur(10px);
         }
@@ -1696,31 +1696,31 @@ export default function Home() {
         .benefit-number {
           background: linear-gradient(135deg, #ff6b35, #f7931e);
           color: white;
-          width: 3rem;
-          height: 3rem;
+          width: 2.5rem;
+          height: 2.5rem;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 1.2rem;
+          font-size: 1rem;
           font-weight: 700;
           flex-shrink: 0;
           font-family: 'Inter', sans-serif;
         }
 
         .benefit-content h3 {
-          font-size: 1.5rem;
+          font-size: 1.25rem;
           font-weight: 600;
           color: white;
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.25rem;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.01em;
         }
 
         .benefit-content p {
-          font-size: 1rem;
+          font-size: 0.9rem;
           color: rgba(255, 255, 255, 0.8);
-          line-height: 1.6;
+          line-height: 1.5;
           font-family: 'Inter', sans-serif;
         }
 
@@ -1730,7 +1730,7 @@ export default function Home() {
           align-items: center;
           justify-content: center;
           text-align: center;
-          padding: 2rem;
+          padding: 1rem;
         }
 
         .primary-cta-button {
@@ -1780,7 +1780,7 @@ export default function Home() {
 
         /* Features Section */
         .features-section {
-          padding: 2.5rem 3rem 3rem;
+          padding: 1.25rem 3rem 1.5rem;
           background: rgba(255, 255, 255, 0.05);
           backdrop-filter: blur(10px);
           animation: slideInUp 0.8s ease-out 0.6s both;
@@ -1793,18 +1793,18 @@ export default function Home() {
         }
 
         .features-title {
-          font-size: 2.25rem;
+          font-size: 1.9rem;
           font-weight: 700;
           color: white;
-          margin-bottom: 0.75rem;
+          margin-bottom: 0.5rem;
           letter-spacing: -0.02em;
           line-height: 1.1;
         }
 
         .features-subtitle {
-          font-size: 1.1rem;
+          font-size: 1rem;
           color: rgba(255, 255, 255, 0.8);
-          margin-bottom: 1.5rem;
+          margin-bottom: 1rem;
           max-width: 600px;
           margin-left: auto;
           margin-right: auto;
@@ -1814,8 +1814,8 @@ export default function Home() {
         .features-categories {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 1.25rem;
-          margin-top: 0.5rem;
+          gap: 1rem;
+          margin-top: 0.25rem;
           max-width: 1400px;
           margin-left: auto;
           margin-right: auto;
@@ -1824,8 +1824,8 @@ export default function Home() {
         .category {
           background: rgba(255, 255, 255, 0.05);
           border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 16px;
-          padding: 1.5rem;
+          border-radius: 14px;
+          padding: 1rem;
           transition: all 0.3s ease;
           backdrop-filter: blur(10px);
         }
@@ -1840,24 +1840,24 @@ export default function Home() {
         .category-header {
           display: flex;
           align-items: center;
-          gap: 0.75rem;
-          margin-bottom: 1rem;
-          padding-bottom: 0.75rem;
+          gap: 0.5rem;
+          margin-bottom: 0.75rem;
+          padding-bottom: 0.5rem;
           border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .category-icon {
-          font-size: 1.5rem;
+          font-size: 1.25rem;
           background: linear-gradient(135deg, #ff6b35, #f7931e);
-          padding: 0.5rem;
-          border-radius: 10px;
+          padding: 0.375rem;
+          border-radius: 8px;
           display: flex;
           align-items: center;
           justify-content: center;
         }
 
         .category-title {
-          font-size: 1.2rem;
+          font-size: 1.1rem;
           font-weight: 600;
           color: white;
           margin: 0;
@@ -1868,17 +1868,17 @@ export default function Home() {
         .category-features {
           display: flex;
           flex-direction: column;
-          gap: 0.875rem;
+          gap: 0.625rem;
         }
 
         .feature-item-small {
           display: flex;
           align-items: flex-start;
-          gap: 0.75rem;
-          padding: 1rem;
+          gap: 0.625rem;
+          padding: 0.75rem;
           background: rgba(255, 255, 255, 0.05);
           border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 10px;
+          border-radius: 8px;
           transition: all 0.3s ease;
         }
 
@@ -1889,24 +1889,24 @@ export default function Home() {
         }
 
         .feature-icon {
-          font-size: 1.25rem;
+          font-size: 1.1rem;
           flex-shrink: 0;
-          margin-top: 0.125rem;
+          margin-top: 0.1rem;
         }
 
         .feature-content h4 {
-          font-size: 1rem;
+          font-size: 0.95rem;
           font-weight: 600;
           color: white;
-          margin: 0 0 0.375rem 0;
+          margin: 0 0 0.25rem 0;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.01em;
         }
 
         .feature-content p {
-          font-size: 0.85rem;
+          font-size: 0.8rem;
           color: rgba(255, 255, 255, 0.75);
-          line-height: 1.35;
+          line-height: 1.3;
           margin: 0;
           font-family: 'Inter', sans-serif;
         }
@@ -1914,52 +1914,52 @@ export default function Home() {
         /* Responsive Design for Why Choose Us Section */
         @media (max-width: 768px) {
           .why-choose-section {
-            padding: 2.5rem 2rem;
+            padding: 1.25rem 2rem;
           }
 
           .why-choose-title {
-            font-size: 2.25rem;
+            font-size: 1.9rem;
           }
 
           .why-choose-subtitle {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
           }
 
           .why-choose-content {
             grid-template-columns: 1fr;
-            gap: 2.5rem;
-          }
-
-          .why-choose-main {
             gap: 1.5rem;
           }
 
+          .why-choose-main {
+            gap: 0.875rem;
+          }
+
           .benefit-item {
-            padding: 1.5rem;
-            gap: 1rem;
+            padding: 1rem;
+            gap: 0.875rem;
           }
 
           .benefit-number {
-            width: 2.5rem;
-            height: 2.5rem;
-            font-size: 1rem;
-          }
-
-          .benefit-content h3 {
-            font-size: 1.25rem;
-          }
-
-          .benefit-content p {
+            width: 2.25rem;
+            height: 2.25rem;
             font-size: 0.9rem;
           }
 
+          .benefit-content h3 {
+            font-size: 1.1rem;
+          }
+
+          .benefit-content p {
+            font-size: 0.85rem;
+          }
+
           .why-choose-cta {
-            padding: 1.5rem;
+            padding: 1rem;
           }
 
           .primary-cta-button {
-            padding: 1rem 2rem;
-            font-size: 1rem;
+            padding: 0.875rem 1.75rem;
+            font-size: 0.95rem;
           }
         }
 
@@ -1969,34 +1969,34 @@ export default function Home() {
           }
 
           .features-section {
-            padding: 2rem 2rem 2.5rem;
+            padding: 1rem 2rem 1.25rem;
           }
 
           .features-title {
-            font-size: 1.9rem;
+            font-size: 1.6rem;
           }
 
           .features-subtitle {
-            font-size: 1rem;
-            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
           }
 
           .features-categories {
             grid-template-columns: 1fr;
-            gap: 1.25rem;
+            gap: 0.875rem;
           }
 
           .category {
-            padding: 1.25rem;
+            padding: 1rem;
           }
 
           .category-header {
-            margin-bottom: 1rem;
-            padding-bottom: 0.625rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
           }
 
           .category-icon {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             padding: 0.5rem;
           }
 
@@ -2024,56 +2024,56 @@ export default function Home() {
 
         @media (max-width: 480px) {
           .why-choose-section {
-            padding: 2rem 1.5rem;
+            padding: 1rem 1.5rem;
           }
 
           .why-choose-title {
-            font-size: 1.9rem;
+            font-size: 1.6rem;
           }
 
           .why-choose-subtitle {
-            font-size: 1rem;
-          }
-
-          .why-choose-content {
-            gap: 2rem;
-          }
-
-          .why-choose-main {
-            gap: 1.25rem;
-          }
-
-          .benefit-item {
-            padding: 1.25rem;
-            gap: 1rem;
-          }
-
-          .benefit-number {
-            width: 2.25rem;
-            height: 2.25rem;
             font-size: 0.9rem;
           }
 
+          .why-choose-content {
+            gap: 1.25rem;
+          }
+
+          .why-choose-main {
+            gap: 0.75rem;
+          }
+
+          .benefit-item {
+            padding: 0.875rem;
+            gap: 0.75rem;
+          }
+
+          .benefit-number {
+            width: 2rem;
+            height: 2rem;
+            font-size: 0.8rem;
+          }
+
           .benefit-content h3 {
-            font-size: 1.1rem;
+            font-size: 1rem;
           }
 
           .benefit-content p {
-            font-size: 0.85rem;
-            line-height: 1.5;
+            font-size: 0.8rem;
+            line-height: 1.4;
           }
 
           .why-choose-cta {
-            padding: 1rem;
+            padding: 0.75rem;
           }
 
           .primary-cta-button {
-            padding: 0.875rem 1.75rem;
-            font-size: 0.95rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
           }
 
           .cta-note {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
           }
         }
 
@@ -2083,54 +2083,54 @@ export default function Home() {
           }
 
           .features-section {
-            padding: 1.5rem 1.5rem 2rem;
+            padding: 0.875rem 1.5rem 1rem;
           }
 
           .features-title {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
           }
 
           .features-subtitle {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
           }
 
           .category {
-            padding: 1rem;
+            padding: 0.75rem;
           }
 
           .category-header {
-            margin-bottom: 0.875rem;
-            padding-bottom: 0.5rem;
+            margin-bottom: 0.625rem;
+            padding-bottom: 0.375rem;
           }
 
           .category-icon {
-            font-size: 1.25rem;
-            padding: 0.375rem;
+            font-size: 1.125rem;
+            padding: 0.25rem;
           }
 
           .category-title {
-            font-size: 1rem;
+            font-size: 0.95rem;
           }
 
           .feature-item-small {
-            padding: 0.75rem;
-            gap: 0.625rem;
+            padding: 0.625rem;
+            gap: 0.5rem;
           }
 
           .feature-icon {
-            font-size: 1rem;
+            font-size: 0.95rem;
           }
 
           .feature-content h4 {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
           }
 
           .feature-content p {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
           }
 
           .features-categories {
-            gap: 1rem;
+            gap: 0.75rem;
           }
         }
 
