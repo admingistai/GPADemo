@@ -356,25 +356,6 @@ export default function Home() {
               Gist Answers transforms your content into an interactive knowledge base that keeps readers engaged and drives revenue without compromising editorial integrity.
             </div>
             
-            {/* YouTube Video Section */}
-            <div className="video-section">
-              <div className="video-container">
-                <iframe 
-                  width="800" 
-                  height="450" 
-                  src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-                  title="YouTube video player" 
-                  frameBorder="0" 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                  allowFullScreen>
-                </iframe>
-              </div>
-            </div>
-            
-            <div className="see-how-text">
-              Paste any article link to preview Ask Anything™ on your site.
-            </div>
-            
             <div className="url-input-container">
               <div className="url-input-wrapper">
                 <div className="url-input-inner">
@@ -399,6 +380,25 @@ export default function Home() {
                     {loading ? 'Generating...' : 'Generate'}
                   </button>
             </div>
+              </div>
+              
+              {/* YouTube Video Section */}
+              <div className="video-section">
+                <div className="video-container">
+                  <iframe 
+                    width="560" 
+                    height="315" 
+                    src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                    title="YouTube video player" 
+                    frameBorder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowFullScreen>
+                  </iframe>
+                </div>
+              </div>
+              
+              <div className="see-how-text">
+                Paste any article link to preview Ask Anything™ on your site.
               </div>
               {error && (
                 <div className="error-message">
@@ -619,7 +619,7 @@ export default function Home() {
           </section>
 
           {/* Footer */}
-          <footer className="footer-cta-section">
+          <footer className="footer-cta-section white-section">
             <div className="footer-cta-container">
               <h2 className="footer-cta-title">Let's Keep Readers Reading</h2>
               <p className="footer-cta-subtitle">
@@ -628,26 +628,28 @@ export default function Home() {
               
               <div className="footer-url-input-container">
                 <div className="footer-url-input-wrapper">
-                  <input
-                    type="url"
-                    value={targetUrl}
-                    onChange={(e) => setTargetUrl(e.target.value)}
-                    placeholder="Enter URL (e.g., cnn.com/article)"
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter' && targetUrl.trim()) {
-                        handleUrlSubmit(targetUrl);
-                      }
-                    }}
-                    className="footer-url-input"
-                    disabled={loading}
-                  />
-                  <button
-                    onClick={() => handleUrlSubmit(targetUrl)}
-                    disabled={loading || !targetUrl.trim()}
-                    className="footer-generate-btn"
-                  >
-                    {loading ? 'Generating...' : 'Generate'}
-                  </button>
+                  <div className="footer-url-input-inner">
+                    <input
+                      type="url"
+                      value={targetUrl}
+                      onChange={(e) => setTargetUrl(e.target.value)}
+                      placeholder="Paste URL"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !loading && targetUrl.trim()) {
+                          handleUrlSubmit(targetUrl);
+                        }
+                      }}
+                      className="footer-url-input"
+                      disabled={loading}
+                    />
+                    <button
+                      onClick={() => handleUrlSubmit(targetUrl)}
+                      disabled={loading || !targetUrl.trim()}
+                      className="footer-generate-btn"
+                    >
+                      {loading ? 'Generating...' : 'Generate'}
+                    </button>
+                  </div>
                 </div>
               </div>
               
@@ -968,7 +970,7 @@ export default function Home() {
 
         /* Video Section */
         .video-section {
-          margin: 2rem 0 2rem 0;
+          margin: 2rem 0 1.5rem 0;
           display: flex;
           justify-content: center;
           animation: slideInUp 0.8s ease-out 0.7s both;
@@ -977,7 +979,7 @@ export default function Home() {
         .video-container {
           position: relative;
           width: 100%;
-          max-width: 800px;
+          max-width: 560px;
           aspect-ratio: 16 / 9;
           border-radius: 16px;
           overflow: hidden;
@@ -999,12 +1001,6 @@ export default function Home() {
           border: none;
         }
 
-        @media (max-width: 1024px) {
-          .video-container {
-            max-width: 90%;
-          }
-        }
-
         @media (max-width: 768px) {
           .video-section {
             margin: 1.5rem 1rem;
@@ -1013,16 +1009,6 @@ export default function Home() {
           .video-container {
             max-width: 100%;
             border-radius: 12px;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .video-section {
-            margin: 1rem 0.5rem;
-          }
-          
-          .video-container {
-            border-radius: 8px;
           }
         }
 
@@ -2538,10 +2524,15 @@ export default function Home() {
 
         /* Footer CTA Styles */
         .footer-cta-section {
-          background: #1a1a2e;
-          color: white;
+          background: #f8f9fa !important;
+          background-image: 
+            radial-gradient(circle at 10% 90%, rgba(229, 90, 43, 0.15) 0%, transparent 20%),
+            radial-gradient(circle at 90% 10%, rgba(139, 69, 199, 0.15) 0%, transparent 20%) !important;
           padding: 4rem 2rem;
           text-align: center;
+          box-shadow: 
+            inset 0 0 60px rgba(0, 0, 0, 0.03),
+            0 -10px 30px rgba(0, 0, 0, 0.05) !important;
         }
 
         .footer-cta-container {
@@ -2553,13 +2544,13 @@ export default function Home() {
           font-size: 3rem;
           font-weight: 700;
           margin-bottom: 1.5rem;
-          color: white;
+          color: #333;
           font-family: 'Inter', sans-serif;
         }
 
         .footer-cta-subtitle {
           font-size: 1.2rem;
-          color: rgba(255, 255, 255, 0.8);
+          color: #666;
           margin-bottom: 3rem;
           line-height: 1.6;
           font-family: 'Inter', sans-serif;
@@ -2573,34 +2564,53 @@ export default function Home() {
 
         .footer-url-input-wrapper {
           display: flex;
-          background: rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.2);
+          background: linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7);
           border-radius: 50px;
-          overflow: hidden;
+          padding: 3px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
           transition: all 0.3s ease;
           max-width: 500px;
           width: 100%;
         }
 
         .footer-url-input-wrapper:hover {
-          background: rgba(255, 255, 255, 0.15);
-          border-color: rgba(255, 255, 255, 0.3);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .footer-url-input-wrapper:focus-within {
+          transform: translateY(-3px);
+          box-shadow: 0 12px 40px rgba(255, 107, 53, 0.2);
+        }
+
+        .footer-url-input-inner {
+          display: flex;
+          background: white;
+          border-radius: 47px;
+          padding: 3px;
+          width: 100%;
         }
 
         .footer-url-input {
           flex: 1;
-          padding: 1rem 1.5rem;
           border: none;
-          background: transparent;
-          color: white;
+          background: white;
+          padding: 0.75rem 1.25rem;
           font-size: 1rem;
-          outline: none;
           font-family: 'Inter', sans-serif;
+          color: #333;
+          outline: none;
+          border-radius: 42px;
+          transition: all 0.2s ease;
+        }
+
+        .footer-url-input:focus {
+          transform: scale(1.01);
         }
 
         .footer-url-input::placeholder {
-          color: rgba(255, 255, 255, 0.7);
+          color: #666;
+          font-family: 'Inter', sans-serif;
         }
 
         .footer-url-input:disabled {
@@ -2608,31 +2618,40 @@ export default function Home() {
         }
 
         .footer-generate-btn {
-          padding: 1rem 2rem;
+          background: linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7);
           border: none;
-          background: linear-gradient(135deg, #ff6b35, #f7931e);
           color: white;
-          font-size: 1rem;
+          padding: 0.75rem 1.5rem;
+          border-radius: 40px;
+          font-family: 'Inter', sans-serif;
           font-weight: 600;
+          font-size: 1rem;
           cursor: pointer;
           transition: all 0.3s ease;
-          font-family: 'Inter', sans-serif;
           white-space: nowrap;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         .footer-generate-btn:hover:not(:disabled) {
-          background: linear-gradient(135deg, #e55a2b, #e0821a);
-          transform: translateY(-1px);
+          background: linear-gradient(135deg, #e55a2b, #e0821a, #ff5252, #9333ea);
+          transform: translateY(-1px) scale(1.05);
+          box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .footer-generate-btn:active:not(:disabled) {
+          transform: translateY(0) scale(0.98);
+          transition: all 0.1s ease;
         }
 
         .footer-generate-btn:disabled {
           opacity: 0.6;
           cursor: not-allowed;
+          transform: none;
         }
 
         .footer-disclaimer {
           font-size: 1rem;
-          color: rgba(255, 255, 255, 0.6);
+          color: #666;
           margin: 0;
           font-family: 'Inter', sans-serif;
         }
