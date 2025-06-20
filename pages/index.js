@@ -400,14 +400,29 @@ export default function Home() {
             </div>
           </footer>
 
-          {/* Call to Action Section */}
+          {/* Why Choose Us Section */}
           <section className="cta-section">
             <div className="cta-container">
-              <h2 className="cta-title">Transform Your Website Today</h2>
-              <p className="cta-description">
-                Join thousands of publishers already using Ask Anything™ to engage visitors, 
-                increase time on site, and unlock new revenue streams.
-              </p>
+              <h2 className="cta-title">Why Choose Us?</h2>
+              <div className="why-choose-grid">
+                <div className="why-choose-item">
+                  <div className="why-choose-icon">🆓</div>
+                  <h3>Free to Put on Website</h3>
+                  <p>No upfront costs or hidden fees. Start adding value to your website immediately without any financial commitment.</p>
+                </div>
+                
+                <div className="why-choose-item">
+                  <div className="why-choose-icon">📈</div>
+                  <h3>Drives More Traffic and Engagement</h3>
+                  <p>Keep visitors on your site longer, increase page views, and boost user engagement with interactive AI-powered answers.</p>
+                </div>
+                
+                <div className="why-choose-item">
+                  <div className="why-choose-icon">🤝</div>
+                  <h3>Ethical Compared to Other AI</h3>
+                  <p>Privacy-safe technology with no user tracking, fully licensed sources, and transparent content attribution.</p>
+                </div>
+              </div>
               <button className="cta-button" onClick={() => document.querySelector('.url-input').focus()}>
                 Get Started Now
               </button>
@@ -1556,14 +1571,53 @@ export default function Home() {
           line-height: 1.1;
         }
 
-        .cta-description {
-          font-size: 1.25rem;
-          color: rgba(255, 255, 255, 0.9);
-          margin-bottom: 2.5rem;
-          line-height: 1.6;
-          max-width: 500px;
+        .why-choose-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 2.5rem;
+          margin: 3rem 0;
+          max-width: 1000px;
           margin-left: auto;
           margin-right: auto;
+        }
+
+        .why-choose-item {
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 20px;
+          padding: 2.5rem 2rem;
+          text-align: center;
+          transition: all 0.3s ease;
+          backdrop-filter: blur(10px);
+        }
+
+        .why-choose-item:hover {
+          transform: translateY(-5px);
+          background: rgba(255, 255, 255, 0.12);
+          border-color: rgba(255, 255, 255, 0.2);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .why-choose-icon {
+          font-size: 3rem;
+          margin-bottom: 1.5rem;
+          display: block;
+        }
+
+        .why-choose-item h3 {
+          font-size: 1.5rem;
+          font-weight: 600;
+          color: white;
+          margin-bottom: 1rem;
+          font-family: 'Inter', sans-serif;
+          letter-spacing: -0.01em;
+        }
+
+        .why-choose-item p {
+          font-size: 1rem;
+          color: rgba(255, 255, 255, 0.8);
+          line-height: 1.6;
+          font-family: 'Inter', sans-serif;
         }
 
         .cta-button {
@@ -1679,9 +1733,27 @@ export default function Home() {
             font-size: 2.25rem;
           }
 
-          .cta-description {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
+          .why-choose-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin: 2.5rem 0;
+          }
+
+          .why-choose-item {
+            padding: 2rem 1.5rem;
+          }
+
+          .why-choose-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+          }
+
+          .why-choose-item h3 {
+            font-size: 1.3rem;
+          }
+
+          .why-choose-item p {
+            font-size: 0.95rem;
           }
 
           .cta-button {
@@ -1734,8 +1806,21 @@ export default function Home() {
             font-size: 1.9rem;
           }
 
-          .cta-description {
-            font-size: 1rem;
+          .why-choose-grid {
+            margin: 2rem 0;
+          }
+
+          .why-choose-item {
+            padding: 1.5rem 1rem;
+          }
+
+          .why-choose-icon {
+            font-size: 2.25rem;
+          }
+
+          .why-choose-item h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
           }
 
           .cta-button {
