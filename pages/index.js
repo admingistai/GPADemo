@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import URLInputForm from '../components/URLInputForm';
 import WebsiteDisplay from '../components/WebsiteDisplay';
-import Dashboard from '../components/Dashboard';
 import ErrorDisplay from '../components/ErrorDisplay';
 
 export default function Home() {
+  const router = useRouter();
   const [targetUrl, setTargetUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -13,7 +14,6 @@ export default function Home() {
   const [showLoadingPage, setShowLoadingPage] = useState(false);
   const [showFeaturePage, setShowFeaturePage] = useState(false);
   const [showLoginPage, setShowLoginPage] = useState(false);
-  const [showDashboard, setShowDashboard] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
   const [selectedFeatures, setSelectedFeatures] = useState({
     ask: true, // Always enabled, non-toggleable
@@ -209,7 +209,7 @@ export default function Home() {
             <div className="header-right">
               <span className="tagline">100% ethical, uses fully licensed sources</span>
               <div className="auth-buttons">
-                <button className="signin-btn" onClick={() => setShowDashboard(true)}>Sign In</button>
+                <button className="signin-btn" onClick={() => router.push('/dashboard')}>Sign In</button>
                 <button className="signup-btn" onClick={() => setShowLoginPage(true)}>Sign Up</button>
               </div>
             </div>
@@ -327,7 +327,7 @@ export default function Home() {
                         <div className="header-right">
               <span className="tagline">100% ethical, uses fully licensed sources</span>
               <div className="auth-buttons">
-                <button className="signin-btn" onClick={() => setShowDashboard(true)}>Sign In</button>
+                <button className="signin-btn" onClick={() => router.push('/dashboard')}>Sign In</button>
                 <button className="signup-btn" onClick={() => setShowLoginPage(true)}>Sign Up</button>
               </div>
             </div>
@@ -738,10 +738,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* Dashboard */}
-      {showDashboard && (
-        <Dashboard onClose={() => setShowDashboard(false)} />
-      )}
+
 
       {showWebsite && (
         <WebsiteDisplay 
