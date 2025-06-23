@@ -815,7 +815,8 @@ export default function Home() {
         }
 
         .get-started-btn {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 75%, #f5576c 100%);
+          background: linear-gradient(270deg, #667eea, #764ba2, #f093fb, #f5576c, #667eea);
+          background-size: 400% 400%;
           border: none;
           color: white;
           padding: 1rem 2rem;
@@ -826,12 +827,27 @@ export default function Home() {
           cursor: pointer;
           transition: all 0.3s ease;
           box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+          animation: gradientFlow 3s ease infinite;
+          position: relative;
+          overflow: hidden;
         }
 
         .get-started-btn:hover {
-          background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 50%, #e081e9 75%, #e3455a 100%);
           transform: translateY(-2px);
           box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+          animation-duration: 1.5s;
+        }
+
+        @keyframes gradientFlow {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
         }
 
         .hero-cta-text {
