@@ -312,36 +312,30 @@ export default function Home() {
                   Add a customizable AI-powered search box to your web pages and show fast, relevant results powered by Gist Answers.
                 </p>
                 <div className="hero-cta">
-                  <div className="hero-cta-row">
+                  <button
+                    onClick={() => router.push('/waitlist')}
+                    className="get-started-btn"
+                  >
+                    Get Started
+                  </button>
+                  <span className="hero-cta-text">or, try it now:</span>
+                  <div className="hero-url-input-wrapper">
+                    <input
+                      type="text"
+                      className="hero-url-input"
+                      placeholder="Enter your website URL (e.g., example.com)"
+                      value={targetUrl}
+                      onChange={(e) => setTargetUrl(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && targetUrl.trim() && handleUrlSubmit(targetUrl)}
+                    />
                     <button
-                      onClick={() => router.push('/waitlist')}
-                      className="get-started-btn"
+                      className="hero-try-btn"
+                      onClick={() => targetUrl.trim() && handleUrlSubmit(targetUrl)}
+                      disabled={!targetUrl.trim()}
                     >
-                      Get Started
+                      <span className="gist-icon">G</span>
+                      Try It
                     </button>
-                    <div className="hero-cta-divider">
-                      <span className="hero-cta-text">or, try it now:</span>
-                    </div>
-                    <div className="hero-url-input-container">
-                      <div className="hero-url-input-wrapper">
-                        <input
-                          type="text"
-                          className="hero-url-input"
-                          placeholder="Enter your website URL (e.g., example.com)"
-                          value={targetUrl}
-                          onChange={(e) => setTargetUrl(e.target.value)}
-                          onKeyPress={(e) => e.key === 'Enter' && targetUrl.trim() && handleUrlSubmit(targetUrl)}
-                        />
-                        <button
-                          className="hero-try-btn"
-                          onClick={() => targetUrl.trim() && handleUrlSubmit(targetUrl)}
-                          disabled={!targetUrl.trim()}
-                        >
-                          <span className="gist-icon">G</span>
-                          Try It
-                        </button>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -832,22 +826,9 @@ export default function Home() {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 2rem;
+          gap: 1.5rem;
           flex-wrap: wrap;
-        }
-
-        .hero-cta-row {
-          display: flex;
-          align-items: center;
-          gap: 2rem;
-          flex-wrap: wrap;
-          justify-content: center;
           width: 100%;
-        }
-
-        .hero-cta-divider {
-          display: flex;
-          align-items: center;
         }
 
         .get-started-btn {
@@ -892,15 +873,6 @@ export default function Home() {
           font-size: 1rem;
         }
 
-        .hero-url-input-container {
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-          flex: 0 0 auto;
-          max-width: 400px;
-          min-width: 350px;
-        }
-
         .hero-url-input-wrapper {
           display: flex;
           background: white;
@@ -909,6 +881,8 @@ export default function Home() {
           overflow: hidden;
           transition: all 0.3s ease;
           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          width: 400px;
+          flex-shrink: 0;
         }
 
         .hero-url-input-wrapper:hover {
@@ -1009,22 +983,13 @@ export default function Home() {
             gap: 1.5rem;
           }
 
-          .hero-cta-row {
-            flex-direction: column;
-            gap: 1.5rem;
-          }
-
           .get-started-btn {
             padding: 0.875rem 1.75rem;
             font-size: 1rem;
           }
 
-          .hero-url-input-container {
-            max-width: 100%;
-            min-width: unset;
-          }
-
           .hero-url-input-wrapper {
+            width: 100%;
             flex-direction: column;
           }
 
