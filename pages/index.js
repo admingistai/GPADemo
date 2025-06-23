@@ -798,7 +798,7 @@ export default function Home() {
           justify-content: center;
           padding: 0.5rem 2rem;
           text-align: center;
-          margin-top: -2rem;
+          margin-top: -1rem;
         }
 
         .main-title {
