@@ -246,18 +246,7 @@ export default function Home() {
                 <p className="feature-compact-description">Expandable sidebars with related articles and media</p>
               </div>
                 
-              <div className="feature-compact-card">
-                <div className="feature-compact-header">
-                  <input
-                    type="checkbox"
-                    id="ethicalAds"
-                    checked={selectedFeatures.ethicalAds}
-                    onChange={(e) => setSelectedFeatures(prev => ({...prev, ethicalAds: e.target.checked}))}
-                  />
-                  <label htmlFor="ethicalAds" className="feature-compact-name">Ethical Ads</label>
-                </div>
-                <p className="feature-compact-description">Privacy-safe ad units matched to content intent</p>
-              </div>
+
                 
               <div className="feature-compact-card">
                 <div className="feature-compact-header">
@@ -379,8 +368,8 @@ export default function Home() {
                 </div>
                 
                 <div className="customization-item stagger-animate">
-                  <h3>Ask Anything™ Widget</h3>
-                  <p>A simple search interface that provides AI-powered answers with intelligent follow-up questions.</p>
+                  <h3>Choose your tools and features</h3>
+                  <p>Enable or disable specific features like Ask Anything™ and Go Deeper based on your needs.</p>
                 </div>
                 
                 <div className="customization-item stagger-animate">

@@ -74,11 +74,14 @@
     
     // Get initial configuration
     const urlConfig = parseConfigFromUrl();
-    // Simplified configuration - no tools config needed
+    const TOOLS_CONFIG = {  
+        ask: true      // Always enabled - core functionality
+    };
     
-            console.log('[GistWidget] Widget initialized with simplified interface');
+    console.log('[GistWidget] Applied tools configuration:', TOOLS_CONFIG);
     
-            // Widget initialized
+    // Expose TOOLS_CONFIG globally for console access
+    window.TOOLS_CONFIG = TOOLS_CONFIG;
     
     // ================================
     // WEBSITE STYLING SCRAPER SYSTEM
@@ -1419,8 +1422,7 @@
                 }
                 
                 .gist-widget.minimized .gist-answer-container,
-                .gist-widget.minimized .gist-toolbox,
-                .gist-widget.minimized .gist-ads-container {
+                .gist-widget.minimized .gist-toolbox {
                     opacity: 0;
                     transform: translateY(10px) scale(0.98);
                     pointer-events: none;
@@ -1475,8 +1477,7 @@
                 }
                 
                 .gist-widget:not(.minimized) .gist-answer-container,
-                .gist-widget:not(.minimized) .gist-toolbox,
-                .gist-widget:not(.minimized) .gist-ads-container {
+                .gist-widget:not(.minimized) .gist-toolbox {
                     transition: all 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
                 }
                 
@@ -1565,25 +1566,7 @@
                     pointer-events: auto;
                 }
                 
-                /* Ads Container Styling */
-                .gist-ads-container {
-                    width: 400px;
-                    position: relative;
-                    opacity: 0;
-                    transform: translateY(20px) scale(0.95);
-                    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-                    pointer-events: none;
-                    order: 0;
-                    margin-bottom: 8px;
-                    display: none; /* Hidden by default */
-                }
-                
-                .gist-ads-container.visible {
-                    opacity: 1;
-                    transform: translateY(0) scale(1);
-                    pointer-events: auto;
-                    display: block;
-                }
+
                 
                 .gist-answer-content {
                     background: white;
@@ -2672,13 +2655,7 @@
                     font-weight: 500;
                 }
                 
-                .gist-ads-loading {
-                    text-align: center;
-                    padding: 12px;
-                    color: #6b7280;
-                    font-size: 11px;
-                    font-style: italic;
-                }
+
                 
                 .gist-mock-ad-icon {
                     width: 24px;
@@ -3449,6 +3426,11 @@
                         <button class="gist-pill-submit" id="gist-submit">➤</button>
                     </div>
                 </div>
+                <div class="gist-toolbox" id="gist-toolbox">
+                    <div class="gist-toolbox-tabs" id="gist-toolbox-tabs">
+                        <!-- Tabs will be generated dynamically based on TOOLS_CONFIG -->
+                    </div>
+                </div>
 
                 <div class="gist-answer-container" id="gist-answer-container">
                     <button class="gist-close-btn" id="gist-close-btn" title="Minimize">×</button>
@@ -3472,7 +3454,44 @@
         shadowRoot.innerHTML = widgetHTML;
         document.body.appendChild(widgetContainer);
         
-        // Simplified widget - no tools or tabs needed
+        // Initialize currentTool that will be used by generateToolboxTabs
+        let currentTool = 'ask'; // Track current active tool
+        
+        // Generate toolbox tabs dynamically based on TOOLS_CONFIG
+        function generateToolboxTabs() {
+            const toolboxTabsContainer = shadowRoot.getElementById('gist-toolbox-tabs');
+            const toolLabels = {
+                ask: 'Explore'
+            };
+            
+            // Clear existing tabs
+            toolboxTabsContainer.innerHTML = '';
+            
+            // Get enabled tools in the desired order
+            const toolOrder = ['ask'];
+            const enabledTools = toolOrder.filter(tool => TOOLS_CONFIG[tool]);
+            
+            // Generate tabs for enabled tools
+            enabledTools.forEach((tool, index) => {
+                const button = document.createElement('button');
+                button.className = 'gist-toolbox-tab';
+                button.setAttribute('data-tool', tool);
+                button.textContent = toolLabels[tool];
+                
+                // Make first enabled tool active by default
+                if (index === 0) {
+                    button.classList.add('active');
+                    currentTool = tool; // Set the current tool to the first enabled tool
+                }
+                
+                toolboxTabsContainer.appendChild(button);
+            });
+            
+            console.log('[GistWidget] Generated tabs for enabled tools:', enabledTools);
+        }
+        
+        // Generate the tabs
+        generateToolboxTabs();
         
         // Get elements for event handling
         const pill = shadowRoot.getElementById('gist-pill');
@@ -3484,6 +3503,112 @@
         const answerContainer = shadowRoot.getElementById('gist-answer-container');
         const answerContent = answerContainer.querySelector('.gist-answer-content');
         const widget = shadowRoot.getElementById('gist-widget');
+        const toolbox = shadowRoot.getElementById('gist-toolbox');
+        let toolboxTabs = toolbox.querySelectorAll('.gist-toolbox-tab'); // Use let since it will be updated
+
+        
+        // Dynamic toolbox sizing system
+        function optimizeToolboxAlignment() {
+            const toolboxContainer = shadowRoot.querySelector('.gist-toolbox-tabs');
+            // Refresh toolboxTabs since they are generated dynamically
+            toolboxTabs = toolbox.querySelectorAll('.gist-toolbox-tab');
+            const tabs = Array.from(toolboxTabs);
+            
+            if (!toolboxContainer || tabs.length === 0) return;
+            
+            // Get container width (400px - 8px padding = 392px available)
+            const containerWidth = 392;
+            const gap = 2; // 2px gap between tabs
+            const totalGapWidth = (tabs.length - 1) * gap;
+            const availableWidth = containerWidth - totalGapWidth;
+            
+            // Calculate optimal width per tab
+            const tabWidth = Math.floor(availableWidth / tabs.length);
+            
+            // Get text lengths to determine optimal font size
+            const textLengths = tabs.map(tab => tab.textContent.trim().length);
+            const maxTextLength = Math.max(...textLengths);
+            const avgTextLength = textLengths.reduce((a, b) => a + b, 0) / textLengths.length;
+            
+            // Create a temporary element to measure actual text width
+            const measureElement = document.createElement('span');
+            measureElement.style.position = 'absolute';
+            measureElement.style.visibility = 'hidden';
+            measureElement.style.whiteSpace = 'nowrap';
+            measureElement.style.fontFamily = 'inherit';
+            measureElement.style.fontWeight = '500';
+            shadowRoot.appendChild(measureElement);
+            
+            // Find the optimal font size that fits all text
+            let optimalFontSize = 13; // Start with default
+            let allTextsFit = false;
+            
+            for (let fontSize = 14; fontSize >= 10; fontSize--) {
+                measureElement.style.fontSize = `${fontSize}px`;
+                let maxMeasuredWidth = 0;
+                
+                // Check if all tab texts fit at this font size
+                tabs.forEach(tab => {
+                    measureElement.textContent = tab.textContent.trim();
+                    const measuredWidth = measureElement.offsetWidth;
+                    maxMeasuredWidth = Math.max(maxMeasuredWidth, measuredWidth);
+                });
+                
+                // Add padding space (16px on each side = 32px total)
+                const requiredWidth = maxMeasuredWidth + 32;
+                
+                if (requiredWidth <= tabWidth) {
+                    optimalFontSize = fontSize;
+                    allTextsFit = true;
+                    break;
+                }
+            }
+            
+            // Clean up measurement element
+            shadowRoot.removeChild(measureElement);
+            
+            // Calculate padding based on remaining space
+            const horizontalPadding = Math.max(8, Math.floor((tabWidth - (maxTextLength * optimalFontSize * 0.6)) / 2));
+            
+            // Apply dynamic styles
+            tabs.forEach(tab => {
+                tab.style.fontSize = `${optimalFontSize}px`;
+                tab.style.padding = `8px ${horizontalPadding}px`;
+                tab.style.minWidth = `${tabWidth}px`;
+                tab.style.maxWidth = `${tabWidth}px`;
+                tab.style.flex = 'none'; // Override flex: 1
+                tab.style.whiteSpace = 'nowrap';
+                tab.style.overflow = 'visible'; // Allow text to be fully visible
+            });
+            
+            // Ensure perfect centering
+            toolboxContainer.style.justifyContent = 'center';
+            toolboxContainer.style.width = '100%';
+            
+            console.log('[GistWidget] Toolbox optimized:', {
+                containerWidth,
+                tabWidth,
+                optimalFontSize,
+                horizontalPadding,
+                textLengths,
+                avgTextLength
+            });
+        }
+        
+        // Apply optimization after a brief delay to ensure DOM is ready
+        setTimeout(optimizeToolboxAlignment, 100);
+        
+        // Add resize observer to re-optimize when needed
+        if (window.ResizeObserver) {
+            const resizeObserver = new ResizeObserver(() => {
+                // Debounce the optimization to avoid excessive calls
+                clearTimeout(window.toolboxOptimizationTimeout);
+                window.toolboxOptimizationTimeout = setTimeout(optimizeToolboxAlignment, 150);
+            });
+            
+            // Observe the toolbox container for size changes
+            resizeObserver.observe(toolbox);
+        }
         
         let isActive = false;
         let hasAnswer = false;
@@ -3492,7 +3617,7 @@
         let submitTimeout = null;
         let conversationHistory = []; // Store conversation history for Gist
         let pageContext = null; // Store extracted page content for context
-        // Widget state variables
+        // currentTool already declared above
         let isMinimized = true; // Track minimized state
         let hoverTimeout = null; // Timeout for hover delay
         let userIsInteracting = false; // Track if user is actively interacting
@@ -3515,19 +3640,99 @@
         }
 
         
-        // Simplified placeholder function
-        function showPlaceholder() {
-            const context = extractPageContext();
-            const hasContext = context && context.content && context.content.length > 50;
-            const placeholderText = hasContext ? 
-                'Ask anything about this article or any other topic!' : 
-                'Ask a question to see the answer here!';
+        // Toolbox functionality
+        function switchTool(tool) {
+            // Check if tool is enabled
+            if (!TOOLS_CONFIG[tool]) {
+                console.warn(`[GistWidget] Tool '${tool}' is disabled and cannot be switched to`);
+      return;
+    }
+
+            currentTool = tool;
+            window.gistCurrentTool = currentTool; // Keep window reference in sync
             
+            // Refresh toolboxTabs since they are generated dynamically
+            toolboxTabs = toolbox.querySelectorAll('.gist-toolbox-tab');
+            
+            // Update active tab
+            toolboxTabs.forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.tool === tool) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // Handle compact mode for Remix tool
+            if (tool === 'remix') {
+                answerContainer.classList.add('remix-compact');
+            } else {
+                answerContainer.classList.remove('remix-compact');
+            }
+            
+
+            
+            // Hide ads when switching to tools that don't show ads
+
+            
+            // Update content based on tool
+            updateContentForTool(tool);
+            
+            // Show answer container and toolbox for all tools
+            answerContainer.classList.add('visible');
+            toolbox.classList.add('visible');
+            
+            log('info', 'Tool switched', { tool });
+        }
+        
+        function updateContentForTool(tool) {
+            switch (tool) {
+                case 'ask':
+                    // If we have an Ask-specific answer, keep it. Otherwise show suggested questions
+                    if (hasAskAnswer) {
+                        // Keep current Ask answer content
+                        return;
+                    } else {
+                        // Clear any previous answers from other tools and show suggested questions
+                        hasAnswer = false;
+                        showSuggestedQuestions();
+                    }
+                    break;
+
+
+
+                default:
+                    showPlaceholderForTool('ask');
+            }
+        }
+        
+        function showPlaceholderForTool(tool) {
+            let placeholderText = '';
+            
+            switch (tool) {
+                case 'ask':
+                    const context = extractPageContext();
+                    const hasContext = context && context.content && context.content.length > 50;
+                    placeholderText = hasContext ? 
+                        'Ask anything about this article or any other topic!' : 
+                        'Ask a question to see the answer here!';
+                    break;
+
+
+
+                default:
+                    placeholderText = 'Select a tool to get started!';
+            }
+            
+            if (placeholderText) {
             answerContent.innerHTML = `
                 <div class="gist-answer-placeholder gist-content-entering">
                     ${placeholderText}
-                </div>
+        </div>
             `;
+            } else {
+                // For empty tools like remix, just clear the content
+                answerContent.innerHTML = '';
+            }
             
             // Trigger animation
             setTimeout(() => {
@@ -3537,6 +3742,8 @@
                     el.classList.add('gist-content-entered');
                 });
             }, 50);
+            
+
         }
         
         // Show loading state for question generation
@@ -3579,17 +3786,21 @@
         
 
         
-        // Generate and show suggested questions
+        // Generate and show suggested questions for the Ask tool
         async function showSuggestedQuestions(previousQuestion = null, previousAnswer = null) {
             try {
                 // Show comprehensive loading state while generating questions
                 showQuestionsLoading(previousQuestion, previousAnswer);
                 
-                // Ensure answer container is visible
+                // Ensure answer container and toolbox are visible
                 answerContainer.classList.add('visible');
+                toolbox.classList.add('visible');
                 
                 // Generate questions
                 const questions = await generateSuggestedQuestions(previousQuestion, previousAnswer);
+                
+                // Only show questions if user is still on ask tool
+                if (currentTool !== 'ask') return;
                 
                 let html = `
                     <div class="gist-suggested-questions gist-content-entering">
@@ -3704,7 +3915,7 @@ Generate 3 questions that:
 Return only the 3 questions, one per line, without numbers or bullets.`;
             }
             
-            const response = await createChatCompletion(prompt);
+            const response = await createChatCompletionForGist(prompt);
             const questions = response.response
                 .split('\n')
                 .filter(q => q.trim() && !q.match(/^\d+[.)]/)) // Remove empty lines and numbered lines
@@ -3737,8 +3948,10 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
                 const chatResponse = await createChatCompletion(question);
                 const responseTime = Date.now() - startTime;
                 
-                // Display the answer
-                showAnswerWithFollowUps(chatResponse.response, question);
+                // Display the answer only if user is still on ask tool
+                if (currentTool === 'ask') {
+                    showAnswerWithFollowUps(chatResponse.response, question);
+                }
                 
                 // Clear input
                 input.value = '';
@@ -3755,7 +3968,9 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
                 
             } catch (error) {
                 log('error', 'Failed to process suggested question', { error: error.message });
-                showError(error.message);
+                if (currentTool === 'ask') {
+                    showError(error.message);
+                }
             }
         }
         
@@ -3838,7 +4053,9 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
                 }
                 
                 // Show external ads with question context
-
+                setTimeout(() => {
+    
+                }, 200);
             }, 50);
             
             // Generate follow-up questions
@@ -3851,7 +4068,7 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
                 const followUpQuestions = await generateSuggestedQuestions(question, answer);
                 
                 // Only update if user is still on ask tool and has this answer visible
-                if (!hasAnswer) return;
+                if (currentTool !== 'ask' || !hasAnswer) return;
                 
                 const followUpSection = answerContent.querySelector('.gist-follow-up-section');
                 if (!followUpSection) return;
@@ -3944,8 +4161,7 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
             answerContainer.classList.remove('visible');
             toolbox.classList.remove('visible');
             
-            // Hide ads when minimizing
-            hideExternalAds();
+
             
             // Start the minimization animation
             setTimeout(() => {
@@ -4195,8 +4411,8 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
             
             // Close settings menu
             closeButton.addEventListener('click', () => {
-                // Return to placeholder
-                showPlaceholder();
+                // Return to the previous tool's content
+                updateContentForTool(currentTool);
             });
             
             // Mock toggle functionality (visual only)
@@ -4451,8 +4667,9 @@ Instructions:
         }
 
         function showLoading() {
-            // Ensure answer container is visible
+            // Ensure answer container and toolbox are visible
             answerContainer.classList.add('visible');
+            toolbox.classList.add('visible');
             
             answerContent.innerHTML = `
                 <div class="gist-loading">
@@ -4463,8 +4680,9 @@ Instructions:
         }
         
         function showError(errorMessage) {
-            // Ensure answer container is visible
+            // Ensure answer container and toolbox are visible
             answerContainer.classList.add('visible');
+            toolbox.classList.add('visible');
             
             // First, fade out loading if it exists
             const existingLoading = answerContent.querySelector('.gist-loading');
@@ -4479,6 +4697,9 @@ Instructions:
         }
         
         function showErrorContent(errorMessage) {
+            // Check if we're in Ask or Gist tool to show ads
+            const shouldShowAds = currentTool === 'ask' || currentTool === 'gist';
+            
             let html = `
                 <div class="gist-error gist-content-entering">
                     <strong>Error:</strong> ${errorMessage}
@@ -4494,6 +4715,13 @@ Instructions:
                     errorElement.classList.remove('gist-content-entering');
                     errorElement.classList.add('gist-content-entered');
                 }
+                
+                // Show external ads with delay if appropriate
+                if (shouldShowAds) {
+                    setTimeout(() => {
+        
+                    }, 200);
+                }
             }, 50);
         }
         
@@ -4506,8 +4734,9 @@ Instructions:
                 currentQuestion = question;
             }
             
-            // Ensure answer container is visible
+            // Ensure answer container and toolbox are visible
             answerContainer.classList.add('visible');
+            toolbox.classList.add('visible');
             
             // First, fade out loading if it exists
             const existingLoading = answerContent.querySelector('.gist-loading');
@@ -4635,327 +4864,27 @@ Instructions:
                     applyTextRevealAnimation(answerText);
                 }
                 
-
+                // Show external ads with delay
+                setTimeout(() => {
+    
+                }, 200);
 
             }, 50);
         }
         
-        async function generateContextualAds(questionContext = null) {
-            try {
-                const context = extractPageContext();
-                
-                // Create a prompt to generate contextually relevant ads
-                let adPrompt;
-                
-                if (questionContext) {
-                    // If we have a specific question, generate ads relevant to that question
-                    adPrompt = `Based on the following user question, generate ONE relevant advertisement that would appeal to someone interested in this topic. The ad should be for a real or plausible product/service that relates to the question.
 
-User Question: "${questionContext}"
-${context.title ? `Page Context: ${context.title}` : ''}
-
-Please respond with a JSON object in this exact format:
-{
-  "icon": "single emoji that represents the product/service",
-  "title": "compelling ad title (max 50 characters)",
-  "description": "engaging description (max 90 characters)",
-  "cta": "call-to-action button text (max 15 characters)",
-  "category": "product category (e.g., books, tech, travel, food, etc.)",
-  "brand": "plausible brand name"
-}
-
-Make the ad relevant to the user's question but appealing and professional. Use emojis that represent the product category.`;
-                } else {
-                    // If no meaningful content, fall back to default ads
-                    if (!context.content || context.content.length < 100) {
-                        return getDefaultAds();
-                    }
-                    
-                    // Fall back to page-based ads
-                    adPrompt = `Based on the following article content, generate ONE relevant advertisement that would appeal to readers of this content. The ad should be for a real or plausible product/service that relates to the article topic.
-
-Article Title: ${context.title}
-Article Content: ${context.content.substring(0, 1500)}...
-
-Please respond with a JSON object in this exact format:
-{
-  "icon": "single emoji that represents the product/service",
-  "title": "compelling ad title (max 50 characters)",
-  "description": "engaging description (max 90 characters)",
-  "cta": "call-to-action button text (max 15 characters)",
-  "category": "product category (e.g., books, tech, travel, food, etc.)",
-  "brand": "plausible brand name"
-}
-
-Make the ad relevant to the article topic but appealing and professional. Use emojis that represent the product category.`;
-                }
-
-                // Call the chat API to generate contextual ad
-                const response = await createChatCompletionForAd(adPrompt);
-                
-                // Parse the AI response
-                let adData;
-                try {
-                    // Try to extract JSON from the response
-                    const jsonMatch = response.match(/\{[\s\S]*\}/);
-                    if (jsonMatch) {
-                        adData = JSON.parse(jsonMatch[0]);
-                    } else {
-                        throw new Error('No JSON found in response');
-                    }
-                } catch (parseError) {
-                    console.warn('Failed to parse AI ad response:', parseError);
-                    return getDefaultAds();
-                }
-                
-                // Validate and format the ad
-                if (adData && adData.title && adData.description) {
-                    const contextualAd = {
-                        icon: adData.icon || '🛍️',
-                        iconBg: getCategoryColor(adData.category),
-                        title: adData.title.substring(0, 50),
-                        description: adData.description.substring(0, 90),
-                        cta: adData.cta?.substring(0, 15) || 'Learn More',
-                        url: '#',
-                        brand: adData.brand || 'Sponsored',
-                        brandColor: getCategoryColor(adData.category, true)
-                    };
-                    
-                    log('info', 'Generated contextual ad', { adData, context: context.title });
-                    return [contextualAd];
-                } else {
-                    throw new Error('Invalid ad data structure');
-                }
-                
-            } catch (error) {
-                console.warn('Failed to generate contextual ad:', error);
-                return getDefaultAds();
-            }
-        }
         
-        function getDefaultAds() {
-            const defaultAds = [
-                {
-                    icon: '🏖️',
-                    iconBg: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
-                    title: 'Swoon-worthy summer fling',
-                    description: 'Dive into a hot-summer fling with Penguin Audio\'s new rom-com, perfect for a beach read.',
-                    cta: 'Listen on Audible',
-                    url: '#',
-                    brand: 'Penguin Audio',
-                    brandColor: '#f59e0b'
-                },
-                {
-                    icon: '📚',
-                    iconBg: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)',
-                    title: 'Beach reads collection',
-                    description: 'Escape with captivating stories perfect for your summer vacation adventures.',
-                    cta: 'Explore Now',
-                    url: '#',
-                    brand: 'Summer Reading',
-                    brandColor: '#06b6d4'
-                }
-            ];
-            
-            // Return only one ad (randomly selected)
-            const shuffled = defaultAds.sort(() => 0.5 - Math.random());
-            return shuffled.slice(0, 1);
-        }
+
         
-        function getCategoryColor(category, isBrandColor = false) {
-            const colors = {
-                tech: isBrandColor ? '#3b82f6' : 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-                books: isBrandColor ? '#8b5cf6' : 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
-                travel: isBrandColor ? '#10b981' : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                food: isBrandColor ? '#f59e0b' : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                finance: isBrandColor ? '#06b6d4' : 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)',
-                health: isBrandColor ? '#ef4444' : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                fashion: isBrandColor ? '#ec4899' : 'linear-gradient(135deg, #ec4899 0%, #db2777 100%)',
-                education: isBrandColor ? '#8b5cf6' : 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
-                business: isBrandColor ? '#374151' : 'linear-gradient(135deg, #374151 0%, #1f2937 100%)',
-                entertainment: isBrandColor ? '#f59e0b' : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
-            };
-            
-            return colors[category?.toLowerCase()] || (isBrandColor ? '#6366f1' : 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)');
-        }
+
         
-        async function createChatCompletionForAd(prompt) {
-            const requestBody = {
-                model: 'gpt-3.5-turbo',
-                messages: [
-                    {
-                        role: 'system',
-                        content: 'You are an expert advertising copywriter. Generate relevant, compelling ads based on article content. Always respond with valid JSON only.'
-                    },
-                    {
-                        role: 'user',
-                        content: prompt
-                    }
-                ],
-                max_tokens: 300,
-                temperature: 0.7
-            };
-            
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-            
-            try {
-                const response = await fetch(WIDGET_CONFIG.CHAT_API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(requestBody),
-                    signal: controller.signal
-                });
-                
-                clearTimeout(timeoutId);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                
-                const data = await response.json();
-                
-                // Handle both OpenAI direct format and our backend format
-                if (data.response) {
-                    return data.response;
-                } else if (data.choices && data.choices[0] && data.choices[0].message) {
-                    return data.choices[0].message.content;
-                } else {
-                    throw new Error('Invalid response format from API');
-                }
-            } catch (error) {
-                console.error('Ad generation API error:', error);
-                throw error;
-            } finally {
-                clearTimeout(timeoutId);
-            }
-        }
+
         
-        async function createMockAdsHTML(questionContext = null) {
-            const ads = await generateContextualAds(questionContext);
-            
-            let html = `
-                <div class="gist-mock-ads">
-                    <div class="gist-mock-ads-container">
-            `;
-            
-            ads.forEach(ad => {
-                html += `
-                    <div class="gist-mock-ad contextual-ad" onclick="window.open('${ad.url}', '_blank')">
-                        <div class="gist-mock-ad-icon" style="background: ${ad.iconBg};">
-                            ${ad.icon}
-                        </div>
-                        <div class="gist-mock-ad-content">
-                            <div class="gist-mock-ad-title">${ad.title}</div>
-                            <div class="gist-mock-ad-description">${ad.description}</div>
-                            ${ad.brand ? `<div class="gist-mock-ad-brand" style="color: ${ad.brandColor};">${ad.brand}</div>` : ''}
-                        </div>
-                        <button class="gist-mock-ad-cta" style="background: ${ad.brandColor || '#3b82f6'};">${ad.cta}</button>
-                    </div>
-                `;
-            });
-            
-            html += `
-                    </div>
-                </div>
-            `;
-            
-            return html;
-        }
+
         
-        async function showExternalAds(questionContext = null) {
-            // Only show ads if we're in Ask or Gist tool AND have actual content
-            const shouldShowAds = hasAnswer;
-            
-            if (!shouldShowAds) {
-                return;
-            }
-            
-            const adsContainer = shadowRoot.getElementById('gist-ads-container');
-            if (!adsContainer) return;
-            
-            try {
-            // Show the ads container
-            adsContainer.classList.add('visible');
-                
-                // Generate and insert ads HTML with question context
-                const adsHTML = await createMockAdsHTML(questionContext);
-                adsContainer.innerHTML = adsHTML;
-            
-            // Animate the ads with a delay
-            setTimeout(() => {
-                const mockAds = adsContainer.querySelector('.gist-mock-ads');
-                if (mockAds) {
-                    mockAds.classList.add('visible');
-                }
-            }, 200);
-                
-            } catch (error) {
-                console.error('Failed to generate ads:', error);
-                // Fall back to showing default ads without AI generation
-                try {
-                    const defaultAds = getDefaultAds();
-                    let fallbackHTML = `
-                        <div class="gist-mock-ads">
-                            <div class="gist-mock-ads-container">
-                    `;
-                    
-                    defaultAds.forEach(ad => {
-                        fallbackHTML += `
-                            <div class="gist-mock-ad summer-reading-ad" onclick="window.open('${ad.url}', '_blank')">
-                                <div class="gist-mock-ad-icon" style="background: ${ad.iconBg};">
-                                    ${ad.icon}
-                                </div>
-                                <div class="gist-mock-ad-content">
-                                    <div class="gist-mock-ad-title">${ad.title}</div>
-                                    <div class="gist-mock-ad-description">${ad.description}</div>
-                                    ${ad.brand ? `<div class="gist-mock-ad-brand" style="color: ${ad.brandColor};">${ad.brand}</div>` : ''}
-                                </div>
-                                <button class="gist-mock-ad-cta" style="background: ${ad.brandColor || '#3b82f6'};">${ad.cta}</button>
-                            </div>
-                        `;
-                    });
-                    
-                    fallbackHTML += `
-                            </div>
-                        </div>
-                    `;
-                    
-                    adsContainer.innerHTML = fallbackHTML;
-                    
-                    setTimeout(() => {
-                        const mockAds = adsContainer.querySelector('.gist-mock-ads');
-                        if (mockAds) {
-                            mockAds.classList.add('visible');
-                        }
-                    }, 200);
-                    
-                } catch (fallbackError) {
-                    console.error('Fallback ad generation also failed:', fallbackError);
-                    adsContainer.innerHTML = '';
-                    adsContainer.classList.remove('visible');
-                }
-            }
-        }
+
         
-        function hideExternalAds() {
-            const adsContainer = shadowRoot.getElementById('gist-ads-container');
-            if (!adsContainer) return;
-            
-            // Remove visible class from both container and inner ads
-            adsContainer.classList.remove('visible');
-            const mockAds = adsContainer.querySelector('.gist-mock-ads');
-            if (mockAds) {
-                mockAds.classList.remove('visible');
-            }
-            
-            // Clear content after transition
-            setTimeout(() => {
-                adsContainer.innerHTML = '';
-            }, 500); // Wait for transition to complete
-        }
+
 
         function generateMockAttributions() {
             // Array of possible mock sources with realistic names and rich data
@@ -5167,32 +5096,14 @@ Make the ad relevant to the article topic but appealing and professional. Use em
 
         
         function showPlaceholder() {
-            const context = extractPageContext();
-            const hasContext = context && context.content && context.content.length > 50;
-            const placeholderText = hasContext ? 
-                'Ask anything about this article or any other topic!' : 
-                'Ask a question to see the answer here!';
-            
-            answerContent.innerHTML = `
-                <div class="gist-answer-placeholder gist-content-entering">
-                    ${placeholderText}
-                </div>
-            `;
-            
-            // Trigger animation
-            setTimeout(() => {
-                const elements = answerContent.querySelectorAll('.gist-content-entering');
-                elements.forEach(el => {
-                    el.classList.remove('gist-content-entering');
-                    el.classList.add('gist-content-entered');
-                });
-            }, 50);
+            showPlaceholderForTool(currentTool);
         }
         
-        // Function to toggle answer container
+        // Function to toggle answer container and toolbox
         function showAnswerContainer() {
-            // Always show the container on hover/interaction
+            // Always show the container and toolbox on hover/interaction
             answerContainer.classList.add('visible');
+            toolbox.classList.add('visible');
             
 
             
@@ -5210,6 +5121,8 @@ Make the ad relevant to the article topic but appealing and professional. Use em
         function hideAnswerContainer() {
             if (!isActive) {
                 answerContainer.classList.remove('visible');
+                toolbox.classList.remove('visible');
+
             }
         }
         
@@ -5217,6 +5130,12 @@ Make the ad relevant to the article topic but appealing and professional. Use em
         async function submitQuery() {
             const query = input.value.trim();
             if (!query) return;
+            
+            // Only process queries when in "Ask" mode
+            if (currentTool !== 'ask') {
+                // Switch to Ask tool if user submits a query
+                switchTool('ask');
+            }
             
             // Clear any existing timeout
             if (submitTimeout) {
@@ -5228,20 +5147,23 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 try {
                     log('info', 'User submitted query', { query });
                     
-                    // Store the current question
+                    // Store the current question for ad generation
                     currentQuestion = query;
                     
-                    // Ensure answer container is visible and show loading state immediately
+                    // Ensure answer container and toolbox are visible and show loading state immediately
                     answerContainer.classList.add('visible');
+                    toolbox.classList.add('visible');
                     showLoading();
                     
-                    // Get chat completion
+                    // Get chat completion from Gist
                     const startTime = Date.now();
                     const chatResponse = await createChatCompletion(query);
                     const responseTime = Date.now() - startTime;
                     
-                    // Display the answer
+                    // Display the answer only if user is still on ask tool
+                    if (currentTool === 'ask') {
                     showAnswer(chatResponse.response, query);
+                    }
                     
                     // Clear input
                     input.value = '';
@@ -5258,12 +5180,14 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                     }));
                     
                 } catch (error) {
-                    log('error', 'API request failed', { error: error.message, query });
+                    log('error', 'Gist API request failed', { error: error.message, query });
                     
-                    // Show error in answer container
+                    // Show error in answer container only if user is still on ask tool
+                    if (currentTool === 'ask') {
                     showError(error.message);
                     showAnswerContainer();
                     hasAnswer = true;
+                    }
                     
                     // Emit error event for host analytics
                     window.dispatchEvent(new CustomEvent('gist-error', {
@@ -5287,8 +5211,8 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             expandWidget();
             input.focus();
             
-            // Show suggested questions if no answer exists
-            if (!hasAskAnswer) {
+            // Ensure Ask tool content is shown if no other tool is active
+            if (currentTool === 'ask' && !hasAskAnswer) {
                 showSuggestedQuestions();
             }
         });
@@ -5300,8 +5224,8 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             expandWidget();
             showAnswerContainer();
             
-            // Show suggested questions if no answer exists
-            if (!hasAskAnswer) {
+            // Show Ask tool content if no answer exists
+            if (currentTool === 'ask' && !hasAskAnswer) {
                 showSuggestedQuestions();
             }
         });
@@ -5374,7 +5298,12 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             isActive = true;
         });
         
-
+        // Prevent clicks on toolbox from bubbling
+        toolbox.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userIsInteracting = true;
+            isActive = true;
+        });
         
 
         
@@ -5427,9 +5356,9 @@ Make the ad relevant to the article topic but appealing and professional. Use em
         window.gistWidgetShadowRoot = shadowRoot;
         window.gistWidgetStyling = enhancedStyling;
         window.gistStyleObserver = styleObserver;
-        
-        // Initialize widget - show placeholder initially
-        showPlaceholder();
+        window.gistCurrentTool = currentTool;
+        window.gistSwitchTool = switchTool;
+        window.gistOptimizeToolboxAlignment = optimizeToolboxAlignment;
         
         return shadowRoot;
     }
@@ -5481,7 +5410,84 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             log('info', 'Auto-update styling disabled for stability', { requestedEnabled: enabled });
         },
         
-
+        // Configure which tools are enabled/disabled
+        configureTools: function(toolsConfig) {
+            if (!toolsConfig || typeof toolsConfig !== 'object') {
+                console.error('[GistWidget] Invalid tools configuration. Must be an object.');
+                return;
+            }
+            
+            // Update TOOLS_CONFIG with provided settings
+            Object.keys(toolsConfig).forEach(tool => {
+                if (TOOLS_CONFIG.hasOwnProperty(tool)) {
+                    TOOLS_CONFIG[tool] = Boolean(toolsConfig[tool]);
+            } else {
+                    console.warn(`[GistWidget] Unknown tool '${tool}' ignored.`);
+                }
+            });
+            
+            // Regenerate tabs if widget exists
+            if (window.gistWidgetShadowRoot) {
+                const shadowRoot = window.gistWidgetShadowRoot;
+                const toolboxTabsContainer = shadowRoot.getElementById('gist-toolbox-tabs');
+                
+                if (toolboxTabsContainer) {
+                    // Get the generate function from the widget's scope
+                    // We need to regenerate tabs based on new config
+                    const toolLabels = {
+                        ask: 'Ask'
+                    };
+                    
+                    // Clear existing tabs
+                    toolboxTabsContainer.innerHTML = '';
+                    
+                    // Get enabled tools in the desired order
+                    const toolOrder = ['ask'];
+                    const enabledTools = toolOrder.filter(tool => TOOLS_CONFIG[tool]);
+                    
+                    if (enabledTools.length === 0) {
+                        console.error('[GistWidget] At least one tool must be enabled');
+                        TOOLS_CONFIG.ask = true; // Force enable Ask as fallback
+                        enabledTools.push('ask');
+                    }
+                    
+                    // Generate tabs for enabled tools
+                    enabledTools.forEach((tool, index) => {
+                        const button = document.createElement('button');
+                        button.className = 'gist-toolbox-tab';
+                        button.setAttribute('data-tool', tool);
+                        button.textContent = toolLabels[tool];
+                        
+                        // Make first enabled tool active if current tool is disabled
+                        if (!TOOLS_CONFIG[window.gistCurrentTool] && index === 0) {
+                            button.classList.add('active');
+                            // We'll need to switch to this tool
+                            setTimeout(() => {
+                                if (window.gistSwitchTool) {
+                                    window.gistSwitchTool(tool);
+                                }
+                            }, 100);
+                        } else if (tool === window.gistCurrentTool) {
+                            button.classList.add('active');
+                        }
+                        
+                        toolboxTabsContainer.appendChild(button);
+                    });
+                    
+                    // Re-optimize toolbox alignment
+                    if (window.gistOptimizeToolboxAlignment) {
+                        setTimeout(window.gistOptimizeToolboxAlignment, 100);
+                    }
+                    
+                    log('info', 'Tools configuration updated', { enabledTools, config: TOOLS_CONFIG });
+                }
+            }
+        },
+        
+        // Get current tools configuration
+        getToolsConfig: function() {
+            return { ...TOOLS_CONFIG };
+        }
     };
 
     // Initialize widget when DOM is ready
@@ -5502,11 +5508,16 @@ Make the ad relevant to the article topic but appealing and professional. Use em
     
     log('info', 'Gist Widget loader initialized');
     
-    // Log widget initialization
-    console.group('🛠️ Ask Anything™ Widget');
-    console.log('Widget initialized successfully');
-    console.log('• Simple Q&A interface with follow-up questions');
-    console.log('• No configuration needed - just ask questions!');
+    // Log available configuration options for developers
+    console.group('🛠️ Gist Widget Configuration');
+    console.log('Tools Configuration:');
+    console.log('• TOOLS_CONFIG =', TOOLS_CONFIG);
+                    console.log('• GistWidget.configureTools({ ask: true })');
+    console.log('• GistWidget.getToolsConfig()');
+    console.log('');
+    console.log('Usage Examples:');
+                    console.log('• TOOLS_CONFIG.ask = true  // Enable Ask tool');
+                    console.log('• GistWidget.configureTools({ ask: true })  // Configure Ask tool only');
     console.groupEnd();
     
     initWidget();
