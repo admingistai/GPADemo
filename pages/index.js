@@ -800,9 +800,24 @@ export default function Home() {
 
         /* Hero Section */
         .hero-section {
-          background: white;
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
           padding: 4rem 2rem;
           color: #1a1a1a;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .hero-section::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: 
+            radial-gradient(circle at 30% 20%, rgba(102, 126, 234, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 70% 80%, rgba(168, 85, 247, 0.08) 0%, transparent 50%);
+          pointer-events: none;
         }
 
         .hero-container {
@@ -812,6 +827,8 @@ export default function Home() {
           grid-template-columns: 1fr 1fr;
           gap: 4rem;
           align-items: center;
+          position: relative;
+          z-index: 1;
         }
 
         .hero-video {
