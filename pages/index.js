@@ -1238,7 +1238,7 @@ export default function Home() {
           height: 100%;
           background: linear-gradient(135deg, #4f46e5 0%, #c084fc 50%, #f97316 100%);
           transition: left 0.3s ease;
-          z-index: 0;
+          z-index: -1;
         }
 
         .waitlist-btn:hover::before {
@@ -1248,12 +1248,6 @@ export default function Home() {
         .waitlist-btn:hover {
           transform: translateY(-2px);
           box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        .waitlist-btn span,
-        .waitlist-btn {
-          position: relative;
-          z-index: 1;
         }
 
         /* Mobile Responsiveness */
