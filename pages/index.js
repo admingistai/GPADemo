@@ -388,16 +388,19 @@ export default function Home() {
               <h2 className="section-title">Make it <span style={{fontStyle: 'italic'}}>yours</span>.</h2>
               <div className="customization-grid">
                 <div className="customization-item">
+                  <div className="customization-icon">🎨</div>
                   <h3>Match your brand perfectly</h3>
                   <p>Customize colors, fonts, favicon, and button styling to seamlessly blend with your website's design and brand identity.</p>
                 </div>
 
                 <div className="customization-item">
+                  <div className="customization-icon">⚙️</div>
                   <h3>Choose your tools and features</h3>
                   <p>Enable or disable specific features like Ask Anything™ and Go Deeper based on your needs.</p>
                 </div>
 
                 <div className="customization-item">
+                  <div className="customization-icon">📊</div>
                   <h3>Control your advertising</h3>
                   <p>Set ad preferences, choose which types of ads to display, and maintain full control over the advertising experience on your site.</p>
                 </div>
@@ -1410,10 +1413,27 @@ export default function Home() {
           padding: 5rem 0;
           background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
           color: #1a202c;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .make-it-yours-section::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: 
+            radial-gradient(circle at 30% 20%, rgba(102, 126, 234, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 70% 80%, rgba(168, 85, 247, 0.08) 0%, transparent 50%);
+          pointer-events: none;
         }
 
         .make-it-yours-section .section-title {
           color: #1a202c;
+          position: relative;
+          z-index: 1;
         }
 
         .customization-grid {
@@ -1421,6 +1441,40 @@ export default function Home() {
           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
           gap: 2rem;
           text-align: center;
+          position: relative;
+          z-index: 1;
+        }
+
+        .customization-item {
+          background: rgba(255, 255, 255, 0.8);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          border-radius: 16px;
+          padding: 2rem 1.5rem;
+          transition: all 0.3s ease;
+          backdrop-filter: blur(10px);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .customization-item:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+          background: rgba(255, 255, 255, 0.9);
+          border-color: rgba(102, 126, 234, 0.2);
+        }
+
+        .customization-icon {
+          font-size: 3rem;
+          margin-bottom: 1.5rem;
+          display: inline-block;
+          padding: 1rem;
+          background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+          border-radius: 50%;
+          transition: all 0.3s ease;
+        }
+
+        .customization-item:hover .customization-icon {
+          transform: scale(1.1);
+          background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);
         }
 
         .customization-item h3 {
@@ -1428,12 +1482,14 @@ export default function Home() {
           font-weight: 600;
           margin-bottom: 1rem;
           color: #1a202c;
+          font-family: 'Inter', sans-serif;
         }
 
         .customization-item p {
           font-size: 1rem;
           line-height: 1.6;
           color: #4a5568;
+          font-family: 'Inter', sans-serif;
         }
 
         /* Final CTA Section */
