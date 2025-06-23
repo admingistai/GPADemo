@@ -3492,7 +3492,7 @@
         let submitTimeout = null;
         let conversationHistory = []; // Store conversation history for Gist
         let pageContext = null; // Store extracted page content for context
-        // currentTool already declared above
+        // Widget state variables
         let isMinimized = true; // Track minimized state
         let hoverTimeout = null; // Timeout for hover delay
         let userIsInteracting = false; // Track if user is actively interacting
@@ -3704,7 +3704,7 @@ Generate 3 questions that:
 Return only the 3 questions, one per line, without numbers or bullets.`;
             }
             
-            const response = await createChatCompletionForGist(prompt);
+            const response = await createChatCompletion(prompt);
             const questions = response.response
                 .split('\n')
                 .filter(q => q.trim() && !q.match(/^\d+[.)]/)) // Remove empty lines and numbered lines
@@ -3737,10 +3737,8 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
                 const chatResponse = await createChatCompletion(question);
                 const responseTime = Date.now() - startTime;
                 
-                // Display the answer only if user is still on ask tool
-                if (currentTool === 'ask') {
-                    showAnswerWithFollowUps(chatResponse.response, question);
-                }
+                // Display the answer
+                showAnswerWithFollowUps(chatResponse.response, question);
                 
                 // Clear input
                 input.value = '';
@@ -3757,9 +3755,7 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
                 
             } catch (error) {
                 log('error', 'Failed to process suggested question', { error: error.message });
-                if (currentTool === 'ask') {
-                    showError(error.message);
-                }
+                showError(error.message);
             }
         }
         
@@ -3855,7 +3851,7 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
                 const followUpQuestions = await generateSuggestedQuestions(question, answer);
                 
                 // Only update if user is still on ask tool and has this answer visible
-                if (currentTool !== 'ask' || !hasAnswer) return;
+                if (!hasAnswer) return;
                 
                 const followUpSection = answerContent.querySelector('.gist-follow-up-section');
                 if (!followUpSection) return;
@@ -4199,8 +4195,8 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
             
             // Close settings menu
             closeButton.addEventListener('click', () => {
-                // Return to the previous tool's content
-                updateContentForTool(currentTool);
+                // Return to placeholder
+                showPlaceholder();
             });
             
             // Mock toggle functionality (visual only)
@@ -5171,14 +5167,32 @@ Make the ad relevant to the article topic but appealing and professional. Use em
 
         
         function showPlaceholder() {
-            showPlaceholderForTool(currentTool);
+            const context = extractPageContext();
+            const hasContext = context && context.content && context.content.length > 50;
+            const placeholderText = hasContext ? 
+                'Ask anything about this article or any other topic!' : 
+                'Ask a question to see the answer here!';
+            
+            answerContent.innerHTML = `
+                <div class="gist-answer-placeholder gist-content-entering">
+                    ${placeholderText}
+                </div>
+            `;
+            
+            // Trigger animation
+            setTimeout(() => {
+                const elements = answerContent.querySelectorAll('.gist-content-entering');
+                elements.forEach(el => {
+                    el.classList.remove('gist-content-entering');
+                    el.classList.add('gist-content-entered');
+                });
+            }, 50);
         }
         
-        // Function to toggle answer container and toolbox
+        // Function to toggle answer container
         function showAnswerContainer() {
-            // Always show the container and toolbox on hover/interaction
+            // Always show the container on hover/interaction
             answerContainer.classList.add('visible');
-            toolbox.classList.add('visible');
             
 
             
@@ -5196,8 +5210,6 @@ Make the ad relevant to the article topic but appealing and professional. Use em
         function hideAnswerContainer() {
             if (!isActive) {
                 answerContainer.classList.remove('visible');
-                toolbox.classList.remove('visible');
-                hideExternalAds();
             }
         }
         
@@ -5205,12 +5217,6 @@ Make the ad relevant to the article topic but appealing and professional. Use em
         async function submitQuery() {
             const query = input.value.trim();
             if (!query) return;
-            
-            // Only process queries when in "Ask" mode
-            if (currentTool !== 'ask') {
-                // Switch to Ask tool if user submits a query
-                switchTool('ask');
-            }
             
             // Clear any existing timeout
             if (submitTimeout) {
@@ -5222,23 +5228,20 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                 try {
                     log('info', 'User submitted query', { query });
                     
-                    // Store the current question for ad generation
+                    // Store the current question
                     currentQuestion = query;
                     
-                    // Ensure answer container and toolbox are visible and show loading state immediately
+                    // Ensure answer container is visible and show loading state immediately
                     answerContainer.classList.add('visible');
-                    toolbox.classList.add('visible');
                     showLoading();
                     
-                    // Get chat completion from Gist
+                    // Get chat completion
                     const startTime = Date.now();
                     const chatResponse = await createChatCompletion(query);
                     const responseTime = Date.now() - startTime;
                     
-                    // Display the answer only if user is still on ask tool
-                    if (currentTool === 'ask') {
+                    // Display the answer
                     showAnswer(chatResponse.response, query);
-                    }
                     
                     // Clear input
                     input.value = '';
@@ -5255,14 +5258,12 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                     }));
                     
                 } catch (error) {
-                    log('error', 'Gist API request failed', { error: error.message, query });
+                    log('error', 'API request failed', { error: error.message, query });
                     
-                    // Show error in answer container only if user is still on ask tool
-                    if (currentTool === 'ask') {
+                    // Show error in answer container
                     showError(error.message);
                     showAnswerContainer();
                     hasAnswer = true;
-                    }
                     
                     // Emit error event for host analytics
                     window.dispatchEvent(new CustomEvent('gist-error', {
@@ -5286,8 +5287,8 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             expandWidget();
             input.focus();
             
-            // Ensure Ask tool content is shown if no other tool is active
-            if (currentTool === 'ask' && !hasAskAnswer) {
+            // Show suggested questions if no answer exists
+            if (!hasAskAnswer) {
                 showSuggestedQuestions();
             }
         });
@@ -5299,8 +5300,8 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             expandWidget();
             showAnswerContainer();
             
-            // Show Ask tool content if no answer exists
-            if (currentTool === 'ask' && !hasAskAnswer) {
+            // Show suggested questions if no answer exists
+            if (!hasAskAnswer) {
                 showSuggestedQuestions();
             }
         });
@@ -5427,10 +5428,8 @@ Make the ad relevant to the article topic but appealing and professional. Use em
         window.gistWidgetStyling = enhancedStyling;
         window.gistStyleObserver = styleObserver;
         
-        // Initialize with suggested questions
-        setTimeout(() => {
-            showSuggestedQuestions();
-        }, 200);
+        // Initialize widget - show placeholder initially
+        showPlaceholder();
         
         return shadowRoot;
     }
