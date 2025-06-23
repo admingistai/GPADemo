@@ -1512,49 +1512,37 @@ export default function Home() {
 
         .customization-item {
           background: rgba(255, 255, 255, 0.8);
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          border-radius: 16px;
-          padding: 2rem 1.5rem;
+          border: 1px solid rgba(226, 232, 240, 0.3);
+          border-radius: 12px;
+          padding: 2rem;
           transition: all 0.3s ease;
           backdrop-filter: blur(10px);
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
 
         .customization-item:hover {
           transform: translateY(-4px);
-          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-          background: rgba(255, 255, 255, 0.9);
-          border-color: rgba(102, 126, 234, 0.2);
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+          background: rgba(255, 255, 255, 0.95);
         }
 
         .customization-icon {
           font-size: 3rem;
-          margin-bottom: 1.5rem;
-          display: inline-block;
-          padding: 1rem;
-          background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
-          border-radius: 50%;
-          transition: all 0.3s ease;
-        }
-
-        .customization-item:hover .customization-icon {
-          transform: scale(1.1);
-          background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);
+          margin-bottom: 1rem;
+          display: block;
         }
 
         .customization-item h3 {
-          font-size: 1.4rem;
+          color: #1a202c;
+          font-size: 1.3rem;
           font-weight: 600;
           margin-bottom: 1rem;
-          color: #1a202c;
-          font-family: 'Inter', sans-serif;
         }
 
         .customization-item p {
+          color: #4a5568;
           font-size: 1rem;
           line-height: 1.6;
-          color: #4a5568;
-          font-family: 'Inter', sans-serif;
         }
 
         /* Final CTA Section */
