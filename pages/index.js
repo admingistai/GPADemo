@@ -960,6 +960,7 @@ export default function Home() {
           background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 75%, #f5576c 100%);
           background-size: 400% 400%;
           border: none;
+          border-radius: 47px;
           color: white;
           padding: 0.875rem 1.5rem;
           font-family: 'Inter', sans-serif;
@@ -969,6 +970,7 @@ export default function Home() {
           transition: all 0.3s ease;
           animation: gradientFlow 3s ease infinite;
           white-space: nowrap;
+          margin: 0;
         }
 
         .hero-try-btn:hover:not(:disabled) {
@@ -1044,7 +1046,7 @@ export default function Home() {
           .hero-try-btn {
             padding: 0.75rem 1.25rem;
             font-size: 0.9rem;
-            border-radius: 0 0 12px 12px;
+            border-radius: 47px;
           }
         }
 
