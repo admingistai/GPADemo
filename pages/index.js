@@ -950,10 +950,10 @@ export default function Home() {
           content: '';
           position: absolute;
           inset: 0;
-          background: conic-gradient(from 0deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea);
+          background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57);
           border-radius: 50px;
           z-index: 0;
-          animation: rainbowSpin 4s linear infinite;
+          animation: rainbowFlow 4s linear infinite;
         }
 
         .hero-url-input-wrapper::after {
@@ -965,12 +965,27 @@ export default function Home() {
           z-index: 1;
         }
 
-        @keyframes rainbowSpin {
+        @keyframes rainbowFlow {
           0% {
-            transform: rotate(0deg);
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57);
+          }
+          16.6% {
+            background: linear-gradient(135deg, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea);
+          }
+          33.3% {
+            background: linear-gradient(135deg, #f093fb, #f5576c, #ff6b35, #feca57, #667eea, #764ba2);
+          }
+          50% {
+            background: linear-gradient(135deg, #f5576c, #ff6b35, #feca57, #667eea, #764ba2, #f093fb);
+          }
+          66.6% {
+            background: linear-gradient(135deg, #ff6b35, #feca57, #667eea, #764ba2, #f093fb, #f5576c);
+          }
+          83.3% {
+            background: linear-gradient(135deg, #feca57, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35);
           }
           100% {
-            transform: rotate(360deg);
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57);
           }
         }
 
@@ -1647,10 +1662,10 @@ export default function Home() {
           content: '';
           position: absolute;
           inset: 0;
-          background: conic-gradient(from 0deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea);
+          background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57);
           border-radius: 50px;
           z-index: 0;
-          animation: rainbowSpin 4s linear infinite;
+          animation: rainbowFlow 4s linear infinite;
         }
 
         .final-url-input-wrapper::after {
