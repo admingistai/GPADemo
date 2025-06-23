@@ -444,12 +444,12 @@ export default function Home() {
           <section className="final-cta-section white-section">
             <div className="container">
               <h2 className="cta-title">Ready to add Ask Anything™ to your website?</h2>
-              <div className="cta-url-input-container">
-                <div className="cta-url-input-wrapper">
-                  <div className="cta-url-input-inner">
+              <div className="url-input-container">
+                <div className="url-input-wrapper">
+                  <div className="url-input-inner">
                     <input
                       type="text"
-                      placeholder="Enter your website URL to get started"
+                      placeholder="Enter your sites URL here"
                       value={targetUrl}
                       onChange={(e) => setTargetUrl(e.target.value)}
                       onKeyDown={(e) => {
@@ -457,13 +457,13 @@ export default function Home() {
                           handleUrlSubmit(targetUrl);
                         }
                       }}
-                      className="cta-url-input"
+                      className="url-input"
                       disabled={loading}
                     />
                     <button
                       onClick={() => handleUrlSubmit(targetUrl)}
                       disabled={loading || !targetUrl.trim()}
-                      className="cta-generate-btn"
+                      className="generate-btn"
                     >
                       {loading ? 'Generating...' : 'Get Started'}
                     </button>
@@ -1237,76 +1237,18 @@ export default function Home() {
           z-index: 1;
         }
 
-        .cta-url-input-container {
-          max-width: 600px;
-          margin: 0 auto;
-          position: relative;
-          z-index: 1;
-        }
-
-        .cta-url-input-wrapper {
-          background: rgba(255, 255, 255, 0.1);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 12px;
-          padding: 0.5rem;
-          backdrop-filter: blur(10px);
-        }
-
-        .final-cta-section.white-section .cta-url-input-wrapper {
+        /* URL input styling for white sections */
+        .final-cta-section.white-section .url-input-wrapper {
           background: rgba(0, 0, 0, 0.05);
           border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
-        .cta-url-input-inner {
-          display: flex;
-          gap: 0.5rem;
-        }
-
-        .cta-url-input {
-          flex: 1;
-          background: transparent;
-          border: none;
-          padding: 1rem 1.5rem;
-          color: white;
-          font-size: 1rem;
-          outline: none;
-          font-family: 'Inter', sans-serif;
-        }
-
-        .final-cta-section.white-section .cta-url-input {
+        .final-cta-section.white-section .url-input {
           color: #333;
         }
 
-        .cta-url-input::placeholder {
-          color: rgba(255, 255, 255, 0.6);
-        }
-
-        .final-cta-section.white-section .cta-url-input::placeholder {
+        .final-cta-section.white-section .url-input::placeholder {
           color: rgba(0, 0, 0, 0.5);
-        }
-
-        .cta-generate-btn {
-          background: linear-gradient(135deg, #ff6b35, #f7931e);
-          color: white;
-          border: none;
-          padding: 1rem 2rem;
-          border-radius: 8px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          font-family: 'Inter', sans-serif;
-          font-size: 1rem;
-          white-space: nowrap;
-        }
-
-        .cta-generate-btn:hover:not(:disabled) {
-          transform: translateY(-1px);
-          box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
-        }
-
-        .cta-generate-btn:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
         }
 
         /* Mobile Responsiveness */
@@ -1333,12 +1275,12 @@ export default function Home() {
             font-size: 2rem;
           }
 
-          .cta-url-input-inner {
+          .url-input-inner {
             flex-direction: column;
             gap: 1rem;
           }
 
-          .cta-generate-btn {
+          .generate-btn {
             width: 100%;
           }
 
