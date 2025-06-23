@@ -209,8 +209,7 @@ export default function Home() {
             <div className="header-right">
               <span className="tagline">100% ethical, uses fully licensed sources</span>
               <div className="auth-buttons">
-                <button className="signin-btn" onClick={() => router.push('/dashboard')}>Sign In</button>
-                <button className="signup-btn" onClick={() => setShowLoginPage(true)}>Sign Up</button>
+                <button className="dashboard-btn" onClick={() => router.push('/dashboard')}>Dashboard</button>
               </div>
             </div>
           </header>
@@ -327,8 +326,7 @@ export default function Home() {
                         <div className="header-right">
               <span className="tagline">100% ethical, uses fully licensed sources</span>
               <div className="auth-buttons">
-                <button className="signin-btn" onClick={() => router.push('/dashboard')}>Sign In</button>
-                <button className="signup-btn" onClick={() => setShowLoginPage(true)}>Sign Up</button>
+                <button className="dashboard-btn" onClick={() => router.push('/dashboard')}>Dashboard</button>
               </div>
             </div>
           </header>
@@ -772,24 +770,7 @@ export default function Home() {
           align-items: center;
         }
 
-        .signin-btn {
-          background: transparent;
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          color: white;
-          padding: 0.75rem 1.5rem;
-          border-radius: 8px;
-          font-family: 'Inter', sans-serif;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-
-        .signin-btn:hover {
-          background: rgba(255, 255, 255, 0.05);
-          border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .signup-btn {
+        .dashboard-btn {
           background: linear-gradient(135deg, #ff6b35, #f7931e);
           border: none;
           color: white;
@@ -802,7 +783,7 @@ export default function Home() {
           box-shadow: 0 2px 10px rgba(255, 107, 53, 0.3);
         }
 
-        .signup-btn:hover {
+        .dashboard-btn:hover {
           background: linear-gradient(135deg, #e55a2b, #e0821a);
           transform: translateY(-1px);
           box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
