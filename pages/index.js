@@ -24,8 +24,7 @@ export default function Home() {
     remixing: true,
     myDaily: false,
     augmentedSharing: false,
-    customAgents: false,
-    share: true
+    customAgents: false
   });
 
   // Enhanced scroll animation effects
@@ -140,8 +139,7 @@ export default function Home() {
         const widgetConfig = {
           ask: selectedFeatures.ask,
           gist: selectedFeatures.theGist,
-          remix: selectedFeatures.remixing,
-          share: selectedFeatures.share
+          remix: selectedFeatures.remixing
         };
         
         // Directly open the website with widget in a new tab
@@ -249,18 +247,7 @@ export default function Home() {
                 <p className="feature-compact-description">Auto-converts articles into share-ready cards and threads</p>
               </div>
               
-              <div className="feature-compact-card">
-                <div className="feature-compact-header">
-                  <input
-                    type="checkbox"
-                    id="share"
-                    checked={selectedFeatures.share}
-                    onChange={(e) => setSelectedFeatures(prev => ({...prev, share: e.target.checked}))}
-                  />
-                  <label htmlFor="share" className="feature-compact-name">Share</label>
-                </div>
-                <p className="feature-compact-description">Enable users to share content through various channels</p>
-              </div>
+
                 
               <div className="feature-compact-card">
                 <div className="feature-compact-header">
@@ -409,7 +396,7 @@ export default function Home() {
                 
                 <div className="customization-item stagger-animate">
                   <h3>Choose your tools and features</h3>
-                  <p>Enable or disable specific features like Ask Anything™, Summarize, Multi-Format Sharing, and Go Deeper based on your needs.</p>
+                  <p>Enable or disable specific features like Ask Anything™, Summarize, Remixing, and Go Deeper based on your needs.</p>
                 </div>
                 
                 <div className="customization-item stagger-animate">
