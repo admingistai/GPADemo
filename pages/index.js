@@ -339,7 +339,7 @@ export default function Home() {
                   <input
                     type="text"
                       className="hero-url-input"
-                      placeholder="Enter your website URL (e.g., example.com)"
+                      placeholder="Enter your website URL"
                     value={targetUrl}
                     onChange={(e) => setTargetUrl(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && targetUrl.trim() && handleUrlSubmit(targetUrl)}
@@ -451,7 +451,7 @@ export default function Home() {
                   <input
                     type="text"
                     className="final-url-input"
-                    placeholder="Enter your website URL..."
+                    placeholder="Enter your website URL"
                     value={targetUrl}
                     onChange={(e) => setTargetUrl(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && targetUrl.trim() && handleUrlSubmit(targetUrl)}
