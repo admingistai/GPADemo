@@ -327,32 +327,7 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Main Content - Keep existing sections */}
-          <main className="main-content">
-            <h1 className="main-title hoverable-text">
-              Keep readers on your site instead of losing them to Google
-            </h1>
-            
-            <div className="drive-growth-text hoverable-text" style={{ marginTop: '2rem', marginBottom: '0.5rem' }}>
-              Add an AI-powered <em>Ask Anything™</em> button to your articles that answers reader questions using your content library, keeping traffic and revenue on your site.
-            </div>
-            
-            <div className="waitlist-container">
-              <button
-                onClick={() => router.push('/waitlist')}
-                className="waitlist-btn"
-              >
-                Join Waitlist
-              </button>
 
-              {error && (
-                <div className="error-message">
-                  {error}
-                </div>
-              )}
-            </div>
-            
-          </main>
 
           {/* Why Choose Ask Anything™ */}
           <section className="why-choose-section white-section">
