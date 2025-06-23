@@ -363,20 +363,20 @@ export default function Home() {
               <div className="benefits-grid">
                 <div className="benefit-card">
                   <div className="benefit-icon">🎯</div>
-                  <h3>Increase engagement 2.3x.</h3>
-                  <p>Keep visitors on your site longer with interactive AI responses that answer their questions instantly, reducing bounce rates and increasing time on page.</p>
+                  <h3>Accurate, trusted answers</h3>
+                  <p>Built on licensed publishers & your own content- always cited, never scraped.</p>
                   </div>
                   
                 <div className="benefit-card">
                   <div className="benefit-icon">📚</div>
-                  <h3>Grow users faster than ever.</h3>
-                  <p>Transform casual visitors into loyal users with personalized, helpful interactions that build trust and encourage repeat visits to your site.</p>
+                  <h3>Privacy-first by design</h3>
+                  <p>Zero cookies, zero fingerprinting; GDPR & CCPA-ready out of the box.</p>
                 </div>
                   
                 <div className="benefit-card">
                   <div className="benefit-icon">💰</div>
-                  <h3>Zero upfront cost. Forever.</h3>
-                  <p>Start improving your site immediately with no installation fees, setup costs, or monthly subscriptions. Only pay when you see results.</p>
+                  <h3>45-second install</h3>
+                  <p>Paste one line of code (or our WordPress/Shopify plug-in) and you're live.</p>
                   </div>
               </div>
             </div>
