@@ -955,8 +955,8 @@ export default function Home() {
           letter-spacing: -0.02em;
           transition: all 0.3s ease;
           cursor: default;
-          max-width: 120%;
-          width: 120%;
+          max-width: 150%;
+          width: 150%;
         }
 
         .hero-title:hover {
