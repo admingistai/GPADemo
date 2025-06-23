@@ -384,7 +384,7 @@ export default function Home() {
                 
                 <div className="benefit-card stagger-animate">
                   <div className="benefit-icon">📚</div>
-                  <h3>Monetize your content library</h3>
+                  <h3>Higher-quality ads, better revenue</h3>
                   <p>AI answers pull from your entire article library with proper citations, creating deeper engagement with your archive.</p>
                 </div>
                 
