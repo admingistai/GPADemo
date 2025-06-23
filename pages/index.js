@@ -345,7 +345,6 @@ export default function Home() {
                       onClick={() => targetUrl.trim() && handleUrlSubmit(targetUrl)}
                       disabled={!targetUrl.trim()}
                     >
-                      <span className="gist-icon">G</span>
                       Try It
                   </button>
             </div>
@@ -434,7 +433,6 @@ export default function Home() {
                     onClick={() => targetUrl.trim() && handleUrlSubmit(targetUrl)}
                     disabled={!targetUrl.trim()}
                   >
-                    <span className="gist-icon">G</span>
                     Try It
                   </button>
                 </div>
