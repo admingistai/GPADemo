@@ -973,7 +973,7 @@ export default function Home() {
           inset: 0;
           background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea);
           border-radius: 50px;
-          z-index: -1;
+          z-index: 0;
           animation: rainbowRotate 3s linear infinite;
         }
 
@@ -983,7 +983,7 @@ export default function Home() {
           inset: 3px;
           background: white;
           border-radius: 47px;
-          z-index: -1;
+          z-index: 1;
         }
 
         @keyframes rainbowRotate {
@@ -1023,6 +1023,8 @@ export default function Home() {
           color: #1a202c;
           outline: none;
           border-radius: 50px;
+          position: relative;
+          z-index: 2;
         }
 
         .hero-url-input::placeholder {
@@ -1047,6 +1049,8 @@ export default function Home() {
           animation: gradientFlow 3s ease infinite;
           white-space: nowrap;
           margin: 0;
+          position: relative;
+          z-index: 2;
         }
 
         .hero-try-btn:hover:not(:disabled) {
@@ -1637,7 +1641,7 @@ export default function Home() {
           inset: 0;
           background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea);
           border-radius: 50px;
-          z-index: -1;
+          z-index: 0;
           animation: rainbowRotate 3s linear infinite;
         }
 
@@ -1647,7 +1651,7 @@ export default function Home() {
           inset: 3px;
           background: white;
           border-radius: 47px;
-          z-index: -1;
+          z-index: 1;
         }
 
         .final-url-input-wrapper:hover {
@@ -1669,6 +1673,8 @@ export default function Home() {
           color: #1a202c;
           outline: none;
           border-radius: 50px;
+          position: relative;
+          z-index: 2;
         }
 
         .final-url-input::placeholder {
@@ -1693,6 +1699,8 @@ export default function Home() {
           animation: gradientFlow 3s ease infinite;
           white-space: nowrap;
           margin: 0;
+          position: relative;
+          z-index: 2;
         }
 
         .final-try-btn:hover:not(:disabled) {
