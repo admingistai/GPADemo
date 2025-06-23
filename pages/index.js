@@ -421,7 +421,7 @@ export default function Home() {
                     </svg>
                   </div>
                   <h3>Choose sources to include</h3>
-                  <p>Pick pages on your site-or add any whitelisted publisher with one click.</p>
+                  <p>Pick pages on your site- or add any whitelisted publisher with one click.</p>
                 </div>
 
                 <div className="customization-item">
