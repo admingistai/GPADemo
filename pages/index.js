@@ -866,8 +866,8 @@ export default function Home() {
           align-items: center;
           position: relative;
           z-index: 1;
-          padding: 1rem 2rem 2rem 2rem;
-          min-height: 550px;
+          padding: 0.5rem 2rem 2rem 2rem;
+          min-height: 500px;
         }
 
         .hero-video {
@@ -875,11 +875,12 @@ export default function Home() {
           width: 100%;
           aspect-ratio: 16 / 9;
           border-radius: 12px;
-          overflow: hidden;
+          overflow: visible;
           box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
           display: flex;
           flex-direction: column;
           align-items: center;
+          z-index: 1;
         }
 
         .hero-video iframe {
@@ -894,7 +895,9 @@ export default function Home() {
           width: 100%;
           min-height: 80px;
           position: relative;
-          z-index: 10;
+          z-index: 1000;
+          background: transparent;
+          pointer-events: auto;
         }
 
         .publisher-logos img {
@@ -906,6 +909,8 @@ export default function Home() {
           transition: opacity 0.3s ease;
           display: block;
           margin: 0 auto;
+          position: relative;
+          z-index: 1001;
         }
 
         .publisher-logos:hover img {
