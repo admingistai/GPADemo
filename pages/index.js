@@ -322,12 +322,15 @@ export default function Home() {
                   <source src="/GPA%20basic%20demo%20gif.mov" type="video/quicktime" />
                   Your browser does not support the video tag.
                 </video>
-                <div className="publisher-logos">
-                  <img src="/publishers-logos-black.png" alt="Trusted Publishers" onError={(e) => {
-                    console.error('Image failed to load:', e.target.src);
-                    e.target.src = '/publishers-logos.png'; // Fallback to original
-                  }} />
-            </div>
+                <div className="publisher-section">
+                  <p className="publisher-text">Trusted by over 500 loyal publishers</p>
+                  <div className="publisher-logos">
+                    <img src="/publishers-logos-black.png" alt="Trusted Publishers" onError={(e) => {
+                      console.error('Image failed to load:', e.target.src);
+                      e.target.src = '/publishers-logos.png'; // Fallback to original
+                    }} />
+                  </div>
+                </div>
             </div>
               <div className="hero-content">
                 <h1 className="hero-title">
@@ -889,8 +892,24 @@ export default function Home() {
           border: none;
         }
 
+        .publisher-section {
+          margin-top: 1.5rem;
+          text-align: center;
+          width: 100%;
+          position: relative;
+          z-index: 1000;
+        }
+
+        .publisher-text {
+          font-size: 0.9rem;
+          color: #666;
+          font-family: 'Inter', sans-serif;
+          font-weight: 500;
+          margin: 0 0 1rem 0;
+          text-align: center;
+        }
+
         .publisher-logos {
-          margin-top: 2rem;
           text-align: center;
           width: 100%;
           min-height: 80px;
