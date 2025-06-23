@@ -24,56 +24,7 @@ export default function Home() {
     customAgents: false
   });
 
-  // Enhanced scroll animation effects
-  useEffect(() => {
-    const handleScroll = () => {
-      const animateOnScroll = document.querySelectorAll('.animate-on-scroll');
-      animateOnScroll.forEach((element) => {
-        const elementTop = element.getBoundingClientRect().top;
-        const elementVisible = 120;
-        
-        if (elementTop < window.innerHeight - elementVisible) {
-          element.classList.add('animate-visible');
-        }
-      });
-    };
 
-    // Intersection Observer for more sophisticated animations
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -80px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('scroll-animate-in');
-          // Add stagger delay for child elements
-          const children = entry.target.querySelectorAll('.stagger-animate');
-          children.forEach((child, index) => {
-            setTimeout(() => {
-              child.classList.add('stagger-in');
-            }, index * 100);
-          });
-        }
-      });
-    }, observerOptions);
-
-    // Observe sections for scroll animations
-    const sections = document.querySelectorAll('section, .publishers-band, .testimonials-section');
-    sections.forEach(section => {
-      section.classList.add('scroll-observe');
-      observer.observe(section);
-    });
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Run once on mount
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      observer.disconnect();
-    };
-  }, [showWebsite]);
 
   const formatUrl = (inputUrl) => {
     let formattedUrl = inputUrl.trim();
@@ -406,19 +357,19 @@ export default function Home() {
             <div className="container">
               <h2 className="section-title">Why choose Ask Anything™</h2>
               <div className="benefits-grid">
-                <div className="benefit-card stagger-animate">
+                <div className="benefit-card">
                   <div className="benefit-icon">🎯</div>
                   <h3>Stops readers from leaving your site</h3>
                   <p>When readers have questions, they click Ask Anything™ instead of searching Google, keeping them engaged on your page longer.</p>
                   </div>
                   
-                <div className="benefit-card stagger-animate">
+                <div className="benefit-card">
                   <div className="benefit-icon">📚</div>
                   <h3>Better ads with higher engagement</h3>
                   <p>Interactive AI responses create premium ad inventory with longer dwell times and higher click-through rates than standard display ads.</p>
                 </div>
                   
-                <div className="benefit-card stagger-animate">
+                <div className="benefit-card">
                   <div className="benefit-icon">💰</div>
                   <h3>Completely free with 50/50 revenue split</h3>
                   <p>Zero installation costs, zero monthly fees. We only make money when you make money through our fair 50/50 revenue share.</p>
@@ -432,17 +383,17 @@ export default function Home() {
             <div className="container">
               <h2 className="section-title">Make it yours</h2>
               <div className="customization-grid">
-                <div className="customization-item stagger-animate">
+                <div className="customization-item">
                   <h3>Match your brand perfectly</h3>
                   <p>Customize colors, fonts, favicon, and button styling to seamlessly blend with your website's design and brand identity.</p>
                 </div>
 
-                <div className="customization-item stagger-animate">
+                <div className="customization-item">
                   <h3>Choose your tools and features</h3>
                   <p>Enable or disable specific features like Ask Anything™ and Go Deeper based on your needs.</p>
                 </div>
 
-                <div className="customization-item stagger-animate">
+                <div className="customization-item">
                   <h3>Control your advertising</h3>
                   <p>Set ad preferences, choose which types of ads to display, and maintain full control over the advertising experience on your site.</p>
                 </div>
@@ -691,16 +642,7 @@ export default function Home() {
           transform: translateY(0);
         }
 
-        .stagger-animate {
-          opacity: 0;
-          transform: translateY(20px);
-          transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
 
-        .stagger-animate.stagger-in {
-          opacity: 1;
-          transform: translateY(0);
-        }
 
         /* Smooth scrolling for the entire page */
         html {
@@ -757,15 +699,9 @@ export default function Home() {
           align-items: flex-start;
           padding: 1.5rem 2.85rem;
           position: relative;
-          animation: slideInDown 0.6s ease-out 0.2s both;
           background: rgba(255, 255, 255, 0.8);
           backdrop-filter: blur(10px);
           border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-        }
-
-        @keyframes slideInDown {
-          from { opacity: 0; transform: translateY(-30px); }
-          to { opacity: 1; transform: translateY(0); }
         }
 
         .header-left {
@@ -945,13 +881,10 @@ export default function Home() {
 
         .hero-cta-text {
           color: #666;
-          font-family: 'Kalam', cursive;
-          font-size: 1.2rem;
+          font-family: 'Inter', sans-serif;
+          font-size: 1rem;
           font-style: italic;
           font-weight: 400;
-          transform: rotate(-2deg);
-          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-          letter-spacing: 0.5px;
         }
 
         .hero-url-input-wrapper {
@@ -1152,12 +1085,6 @@ export default function Home() {
           color: white;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.01em;
-          animation: slideInUp 0.8s ease-out 0.4s both;
-        }
-
-        @keyframes slideInUp {
-          from { opacity: 0; transform: translateY(40px); }
-          to { opacity: 1; transform: translateY(0); }
         }
 
         .drive-growth-text {
@@ -1167,7 +1094,6 @@ export default function Home() {
           font-family: 'Inter', sans-serif;
           font-weight: 600;
           text-align: center;
-          animation: slideInUp 0.8s ease-out 0.5s both;
           max-width: 600px;
           margin-left: auto;
           margin-right: auto;
@@ -1193,7 +1119,6 @@ export default function Home() {
         .url-input-container {
           width: 100%;
           max-width: 500px;
-          animation: slideInUp 0.8s ease-out 0.6s both;
         }
 
         /* Video Section */
@@ -1201,7 +1126,6 @@ export default function Home() {
           margin: 0.5rem 0 2rem 0;
           display: flex;
           justify-content: center;
-          animation: slideInUp 0.8s ease-out 0.7s both;
         }
 
         .video-container {
@@ -1613,13 +1537,10 @@ export default function Home() {
 
         .final-cta-text {
           color: #666;
-          font-family: 'Kalam', cursive;
-          font-size: 1.2rem;
+          font-family: 'Inter', sans-serif;
+          font-size: 1rem;
           font-style: italic;
           font-weight: 400;
-          transform: rotate(-2deg);
-          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-          letter-spacing: 0.5px;
         }
 
         .final-url-input-wrapper {
