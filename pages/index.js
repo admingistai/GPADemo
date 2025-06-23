@@ -50,7 +50,7 @@ export default function Home() {
       'Generating button design...',
       'Adding functionality...',
       'Optimizing user experience...',
-      'Implementing <em>Ask Anything™</em>...',
+      'Implementing Ask Anything™...',
       'Configuring smart responses...',
       'Setting up AI integration...',
       'Customizing for your site...',
@@ -314,7 +314,7 @@ export default function Home() {
             </div>
               <div className="hero-content">
                 <h1 className="hero-title">
-                  Help people find what they need on your website.
+                  Help people find what they need on <span style={{textDecoration: 'underline'}}>your website</span>.
                 </h1>
                 <p className="hero-description">
                   Add a customizable AI-powered search box to your web pages and show fast, relevant results powered by Gist Answers.
