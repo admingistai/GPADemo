@@ -861,7 +861,7 @@ export default function Home() {
         }
 
         .hero-container {
-          max-width: 1400px;
+          max-width: 1300px;
           margin: 0 auto;
           display: grid;
           grid-template-columns: 1.4fr 1fr;
