@@ -179,11 +179,12 @@ export default function Home() {
   return (
     <>
       <Head>
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-        <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png" />
-        <link rel="apple-touch-icon" sizes="192x192" href="/favicon-192x192.png" />
+        <link rel="icon" href="/Gist_Mark_000000.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/Gist_Mark_000000.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/Gist_Mark_000000.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/Gist_Mark_000000.png" />
+        <link rel="apple-touch-icon" sizes="192x192" href="/Gist_Mark_000000.png" />
+        <title>Ask Anything™ - AI-Powered Website Search</title>
         <script src="/widget.js" async></script>
       </Head>
       

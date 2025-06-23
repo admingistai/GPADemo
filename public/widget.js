@@ -3949,7 +3949,7 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
             
             let html = `
                 <div class="gist-answer-text gist-content-entering">
-                    ${answer.replace(/\n/g, '<br>')}
+                    <strong>DEMO ANSWER:</strong> ${answer.replace(/\n/g, '<br>')}
                 </div>
             `;
             
@@ -4732,7 +4732,7 @@ Instructions:
             const mockAttributions = generateMockAttributions();
             
             // Build HTML without ads (ads will be shown externally)
-            let html = `<div class="gist-answer-text gist-content-entering">${formattedAnswer}</div>`;
+            let html = `<div class="gist-answer-text gist-content-entering"><strong>DEMO ANSWER:</strong> ${formattedAnswer}</div>`;
             
             // Add attribution section
             html += `
