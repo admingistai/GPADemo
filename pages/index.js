@@ -343,31 +343,13 @@ export default function Home() {
               Add an AI-powered <em>Ask Anything™</em> button to your articles that answers reader questions using your content library, keeping traffic and revenue on your site.
             </div>
             
-            <div className="url-input-container">
-              <div className="url-input-wrapper">
-                <div className="url-input-inner">
-                  <input
-                    type="text"
-                    placeholder="Enter your sites URL here"
-                    value={targetUrl}
-                    onChange={(e) => setTargetUrl(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !loading && targetUrl.trim()) {
-                        handleUrlSubmit(targetUrl);
-                      }
-                    }}
-                    className="url-input"
-                    disabled={loading}
-                  />
-                  <button
-                    onClick={() => handleUrlSubmit(targetUrl)}
-                    disabled={loading || !targetUrl.trim()}
-                    className="generate-btn"
-                  >
-                    {loading ? 'Generating...' : 'Try It Now'}
-                  </button>
-            </div>
-              </div>
+            <div className="waitlist-container">
+              <button
+                onClick={() => window.open('https://forms.gle/waitlist', '_blank')}
+                className="waitlist-btn"
+              >
+                Join Waitlist
+              </button>
 
               {error && (
                 <div className="error-message">
@@ -444,31 +426,13 @@ export default function Home() {
           <section className="final-cta-section white-section">
             <div className="container">
               <h2 className="cta-title">Ready to add Ask Anything™ to your website?</h2>
-              <div className="url-input-container">
-                <div className="url-input-wrapper">
-                  <div className="url-input-inner">
-                    <input
-                      type="text"
-                      placeholder="Enter your sites URL here"
-                      value={targetUrl}
-                      onChange={(e) => setTargetUrl(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' && !loading && targetUrl.trim()) {
-                          handleUrlSubmit(targetUrl);
-                        }
-                      }}
-                      className="url-input"
-                      disabled={loading}
-                    />
-                    <button
-                      onClick={() => handleUrlSubmit(targetUrl)}
-                      disabled={loading || !targetUrl.trim()}
-                      className="generate-btn"
-                    >
-                      {loading ? 'Generating...' : 'Get Started'}
-                    </button>
-                  </div>
-                </div>
+              <div className="waitlist-container">
+                <button
+                  onClick={() => window.open('https://forms.gle/waitlist', '_blank')}
+                  className="waitlist-btn"
+                >
+                  Join Waitlist
+                </button>
               </div>
             </div>
           </section>
@@ -1205,11 +1169,7 @@ export default function Home() {
           text-align: center;
         }
 
-        .final-cta-section .url-input-container {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
+
 
         .final-cta-section.white-section {
           background: white;
@@ -1243,18 +1203,57 @@ export default function Home() {
           z-index: 1;
         }
 
-        /* URL input styling for white sections */
-        .final-cta-section.white-section .url-input-wrapper {
-          background: rgba(0, 0, 0, 0.05);
-          border: 1px solid rgba(0, 0, 0, 0.1);
+        /* Waitlist Button */
+        .waitlist-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin: 2rem 0;
         }
 
-        .final-cta-section.white-section .url-input {
-          color: #333;
+        .waitlist-btn {
+          background: linear-gradient(135deg, #3742fa 0%, #a855f7 50%, #ff6b35 100%);
+          color: white;
+          border: none;
+          padding: 1.25rem 3rem;
+          border-radius: 50px;
+          font-size: 1.2rem;
+          font-weight: 700;
+          font-family: 'Inter', sans-serif;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          position: relative;
+          overflow: hidden;
         }
 
-        .final-cta-section.white-section .url-input::placeholder {
-          color: rgba(0, 0, 0, 0.5);
+        .waitlist-btn::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(135deg, #4f46e5 0%, #c084fc 50%, #f97316 100%);
+          transition: left 0.3s ease;
+          z-index: 0;
+        }
+
+        .waitlist-btn:hover::before {
+          left: 0;
+        }
+
+        .waitlist-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .waitlist-btn span,
+        .waitlist-btn {
+          position: relative;
+          z-index: 1;
         }
 
         /* Mobile Responsiveness */
@@ -1281,13 +1280,9 @@ export default function Home() {
             font-size: 2rem;
           }
 
-          .url-input-inner {
-            flex-direction: column;
-            gap: 1rem;
-          }
-
-          .generate-btn {
-            width: 100%;
+          .waitlist-btn {
+            padding: 1rem 2rem;
+            font-size: 1rem;
           }
 
           .container {
