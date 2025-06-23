@@ -18,7 +18,6 @@ export default function Home() {
   const [selectedFeatures, setSelectedFeatures] = useState({
     ask: true, // Always enabled, non-toggleable
     goDeeper: false,
-    ethicalAds: false,
     customVoices: false,
     myDaily: false,
     augmentedSharing: false,
@@ -380,8 +379,8 @@ export default function Home() {
                 </div>
                 
                 <div className="customization-item stagger-animate">
-                  <h3>Choose your tools and features</h3>
-                  <p>Enable or disable specific features like Ask Anything™ and Go Deeper based on your needs.</p>
+                  <h3>Ask Anything™ Widget</h3>
+                  <p>A simple search interface that provides AI-powered answers with intelligent follow-up questions.</p>
                 </div>
                 
                 <div className="customization-item stagger-animate">

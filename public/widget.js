@@ -74,14 +74,11 @@
     
     // Get initial configuration
     const urlConfig = parseConfigFromUrl();
-    const TOOLS_CONFIG = {  
-        ask: true      // Always enabled - core functionality
-    };
+    // Simplified configuration - no tools config needed
     
-    console.log('[GistWidget] Applied tools configuration:', TOOLS_CONFIG);
+            console.log('[GistWidget] Widget initialized with simplified interface');
     
-    // Expose TOOLS_CONFIG globally for console access
-    window.TOOLS_CONFIG = TOOLS_CONFIG;
+            // Widget initialized
     
     // ================================
     // WEBSITE STYLING SCRAPER SYSTEM
@@ -3452,14 +3449,7 @@
                         <button class="gist-pill-submit" id="gist-submit">➤</button>
                     </div>
                 </div>
-                <div class="gist-toolbox" id="gist-toolbox">
-                    <div class="gist-toolbox-tabs" id="gist-toolbox-tabs">
-                        <!-- Tabs will be generated dynamically based on TOOLS_CONFIG -->
-                    </div>
-                </div>
-                <div class="gist-ads-container" id="gist-ads-container">
-                    <!-- Mock ads will be inserted here -->
-                </div>
+
                 <div class="gist-answer-container" id="gist-answer-container">
                     <button class="gist-close-btn" id="gist-close-btn" title="Minimize">×</button>
                     <button class="gist-secret-settings-btn" id="gist-secret-settings-btn" title="Widget Settings">⚙️</button>
@@ -3482,44 +3472,7 @@
         shadowRoot.innerHTML = widgetHTML;
         document.body.appendChild(widgetContainer);
         
-        // Initialize currentTool that will be used by generateToolboxTabs
-        let currentTool = 'ask'; // Track current active tool
-        
-        // Generate toolbox tabs dynamically based on TOOLS_CONFIG
-        function generateToolboxTabs() {
-            const toolboxTabsContainer = shadowRoot.getElementById('gist-toolbox-tabs');
-            const toolLabels = {
-                ask: 'Explore'
-            };
-            
-            // Clear existing tabs
-            toolboxTabsContainer.innerHTML = '';
-            
-            // Get enabled tools in the desired order
-            const toolOrder = ['ask'];
-            const enabledTools = toolOrder.filter(tool => TOOLS_CONFIG[tool]);
-            
-            // Generate tabs for enabled tools
-            enabledTools.forEach((tool, index) => {
-                const button = document.createElement('button');
-                button.className = 'gist-toolbox-tab';
-                button.setAttribute('data-tool', tool);
-                button.textContent = toolLabels[tool];
-                
-                // Make first enabled tool active by default
-                if (index === 0) {
-                    button.classList.add('active');
-                    currentTool = tool; // Set the current tool to the first enabled tool
-                }
-                
-                toolboxTabsContainer.appendChild(button);
-            });
-            
-            console.log('[GistWidget] Generated tabs for enabled tools:', enabledTools);
-        }
-        
-        // Generate the tabs
-        generateToolboxTabs();
+        // Simplified widget - no tools or tabs needed
         
         // Get elements for event handling
         const pill = shadowRoot.getElementById('gist-pill');
@@ -3531,112 +3484,6 @@
         const answerContainer = shadowRoot.getElementById('gist-answer-container');
         const answerContent = answerContainer.querySelector('.gist-answer-content');
         const widget = shadowRoot.getElementById('gist-widget');
-        const toolbox = shadowRoot.getElementById('gist-toolbox');
-        let toolboxTabs = toolbox.querySelectorAll('.gist-toolbox-tab'); // Use let since it will be updated
-
-        
-        // Dynamic toolbox sizing system
-        function optimizeToolboxAlignment() {
-            const toolboxContainer = shadowRoot.querySelector('.gist-toolbox-tabs');
-            // Refresh toolboxTabs since they are generated dynamically
-            toolboxTabs = toolbox.querySelectorAll('.gist-toolbox-tab');
-            const tabs = Array.from(toolboxTabs);
-            
-            if (!toolboxContainer || tabs.length === 0) return;
-            
-            // Get container width (400px - 8px padding = 392px available)
-            const containerWidth = 392;
-            const gap = 2; // 2px gap between tabs
-            const totalGapWidth = (tabs.length - 1) * gap;
-            const availableWidth = containerWidth - totalGapWidth;
-            
-            // Calculate optimal width per tab
-            const tabWidth = Math.floor(availableWidth / tabs.length);
-            
-            // Get text lengths to determine optimal font size
-            const textLengths = tabs.map(tab => tab.textContent.trim().length);
-            const maxTextLength = Math.max(...textLengths);
-            const avgTextLength = textLengths.reduce((a, b) => a + b, 0) / textLengths.length;
-            
-            // Create a temporary element to measure actual text width
-            const measureElement = document.createElement('span');
-            measureElement.style.position = 'absolute';
-            measureElement.style.visibility = 'hidden';
-            measureElement.style.whiteSpace = 'nowrap';
-            measureElement.style.fontFamily = 'inherit';
-            measureElement.style.fontWeight = '500';
-            shadowRoot.appendChild(measureElement);
-            
-            // Find the optimal font size that fits all text
-            let optimalFontSize = 13; // Start with default
-            let allTextsFit = false;
-            
-            for (let fontSize = 14; fontSize >= 10; fontSize--) {
-                measureElement.style.fontSize = `${fontSize}px`;
-                let maxMeasuredWidth = 0;
-                
-                // Check if all tab texts fit at this font size
-                tabs.forEach(tab => {
-                    measureElement.textContent = tab.textContent.trim();
-                    const measuredWidth = measureElement.offsetWidth;
-                    maxMeasuredWidth = Math.max(maxMeasuredWidth, measuredWidth);
-                });
-                
-                // Add padding space (16px on each side = 32px total)
-                const requiredWidth = maxMeasuredWidth + 32;
-                
-                if (requiredWidth <= tabWidth) {
-                    optimalFontSize = fontSize;
-                    allTextsFit = true;
-                    break;
-                }
-            }
-            
-            // Clean up measurement element
-            shadowRoot.removeChild(measureElement);
-            
-            // Calculate padding based on remaining space
-            const horizontalPadding = Math.max(8, Math.floor((tabWidth - (maxTextLength * optimalFontSize * 0.6)) / 2));
-            
-            // Apply dynamic styles
-            tabs.forEach(tab => {
-                tab.style.fontSize = `${optimalFontSize}px`;
-                tab.style.padding = `8px ${horizontalPadding}px`;
-                tab.style.minWidth = `${tabWidth}px`;
-                tab.style.maxWidth = `${tabWidth}px`;
-                tab.style.flex = 'none'; // Override flex: 1
-                tab.style.whiteSpace = 'nowrap';
-                tab.style.overflow = 'visible'; // Allow text to be fully visible
-            });
-            
-            // Ensure perfect centering
-            toolboxContainer.style.justifyContent = 'center';
-            toolboxContainer.style.width = '100%';
-            
-            console.log('[GistWidget] Toolbox optimized:', {
-                containerWidth,
-                tabWidth,
-                optimalFontSize,
-                horizontalPadding,
-                textLengths,
-                avgTextLength
-            });
-        }
-        
-        // Apply optimization after a brief delay to ensure DOM is ready
-        setTimeout(optimizeToolboxAlignment, 100);
-        
-        // Add resize observer to re-optimize when needed
-        if (window.ResizeObserver) {
-            const resizeObserver = new ResizeObserver(() => {
-                // Debounce the optimization to avoid excessive calls
-                clearTimeout(window.toolboxOptimizationTimeout);
-                window.toolboxOptimizationTimeout = setTimeout(optimizeToolboxAlignment, 150);
-            });
-            
-            // Observe the toolbox container for size changes
-            resizeObserver.observe(toolbox);
-        }
         
         let isActive = false;
         let hasAnswer = false;
@@ -3668,101 +3515,19 @@
         }
 
         
-        // Toolbox functionality
-        function switchTool(tool) {
-            // Check if tool is enabled
-            if (!TOOLS_CONFIG[tool]) {
-                console.warn(`[GistWidget] Tool '${tool}' is disabled and cannot be switched to`);
-      return;
-    }
-
-            currentTool = tool;
-            window.gistCurrentTool = currentTool; // Keep window reference in sync
+        // Simplified placeholder function
+        function showPlaceholder() {
+            const context = extractPageContext();
+            const hasContext = context && context.content && context.content.length > 50;
+            const placeholderText = hasContext ? 
+                'Ask anything about this article or any other topic!' : 
+                'Ask a question to see the answer here!';
             
-            // Refresh toolboxTabs since they are generated dynamically
-            toolboxTabs = toolbox.querySelectorAll('.gist-toolbox-tab');
-            
-            // Update active tab
-            toolboxTabs.forEach(tab => {
-                tab.classList.remove('active');
-                if (tab.dataset.tool === tool) {
-                    tab.classList.add('active');
-                }
-            });
-            
-            // Handle compact mode for Remix tool
-            if (tool === 'remix') {
-                answerContainer.classList.add('remix-compact');
-            } else {
-                answerContainer.classList.remove('remix-compact');
-            }
-            
-
-            
-            // Hide ads when switching to tools that don't show ads
-            if (tool !== 'ask' && tool !== 'gist') {
-                hideExternalAds();
-            }
-            
-            // Update content based on tool
-            updateContentForTool(tool);
-            
-            // Show answer container and toolbox for all tools
-            answerContainer.classList.add('visible');
-            toolbox.classList.add('visible');
-            
-            log('info', 'Tool switched', { tool });
-        }
-        
-        function updateContentForTool(tool) {
-            switch (tool) {
-                case 'ask':
-                    // If we have an Ask-specific answer, keep it. Otherwise show suggested questions
-                    if (hasAskAnswer) {
-                        // Keep current Ask answer content
-                        return;
-                    } else {
-                        // Clear any previous answers from other tools and show suggested questions
-                        hasAnswer = false;
-                        showSuggestedQuestions();
-                    }
-                    break;
-
-
-
-                default:
-                    showPlaceholderForTool('ask');
-            }
-        }
-        
-        function showPlaceholderForTool(tool) {
-            let placeholderText = '';
-            
-            switch (tool) {
-                case 'ask':
-                    const context = extractPageContext();
-                    const hasContext = context && context.content && context.content.length > 50;
-                    placeholderText = hasContext ? 
-                        'Ask anything about this article or any other topic!' : 
-                        'Ask a question to see the answer here!';
-                    break;
-
-
-
-                default:
-                    placeholderText = 'Select a tool to get started!';
-            }
-            
-            if (placeholderText) {
             answerContent.innerHTML = `
                 <div class="gist-answer-placeholder gist-content-entering">
                     ${placeholderText}
-        </div>
+                </div>
             `;
-            } else {
-                // For empty tools like remix, just clear the content
-                answerContent.innerHTML = '';
-            }
             
             // Trigger animation
             setTimeout(() => {
@@ -3772,8 +3537,6 @@
                     el.classList.add('gist-content-entered');
                 });
             }, 50);
-            
-
         }
         
         // Show loading state for question generation
@@ -3816,21 +3579,17 @@
         
 
         
-        // Generate and show suggested questions for the Ask tool
+        // Generate and show suggested questions
         async function showSuggestedQuestions(previousQuestion = null, previousAnswer = null) {
             try {
                 // Show comprehensive loading state while generating questions
                 showQuestionsLoading(previousQuestion, previousAnswer);
                 
-                // Ensure answer container and toolbox are visible
+                // Ensure answer container is visible
                 answerContainer.classList.add('visible');
-                toolbox.classList.add('visible');
                 
                 // Generate questions
                 const questions = await generateSuggestedQuestions(previousQuestion, previousAnswer);
-                
-                // Only show questions if user is still on ask tool
-                if (currentTool !== 'ask') return;
                 
                 let html = `
                     <div class="gist-suggested-questions gist-content-entering">
@@ -4083,9 +3842,7 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
                 }
                 
                 // Show external ads with question context
-                setTimeout(() => {
-                    showExternalAds(question);
-                }, 200);
+
             }, 50);
             
             // Generate follow-up questions
@@ -4698,9 +4455,8 @@ Instructions:
         }
 
         function showLoading() {
-            // Ensure answer container and toolbox are visible
+            // Ensure answer container is visible
             answerContainer.classList.add('visible');
-            toolbox.classList.add('visible');
             
             answerContent.innerHTML = `
                 <div class="gist-loading">
@@ -4711,9 +4467,8 @@ Instructions:
         }
         
         function showError(errorMessage) {
-            // Ensure answer container and toolbox are visible
+            // Ensure answer container is visible
             answerContainer.classList.add('visible');
-            toolbox.classList.add('visible');
             
             // First, fade out loading if it exists
             const existingLoading = answerContent.querySelector('.gist-loading');
@@ -4728,9 +4483,6 @@ Instructions:
         }
         
         function showErrorContent(errorMessage) {
-            // Check if we're in Ask or Gist tool to show ads
-            const shouldShowAds = currentTool === 'ask' || currentTool === 'gist';
-            
             let html = `
                 <div class="gist-error gist-content-entering">
                     <strong>Error:</strong> ${errorMessage}
@@ -4746,13 +4498,6 @@ Instructions:
                     errorElement.classList.remove('gist-content-entering');
                     errorElement.classList.add('gist-content-entered');
                 }
-                
-                // Show external ads with delay if appropriate
-                if (shouldShowAds) {
-                    setTimeout(() => {
-                        showExternalAds();
-                    }, 200);
-                }
             }, 50);
         }
         
@@ -4765,9 +4510,8 @@ Instructions:
                 currentQuestion = question;
             }
             
-            // Ensure answer container and toolbox are visible
+            // Ensure answer container is visible
             answerContainer.classList.add('visible');
-            toolbox.classList.add('visible');
             
             // First, fade out loading if it exists
             const existingLoading = answerContent.querySelector('.gist-loading');
@@ -4895,10 +4639,7 @@ Instructions:
                     applyTextRevealAnimation(answerText);
                 }
                 
-                // Show external ads with delay
-                setTimeout(() => {
-                    showExternalAds(question || currentQuestion);
-                }, 200);
+
 
             }, 50);
         }
@@ -5632,12 +5373,7 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             isActive = true;
         });
         
-        // Prevent clicks on toolbox from bubbling
-        toolbox.addEventListener('click', (e) => {
-            e.stopPropagation();
-            userIsInteracting = true;
-            isActive = true;
-        });
+
         
 
         
@@ -5690,9 +5426,11 @@ Make the ad relevant to the article topic but appealing and professional. Use em
         window.gistWidgetShadowRoot = shadowRoot;
         window.gistWidgetStyling = enhancedStyling;
         window.gistStyleObserver = styleObserver;
-        window.gistCurrentTool = currentTool;
-        window.gistSwitchTool = switchTool;
-        window.gistOptimizeToolboxAlignment = optimizeToolboxAlignment;
+        
+        // Initialize with suggested questions
+        setTimeout(() => {
+            showSuggestedQuestions();
+        }, 200);
         
         return shadowRoot;
     }
@@ -5744,84 +5482,7 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             log('info', 'Auto-update styling disabled for stability', { requestedEnabled: enabled });
         },
         
-        // Configure which tools are enabled/disabled
-        configureTools: function(toolsConfig) {
-            if (!toolsConfig || typeof toolsConfig !== 'object') {
-                console.error('[GistWidget] Invalid tools configuration. Must be an object.');
-                return;
-            }
-            
-            // Update TOOLS_CONFIG with provided settings
-            Object.keys(toolsConfig).forEach(tool => {
-                if (TOOLS_CONFIG.hasOwnProperty(tool)) {
-                    TOOLS_CONFIG[tool] = Boolean(toolsConfig[tool]);
-            } else {
-                    console.warn(`[GistWidget] Unknown tool '${tool}' ignored.`);
-                }
-            });
-            
-            // Regenerate tabs if widget exists
-            if (window.gistWidgetShadowRoot) {
-                const shadowRoot = window.gistWidgetShadowRoot;
-                const toolboxTabsContainer = shadowRoot.getElementById('gist-toolbox-tabs');
-                
-                if (toolboxTabsContainer) {
-                    // Get the generate function from the widget's scope
-                    // We need to regenerate tabs based on new config
-                    const toolLabels = {
-                        ask: 'Ask'
-                    };
-                    
-                    // Clear existing tabs
-                    toolboxTabsContainer.innerHTML = '';
-                    
-                    // Get enabled tools in the desired order
-                    const toolOrder = ['ask'];
-                    const enabledTools = toolOrder.filter(tool => TOOLS_CONFIG[tool]);
-                    
-                    if (enabledTools.length === 0) {
-                        console.error('[GistWidget] At least one tool must be enabled');
-                        TOOLS_CONFIG.ask = true; // Force enable Ask as fallback
-                        enabledTools.push('ask');
-                    }
-                    
-                    // Generate tabs for enabled tools
-                    enabledTools.forEach((tool, index) => {
-                        const button = document.createElement('button');
-                        button.className = 'gist-toolbox-tab';
-                        button.setAttribute('data-tool', tool);
-                        button.textContent = toolLabels[tool];
-                        
-                        // Make first enabled tool active if current tool is disabled
-                        if (!TOOLS_CONFIG[window.gistCurrentTool] && index === 0) {
-                            button.classList.add('active');
-                            // We'll need to switch to this tool
-                            setTimeout(() => {
-                                if (window.gistSwitchTool) {
-                                    window.gistSwitchTool(tool);
-                                }
-                            }, 100);
-                        } else if (tool === window.gistCurrentTool) {
-                            button.classList.add('active');
-                        }
-                        
-                        toolboxTabsContainer.appendChild(button);
-                    });
-                    
-                    // Re-optimize toolbox alignment
-                    if (window.gistOptimizeToolboxAlignment) {
-                        setTimeout(window.gistOptimizeToolboxAlignment, 100);
-                    }
-                    
-                    log('info', 'Tools configuration updated', { enabledTools, config: TOOLS_CONFIG });
-                }
-            }
-        },
-        
-        // Get current tools configuration
-        getToolsConfig: function() {
-            return { ...TOOLS_CONFIG };
-        }
+
     };
 
     // Initialize widget when DOM is ready
@@ -5842,16 +5503,11 @@ Make the ad relevant to the article topic but appealing and professional. Use em
     
     log('info', 'Gist Widget loader initialized');
     
-    // Log available configuration options for developers
-    console.group('🛠️ Gist Widget Configuration');
-    console.log('Tools Configuration:');
-    console.log('• TOOLS_CONFIG =', TOOLS_CONFIG);
-                    console.log('• GistWidget.configureTools({ ask: true })');
-    console.log('• GistWidget.getToolsConfig()');
-    console.log('');
-    console.log('Usage Examples:');
-                    console.log('• TOOLS_CONFIG.ask = true  // Enable Ask tool');
-                    console.log('• GistWidget.configureTools({ ask: true })  // Configure Ask tool only');
+    // Log widget initialization
+    console.group('🛠️ Ask Anything™ Widget');
+    console.log('Widget initialized successfully');
+    console.log('• Simple Q&A interface with follow-up questions');
+    console.log('• No configuration needed - just ask questions!');
     console.groupEnd();
     
     initWidget();
