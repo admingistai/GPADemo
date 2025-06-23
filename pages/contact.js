@@ -84,11 +84,11 @@ export default function ContactUs() {
           {/* Main Content */}
           <main className="main-content">
             <h1 className="main-title">
-              Contact Us
+              Get an Ask Anything™ Button
             </h1>
             
             <p className="contact-subhead">
-              Do you want to get in contact with a member of our team? Fill out the form below and we'll get back to you as soon as possible.
+              Fill out the form below and we'll get back to you as soon as possible.
             </p>
             
             <div className="contact-form-container">

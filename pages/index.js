@@ -365,19 +365,31 @@ export default function Home() {
               <h2 className="section-title">Why choose Ask Anything™</h2>
               <div className="benefits-grid">
                 <div className="benefit-card">
-                  <div className="benefit-icon">🎯</div>
+                  <div className="benefit-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
                   <h3>Accurate, trusted answers</h3>
                   <p>Built on licensed publishers & your own content- always cited, never scraped.</p>
                   </div>
                   
                 <div className="benefit-card">
-                  <div className="benefit-icon">📚</div>
+                  <div className="benefit-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
                   <h3>Privacy-first by design</h3>
                   <p>Zero cookies, zero fingerprinting; GDPR & CCPA-ready out of the box.</p>
                 </div>
                   
                 <div className="benefit-card">
-                  <div className="benefit-icon">💰</div>
+                  <div className="benefit-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
                   <h3>45-second install</h3>
                   <p>Paste one line of code (or our WordPress/Shopify plug-in) and you're live.</p>
                   </div>
@@ -391,19 +403,31 @@ export default function Home() {
               <h2 className="section-title">Make it <span style={{fontStyle: 'italic'}}>yours</span>.</h2>
               <div className="customization-grid">
                 <div className="customization-item">
-                  <div className="customization-icon">🎨</div>
+                  <div className="customization-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
                   <h3>Choose sources to include</h3>
                   <p>Pick pages on your site-or add any whitelisted publisher with one click.</p>
                 </div>
 
                 <div className="customization-item">
-                  <div className="customization-icon">⚙️</div>
+                  <div className="customization-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17v4M13 5v4M17 1v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
                   <h3>Match the design of your brand</h3>
                   <p>Customize colors, fonts, avatars, even the answer voice.</p>
                 </div>
 
                 <div className="customization-item">
-                  <div className="customization-icon">📊</div>
+                  <div className="customization-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
                   <h3>Optinize any goal</h3>
                   <p>Increase engagement, sales, growth, monetization, or whatever matters to you.</p>
                 </div>
