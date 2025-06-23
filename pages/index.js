@@ -778,7 +778,7 @@ export default function Home() {
 
 
         .waitlist-header-btn {
-          background: linear-gradient(135deg, #4f46e5, #7c3aed);
+          background: linear-gradient(135deg, #1a1a1a, #2d2d2d, #0f0f0f);
           border: none;
           color: white;
           padding: 0.75rem 1.5rem;
@@ -787,13 +787,13 @@ export default function Home() {
           font-weight: 600;
           cursor: pointer;
           transition: all 0.3s ease;
-          box-shadow: 0 2px 10px rgba(79, 70, 229, 0.3);
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         .waitlist-header-btn:hover {
-          background: linear-gradient(135deg, #4338ca, #6d28d9);
+          background: linear-gradient(135deg, #0f0f0f, #1a1a1a, #000000);
           transform: translateY(-1px);
-          box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
         }
 
         /* Hero Section */
