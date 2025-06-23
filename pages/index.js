@@ -337,7 +337,7 @@ export default function Home() {
               Keep readers on your site instead of losing them to Google
             </h1>
             
-            <div className="drive-growth-text hoverable-text" style={{ marginTop: '2rem', marginBottom: '1rem' }}>
+            <div className="drive-growth-text hoverable-text" style={{ marginTop: '2rem', marginBottom: '0.5rem' }}>
               Add an AI-powered <em>Ask Anything™</em> button to your articles that answers reader questions using your content library, keeping traffic and revenue on your site.
             </div>
             
