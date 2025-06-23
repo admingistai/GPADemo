@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 
-export default function Waitlist() {
+export default function ContactUs() {
   const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     website: '',
-    interest: ''
+    message: ''
   });
   const [status, setStatus] = useState('idle'); // idle, loading, success, error
   const [message, setMessage] = useState('');
@@ -19,7 +19,7 @@ export default function Waitlist() {
     setMessage('');
 
     try {
-      const response = await fetch('/api/waitlist', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -31,8 +31,8 @@ export default function Waitlist() {
 
       if (response.ok) {
         setStatus('success');
-        setMessage('Thank you! You\'ve been added to our waitlist. We\'ll be in touch soon!');
-        setFormData({ name: '', email: '', website: '', interest: '' });
+        setMessage('Thank you for reaching out! We\'ll get back to you within 24 hours.');
+        setFormData({ name: '', email: '', website: '', message: '' });
       } else {
         setStatus('error');
         setMessage(data.error || 'Something went wrong. Please try again.');
@@ -54,19 +54,23 @@ export default function Waitlist() {
   return (
     <>
       <Head>
-        <title>Join the Waitlist - Ask Anything™</title>
-        <meta name="description" content="Join the Ask Anything™ waitlist to be among the first to add AI-powered Q&A to your website." />
+        <title>Contact Us - Ask Anything™</title>
+        <meta name="description" content="Get in touch with the Ask Anything™ team. We're here to help you add AI-powered Q&A to your website." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/Gist_Mark_000000.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/Gist_Mark_000000.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/Gist_Mark_000000.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/Gist_Mark_000000.png" />
+        <link rel="apple-touch-icon" sizes="192x192" href="/Gist_Mark_000000.png" />
       </Head>
 
       <div className="app">
-        <div className="waitlist-page">
+        <div className="contact-page">
           {/* Header */}
           <header className="header">
             <div className="header-left">
               <img 
-                src="/gist-logo.png" 
+                src="/Gist_Mark_000000.png" 
                 alt="Ask Anything™ Logo" 
                 className="gist-logo" 
                 onClick={() => router.push('/')} 
@@ -80,16 +84,16 @@ export default function Waitlist() {
           {/* Main Content */}
           <main className="main-content">
             <h1 className="main-title">
-              Join the Ask Anything™ Waitlist
+              Contact Us
             </h1>
             
-            <p className="waitlist-subhead">
-              Be among the first to add AI-powered Q&A to your website and keep readers engaged on your page instead of losing them to Google.
+            <p className="contact-subhead">
+              Have questions about Ask Anything™? Want to discuss custom integrations or enterprise solutions? We'd love to hear from you.
             </p>
             
-            <div className="waitlist-form-container">
-              <div className="waitlist-card">
-                <form onSubmit={handleSubmit} className="waitlist-form">
+            <div className="contact-form-container">
+              <div className="contact-card">
+                <form onSubmit={handleSubmit} className="contact-form">
                   <div className="form-row">
                     <div className="form-group">
                       <label htmlFor="name">Full Name *</label>
@@ -120,7 +124,7 @@ export default function Waitlist() {
 
                   <div className="form-row">
                     <div className="form-group full-width">
-                      <label htmlFor="website">Website</label>
+                      <label htmlFor="website">Website (Optional)</label>
                       <input
                         type="url"
                         id="website"
@@ -134,13 +138,14 @@ export default function Waitlist() {
 
                   <div className="form-row">
                     <div className="form-group full-width">
-                      <label htmlFor="interest">Why you are interested</label>
+                      <label htmlFor="message">Message *</label>
                       <textarea
-                        id="interest"
-                        name="interest"
-                        value={formData.interest}
+                        id="message"
+                        name="message"
+                        value={formData.message}
                         onChange={handleInputChange}
-                        placeholder="Tell us why you're interested in Ask Anything™..."
+                        required
+                        placeholder="Tell us how we can help you..."
                         rows="4"
                       />
                     </div>
@@ -151,7 +156,7 @@ export default function Waitlist() {
                     className="btn--primary"
                     disabled={status === 'loading'}
                   >
-                    {status === 'loading' ? 'Joining Waitlist...' : 'Join Waitlist'}
+                    {status === 'loading' ? 'Sending Message...' : 'Send Message'}
                   </button>
 
                   {message && (
@@ -184,7 +189,7 @@ export default function Waitlist() {
             min-height: 100vh;
           }
 
-          .waitlist-page, .waitlist-page * {
+          .contact-page, .contact-page * {
             color: #111827 !important;
           }
         `}</style>
@@ -201,7 +206,7 @@ export default function Waitlist() {
             background: none;
           }
 
-          .waitlist-page {
+          .contact-page {
             background: transparent;
             min-height: 100vh;
             display: flex;
@@ -292,7 +297,7 @@ export default function Waitlist() {
             animation: slideInUp 0.8s ease-out 0.4s both;
           }
 
-          .waitlist-subhead {
+          .contact-subhead {
             font-size: 18px;
             color: #4B5563;
             text-align: center;
@@ -306,13 +311,13 @@ export default function Waitlist() {
             line-height: 1.3;
           }
 
-          .waitlist-form-container {
+          .contact-form-container {
             max-width: 600px;
             width: 100%;
             animation: slideInUp 0.8s ease-out 0.6s both;
           }
 
-          .waitlist-card {
+          .contact-card {
             background: rgba(255,255,255,0.85);
             border: 2px solid #7C3AED;
             box-shadow: 0 8px 32px rgba(124,58,237,0.12);
@@ -322,7 +327,7 @@ export default function Waitlist() {
             margin: auto;
           }
 
-          .waitlist-form {
+          .contact-form {
             background: none;
             border: none;
             border-radius: 0;
@@ -331,7 +336,7 @@ export default function Waitlist() {
             transition: none;
           }
 
-          .waitlist-form:hover {
+          .contact-form:hover {
             background: none;
             border-color: inherit;
             transform: none;
@@ -476,7 +481,7 @@ export default function Waitlist() {
           }
 
           @media (max-width: 1024px) {
-            .waitlist-form-container {
+            .contact-form-container {
               max-width: 600px;
             }
           }
@@ -505,7 +510,7 @@ export default function Waitlist() {
               font-size: 2.5rem;
             }
 
-            .waitlist-subhead {
+            .contact-subhead {
               font-size: 1.2rem;
               margin-bottom: 2rem;
             }
@@ -515,7 +520,7 @@ export default function Waitlist() {
               gap: 1rem;
             }
 
-            .waitlist-form {
+            .contact-form {
               padding: 2rem;
             }
 
@@ -532,17 +537,17 @@ export default function Waitlist() {
               font-size: 2rem;
             }
 
-            .waitlist-subhead {
+            .contact-subhead {
               font-size: 1.1rem;
             }
 
-            .waitlist-form {
+            .contact-form {
               padding: 1.5rem;
             }
           }
 
           @media (max-width: 640px) {
-            .waitlist-card {
+            .contact-card {
               padding: 16px;
             }
             .main-title {
@@ -551,14 +556,14 @@ export default function Waitlist() {
             .btn--primary {
               height: 40px;
             }
-            .waitlist-card input,
-            .waitlist-card textarea {
+            .contact-card input,
+            .contact-card textarea {
               width: 100%;
             }
           }
 
-          .waitlist-card input,
-          .waitlist-card textarea {
+          .contact-card input,
+          .contact-card textarea {
             border: 2px solid rgba(94,114,228,0.1);
             border-radius: 12px;
             padding: 12px 16px;
@@ -569,7 +574,7 @@ export default function Waitlist() {
             background: rgba(255,255,255,0.8);
           }
 
-          .waitlist-card ::placeholder {
+          .contact-card ::placeholder {
             color: #9CA3AF !important;
             font-weight: 400;
             opacity: 1;
