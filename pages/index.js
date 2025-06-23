@@ -869,15 +869,17 @@ export default function Home() {
 
         .hero-cta-text {
           color: #666;
-          font-family: 'Inter', sans-serif;
-          font-size: 1rem;
+          font-family: 'Kalam', 'Comic Sans MS', 'Marker Felt', cursive;
+          font-size: 1.1rem;
+          font-style: italic;
+          font-weight: 400;
+          transform: rotate(-1deg);
+          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .hero-url-input-wrapper {
           display: flex;
           background: white;
-          border: 3px solid;
-          border-image: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea) 1;
           border-radius: 50px;
           overflow: hidden;
           transition: all 0.3s ease;
@@ -885,20 +887,26 @@ export default function Home() {
           width: 400px;
           flex-shrink: 0;
           position: relative;
+          padding: 3px;
         }
 
         .hero-url-input-wrapper::before {
           content: '';
           position: absolute;
-          inset: -3px;
-          padding: 3px;
+          inset: 0;
           background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea);
           border-radius: 50px;
-          mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          mask-composite: subtract;
-          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          -webkit-mask-composite: xor;
+          z-index: -1;
           animation: rainbowRotate 3s linear infinite;
+        }
+
+        .hero-url-input-wrapper::after {
+          content: '';
+          position: absolute;
+          inset: 3px;
+          background: white;
+          border-radius: 47px;
+          z-index: -1;
         }
 
         @keyframes rainbowRotate {
