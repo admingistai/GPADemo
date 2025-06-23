@@ -286,7 +286,7 @@ export default function Home() {
                         <div className="header-right">
               <span className="tagline">100% ethical, uses fully licensed sources</span>
               <div className="auth-buttons">
-                <button className="waitlist-header-btn" onClick={() => router.push('/waitlist')}>Join Waitlist</button>
+                <button className="waitlist-header-btn" onClick={() => setShowLoginPage(true)}>Sign In</button>
               </div>
             </div>
           </header>
@@ -815,7 +815,7 @@ export default function Home() {
         }
 
         .get-started-btn {
-          background: linear-gradient(135deg, #ff6b35, #f7931e);
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 75%, #f5576c 100%);
           border: none;
           color: white;
           padding: 1rem 2rem;
@@ -825,13 +825,13 @@ export default function Home() {
           font-size: 1.1rem;
           cursor: pointer;
           transition: all 0.3s ease;
-          box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+          box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
         .get-started-btn:hover {
-          background: linear-gradient(135deg, #e55a2b, #e0821a);
+          background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 50%, #e081e9 75%, #e3455a 100%);
           transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+          box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
 
         .hero-cta-text {
