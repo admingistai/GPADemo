@@ -238,7 +238,7 @@ export default function Home() {
         <div className="loading-page">
           <div className="loading-content">
             <div className="loading-spinner">
-              <img src="/Gist G white no background.png" alt="Gist Logo" />
+              <img src="/Gist_Mark_000000.png" alt="Gist Logo" />
               </div>
             <h2 className="loading-title">Setting up <em>Ask Anything™</em></h2>
             <p className="loading-message">{loadingMessage}</p>
@@ -254,7 +254,7 @@ export default function Home() {
         <div className="feature-page">
           <header className="header">
             <div className="header-left">
-              <img src="/Gist G white no background.png" alt="Gist" className="gist-logo" onClick={() => window.open('https://about.gist.ai', '_blank')} />
+              <img src="/Gist_Mark_000000.png" alt="Gist" className="gist-logo" onClick={() => window.open('https://about.gist.ai', '_blank')} />
               <h1 className="logo">Ask<br />Anything™</h1>
             </div>
             <div className="header-right">
@@ -338,7 +338,7 @@ export default function Home() {
           {/* Header */}
           <header className="header">
             <div className="header-left">
-              <img src="/Gist G white no background.png" alt="Gist" className="gist-logo" onClick={() => window.open('https://about.gist.ai', '_blank')} />
+              <img src="/Gist_Mark_000000.png" alt="Gist" className="gist-logo" onClick={() => window.open('https://about.gist.ai', '_blank')} />
               <h1 className="logo">Ask<br />Anything™</h1>
                 </div>
             <div className="header-right">
