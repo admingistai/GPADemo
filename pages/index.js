@@ -838,13 +838,13 @@ export default function Home() {
           color: #1a1a1a;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.02em;
-          cursor: pointer;
           transition: all 0.3s ease;
+          cursor: default;
         }
 
         .hero-title:hover {
           transform: scale(1.02);
-          letter-spacing: 0.01em;
+          opacity: 0.9;
         }
 
         .hero-description {
@@ -853,13 +853,13 @@ export default function Home() {
           margin-bottom: 2rem;
           color: #4a4a4a;
           font-family: 'Inter', sans-serif;
-          cursor: pointer;
           transition: all 0.3s ease;
+          cursor: default;
         }
 
         .hero-description:hover {
           transform: scale(1.01);
-          letter-spacing: 0.01em;
+          opacity: 0.8;
         }
 
         .hero-cta {
