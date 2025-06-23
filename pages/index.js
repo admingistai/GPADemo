@@ -314,7 +314,7 @@ export default function Home() {
             </div>
               <div className="hero-content">
                 <h1 className="hero-title">
-                  Help people find what they need on <span style={{textDecoration: 'underline', textUnderlineOffset: '4px'}}>your website</span>.
+                  Help people find what they need on your website.
                 </h1>
                 <p className="hero-description">
                   Add a customizable AI-powered search box to your web pages and show fast, relevant results powered by Gist Answers.
