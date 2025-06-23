@@ -203,7 +203,6 @@ export default function Home() {
               <span className="tagline">100% ethical, uses fully licensed sources</span>
               <div className="auth-buttons">
                 <button className="waitlist-header-btn" onClick={() => router.push('/waitlist')}>Join Waitlist</button>
-                <button className="dashboard-btn" onClick={() => router.push('/dashboard')}>Dashboard</button>
               </div>
             </div>
           </header>
@@ -288,7 +287,6 @@ export default function Home() {
               <span className="tagline">100% ethical, uses fully licensed sources</span>
               <div className="auth-buttons">
                 <button className="waitlist-header-btn" onClick={() => router.push('/waitlist')}>Join Waitlist</button>
-                <button className="dashboard-btn" onClick={() => router.push('/dashboard')}>Dashboard</button>
               </div>
             </div>
           </header>
@@ -732,24 +730,7 @@ export default function Home() {
           align-items: center;
         }
 
-        .dashboard-btn {
-          background: linear-gradient(135deg, #ff6b35, #f7931e);
-          border: none;
-          color: white;
-          padding: 0.75rem 1.5rem;
-          border-radius: 8px;
-          font-family: 'Inter', sans-serif;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          box-shadow: 0 2px 10px rgba(255, 107, 53, 0.3);
-        }
 
-        .dashboard-btn:hover {
-          background: linear-gradient(135deg, #e55a2b, #e0821a);
-          transform: translateY(-1px);
-          box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
-        }
 
         .waitlist-header-btn {
           background: linear-gradient(135deg, #4f46e5, #7c3aed);
