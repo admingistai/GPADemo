@@ -838,6 +838,14 @@ export default function Home() {
           color: #1a1a1a;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.02em;
+          cursor: default;
+          transition: all 0.3s ease;
+        }
+
+        .hero-title:hover {
+          color: #2563eb;
+          transform: translateY(-2px);
+          text-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
         }
 
         .hero-description {
@@ -846,6 +854,14 @@ export default function Home() {
           margin-bottom: 2rem;
           color: #4a4a4a;
           font-family: 'Inter', sans-serif;
+          cursor: default;
+          transition: all 0.3s ease;
+        }
+
+        .hero-description:hover {
+          color: #1f2937;
+          transform: translateY(-1px);
+          text-shadow: 0 2px 10px rgba(31, 41, 55, 0.1);
         }
 
         .hero-cta {
@@ -899,6 +915,13 @@ export default function Home() {
           font-size: 1rem;
           font-style: italic;
           font-weight: 400;
+          cursor: default;
+          transition: all 0.2s ease;
+        }
+
+        .hero-cta-text:hover {
+          color: #4f46e5;
+          transform: scale(1.05);
         }
 
         .hero-url-input-wrapper {
