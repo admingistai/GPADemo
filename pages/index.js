@@ -331,10 +331,10 @@ export default function Home() {
             </div>
               <div className="hero-content">
                 <h1 className="hero-title">
-                  Help people find what they need on your website.
+                  The perfect AI companion for any website.
                 </h1>
                 <p className="hero-description">
-                  Add a customizable AI-powered search box to your web pages and show fast, relevant results powered by Gist Answers.
+                  The simple solution to driving AI engagement, grow traffic, and unlock new revenue.
                 </p>
                 <div className="hero-cta">
                   <button
