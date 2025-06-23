@@ -321,7 +321,7 @@ export default function Home() {
                   Your browser does not support the video tag.
                 </video>
                 <div className="publisher-logos">
-                  <img src="/publishers-logos.png" alt="Trusted Publishers" />
+                  <img src="/publishers-logos-black.png" alt="Trusted Publishers" />
                 </div>
             </div>
               <div className="hero-content">
@@ -886,14 +886,11 @@ export default function Home() {
           max-width: 100%;
           height: auto;
           opacity: 0.8;
-          transition: all 0.3s ease;
-          /* Make white logos appear dark grey */
-          filter: invert(1) brightness(0.3) contrast(2);
+          transition: opacity 0.3s ease;
         }
 
         .publisher-logos:hover img {
           opacity: 1;
-          filter: invert(1) brightness(0.2) contrast(2);
         }
 
         .hero-content {
