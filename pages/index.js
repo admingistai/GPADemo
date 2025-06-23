@@ -362,19 +362,19 @@ export default function Home() {
               <div className="benefits-grid">
                 <div className="benefit-card">
                   <div className="benefit-icon">🎯</div>
-                  <h3>Increase engagement</h3>
+                  <h3>Increase engagement 2.3x.</h3>
                   <p>Keep visitors on your site longer with interactive AI responses that answer their questions instantly, reducing bounce rates and increasing time on page.</p>
                   </div>
                   
                 <div className="benefit-card">
                   <div className="benefit-icon">📚</div>
-                  <h3>Grow users</h3>
+                  <h3>Grow users faster than ever.</h3>
                   <p>Transform casual visitors into loyal users with personalized, helpful interactions that build trust and encourage repeat visits to your site.</p>
                 </div>
                   
                 <div className="benefit-card">
                   <div className="benefit-icon">💰</div>
-                  <h3>Zero upfront cost</h3>
+                  <h3>Zero upfront cost. Forever.</h3>
                   <p>Start improving your site immediately with no installation fees, setup costs, or monthly subscriptions. Only pay when you see results.</p>
                   </div>
               </div>
