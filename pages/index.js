@@ -391,7 +391,7 @@ export default function Home() {
                 <div className="benefit-card stagger-animate">
                   <div className="benefit-icon">💰</div>
                   <h3>Free to install</h3>
-                  <p>No upfront costs. You earn more when readers engage more through longer sessions and additional ad impressions.</p>
+                  <p>No upfront costs. We share all the revenue 50/50 with you.</p>
                 </div>
               </div>
             </div>
