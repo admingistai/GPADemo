@@ -885,13 +885,19 @@ export default function Home() {
         .publisher-logos {
           margin-top: 1.5rem;
           text-align: center;
+          width: 100%;
+          min-height: 50px;
         }
 
         .publisher-logos img {
           max-width: 100%;
+          width: auto;
           height: auto;
+          max-height: 60px;
           opacity: 0.8;
           transition: opacity 0.3s ease;
+          display: block;
+          margin: 0 auto;
         }
 
         .publisher-logos:hover img {
