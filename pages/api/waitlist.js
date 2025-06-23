@@ -58,7 +58,7 @@ async function writeWaitlistData(data) {
 
 // Validate form data
 function validateFormData(data) {
-  const { name, email, company, role } = data;
+  const { name, email, website, interest } = data;
   
   // Required fields
   if (!name || !email) {
@@ -83,13 +83,21 @@ function validateFormData(data) {
     }
   }
   
-  // Optional fields validation
-  if (company && company.length > 200) {
-    return { valid: false, error: 'Company name is too long' };
+  // Website URL validation (optional field)
+  if (website && website.trim()) {
+    try {
+      new URL(website);
+    } catch (error) {
+      return { valid: false, error: 'Please enter a valid website URL' };
+    }
+    if (website.length > 200) {
+      return { valid: false, error: 'Website URL is too long' };
+    }
   }
   
-  if (role && !['content-creator', 'blogger', 'publisher', 'developer', 'marketer', 'business-owner', 'other'].includes(role)) {
-    return { valid: false, error: 'Invalid role selected' };
+  // Interest validation (optional field)
+  if (interest && interest.length > 1000) {
+    return { valid: false, error: 'Interest description is too long (max 1000 characters)' };
   }
   
   return { valid: true };
@@ -150,7 +158,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: validation.error });
     }
     
-    const { name, email, company, role } = req.body;
+    const { name, email, website, interest } = req.body;
     
     // Read existing waitlist data
     const waitlistData = await readWaitlistData();
@@ -168,8 +176,8 @@ export default async function handler(req, res) {
       id: Date.now().toString(),
       name: name.trim(),
       email: email.toLowerCase().trim(),
-      company: company ? company.trim() : '',
-      role: role || '',
+      website: website ? website.trim() : '',
+      interest: interest ? interest.trim() : '',
       submittedAt: new Date().toISOString(),
       ipAddress: clientIP // For debugging/analytics (consider privacy implications)
     };
@@ -212,11 +220,6 @@ export async function getWaitlistStats() {
       const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
       return signupDate > weekAgo;
     }).length,
-    topRoles: data.reduce((acc, entry) => {
-      if (entry.role) {
-        acc[entry.role] = (acc[entry.role] || 0) + 1;
-      }
-      return acc;
-    }, {})
+    websitesCount: data.filter(entry => entry.website && entry.website.trim()).length
   };
 } 

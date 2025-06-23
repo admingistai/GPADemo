@@ -24,7 +24,8 @@ export default function WaitlistAdmin({ waitlistData, stats }) {
   const filteredData = waitlistData.filter(entry =>
     entry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     entry.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    entry.company.toLowerCase().includes(searchTerm.toLowerCase())
+    (entry.website && entry.website.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (entry.interest && entry.interest.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const sortedData = [...filteredData].sort((a, b) => {
@@ -44,14 +45,14 @@ export default function WaitlistAdmin({ waitlistData, stats }) {
   });
 
   const exportToCSV = () => {
-    const headers = ['Name', 'Email', 'Company', 'Role', 'Submitted At'];
+    const headers = ['Name', 'Email', 'Website', 'Interest', 'Submitted At'];
     const csvContent = [
       headers.join(','),
       ...sortedData.map(entry => [
         `"${entry.name}"`,
         `"${entry.email}"`,
-        `"${entry.company}"`,
-        `"${entry.role}"`,
+        `"${entry.website || ''}"`,
+        `"${entry.interest || ''}"`,
         `"${new Date(entry.submittedAt).toLocaleString()}"`
       ].join(','))
     ].join('\n');
@@ -183,13 +184,8 @@ export default function WaitlistAdmin({ waitlistData, stats }) {
               <div className="stat-number">{stats.recentSignups}</div>
             </div>
             <div className="stat-card">
-              <h3>Top Role</h3>
-              <div className="stat-number">
-                {Object.keys(stats.topRoles).length > 0 
-                  ? Object.entries(stats.topRoles).sort(([,a], [,b]) => b - a)[0][0]
-                  : 'N/A'
-                }
-              </div>
+              <h3>With Websites</h3>
+              <div className="stat-number">{stats.websitesCount}</div>
             </div>
           </div>
 
@@ -198,7 +194,7 @@ export default function WaitlistAdmin({ waitlistData, stats }) {
             <div className="search-controls">
               <input
                 type="text"
-                placeholder="Search by name, email, or company..."
+                placeholder="Search by name, email, or website..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="search-input"
@@ -209,7 +205,7 @@ export default function WaitlistAdmin({ waitlistData, stats }) {
                 <option value="submittedAt">Sort by Date</option>
                 <option value="name">Sort by Name</option>
                 <option value="email">Sort by Email</option>
-                <option value="company">Sort by Company</option>
+                <option value="website">Sort by Website</option>
               </select>
               <button 
                 onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
@@ -231,8 +227,8 @@ export default function WaitlistAdmin({ waitlistData, stats }) {
                   <th>#</th>
                   <th>Name</th>
                   <th>Email</th>
-                  <th>Company</th>
-                  <th>Role</th>
+                  <th>Website</th>
+                  <th>Interest</th>
                   <th>Submitted</th>
                 </tr>
               </thead>
@@ -242,8 +238,8 @@ export default function WaitlistAdmin({ waitlistData, stats }) {
                     <td>{index + 1}</td>
                     <td>{entry.name}</td>
                     <td>{entry.email}</td>
-                    <td>{entry.company || '-'}</td>
-                    <td>{entry.role || '-'}</td>
+                    <td>{entry.website || '-'}</td>
+                    <td title={entry.interest}>{entry.interest ? (entry.interest.length > 50 ? entry.interest.substring(0, 50) + '...' : entry.interest) : '-'}</td>
                     <td>{new Date(entry.submittedAt).toLocaleDateString()}</td>
                   </tr>
                 ))}

@@ -7,8 +7,8 @@ export default function Waitlist() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    company: '',
-    role: ''
+    website: '',
+    interest: ''
   });
   const [status, setStatus] = useState('idle'); // idle, loading, success, error
   const [message, setMessage] = useState('');
@@ -32,7 +32,7 @@ export default function Waitlist() {
       if (response.ok) {
         setStatus('success');
         setMessage('Thank you! You\'ve been added to our waitlist. We\'ll be in touch soon!');
-        setFormData({ name: '', email: '', company: '', role: '' });
+        setFormData({ name: '', email: '', website: '', interest: '' });
       } else {
         setStatus('error');
         setMessage(data.error || 'Something went wrong. Please try again.');
@@ -121,35 +121,30 @@ export default function Waitlist() {
                 </div>
 
                 <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="company">Company/Website</label>
+                  <div className="form-group full-width">
+                    <label htmlFor="website">Website</label>
                     <input
-                      type="text"
-                      id="company"
-                      name="company"
-                      value={formData.company}
+                      type="url"
+                      id="website"
+                      name="website"
+                      value={formData.website}
                       onChange={handleInputChange}
-                      placeholder="Enter your company or website name"
+                      placeholder="https://yourwebsite.com"
                     />
                   </div>
+                </div>
 
-                  <div className="form-group">
-                    <label htmlFor="role">Role</label>
-                    <select
-                      id="role"
-                      name="role"
-                      value={formData.role}
+                <div className="form-row">
+                  <div className="form-group full-width">
+                    <label htmlFor="interest">Why you are interested</label>
+                    <textarea
+                      id="interest"
+                      name="interest"
+                      value={formData.interest}
                       onChange={handleInputChange}
-                    >
-                      <option value="">Select your role</option>
-                      <option value="content-creator">Content Creator</option>
-                      <option value="blogger">Blogger</option>
-                      <option value="publisher">Publisher</option>
-                      <option value="developer">Developer</option>
-                      <option value="marketer">Marketer</option>
-                      <option value="business-owner">Business Owner</option>
-                      <option value="other">Other</option>
-                    </select>
+                      placeholder="Tell us why you're interested in Ask Anything™..."
+                      rows="4"
+                    />
                   </div>
                 </div>
 
@@ -167,17 +162,6 @@ export default function Waitlist() {
                   </div>
                 )}
               </form>
-
-              <div className="waitlist-benefits">
-                <h3>What you'll get:</h3>
-                <ul>
-                  <li>✨ Early access to Ask Anything™</li>
-                  <li>🎯 Priority onboarding and setup assistance</li>
-                  <li>💰 Special launch pricing (50% off first year)</li>
-                  <li>📊 Exclusive beta features and analytics</li>
-                  <li>🤝 Direct feedback line to our team</li>
-                </ul>
-              </div>
             </div>
           </main>
 
@@ -338,11 +322,7 @@ export default function Waitlist() {
           }
 
           .waitlist-form-container {
-            display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 3rem;
-            align-items: start;
-            max-width: 1000px;
+            max-width: 600px;
             width: 100%;
             animation: slideInUp 0.8s ease-out 0.6s both;
           }
@@ -375,6 +355,10 @@ export default function Waitlist() {
             flex-direction: column;
           }
 
+          .form-group.full-width {
+            grid-column: 1 / -1;
+          }
+
           .form-group label {
             margin-bottom: 0.5rem;
             font-weight: 600;
@@ -384,7 +368,8 @@ export default function Waitlist() {
           }
 
           .form-group input,
-          .form-group select {
+          .form-group select,
+          .form-group textarea {
             padding: 0.85rem 1.2rem;
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px;
@@ -395,12 +380,14 @@ export default function Waitlist() {
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
           }
 
-          .form-group input::placeholder {
+          .form-group input::placeholder,
+          .form-group textarea::placeholder {
             color: rgba(255, 255, 255, 0.5);
           }
 
           .form-group input:focus,
-          .form-group select:focus {
+          .form-group select:focus,
+          .form-group textarea:focus {
             outline: none;
             border-color: rgba(79, 70, 229, 0.6);
             background: rgba(255, 255, 255, 0.1);
@@ -411,6 +398,11 @@ export default function Waitlist() {
           .form-group select option {
             background: #1a1a2e;
             color: white;
+          }
+
+          .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
           }
 
           .submit-btn {
@@ -463,52 +455,7 @@ export default function Waitlist() {
             color: #fca5a5;
           }
 
-          .waitlist-benefits {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 2rem;
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-          }
 
-          .waitlist-benefits:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.15);
-            transform: translateY(-2px);
-          }
-
-          .waitlist-benefits h3 {
-            margin: 0 0 1.5rem 0;
-            font-size: 1.25rem;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
-            color: white;
-          }
-
-          .waitlist-benefits ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-          }
-
-          .waitlist-benefits li {
-            padding: 0.75rem 0;
-            font-size: 1rem;
-            opacity: 0.9;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-            font-family: 'Inter', sans-serif;
-          }
-
-          .waitlist-benefits li:last-child {
-            border-bottom: none;
-          }
-
-          .waitlist-benefits li:hover {
-            opacity: 1;
-            transform: translateX(5px);
-          }
 
           .legal-footer {
             display: flex;
@@ -545,8 +492,6 @@ export default function Waitlist() {
 
           @media (max-width: 1024px) {
             .waitlist-form-container {
-              grid-template-columns: 1fr;
-              gap: 2rem;
               max-width: 600px;
             }
           }
