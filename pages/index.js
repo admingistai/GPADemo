@@ -882,11 +882,14 @@ export default function Home() {
           max-width: 100%;
           height: auto;
           opacity: 0.8;
-          transition: opacity 0.3s ease;
+          transition: all 0.3s ease;
+          /* Make white logos appear dark grey */
+          filter: invert(1) brightness(0.3) contrast(2);
         }
 
         .publisher-logos:hover img {
           opacity: 1;
+          filter: invert(1) brightness(0.2) contrast(2);
         }
 
         .hero-content {
