@@ -830,9 +830,10 @@ export default function Home() {
 
         .hero-cta {
           display: flex;
-          flex-direction: column;
           align-items: center;
-          gap: 1rem;
+          justify-content: center;
+          gap: 2rem;
+          flex-wrap: wrap;
         }
 
         .hero-cta-row {
@@ -841,6 +842,7 @@ export default function Home() {
           gap: 2rem;
           flex-wrap: wrap;
           justify-content: center;
+          width: 100%;
         }
 
         .hero-cta-divider {
@@ -894,7 +896,7 @@ export default function Home() {
           display: flex;
           flex-direction: column;
           gap: 0.5rem;
-          width: 100%;
+          flex: 0 0 auto;
           max-width: 400px;
           min-width: 350px;
         }
@@ -1000,6 +1002,11 @@ export default function Home() {
 
           .hero-description {
             font-size: 1.1rem;
+          }
+
+          .hero-cta {
+            flex-direction: column;
+            gap: 1.5rem;
           }
 
           .hero-cta-row {
