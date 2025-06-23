@@ -323,7 +323,10 @@ export default function Home() {
                   Your browser does not support the video tag.
                 </video>
                 <div className="publisher-logos">
-                  <img src="/publishers-logos-black.png" alt="Trusted Publishers" />
+                  <img src="/publishers-logos-black.png" alt="Trusted Publishers" onError={(e) => {
+                    console.error('Image failed to load:', e.target.src);
+                    e.target.src = '/publishers-logos.png'; // Fallback to original
+                  }} />
                 </div>
             </div>
               <div className="hero-content">
