@@ -902,7 +902,7 @@ export default function Home() {
           cursor: pointer;
           transition: all 0.3s ease;
           box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-          animation: gradientFlow 3s ease infinite;
+          animation: gradientFlow 5s ease infinite;
           position: relative;
           overflow: hidden;
         }
@@ -910,7 +910,7 @@ export default function Home() {
         .get-started-btn:hover {
           transform: translateY(-2px);
           box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-          animation-duration: 1.5s;
+          animation-duration: 3s;
         }
 
         @keyframes gradientFlow {
@@ -950,10 +950,10 @@ export default function Home() {
           content: '';
           position: absolute;
           inset: 0;
-          background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea);
+          background: conic-gradient(from 0deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea);
           border-radius: 50px;
           z-index: 0;
-          animation: rainbowRotate 3s linear infinite;
+          animation: rainbowSpin 4s linear infinite;
         }
 
         .hero-url-input-wrapper::after {
@@ -965,21 +965,12 @@ export default function Home() {
           z-index: 1;
         }
 
-        @keyframes rainbowRotate {
+        @keyframes rainbowSpin {
           0% {
-            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea);
-          }
-          25% {
-            background: linear-gradient(135deg, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea, #764ba2);
-          }
-          50% {
-            background: linear-gradient(135deg, #f093fb, #f5576c, #ff6b35, #feca57, #667eea, #764ba2, #f093fb);
-          }
-          75% {
-            background: linear-gradient(135deg, #f5576c, #ff6b35, #feca57, #667eea, #764ba2, #f093fb, #f5576c);
+            transform: rotate(0deg);
           }
           100% {
-            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea);
+            transform: rotate(360deg);
           }
         }
 
@@ -1025,7 +1016,7 @@ export default function Home() {
           font-size: 0.95rem;
           cursor: pointer;
           transition: all 0.3s ease;
-          animation: gradientFlow 3s ease infinite;
+          animation: gradientFlow 5s ease infinite;
           white-space: nowrap;
           margin: 0;
           position: relative;
@@ -1033,7 +1024,7 @@ export default function Home() {
         }
 
         .hero-try-btn:hover:not(:disabled) {
-          animation-duration: 1.5s;
+          animation-duration: 3s;
           transform: translateY(-1px);
           box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
@@ -1618,7 +1609,7 @@ export default function Home() {
           font-family: 'Inter', sans-serif;
           cursor: pointer;
           transition: all 0.3s ease;
-          animation: gradientFlow 3s ease infinite;
+          animation: gradientFlow 5s ease infinite;
           box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
           white-space: nowrap;
           position: relative;
@@ -1628,7 +1619,7 @@ export default function Home() {
         .final-get-started-btn:hover {
           transform: translateY(-2px);
           box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-          animation-duration: 1.5s;
+          animation-duration: 3s;
         }
 
         .final-cta-text {
@@ -1656,10 +1647,10 @@ export default function Home() {
           content: '';
           position: absolute;
           inset: 0;
-          background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea);
+          background: conic-gradient(from 0deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea);
           border-radius: 50px;
           z-index: 0;
-          animation: rainbowRotate 3s linear infinite;
+          animation: rainbowSpin 4s linear infinite;
         }
 
         .final-url-input-wrapper::after {
@@ -1713,7 +1704,7 @@ export default function Home() {
           font-size: 0.95rem;
           cursor: pointer;
           transition: all 0.3s ease;
-          animation: gradientFlow 3s ease infinite;
+          animation: gradientFlow 5s ease infinite;
           white-space: nowrap;
           margin: 0;
           position: relative;
@@ -1721,7 +1712,7 @@ export default function Home() {
         }
 
         .final-try-btn:hover:not(:disabled) {
-          animation-duration: 1.5s;
+          animation-duration: 3s;
           transform: translateY(-1px);
           box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
