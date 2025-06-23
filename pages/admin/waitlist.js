@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import fs from 'fs';
-import path from 'path';
 
 export default function WaitlistAdmin({ waitlistData, stats }) {
   const router = useRouter();
@@ -472,12 +470,31 @@ export default function WaitlistAdmin({ waitlistData, stats }) {
 
 export async function getServerSideProps() {
   try {
-    const WAITLIST_FILE = path.join(process.cwd(), 'data', 'waitlist.json');
+    // Import the blob functions
+    const { head } = await import('@vercel/blob');
+    
+    const BLOB_FILENAME = 'waitlist.json';
     let waitlistData = [];
     
-    if (fs.existsSync(WAITLIST_FILE)) {
-      const data = fs.readFileSync(WAITLIST_FILE, 'utf8');
-      waitlistData = JSON.parse(data);
+    try {
+      // Check if blob exists first
+      await head(BLOB_FILENAME);
+      
+      // Fetch the blob content
+      const blobUrl = `https://${process.env.VERCEL_URL || process.env.BLOB_READ_WRITE_TOKEN?.split('_')[1] || 'localhost'}.vercel-storage.com/${BLOB_FILENAME}`;
+      const response = await fetch(blobUrl, {
+        headers: {
+          'Authorization': `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.text();
+        waitlistData = JSON.parse(data);
+      }
+    } catch (error) {
+      // Blob doesn't exist or error fetching, start with empty array
+      console.log('Blob not found or error fetching, starting with empty array:', error.message);
     }
 
     const stats = {
@@ -502,7 +519,7 @@ export async function getServerSideProps() {
       }
     };
   } catch (error) {
-    console.error('Error loading waitlist data:', error);
+    console.error('Error loading waitlist data from blob:', error);
     return {
       props: {
         waitlistData: [],

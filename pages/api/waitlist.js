@@ -1,40 +1,57 @@
-import fs from 'fs';
-import path from 'path';
+import { put, head, list } from '@vercel/blob';
 import { validate } from 'validator';
 
-// Simple file-based storage for the waitlist
-const WAITLIST_FILE = path.join(process.cwd(), 'data', 'waitlist.json');
+// Vercel Blob storage configuration
+const BLOB_FILENAME = 'waitlist.json';
 
-// Ensure data directory exists
-function ensureDataDirectory() {
-  const dataDir = path.dirname(WAITLIST_FILE);
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
-  }
-}
-
-// Read existing waitlist data
-function readWaitlistData() {
+// Read existing waitlist data from Vercel Blob
+async function readWaitlistData() {
   try {
-    if (fs.existsSync(WAITLIST_FILE)) {
-      const data = fs.readFileSync(WAITLIST_FILE, 'utf8');
-      return JSON.parse(data);
+    // Check if blob exists
+    try {
+      await head(BLOB_FILENAME);
+    } catch (error) {
+      // Blob doesn't exist, return empty array
+      if (error.message.includes('not found') || error.message.includes('404')) {
+        return [];
+      }
+      throw error;
     }
-    return [];
+
+    // Fetch the blob content
+    const response = await fetch(`https://${process.env.VERCEL_URL || process.env.BLOB_READ_WRITE_TOKEN?.split('_')[1] || 'localhost'}.vercel-storage.com/${BLOB_FILENAME}`, {
+      headers: {
+        'Authorization': `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`
+      }
+    });
+
+    if (!response.ok) {
+      console.log('Blob not found, starting with empty array');
+      return [];
+    }
+
+    const data = await response.text();
+    return JSON.parse(data);
   } catch (error) {
-    console.error('Error reading waitlist data:', error);
+    console.error('Error reading waitlist data from blob:', error);
     return [];
   }
 }
 
-// Write waitlist data
-function writeWaitlistData(data) {
+// Write waitlist data to Vercel Blob
+async function writeWaitlistData(data) {
   try {
-    ensureDataDirectory();
-    fs.writeFileSync(WAITLIST_FILE, JSON.stringify(data, null, 2));
+    const jsonData = JSON.stringify(data, null, 2);
+    
+    const blob = await put(BLOB_FILENAME, jsonData, {
+      access: 'public',
+      contentType: 'application/json',
+    });
+
+    console.log('Waitlist data saved to blob:', blob.url);
     return true;
   } catch (error) {
-    console.error('Error writing waitlist data:', error);
+    console.error('Error writing waitlist data to blob:', error);
     return false;
   }
 }
@@ -101,6 +118,14 @@ export default async function handler(req, res) {
   }
   
   try {
+    // Check if Vercel Blob is configured
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      console.error('BLOB_READ_WRITE_TOKEN environment variable is not set');
+      return res.status(500).json({ 
+        error: 'Waitlist service is not properly configured. Please try again later.' 
+      });
+    }
+
     // Get client IP for rate limiting
     const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown';
     
@@ -120,7 +145,7 @@ export default async function handler(req, res) {
     const { name, email, company, role } = req.body;
     
     // Read existing waitlist data
-    const waitlistData = readWaitlistData();
+    const waitlistData = await readWaitlistData();
     
     // Check if email already exists
     const existingEntry = waitlistData.find(entry => entry.email.toLowerCase() === email.toLowerCase());
@@ -144,8 +169,8 @@ export default async function handler(req, res) {
     // Add to waitlist
     waitlistData.push(newEntry);
     
-    // Save to file
-    const saveSuccess = writeWaitlistData(waitlistData);
+    // Save to Vercel Blob
+    const saveSuccess = await writeWaitlistData(waitlistData);
     if (!saveSuccess) {
       return res.status(500).json({ 
         error: 'Failed to save your information. Please try again.' 
@@ -171,7 +196,7 @@ export default async function handler(req, res) {
 
 // Export a function to get waitlist stats (for admin use)
 export async function getWaitlistStats() {
-  const data = readWaitlistData();
+  const data = await readWaitlistData();
   return {
     total: data.length,
     recentSignups: data.filter(entry => {

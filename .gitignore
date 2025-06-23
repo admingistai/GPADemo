@@ -108,9 +108,9 @@ temp/
 ehthumbs.db
 Thumbs.db
 
-# Waitlist database (contains personal information)
-data/
-waitlist.json
+# Local development files
+.env.local
+.env
 
 # Vercel
 .vercel
