@@ -945,7 +945,7 @@ export default function Home() {
         }
 
         .hero-title {
-          font-size: 3.5rem;
+          font-size: 3rem;
           font-weight: 600;
           line-height: 1.1;
           margin-bottom: 1.5rem;
