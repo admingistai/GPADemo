@@ -196,7 +196,7 @@ export default function Home() {
             <div className="loading-spinner">
               <img src="/Gist_Mark_000000.png" alt="Gist Logo" />
               </div>
-            <h2 className="loading-title">Setting up <em>Ask Anything™</em></h2>
+            <h2 className="loading-title">Creating your <em>Ask Anything™</em> Button Preview</h2>
             <p className="loading-message">{loadingMessage}</p>
             <div className="loading-progress">
               <div className="progress-bar"></div>
