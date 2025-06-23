@@ -164,6 +164,31 @@ export default async function handler(req, res) {
       
       const widgetScript = `${updateUrlScript}<script src="${protocol}://${host}/widget.js"></script>`;
       
+      // Add demo banner
+      const demoBanner = `
+        <div id="demo-banner" style="
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          background: #FFD700;
+          color: #000;
+          text-align: center;
+          padding: 10px;
+          font-family: Arial, sans-serif;
+          font-weight: bold;
+          font-size: 14px;
+          letter-spacing: 1px;
+          z-index: 999999;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        ">
+          THIS IS A DEMO, NOT A REAL VERSION OF OUR WEBSITE.
+        </div>
+        <style>
+          body { margin-top: 50px !important; }
+        </style>
+      `;
+      
       if (html.includes('</head>')) {
         // Inject before closing head tag
         html = html.replace('</head>', `${widgetScript}</head>`);
@@ -173,6 +198,14 @@ export default async function handler(req, res) {
       } else {
         // Last resort: append to the end
         html += widgetScript;
+      }
+      
+      // Inject demo banner after body tag
+      if (html.includes('<body')) {
+        html = html.replace(/(<body[^>]*>)/, `$1${demoBanner}`);
+      } else {
+        // Fallback: prepend to HTML
+        html = demoBanner + html;
       }
     }
 
