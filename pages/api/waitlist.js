@@ -1,5 +1,5 @@
 import { put, head, list } from '@vercel/blob';
-import { validate } from 'validator';
+import validator from 'validator';
 
 // Vercel Blob storage configuration
 const BLOB_FILENAME = 'waitlist.json';
@@ -71,8 +71,16 @@ function validateFormData(data) {
   }
   
   // Email validation
-  if (!validate.isEmail(email)) {
-    return { valid: false, error: 'Please enter a valid email address' };
+  try {
+    if (!validator.isEmail(email)) {
+      return { valid: false, error: 'Please enter a valid email address' };
+    }
+  } catch (error) {
+    // Fallback to basic email regex if validator fails
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return { valid: false, error: 'Please enter a valid email address' };
+    }
   }
   
   // Optional fields validation
