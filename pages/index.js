@@ -318,7 +318,7 @@ export default function Home() {
                   >
                     Get Started
                   </button>
-                  <span className="hero-cta-text">or, try it now:</span>
+                  <span className="hero-cta-text">or, preview it on your site:</span>
                   <div className="hero-url-input-wrapper">
                     <input
                       type="text"
@@ -876,34 +876,68 @@ export default function Home() {
         .hero-url-input-wrapper {
           display: flex;
           background: white;
-          border: 2px solid #e2e8f0;
-          border-radius: 12px;
+          border: 3px solid;
+          border-image: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea) 1;
+          border-radius: 50px;
           overflow: hidden;
           transition: all 0.3s ease;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
           width: 400px;
           flex-shrink: 0;
+          position: relative;
+        }
+
+        .hero-url-input-wrapper::before {
+          content: '';
+          position: absolute;
+          inset: -3px;
+          padding: 3px;
+          background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea);
+          border-radius: 50px;
+          mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          mask-composite: subtract;
+          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          animation: rainbowRotate 3s linear infinite;
+        }
+
+        @keyframes rainbowRotate {
+          0% {
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea);
+          }
+          25% {
+            background: linear-gradient(135deg, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea, #764ba2);
+          }
+          50% {
+            background: linear-gradient(135deg, #f093fb, #f5576c, #ff6b35, #feca57, #667eea, #764ba2, #f093fb);
+          }
+          75% {
+            background: linear-gradient(135deg, #f5576c, #ff6b35, #feca57, #667eea, #764ba2, #f093fb, #f5576c);
+          }
+          100% {
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea);
+          }
         }
 
         .hero-url-input-wrapper:hover {
-          border-color: #cbd5e0;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+          transform: translateY(-1px);
         }
 
         .hero-url-input-wrapper:focus-within {
-          border-color: #667eea;
-          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+          box-shadow: 0 8px 30px rgba(102, 126, 234, 0.2);
         }
 
         .hero-url-input {
           flex: 1;
-          padding: 0.875rem 1.25rem;
+          padding: 0.875rem 1.5rem;
           border: none;
           background: transparent;
           font-family: 'Inter', sans-serif;
           font-size: 1rem;
           color: #1a202c;
           outline: none;
+          border-radius: 50px;
         }
 
         .hero-url-input::placeholder {
