@@ -1583,12 +1583,12 @@ export default function Home() {
         }
 
         .final-get-started-btn {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 75%, #f5576c 100%);
+          background: linear-gradient(270deg, #667eea, #764ba2, #f093fb, #f5576c, #667eea);
           background-size: 400% 400%;
           color: white;
           border: none;
           padding: 1rem 2rem;
-          border-radius: 50px;
+          border-radius: 12px;
           font-size: 1.1rem;
           font-weight: 600;
           font-family: 'Inter', sans-serif;
@@ -1597,12 +1597,14 @@ export default function Home() {
           animation: gradientFlow 3s ease infinite;
           box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
           white-space: nowrap;
+          position: relative;
+          overflow: hidden;
         }
 
         .final-get-started-btn:hover {
-          animation-duration: 1.5s;
           transform: translateY(-2px);
-          box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+          box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+          animation-duration: 1.5s;
         }
 
         .final-cta-text {

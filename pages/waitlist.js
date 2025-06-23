@@ -66,14 +66,11 @@ export default function Waitlist() {
           <header className="header">
             <div className="header-left">
               <img 
-                src="/Gist G white no background.png" 
-                alt="Gist" 
+                src="/gist-logo.png" 
+                alt="Ask Anything™ Logo" 
                 className="gist-logo" 
                 onClick={() => router.push('/')} 
               />
-              <h1 className="logo" onClick={() => router.push('/')}>
-                Ask<br />Anything™
-              </h1>
             </div>
             <div className="header-right">
               <span className="tagline">100% ethical, uses fully licensed sources</span>
@@ -86,82 +83,84 @@ export default function Waitlist() {
               Join the Ask Anything™ Waitlist
             </h1>
             
-            <div className="drive-growth-text">
+            <p className="waitlist-subhead">
               Be among the first to add AI-powered Q&A to your website and keep readers engaged on your page instead of losing them to Google.
-            </div>
+            </p>
             
             <div className="waitlist-form-container">
-              <form onSubmit={handleSubmit} className="waitlist-form">
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="name">Full Name *</label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="Enter your full name"
-                    />
+              <div className="waitlist-card">
+                <form onSubmit={handleSubmit} className="waitlist-form">
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="name">Full Name *</label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="Enter your full name"
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="email">Email Address *</label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="Enter your email address"
+                      />
+                    </div>
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="email">Email Address *</label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="Enter your email address"
-                    />
+                  <div className="form-row">
+                    <div className="form-group full-width">
+                      <label htmlFor="website">Website</label>
+                      <input
+                        type="url"
+                        id="website"
+                        name="website"
+                        value={formData.website}
+                        onChange={handleInputChange}
+                        placeholder="https://yourwebsite.com"
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div className="form-row">
-                  <div className="form-group full-width">
-                    <label htmlFor="website">Website</label>
-                    <input
-                      type="url"
-                      id="website"
-                      name="website"
-                      value={formData.website}
-                      onChange={handleInputChange}
-                      placeholder="https://yourwebsite.com"
-                    />
+                  <div className="form-row">
+                    <div className="form-group full-width">
+                      <label htmlFor="interest">Why you are interested</label>
+                      <textarea
+                        id="interest"
+                        name="interest"
+                        value={formData.interest}
+                        onChange={handleInputChange}
+                        placeholder="Tell us why you're interested in Ask Anything™..."
+                        rows="4"
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div className="form-row">
-                  <div className="form-group full-width">
-                    <label htmlFor="interest">Why you are interested</label>
-                    <textarea
-                      id="interest"
-                      name="interest"
-                      value={formData.interest}
-                      onChange={handleInputChange}
-                      placeholder="Tell us why you're interested in Ask Anything™..."
-                      rows="4"
-                    />
-                  </div>
-                </div>
+                  <button 
+                    type="submit"
+                    className="btn--primary"
+                    disabled={status === 'loading'}
+                  >
+                    {status === 'loading' ? 'Joining Waitlist...' : 'Join Waitlist'}
+                  </button>
 
-                <button 
-                  type="submit" 
-                  className="submit-btn"
-                  disabled={status === 'loading'}
-                >
-                  {status === 'loading' ? 'Joining Waitlist...' : 'Join Waitlist'}
-                </button>
-
-                {message && (
-                  <div className={`message ${status === 'success' ? 'success' : 'error'}`}>
-                    {message}
-                  </div>
-                )}
-              </form>
+                  {message && (
+                    <div className={`message ${status === 'success' ? 'success' : 'error'}`}>
+                      {message}
+                    </div>
+                  )}
+                </form>
+              </div>
             </div>
           </main>
 
@@ -179,6 +178,16 @@ export default function Waitlist() {
           </footer>
         </div>
 
+        <style jsx global>{`
+          body {
+            background: linear-gradient(135deg, #F2F0FE 0%, #FFEFF6 100%);
+            min-height: 100vh;
+          }
+
+          .waitlist-page, .waitlist-page * {
+            color: #111827 !important;
+          }
+        `}</style>
         <style jsx>{`
           * {
             margin: 0;
@@ -189,7 +198,7 @@ export default function Waitlist() {
           .app {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
-            background: radial-gradient(ellipse at center, #3742fa 0%, #0c1426 100%);
+            background: none;
           }
 
           .waitlist-page {
@@ -219,10 +228,11 @@ export default function Waitlist() {
           .header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            padding: 1.5rem 2.85rem;
-            position: relative;
-            animation: slideInDown 0.6s ease-out 0.2s both;
+            align-items: center;
+            background: #fff;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(16, 30, 54, 0.04);
+            margin-bottom: 40px;
           }
 
           .header-left {
@@ -232,47 +242,23 @@ export default function Waitlist() {
           }
 
           .gist-logo {
-            height: 2.5rem;
+            height: 40px;
             width: auto;
-            transition: all 0.3s ease;
             cursor: pointer;
-          }
-
-          .gist-logo:hover {
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
-          }
-
-          .logo {
-            font-size: 1.5rem;
-            font-weight: 600;
-            line-height: 1.0;
-            color: white;
-            font-family: 'Inter', sans-serif;
-            letter-spacing: -0.05em;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            margin: 0;
-          }
-
-          .logo:hover {
-            transform: scale(1.05);
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            display: block;
           }
 
           .header-right {
             display: flex;
             align-items: center;
-            gap: 2rem;
           }
 
           .tagline {
-            font-size: 1rem;
-            font-style: italic;
-            opacity: 0.9;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            line-height: 1.1;
+            font-size: 14px;
+            font-weight: 500;
+            color: #222;
+            opacity: 1;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           }
 
           .auth-buttons {
@@ -280,8 +266,6 @@ export default function Waitlist() {
             gap: 1rem;
             align-items: center;
           }
-
-
 
           .main-content {
             flex: 1;
@@ -295,25 +279,26 @@ export default function Waitlist() {
           }
 
           .main-title {
-            font-size: 3.2rem;
+            font-size: 48px;
             font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 0.5rem;
+            color: #111827;
+            text-align: center;
+            margin-bottom: 8px;
             margin-top: 0.5rem;
+            line-height: 1.1;
             max-width: 1100px;
-            color: white;
             font-family: 'Inter', sans-serif;
             letter-spacing: -0.01em;
             animation: slideInUp 0.8s ease-out 0.4s both;
           }
 
-          .drive-growth-text {
-            font-size: 1.35rem;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 3rem;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
+          .waitlist-subhead {
+            font-size: 18px;
+            color: #4B5563;
             text-align: center;
+            margin-bottom: 32px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
             animation: slideInUp 0.8s ease-out 0.5s both;
             max-width: 600px;
             margin-left: auto;
@@ -327,20 +312,30 @@ export default function Waitlist() {
             animation: slideInUp 0.8s ease-out 0.6s both;
           }
 
+          .waitlist-card {
+            background: rgba(255,255,255,0.85);
+            border: 2px solid #7C3AED;
+            box-shadow: 0 8px 32px rgba(124,58,237,0.12);
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 600px;
+            margin: auto;
+          }
+
           .waitlist-form {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 2.5rem;
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            background: none;
+            border: none;
+            border-radius: 0;
+            padding: 0;
+            box-shadow: none;
+            transition: none;
           }
 
           .waitlist-form:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            background: none;
+            border-color: inherit;
+            transform: none;
+            box-shadow: none;
           }
 
           .form-row {
@@ -405,32 +400,24 @@ export default function Waitlist() {
             min-height: 100px;
           }
 
-          .submit-btn {
+          .btn--primary {
+            height: 48px;
             width: 100%;
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            background: linear-gradient(90deg, #5E72E4 0%, #E357FF 100%);
             border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 1.1rem;
+            border-radius: 24px;
+            font-size: 18px;
             font-weight: 600;
-            font-family: 'Inter', sans-serif;
+            color: #fff !important;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: box-shadow 0.2s;
             margin-top: 1rem;
-            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.2);
+            box-shadow: none;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           }
 
-          .submit-btn:hover:not(:disabled) {
-            background: linear-gradient(135deg, #4338ca, #6d28d9);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
-          }
-
-          .submit-btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
+          .btn--primary:hover:not(:disabled) {
+            box-shadow: 0 4px 12px rgba(94,114,228,0.3);
           }
 
           .message {
@@ -455,8 +442,6 @@ export default function Waitlist() {
             color: #fca5a5;
           }
 
-
-
           .legal-footer {
             display: flex;
             justify-content: space-between;
@@ -465,7 +450,7 @@ export default function Waitlist() {
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             margin-top: 3rem;
             font-size: 0.875rem;
-            opacity: 0.8;
+            opacity: 1;
             font-family: 'Inter', sans-serif;
           }
 
@@ -479,7 +464,7 @@ export default function Waitlist() {
             border: none;
             color: white;
             cursor: pointer;
-            opacity: 0.8;
+            opacity: 1;
             transition: all 0.3s ease;
             font-family: 'Inter', sans-serif;
             font-size: 0.875rem;
@@ -520,7 +505,7 @@ export default function Waitlist() {
               font-size: 2.5rem;
             }
 
-            .drive-growth-text {
+            .waitlist-subhead {
               font-size: 1.2rem;
               margin-bottom: 2rem;
             }
@@ -547,13 +532,47 @@ export default function Waitlist() {
               font-size: 2rem;
             }
 
-            .drive-growth-text {
+            .waitlist-subhead {
               font-size: 1.1rem;
             }
 
             .waitlist-form {
               padding: 1.5rem;
             }
+          }
+
+          @media (max-width: 640px) {
+            .waitlist-card {
+              padding: 16px;
+            }
+            .main-title {
+              font-size: 32px;
+            }
+            .btn--primary {
+              height: 40px;
+            }
+            .waitlist-card input,
+            .waitlist-card textarea {
+              width: 100%;
+            }
+          }
+
+          .waitlist-card input,
+          .waitlist-card textarea {
+            border: 2px solid rgba(94,114,228,0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 16px;
+            background: rgba(255,255,255,0.8);
+          }
+
+          .waitlist-card ::placeholder {
+            color: #9CA3AF !important;
+            font-weight: 400;
+            opacity: 1;
           }
         `}</style>
       </div>
