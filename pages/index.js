@@ -339,7 +339,7 @@ export default function Home() {
               Keep readers on your site instead of losing them to Google
             </h1>
             
-            <div className="drive-growth-text hoverable-text">
+            <div className="drive-growth-text hoverable-text" style={{ marginTop: '2rem', marginBottom: '1rem' }}>
               Add an AI-powered <em>Ask Anything™</em> button to your articles that answers reader questions using your content library, keeping traffic and revenue on your site.
             </div>
             
@@ -1185,8 +1185,9 @@ export default function Home() {
           right: 0;
           bottom: 0;
           background: 
-            radial-gradient(circle at 30% 30%, rgba(255, 107, 53, 0.08) 0%, transparent 50%),
-            radial-gradient(circle at 70% 70%, rgba(168, 85, 247, 0.08) 0%, transparent 50%);
+            radial-gradient(circle at 20% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 40% 60%, rgba(255, 182, 193, 0.05) 0%, transparent 50%);
           pointer-events: none;
         }
 
