@@ -861,11 +861,11 @@ export default function Home() {
         }
 
         .hero-container {
-          max-width: 1200px;
+          max-width: 1400px;
           margin: 0 auto;
           display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 4rem;
+          grid-template-columns: 1.4fr 1fr;
+          gap: 3rem;
           align-items: center;
           position: relative;
           z-index: 1;
