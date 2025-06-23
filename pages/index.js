@@ -389,20 +389,20 @@ export default function Home() {
               <div className="customization-grid">
                 <div className="customization-item">
                   <div className="customization-icon">🎨</div>
-                  <h3>Match your brand perfectly</h3>
-                  <p>Customize colors, fonts, favicon, and button styling to seamlessly blend with your website's design and brand identity.</p>
+                  <h3>Choose sources to include</h3>
+                  <p>Pick pages on your site-or add any whitelisted publisher with one click.</p>
                 </div>
 
                 <div className="customization-item">
                   <div className="customization-icon">⚙️</div>
-                  <h3>Choose your tools and features</h3>
-                  <p>Enable or disable specific features like Ask Anything™ and Go Deeper based on your needs.</p>
+                  <h3>Match the design of your brand.</h3>
+                  <p>Customize colors, fonts, avatars, even the answer voice.</p>
                 </div>
 
                 <div className="customization-item">
                   <div className="customization-icon">📊</div>
-                  <h3>Control your advertising</h3>
-                  <p>Set ad preferences, choose which types of ads to display, and maintain full control over the advertising experience on your site.</p>
+                  <h3>Set its mission.</h3>
+                  <p>Drive <em>Search</em>, <em>Sales</em>, <em>Support</em>-or whatever matters to you.</p>
                 </div>
               </div>
             </div>
