@@ -395,14 +395,14 @@ export default function Home() {
 
                 <div className="customization-item">
                   <div className="customization-icon">⚙️</div>
-                  <h3>Match the design of your brand.</h3>
+                  <h3>Match the design of your brand</h3>
                   <p>Customize colors, fonts, avatars, even the answer voice.</p>
                 </div>
 
                 <div className="customization-item">
                   <div className="customization-icon">📊</div>
-                  <h3>Set its mission.</h3>
-                  <p>Drive <em>Search</em>, <em>Sales</em>, <em>Support</em>-or whatever matters to you.</p>
+                  <h3>Optinize any goal</h3>
+                  <p>Increase engagement, sales, growth, monetization, or whatever matters to you.</p>
                 </div>
               </div>
             </div>
