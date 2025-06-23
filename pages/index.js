@@ -309,13 +309,17 @@ export default function Home() {
           <section className={`hero-section ${isLoaded ? 'fade-in' : ''}`}>
             <div className="hero-container">
               <div className="hero-video">
-                <iframe 
-                  src="https://www.youtube.com/embed/g_XPo_d-Mhw" 
-                  title="YouTube video player" 
-                  frameBorder="0" 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                  allowFullScreen>
-                </iframe>
+                <video 
+                  src="/GPA basic demo gif.mov"
+                  title="GPA Demo Video"
+                  controls
+                  autoPlay
+                  muted
+                  loop
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                >
+                  Your browser does not support the video tag.
+                </video>
                 <div className="publisher-logos">
                   <img src="/publishers-logos.png" alt="Trusted Publishers" />
                 </div>
