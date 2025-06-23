@@ -622,25 +622,9 @@ export default function Home() {
           display: flex;
           flex-direction: column;
           color: #1a202c;
-          animation: fadeIn 0.8s ease-out;
          }
 
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
 
-        /* Scroll Animation Styles */
-        .scroll-observe {
-          opacity: 0;
-          transform: translateY(30px);
-          transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .scroll-observe.scroll-animate-in {
-          opacity: 1;
-          transform: translateY(0);
-        }
 
 
 
@@ -1375,10 +1359,7 @@ export default function Home() {
           line-height: 1.6;
         }
 
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
+
 
         /* Make It Yours Section */
         .make-it-yours-section {
@@ -1770,7 +1751,6 @@ export default function Home() {
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.01em;
           text-align: center;
-          animation: slideInUp 0.8s ease-out 0.2s both;
         }
 
         .feature-subtitle {
@@ -1779,7 +1759,6 @@ export default function Home() {
           margin-bottom: 3rem;
           text-align: center;
           font-family: 'Inter', sans-serif;
-          animation: slideInUp 0.8s ease-out 0.4s both;
         }
 
         .features-grid {
@@ -1788,7 +1767,6 @@ export default function Home() {
           gap: 1.5rem;
           width: 100%;
           margin-bottom: 3rem;
-          animation: slideInUp 0.8s ease-out 0.6s both;
         }
 
         .feature-card {
@@ -1843,7 +1821,6 @@ export default function Home() {
           gap: 1rem;
           justify-content: center;
           width: 100%;
-          animation: slideInUp 0.8s ease-out 0.8s both;
         }
 
         .back-btn, .continue-btn {
@@ -1937,7 +1914,6 @@ export default function Home() {
           gap: 1rem;
           width: 100%;
           margin-bottom: 2rem;
-          animation: slideInUp 0.8s ease-out 0.6s both;
         }
 
         .feature-compact-card {
@@ -2204,12 +2180,6 @@ export default function Home() {
           max-width: 420px;
           position: relative;
           box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-          animation: slideInUp 0.4s ease-out;
-        }
-
-        @keyframes slideInUp {
-          from { opacity: 0; transform: translateY(40px) scale(0.95); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .login-close-btn {
@@ -2444,7 +2414,6 @@ export default function Home() {
           background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
           backdrop-filter: blur(20px);
           border-top: 1px solid rgba(255, 255, 255, 0.1);
-          animation: slideInUp 0.8s ease-out 0.4s both;
         }
 
         .why-choose-section.white-section {
@@ -2494,10 +2463,7 @@ export default function Home() {
           color: #666 !important;
         }
 
-        @keyframes slideInUp {
-          from { opacity: 0; transform: translateY(40px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
+
 
         .why-choose-container {
           max-width: 1200px;
