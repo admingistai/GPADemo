@@ -805,7 +805,7 @@ export default function Home() {
           font-size: 3.2rem;
           font-weight: 700;
           line-height: 1.1;
-          margin-bottom: 1rem;
+          margin-bottom: 0.5rem;
           margin-top: 0.5rem;
           max-width: 1100px;
           color: white;
