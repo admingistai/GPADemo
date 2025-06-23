@@ -454,13 +454,32 @@ export default function Home() {
           <section className="final-cta-section white-section">
             <div className="container">
               <h2 className="cta-title">Ready to add Ask Anything™ to your website?</h2>
-              <div className="waitlist-container">
+              <div className="final-cta-actions">
                 <button
                   onClick={() => router.push('/waitlist')}
-                  className="waitlist-btn"
+                  className="final-get-started-btn"
                 >
-                  Join Waitlist
+                  Get Started
                 </button>
+                <span className="final-cta-text">or, preview it on your site:</span>
+                <div className="final-url-input-wrapper">
+                  <input
+                    type="text"
+                    className="final-url-input"
+                    placeholder="Enter your website URL (e.g., example.com)"
+                    value={targetUrl}
+                    onChange={(e) => setTargetUrl(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && targetUrl.trim() && handleUrlSubmit(targetUrl)}
+                  />
+                  <button
+                    className="final-try-btn"
+                    onClick={() => targetUrl.trim() && handleUrlSubmit(targetUrl)}
+                    disabled={!targetUrl.trim()}
+                  >
+                    <span className="gist-icon">G</span>
+                    Try It
+                  </button>
+                </div>
               </div>
             </div>
           </section>
@@ -1553,6 +1572,140 @@ export default function Home() {
           box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
 
+        /* Final CTA Actions */
+        .final-cta-actions {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 2rem;
+          flex-wrap: wrap;
+          margin: 2rem 0;
+        }
+
+        .final-get-started-btn {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 75%, #f5576c 100%);
+          background-size: 400% 400%;
+          color: white;
+          border: none;
+          padding: 1rem 2rem;
+          border-radius: 50px;
+          font-size: 1.1rem;
+          font-weight: 600;
+          font-family: 'Inter', sans-serif;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          animation: gradientFlow 3s ease infinite;
+          box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+          white-space: nowrap;
+        }
+
+        .final-get-started-btn:hover {
+          animation-duration: 1.5s;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .final-cta-text {
+          color: #666;
+          font-family: 'Kalam', cursive;
+          font-size: 1.2rem;
+          font-style: italic;
+          font-weight: 400;
+          transform: rotate(-2deg);
+          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+          letter-spacing: 0.5px;
+        }
+
+        .final-url-input-wrapper {
+          display: flex;
+          background: transparent;
+          border-radius: 50px;
+          overflow: visible;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+          width: 400px;
+          flex-shrink: 0;
+          position: relative;
+          padding: 3px;
+        }
+
+        .final-url-input-wrapper::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57, #667eea);
+          border-radius: 50px;
+          z-index: -1;
+          animation: rainbowRotate 3s linear infinite;
+        }
+
+        .final-url-input-wrapper::after {
+          content: '';
+          position: absolute;
+          inset: 3px;
+          background: white;
+          border-radius: 47px;
+          z-index: -1;
+        }
+
+        .final-url-input-wrapper:hover {
+          box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+          transform: translateY(-1px);
+        }
+
+        .final-url-input-wrapper:focus-within {
+          box-shadow: 0 8px 30px rgba(102, 126, 234, 0.2);
+        }
+
+        .final-url-input {
+          flex: 1;
+          padding: 0.875rem 1.5rem;
+          border: none;
+          background: transparent;
+          font-family: 'Inter', sans-serif;
+          font-size: 1rem;
+          color: #1a202c;
+          outline: none;
+          border-radius: 50px;
+        }
+
+        .final-url-input::placeholder {
+          color: #a0aec0;
+        }
+
+        .final-try-btn {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 75%, #f5576c 100%);
+          background-size: 400% 400%;
+          border: none;
+          border-radius: 47px;
+          color: white;
+          padding: 0.875rem 1.5rem;
+          font-family: 'Inter', sans-serif;
+          font-weight: 600;
+          font-size: 0.95rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          animation: gradientFlow 3s ease infinite;
+          white-space: nowrap;
+          margin: 0;
+        }
+
+        .final-try-btn:hover:not(:disabled) {
+          animation-duration: 1.5s;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .final-try-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          animation: none;
+          background: #a0aec0;
+        }
+
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
           .section-title {
@@ -1580,6 +1733,32 @@ export default function Home() {
           .waitlist-btn {
             padding: 1rem 2rem;
             font-size: 1rem;
+          }
+
+          .final-cta-actions {
+            flex-direction: column;
+            gap: 1.5rem;
+          }
+
+          .final-get-started-btn {
+            padding: 0.875rem 1.75rem;
+            font-size: 1rem;
+          }
+
+          .final-url-input-wrapper {
+            width: 100%;
+            flex-direction: column;
+          }
+
+          .final-url-input {
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+          }
+
+          .final-try-btn {
+            padding: 0.75rem 1.25rem;
+            font-size: 0.9rem;
+            border-radius: 47px;
           }
 
           .container {
