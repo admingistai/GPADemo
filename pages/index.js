@@ -857,7 +857,7 @@ export default function Home() {
 
         /* Video Section */
         .video-section {
-          margin: -1rem 0 0.25rem 0;
+          margin: -1rem 0 2rem 0;
           display: flex;
           justify-content: center;
           animation: slideInUp 0.8s ease-out 0.7s both;
