@@ -305,16 +305,6 @@ export default function Home() {
               </div>
           </header>
 
-          {/* Publisher Logos */}
-          <div className="publisher-logos-section">
-            <div className="publisher-logos">
-              <img src="/publishers-logos-black.png" alt="Trusted Publishers" onError={(e) => {
-                console.error('Image failed to load:', e.target.src);
-                e.target.src = '/publishers-logos.png'; // Fallback to original
-              }} />
-            </div>
-          </div>
-
           {/* Hero Section */}
           <section className={`hero-section ${isLoaded ? 'fade-in' : ''}`}>
             <div className="hero-container">
@@ -332,6 +322,12 @@ export default function Home() {
                   <source src="/GPA%20basic%20demo%20gif.mov" type="video/quicktime" />
                   Your browser does not support the video tag.
                 </video>
+                <div className="publisher-logos">
+                  <img src="/publishers-logos-black.png" alt="Trusted Publishers" onError={(e) => {
+                    console.error('Image failed to load:', e.target.src);
+                    e.target.src = '/publishers-logos.png'; // Fallback to original
+                  }} />
+                </div>
             </div>
               <div className="hero-content">
                 <h1 className="hero-title">
@@ -816,30 +812,7 @@ export default function Home() {
           align-items: center;
         }
 
-        /* Publisher Logos Section */
-        .publisher-logos-section {
-          background: white;
-          padding: 2rem 0;
-          text-align: center;
-          border-bottom: 1px solid rgba(226, 232, 240, 0.3);
-        }
 
-        .publisher-logos-section .publisher-logos {
-          margin: 0 auto;
-          max-width: 800px;
-        }
-
-        .publisher-logos-section .publisher-logos img {
-          max-width: 100%;
-          height: auto;
-          max-height: 40px;
-          opacity: 0.7;
-          transition: opacity 0.3s ease;
-        }
-
-        .publisher-logos-section .publisher-logos:hover img {
-          opacity: 0.9;
-        }
 
 
 
@@ -912,17 +885,17 @@ export default function Home() {
         }
 
         .publisher-logos {
-          margin-top: 1.5rem;
+          margin-top: 2rem;
           text-align: center;
           width: 100%;
-          min-height: 50px;
+          min-height: 80px;
         }
 
         .publisher-logos img {
           max-width: 100%;
           width: auto;
           height: auto;
-          max-height: 60px;
+          max-height: 80px;
           opacity: 0.8;
           transition: opacity 0.3s ease;
           display: block;
