@@ -924,7 +924,7 @@ export default function Home() {
           max-width: 100%;
           width: auto;
           height: auto;
-          max-height: 80px;
+          max-height: 90px;
           opacity: 0.8;
           transition: opacity 0.3s ease;
           display: block;
