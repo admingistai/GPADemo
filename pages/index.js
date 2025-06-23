@@ -1205,6 +1205,12 @@ export default function Home() {
           text-align: center;
         }
 
+        .final-cta-section .url-input-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
         .final-cta-section.white-section {
           background: white;
           position: relative;
