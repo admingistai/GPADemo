@@ -310,7 +310,6 @@ export default function Home() {
             <div className="hero-container">
               <div className="hero-video">
                 <video 
-                  src="/GPA basic demo gif.mov"
                   title="GPA Demo Video"
                   controls
                   autoPlay
@@ -318,6 +317,9 @@ export default function Home() {
                   loop
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 >
+                  <source src="/GPA-basic-demo-gif.mp4" type="video/mp4" />
+                  <source src="/GPA-basic-demo-gif.webm" type="video/webm" />
+                  <source src="/GPA%20basic%20demo%20gif.mov" type="video/quicktime" />
                   Your browser does not support the video tag.
                 </video>
                 <div className="publisher-logos">
