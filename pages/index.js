@@ -798,6 +798,7 @@ export default function Home() {
           justify-content: center;
           padding: 0.5rem 2rem;
           text-align: center;
+          margin-top: -2rem;
         }
 
         .main-title {
@@ -856,7 +857,7 @@ export default function Home() {
 
         /* Video Section */
         .video-section {
-          margin: 0.25rem 0 0.25rem 0;
+          margin: -1rem 0 0.25rem 0;
           display: flex;
           justify-content: center;
           animation: slideInUp 0.8s ease-out 0.7s both;
@@ -1190,7 +1191,7 @@ export default function Home() {
           display: flex;
           justify-content: center;
           align-items: center;
-          margin: 2rem 0;
+          margin: 1rem 0;
         }
 
         .waitlist-btn {
