@@ -385,7 +385,7 @@ export default function Home() {
           {/* Make It Yours */}
           <section className={`make-it-yours-section ${isLoaded ? 'fade-in-delayed-2' : ''}`}>
             <div className="container">
-              <h2 className="section-title">Make it yours</h2>
+              <h2 className="section-title">Make it <span style={{textDecoration: 'underline'}}>yours</span>.</h2>
               <div className="customization-grid">
                 <div className="customization-item">
                   <h3>Match your brand perfectly</h3>
