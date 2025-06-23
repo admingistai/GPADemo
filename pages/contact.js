@@ -31,7 +31,7 @@ export default function ContactUs() {
 
       if (response.ok) {
         setStatus('success');
-        setMessage('Thank you for reaching out! We\'ll get back to you within 24 hours.');
+        setMessage('Thank you for reaching out! We\'ll get back to you as soon as possible.');
         setFormData({ name: '', email: '', website: '', message: '' });
       } else {
         setStatus('error');
@@ -88,7 +88,7 @@ export default function ContactUs() {
             </h1>
             
             <p className="contact-subhead">
-              Have questions about Ask Anything™? Want to discuss custom integrations or enterprise solutions? We'd love to hear from you.
+              Do you want to get in contact with a member of our team? Fill out the form below and we'll get back to you as soon as possible.
             </p>
             
             <div className="contact-form-container">
@@ -156,7 +156,7 @@ export default function ContactUs() {
                     className="btn--primary"
                     disabled={status === 'loading'}
                   >
-                    {status === 'loading' ? 'Sending Message...' : 'Send Message'}
+                    {status === 'loading' ? 'Submitting...' : 'Submit'}
                   </button>
 
                   {message && (
