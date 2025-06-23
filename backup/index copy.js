@@ -336,11 +336,11 @@ export default function Home() {
           {/* Main Content */}
           <main className="main-content">
             <h1 className="main-title hoverable-text">
-              Keep readers on your site instead of losing them to Google
+              Keep readers on your site with AI that answers, cites, and converts.
             </h1>
             
             <div className="drive-growth-text hoverable-text">
-              Add an AI-powered "Ask Anything™" button to your articles that answers reader questions using your content library, keeping traffic and revenue on your site.
+              Gist Answers transforms your content into an interactive knowledge base that keeps readers engaged and drives revenue without compromising editorial integrity.
             </div>
             
             <div className="url-input-container">
@@ -348,7 +348,7 @@ export default function Home() {
                 <div className="url-input-inner">
                   <input
                     type="text"
-                    placeholder="Enter your website URL to see Ask Anything™ in action"
+                    placeholder="Enter your URL to preview on your site..."
                     value={targetUrl}
                     onChange={(e) => setTargetUrl(e.target.value)}
                     onKeyDown={(e) => {
@@ -364,7 +364,7 @@ export default function Home() {
                     disabled={loading || !targetUrl.trim()}
                     className="generate-btn"
                   >
-                    {loading ? 'Generating...' : 'Try It Now'}
+                    {loading ? 'Generating...' : 'Generate'}
                   </button>
             </div>
               </div>
@@ -391,94 +391,273 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Why Choose Ask Anything™ */}
-          <section className="why-choose-section">
-            <div className="container">
-              <h2 className="section-title">Why choose Ask Anything™</h2>
-              <div className="benefits-grid">
-                <div className="benefit-card stagger-animate">
-                  <div className="benefit-icon">🎯</div>
-                  <h3>Keep search traffic on your site</h3>
-                  <p>Readers stay engaged with your content instead of bouncing to Google for answers, boosting page views and ad revenue.</p>
-                </div>
-                
-                <div className="benefit-card stagger-animate">
-                  <div className="benefit-icon">📚</div>
-                  <h3>Turn content into conversations</h3>
-                  <p>AI answers pull from your entire article library with proper citations, creating deeper engagement with your archive.</p>
-                </div>
-                
-                <div className="benefit-card stagger-animate">
-                  <div className="benefit-icon">💰</div>
-                  <h3>$0 platform fee, revenue share model</h3>
-                  <p>No upfront costs. You earn more when readers engage more through longer sessions and additional ad impressions.</p>
-                </div>
-              </div>
-            </div>
-          </section>
+          {/* Publishers Band */}
+          <footer className="publishers-band">
+            <div className="publishers-content">
+              <img 
+                src="/publishers-logos.png?v=1" 
+                alt="Publishers logos" 
+                className="publishers-image"
+              />
+                  </div>
+          </footer>
 
-          {/* Make It Yours */}
-          <section className="make-it-yours-section white-section">
-            <div className="container">
-              <h2 className="section-title">Make it yours</h2>
-              <div className="customization-grid">
-                <div className="customization-item stagger-animate">
-                  <h3>Choose content to search</h3>
-                  <p>Decide if you want Ask Anything™ to search only your website, or include other trusted sources on the web.</p>
-                </div>
-                
-                <div className="customization-item stagger-animate">
-                  <h3>Match your site's design</h3>
-                  <p>Choose from several pre-built themes, or customize the button and response styling to match your brand perfectly.</p>
-                </div>
-                
-                <div className="customization-item stagger-animate">
-                  <h3>Get it for free or low cost</h3>
-                  <p>Pay nothing upfront and earn revenue from increased engagement, or upgrade for premium features and priority support.</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Final CTA */}
-          <section className="final-cta-section">
-            <div className="container">
-              <h2 className="cta-title">Ready to add Ask Anything™ to your website?</h2>
-              <div className="cta-url-input-container">
-                <div className="cta-url-input-wrapper">
-                  <div className="cta-url-input-inner">
-                    <input
-                      type="text"
-                      placeholder="Enter your website URL to get started"
-                      value={targetUrl}
-                      onChange={(e) => setTargetUrl(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' && !loading && targetUrl.trim()) {
-                          handleUrlSubmit(targetUrl);
-                        }
-                      }}
-                      className="cta-url-input"
-                      disabled={loading}
-                    />
-                    <button
-                      onClick={() => handleUrlSubmit(targetUrl)}
-                      disabled={loading || !targetUrl.trim()}
-                      className="cta-generate-btn"
-                    >
-                      {loading ? 'Generating...' : 'Get Started'}
-                    </button>
+          {/* Testimonials Section */}
+          <section className="testimonials-section">
+            <div className="testimonials-container">
+              <div className="testimonial-box">
+                <div className="testimonial-content">
+                  <p>"With Gist Answers, we can combine our award-winning journalism with trusted external sources to deliver deeper context and smarter discovery in response to user questions."</p>
+                  <div className="testimonial-author">
+                    <strong>Will Lee</strong>
+                    <span>CEO, AdWeek</span>
                   </div>
                 </div>
               </div>
             </div>
           </section>
 
-          {/* Legal Footer */}
-          <footer className="legal-footer">
-            <div>© 2024 Gist AI, Inc. All rights reserved.</div>
-            <div className="legal-links">
-              <button onClick={() => window.open('https://about.gist.ai/terms', '_blank')}>Terms of Service</button>
-              <button onClick={() => window.open('https://about.gist.ai/privacy', '_blank')}>Privacy Policy</button>
+          {/* Why Choose Us Section */}
+          <section className="why-choose-section white-section">
+            <div className="why-choose-container">
+              <div className="why-choose-header">
+                <h2 className="why-choose-title">Transform Content into Conversations</h2>
+                </div>
+              
+              <div className="horizontal-benefits">
+                <div className="benefit-item-horizontal stagger-animate">
+                  <div className="benefit-icon">📚</div>
+                  <h3>Answer beyond the article</h3>
+                  <p>Gist draws from your entire content library to provide comprehensive answers while always citing sources.</p>
+                  </div>
+                  
+                <div className="benefit-item-horizontal stagger-animate">
+                  <div className="benefit-icon">🎯</div>
+                  <h3>Search traffic stays put</h3>
+                  <p>Keep readers engaged on your site instead of bouncing back to search engines for follow-up questions.</p>
+                </div>
+                  
+                <div className="benefit-item-horizontal stagger-animate">
+                  <div className="benefit-icon">💰</div>
+                  <h3>Ad-funded, no fees</h3>
+                  <p>Our revenue-share model means you only pay when Gist generates additional ad impressions and engagement.</p>
+                  </div>
+                </div>
+              
+              <div className="why-choose-cta">
+                <div className="why-choose-url-input-container">
+                  <div className="why-choose-url-input-wrapper">
+                    <div className="why-choose-url-input-inner">
+                      <input
+                        type="url"
+                        value={targetUrl}
+                        onChange={(e) => setTargetUrl(e.target.value)}
+                        placeholder="Enter your URL to preview on your site..."
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && !loading && targetUrl.trim()) {
+                            handleUrlSubmit(targetUrl);
+                          }
+                        }}
+                        className="why-choose-url-input"
+                        disabled={loading}
+                      />
+                      <button
+                        onClick={() => handleUrlSubmit(targetUrl)}
+                        disabled={loading || !targetUrl.trim()}
+                        className="why-choose-generate-btn"
+                      >
+                        {loading ? 'Generating...' : 'Generate'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* How It Works Section */}
+          <section className="how-it-works-section">
+            <div className="how-it-works-container">
+              <div className="how-it-works-header">
+                <h2 className="how-it-works-title">How It Works</h2>
+              </div>
+              
+              <div className="how-it-works-steps">
+                <div className="step-item stagger-animate">
+                  <div className="step-number">01</div>
+                  <h3 className="step-title">One line: live in minutes</h3>
+                  <p className="step-description">Drop a single line of code into your site and Gist Answers is instantly live. No complex setup, no technical expertise required.</p>
+                </div>
+                
+                <div className="step-arrow stagger-animate">→</div>
+                
+                <div className="step-item stagger-animate">
+                  <div className="step-number">02</div>
+                  <h3 className="step-title">Choose theme</h3>
+                  <p className="step-description">Customize colors, fonts, and positioning to match your brand perfectly. Your answers, your style, your site.</p>
+                </div>
+                
+                <div className="step-arrow stagger-animate">→</div>
+                
+                <div className="step-item stagger-animate">
+                  <div className="step-number">03</div>
+                  <h3 className="step-title">Integrate with ads</h3>
+                  <p className="step-description">Start earning revenue immediately with privacy-safe ads that complement your content without disrupting the user experience.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Copy Page */}
+          <section className="copy-page white-section">
+            <div className="copy-page-container">
+              <div className="copy-header">
+                <h2 className="copy-title">AI that cites, respects rights, and never hallucinates revenue risk</h2>
+                <p className="copy-subtitle">We built Gist with journalistic integrity and publisher sustainability as our core principles.</p>
+              </div>
+              
+              <div className="copy-features">
+                <div className="copy-feature stagger-animate">
+                  <div className="feature-icon">✓</div>
+                  <p>Every answer includes citations to your content and trusted external sources</p>
+                </div>
+                
+                <div className="copy-feature stagger-animate">
+                  <div className="feature-icon">✓</div>
+                  <p>Strict fact-checking protocols prevent hallucinations and misinformation</p>
+                </div>
+                
+                <div className="copy-feature stagger-animate">
+                  <div className="feature-icon">✓</div>
+                  <p>Your content remains on your servers; we never train on your proprietary data</p>
+                </div>
+                
+                <div className="copy-feature">
+                  <div className="feature-icon">✓</div>
+                  <p>Transparent attribution maintains reader trust and publisher authority</p>
+                </div>
+                
+                <div className="copy-feature">
+                  <div className="feature-icon">✓</div>
+                  <p>Full GDPR, CCPA, and accessibility compliance built-in</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Revenue Section */}
+          <section className="revenue-section">
+            <div className="revenue-container">
+              <div className="revenue-header">
+                <h2 className="revenue-title">$0 platform fee. We split the incremental ad revenue; you keep editorial independence.</h2>
+              </div>
+              
+              <div className="revenue-grid">
+                <div className="revenue-column">
+                  <h3 className="column-title">What You Get</h3>
+                  <div className="revenue-features">
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>Full integration with your CMS and ad stack</p>
+                    </div>
+                    
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>Custom branding and voice settings</p>
+                    </div>
+                    
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>Comprehensive analytics dashboard</p>
+                    </div>
+                    
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>Dedicated customer success manager</p>
+                    </div>
+                    
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>Weekly performance reports</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="revenue-column">
+                  <h3 className="column-title">How It Works</h3>
+                  <div className="revenue-features">
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>No upfront costs or monthly fees</p>
+                    </div>
+                    
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>Revenue share on new ad impressions only</p>
+                    </div>
+                    
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>Transparent attribution of all revenue</p>
+                    </div>
+                    
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>30-day trial with full analytics access</p>
+                    </div>
+                    
+                    <div className="revenue-feature">
+                      <div className="feature-icon">✓</div>
+                      <p>Cancel anytime with no penalties</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="revenue-cta">
+                <button className="calculate-revenue-btn">
+                  Calculate Your Revenue Uplift
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {/* Footer */}
+          <footer className="footer-cta-section white-section">
+            <div className="footer-cta-container">
+              <h2 className="footer-cta-title">Let's Keep Readers Reading</h2>
+              <p className="footer-cta-subtitle">
+                Join leading publishers who are using Gist Answers to transform their content strategy, increase engagement, and drive sustainable revenue growth.
+              </p>
+              
+              <div className="footer-url-input-container">
+                <div className="footer-url-input-wrapper">
+                  <div className="footer-url-input-inner">
+                    <input
+                      type="url"
+                      value={targetUrl}
+                      onChange={(e) => setTargetUrl(e.target.value)}
+                      placeholder="Enter your URL to preview on your site..."
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !loading && targetUrl.trim()) {
+                          handleUrlSubmit(targetUrl);
+                        }
+                      }}
+                      className="footer-url-input"
+                      disabled={loading}
+                    />
+                    <button
+                      onClick={() => handleUrlSubmit(targetUrl)}
+                      disabled={loading || !targetUrl.trim()}
+                      className="footer-generate-btn"
+                    >
+                      {loading ? 'Generating...' : 'Generate'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+
             </div>
           </footer>
         </div>
@@ -1059,65 +1238,18 @@ export default function Home() {
           color: #333 !important;
         }
 
-        /* Why Choose Section */
-        .why-choose-section {
-          padding: 5rem 0;
-          background: radial-gradient(ellipse at center, #3742fa 0%, #0c1426 100%);
+        /* Publishers Band */
+        .publishers-band {
+          background: transparent;
+          padding: 1rem 2rem 2rem;
+          margin-bottom: 0;
+          animation: fadeInUp 1s ease-out 0.8s both;
         }
 
-        .container {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 2rem;
-        }
-
-        .section-title {
-          font-size: 2.5rem;
-          font-weight: 700;
-          color: white;
-          text-align: center;
-          margin-bottom: 3rem;
-        }
-
-        .benefits-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-          gap: 2rem;
-          margin-bottom: 2rem;
-        }
-
-        .benefit-card {
-          background: rgba(255, 255, 255, 0.08);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          border-radius: 12px;
-          padding: 2rem;
-          text-align: center;
-          backdrop-filter: blur(10px);
-          transition: all 0.3s ease;
-        }
-
-        .benefit-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 8px 30px rgba(255, 107, 53, 0.2);
-        }
-
-        .benefit-icon {
-          font-size: 3rem;
-          margin-bottom: 1rem;
-          display: block;
-        }
-
-        .benefit-card h3 {
-          color: white;
-          font-size: 1.3rem;
-          font-weight: 600;
-          margin-bottom: 1rem;
-        }
-
-        .benefit-card p {
-          color: rgba(255, 255, 255, 0.8);
-          font-size: 1rem;
-          line-height: 1.6;
+        .publishers-band.white-section {
+          background: white !important;
+          padding: 4rem 2rem 5rem;
+          margin-bottom: 0;
         }
 
         @keyframes fadeInUp {
@@ -1125,185 +1257,147 @@ export default function Home() {
           to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Make It Yours Section */
-        .make-it-yours-section {
-          padding: 5rem 0;
-          background: white;
-          color: #333;
-        }
-
-        .make-it-yours-section .section-title {
-          color: #333;
-        }
-
-        .customization-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 2rem;
-          text-align: center;
-        }
-
-        .customization-item h3 {
-          font-size: 1.4rem;
-          font-weight: 600;
-          margin-bottom: 1rem;
-          color: #333;
-        }
-
-        .customization-item p {
-          font-size: 1rem;
-          line-height: 1.6;
-          color: #666;
-        }
-
-        /* Final CTA Section */
-        .final-cta-section {
-          padding: 5rem 0;
-          background: radial-gradient(ellipse at center, #3742fa 0%, #0c1426 100%);
-          text-align: center;
-        }
-
-        .cta-title {
-          font-size: 2.5rem;
-          font-weight: 700;
-          color: white;
-          margin-bottom: 2rem;
-        }
-
-        .cta-url-input-container {
-          max-width: 600px;
+        .publishers-content {
+          max-width: 1200px;
           margin: 0 auto;
+          text-align: center;
+          position: relative;
         }
 
-        .cta-url-input-wrapper {
-          background: rgba(255, 255, 255, 0.1);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 12px;
-          padding: 0.5rem;
-          backdrop-filter: blur(10px);
+        .publishers-image {
+          max-width: 100%;
+          height: auto;
+          margin: 2rem 0;
+          display: block;
+          transition: all 0.3s ease;
         }
 
-        .cta-url-input-inner {
+        .publishers-image:hover {
+          transform: scale(1.02);
+          filter: brightness(1.1);
+        }
+
+        /* Testimonials Section */
+        .testimonials-section {
+          background: transparent;
+          padding: 1.5rem 2rem 5rem;
+          margin-bottom: 0;
+          opacity: 0;
+          transform: translateY(40px);
+          animation: fadeInUp 1s ease-out 2s both;
+        }
+
+        .testimonials-container {
+          max-width: 1000px;
+          margin: 0 auto;
           display: flex;
-          gap: 0.5rem;
+          justify-content: center;
         }
 
-        .cta-url-input {
-          flex: 1;
+        .testimonial-box {
           background: transparent;
           border: none;
-          padding: 1rem 1.5rem;
-          color: white;
-          font-size: 1rem;
-          outline: none;
-          font-family: 'Inter', sans-serif;
-        }
-
-        .cta-url-input::placeholder {
-          color: rgba(255, 255, 255, 0.6);
-        }
-
-        .cta-generate-btn {
-          background: linear-gradient(135deg, #ff6b35, #f7931e);
-          color: white;
-          border: none;
-          padding: 1rem 2rem;
-          border-radius: 8px;
-          font-weight: 600;
-          cursor: pointer;
+          padding: 0;
           transition: all 0.3s ease;
+          position: relative;
+          width: 100%;
+          text-align: center;
+        }
+
+        .testimonial-content {
+          position: relative;
+        }
+
+        .testimonial-content::before,
+        .testimonial-content::after {
+          content: '';
+          position: absolute;
+          font-size: 12rem;
+          font-weight: 100;
+          color: white;
+          font-family: 'Helvetica Neue', 'Arial', sans-serif;
+          line-height: 1;
+          pointer-events: none;
+        }
+
+        .testimonial-content::before {
+          content: '"';
+          top: -3rem;
+          left: -3rem;
+        }
+
+        .testimonial-content::after {
+          content: '"';
+          bottom: -5rem;
+          right: -3rem;
+        }
+
+        .testimonial-content p {
+          font-size: 1.5rem;
+          line-height: 1.5;
+          color: rgba(255, 255, 255, 0.95);
           font-family: 'Inter', sans-serif;
+          margin-bottom: 1rem;
+          font-style: italic;
+          font-weight: 300;
+          max-width: 100%;
+        }
+
+        .testimonial-author {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+        }
+
+        .testimonial-author strong {
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: white;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .testimonial-author span {
           font-size: 1rem;
-          white-space: nowrap;
+          color: rgba(255, 255, 255, 0.7);
+          font-family: 'Inter', sans-serif;
         }
 
-        .cta-generate-btn:hover:not(:disabled) {
-          transform: translateY(-1px);
-          box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
-        }
-
-        .cta-generate-btn:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-        }
-
-        /* Mobile Responsiveness */
         @media (max-width: 768px) {
-          .section-title {
-            font-size: 2rem;
-          }
-
-          .benefits-grid {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-          }
-
-          .benefit-card {
-            padding: 1.5rem;
-          }
-
-          .customization-grid {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-          }
-
-          .cta-title {
-            font-size: 2rem;
-          }
-
-          .cta-url-input-inner {
-            flex-direction: column;
-            gap: 1rem;
-          }
-
-          .cta-generate-btn {
-            width: 100%;
-          }
-
-          .container {
+          .testimonials-container {
+            max-width: 100%;
             padding: 0 1rem;
           }
-        }
-
-        /* Legal Footer */
-        .legal-footer {
-          background: rgba(0, 0, 0, 0.2);
-          padding: 1rem 2rem;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          color: rgba(255, 255, 255, 0.7);
-          font-size: 0.9rem;
-        }
-
-        .legal-links {
-          display: flex;
-          gap: 2rem;
-        }
-
-        .legal-links button {
-          background: none;
-          border: none;
-          color: rgba(255, 255, 255, 0.7);
-          cursor: pointer;
-          text-decoration: underline;
-          font-size: 0.9rem;
-          font-family: 'Inter', sans-serif;
-        }
-
-        .legal-links button:hover {
-          color: white;
-        }
-
-        @media (max-width: 768px) {
-          .legal-footer {
-            flex-direction: column;
-            gap: 1rem;
-            text-align: center;
+          
+          .testimonials-section {
+            padding: 2rem 1rem 4rem;
           }
-
-          .legal-links {
-            gap: 1rem;
+          
+          .testimonial-content p {
+            font-size: 1.2rem;
+            line-height: 1.4;
+          }
+          
+          .testimonial-author strong {
+            font-size: 1rem;
+          }
+          
+          .testimonial-author span {
+            font-size: 0.9rem;
+          }
+          
+          .testimonial-content::before,
+          .testimonial-content::after {
+            font-size: 8rem;
+          }
+          
+          .testimonial-content::before {
+            top: -2rem;
+            left: -1.5rem;
+          }
+          
+          .testimonial-content::after {
+            bottom: -3rem;
+            right: -1.5rem;
           }
         }
 
