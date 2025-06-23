@@ -327,7 +327,7 @@ export default function Home() {
                     console.error('Image failed to load:', e.target.src);
                     e.target.src = '/publishers-logos.png'; // Fallback to original
                   }} />
-                </div>
+            </div>
             </div>
               <div className="hero-content">
                 <h1 className="hero-title">
@@ -381,7 +381,7 @@ export default function Home() {
                   </div>
                   <h3>Accurate, trusted answers</h3>
                   <p>Built on licensed publishers & your own content- always cited, never scraped.</p>
-                  </div>
+                </div>
                   
                 <div className="benefit-card">
                   <div className="benefit-icon">
@@ -392,7 +392,7 @@ export default function Home() {
                   <h3>Privacy-first by design</h3>
                   <p>Zero cookies, zero fingerprinting; GDPR & CCPA-ready out of the box.</p>
                 </div>
-                  
+              
                 <div className="benefit-card">
                   <div className="benefit-icon">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -436,7 +436,7 @@ export default function Home() {
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
-                  </div>
+                </div>
                   <h3>Optimize any goal</h3>
                   <p>Increase engagement, sales, growth, monetization, or whatever matters to you.</p>
                 </div>
@@ -866,8 +866,8 @@ export default function Home() {
           align-items: center;
           position: relative;
           z-index: 1;
-          padding: 2rem;
-          min-height: 600px;
+          padding: 1rem 2rem 2rem 2rem;
+          min-height: 550px;
         }
 
         .hero-video {
@@ -893,6 +893,8 @@ export default function Home() {
           text-align: center;
           width: 100%;
           min-height: 80px;
+          position: relative;
+          z-index: 10;
         }
 
         .publisher-logos img {
@@ -920,7 +922,7 @@ export default function Home() {
 
         .hero-title {
           font-size: 3.5rem;
-          font-weight: 700;
+          font-weight: 600;
           line-height: 1.1;
           margin-bottom: 1.5rem;
           color: #1a1a1a;
