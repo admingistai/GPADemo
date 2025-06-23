@@ -21,7 +21,6 @@ export default function Home() {
     goDeeper: false,
     ethicalAds: false,
     customVoices: false,
-    remixing: true,
     myDaily: false,
     augmentedSharing: false,
     customAgents: false
@@ -138,8 +137,7 @@ export default function Home() {
         // Convert feature selection to widget configuration
         const widgetConfig = {
           ask: selectedFeatures.ask,
-          gist: selectedFeatures.theGist,
-          remix: selectedFeatures.remixing
+          gist: selectedFeatures.theGist
         };
         
         // Directly open the website with widget in a new tab
@@ -234,18 +232,7 @@ export default function Home() {
                 <p className="feature-compact-description">One-sentence AI summary of any story</p>
               </div>
 
-              <div className="feature-compact-card">
-                <div className="feature-compact-header">
-                  <input
-                    type="checkbox"
-                    id="remixing"
-                    checked={selectedFeatures.remixing}
-                    onChange={(e) => setSelectedFeatures(prev => ({...prev, remixing: e.target.checked}))}
-                  />
-                  <label htmlFor="remixing" className="feature-compact-name">Multi-Format Sharing</label>
-                </div>
-                <p className="feature-compact-description">Auto-converts articles into share-ready cards and threads</p>
-              </div>
+
               
 
                 
@@ -396,7 +383,7 @@ export default function Home() {
                 
                 <div className="customization-item stagger-animate">
                   <h3>Choose your tools and features</h3>
-                  <p>Enable or disable specific features like Ask Anything™, Summarize, Remixing, and Go Deeper based on your needs.</p>
+                  <p>Enable or disable specific features like Ask Anything™, Summarize, and Go Deeper based on your needs.</p>
                 </div>
                 
                 <div className="customization-item stagger-animate">

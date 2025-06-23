@@ -76,8 +76,7 @@
     const urlConfig = parseConfigFromUrl();
     const TOOLS_CONFIG = {  
         ask: true,      // Always enabled - core functionality
-        gist: urlConfig?.gist !== undefined ? urlConfig.gist : true,     // Summary tool
-        remix: urlConfig?.remix !== undefined ? urlConfig.remix : true     // Content remix tool  
+        gist: urlConfig?.gist !== undefined ? urlConfig.gist : true     // Summary tool
     };
     
     console.log('[GistWidget] Applied tools configuration:', TOOLS_CONFIG);
@@ -3492,15 +3491,14 @@
             const toolboxTabsContainer = shadowRoot.getElementById('gist-toolbox-tabs');
             const toolLabels = {
                 ask: 'Explore',
-                gist: 'Summarize', 
-                remix: 'Listen'
+                gist: 'Summarize'
             };
             
             // Clear existing tabs
             toolboxTabsContainer.innerHTML = '';
             
             // Get enabled tools in the desired order
-            const toolOrder = ['ask', 'gist', 'remix'];
+            const toolOrder = ['ask', 'gist'];
             const enabledTools = toolOrder.filter(tool => TOOLS_CONFIG[tool]);
             
             // Generate tabs for enabled tools
@@ -3737,23 +3735,7 @@
                     // Generate summary automatically
                     generateGist();
                     break;
-                case 'remix':
-                    // Clear Ask-specific answer flag when switching away from Ask
-                    hasAskAnswer = false;
-                    // Check if TTS is currently active or generating
-                    if (ttsState.isPlaying || ttsState.isPaused || ttsState.isGenerating) {
-                        // Keep current TTS interface if audio is active or generating
-                        // But ensure the remix interface exists in the DOM
-                        const existingInterface = answerContent.querySelector('.gist-remix-interface');
-                        if (!existingInterface) {
-                            showRemixInterface();
-                        }
-                        return;
-                    } else {
-                        // Show remix interface with TTS functionality
-                        showRemixInterface();
-                    }
-                    break;
+
 
                 default:
                     showPlaceholderForTool('ask');
@@ -3774,9 +3756,7 @@
                 case 'gist':
                     placeholderText = 'Get a summary of this page. Feature coming soon!';
                     break;
-                case 'remix':
-                    placeholderText = '';
-                    break;
+
 
                 default:
                     placeholderText = 'Select a tool to get started!';
@@ -4741,8 +4721,7 @@ Instructions:
             const mockSettings = {
                 tools: {
                     ask: true,
-                    gist: TOOLS_CONFIG.gist,
-                    remix: TOOLS_CONFIG.remix
+                    gist: TOOLS_CONFIG.gist
                 },
                 appearance: {
                     selectedColor: '#6366f1'
@@ -4780,11 +4759,7 @@ Instructions:
                             </button>
                         </div>
                         
-                        <div class="gist-settings-option">
-                            <span class="gist-settings-option-label">Remix - Content Transformation</span>
-                            <button class="gist-settings-toggle ${mockSettings.tools.remix ? 'enabled' : ''}" data-tool="remix">
-                            </button>
-                        </div>
+
                         
 
                     </div>
@@ -4881,239 +4856,11 @@ Instructions:
             answerContainer.classList.add('visible');
         }
         
-        // Remix functionality
-        let remixSelections = {
-            tone: null,
-            style: null,
-            format: null
-        };
-        
-        function showRemixInterface() {
-            let html = `
-                <div class="gist-remix-interface gist-content-entering">
-                    <div class="gist-tts-section">
-                        <div class="gist-tts-card">
-                            <div class="gist-tts-icon-large">🎧</div>
-                            <h3>Listen to this page</h3>
-                            
-                            <div class="gist-voice-row">
-                                <select class="gist-voice-select-modern" id="voice-select">
-                                    ${AVAILABLE_VOICES.map(voice => 
-                                        `<option value="${voice.id}" ${voice.id === ttsState.selectedVoiceId ? 'selected' : ''}>
-                                            ${voice.name}
-                                        </option>`
-                                    ).join('')}
-                                </select>
-                                <button class="gist-voice-test" id="voice-preview" title="Test voice">
-                                    ▶️
-                                </button>
-                    </div>
-                            
-                            <button class="gist-play-button" id="tts-button">
-                                <div class="gist-play-icon">▶️</div>
-                                <span>Start Reading</span>
-                            </button>
-                            
-                            <div class="gist-audio-controls" id="tts-controls" style="display: none;">
-                                <button class="gist-control-btn" id="tts-pause">⏸️</button>
-                                <button class="gist-control-btn" id="tts-resume">▶️</button>
-                                <button class="gist-control-btn" id="tts-stop">⏹️</button>
-                        </div>
-                
-                            <div class="gist-tts-status" id="tts-status"></div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            answerContent.innerHTML = html;
-            hasAnswer = false;
-            
-            // Add event listeners for TTS controls
-            const ttsButton = answerContent.querySelector('#tts-button');
-            const ttsControls = answerContent.querySelector('#tts-controls');
-            const ttsStatus = answerContent.querySelector('#tts-status');
-            const voiceSelect = answerContent.querySelector('#voice-select');
-            const voicePreview = answerContent.querySelector('#voice-preview');
-            const pauseBtn = answerContent.querySelector('#tts-pause');
-            const resumeBtn = answerContent.querySelector('#tts-resume');
-            const stopBtn = answerContent.querySelector('#tts-stop');
-            
-            // Voice selection handler
-            voiceSelect.addEventListener('change', (e) => {
-                ttsState.selectedVoiceId = e.target.value;
-                const selectedVoice = AVAILABLE_VOICES.find(voice => voice.id === e.target.value);
-                console.log(`Voice changed to: ${selectedVoice.name}`);
-                
-                // If currently playing, inform user they need to restart for voice change
-                if (ttsState.isPlaying) {
-                    ttsStatus.textContent = `Voice changed to ${selectedVoice.name}. Stop and restart to apply.`;
-                }
-            });
-            
-            // Voice preview handler
-            voicePreview.addEventListener('click', async () => {
-                if (voicePreview.disabled) return;
-                
-                const selectedVoice = AVAILABLE_VOICES.find(voice => voice.id === ttsState.selectedVoiceId);
-                const sampleText = `Hello, I'm ${selectedVoice.name}. This is how I sound when reading your content.`;
-                
-                try {
-                    voicePreview.disabled = true;
-                    voicePreview.textContent = '⏳';
-                    ttsStatus.textContent = `Generating ${selectedVoice.name} voice preview...`;
-                    
-                    const audioUrl = await generateSpeechWithElevenLabs(sampleText);
-                    const previewAudio = new Audio(audioUrl);
-                    
-                    previewAudio.play();
-                    voicePreview.textContent = '▶️';
-                    ttsStatus.textContent = `Playing ${selectedVoice.name} preview...`;
-                    
-                    previewAudio.addEventListener('ended', () => {
-                        voicePreview.disabled = false;
-                        voicePreview.textContent = '🔊';
-                        ttsStatus.textContent = '';
-                    });
-                    
-                    previewAudio.addEventListener('error', () => {
-                        voicePreview.disabled = false;
-                        voicePreview.textContent = '🔊';
-                        ttsStatus.textContent = 'Preview failed';
-                    });
-                    
-                } catch (error) {
-                    voicePreview.disabled = false;
-                    voicePreview.textContent = '🔊';
-                    ttsStatus.textContent = 'Preview failed';
-                    console.error('Voice preview failed:', error);
-                }
-            });
-            
-            ttsButton.addEventListener('click', () => {
-                console.log('TTS button clicked!');
-                console.log('Button:', ttsButton);
-                console.log('Controls:', ttsControls);
-                console.log('Status:', ttsStatus);
-                startTextToSpeech(ttsButton, ttsControls, ttsStatus);
-            });
-            
-            pauseBtn.addEventListener('click', () => {
-                pauseTextToSpeech();
-            });
-            
-            resumeBtn.addEventListener('click', () => {
-                resumeTextToSpeech();
-            });
-            
-            stopBtn.addEventListener('click', () => {
-                stopTextToSpeech(ttsButton, ttsControls, ttsStatus);
-            });
-            
-            // Trigger animation
-            setTimeout(() => {
-                const elements = answerContent.querySelectorAll('.gist-content-entering');
-                elements.forEach(el => {
-                    el.classList.remove('gist-content-entering');
-                    el.classList.add('gist-content-entered');
-                });
-            }, 50);
-        }
+
         
 
         
-        async function generateRemix() {
-            try {
-                // Get custom prompt
-                const customPrompt = answerContent.querySelector('#remix-prompt').value.trim();
-                
-                // Get page context
-                const context = extractPageContext();
-                if (!context || !context.content || context.content.length < 50) {
-                    showRemixError('No article content found to remix.');
-                    return;
-                }
-                
-                // Generate text remix only
-                    await generateRemixText(customPrompt, context);
-                
-            } catch (error) {
-                log('error', 'Remix generation failed', { error: error.message });
-                showRemixError(error.message);
-                
-                // Emit error event
-                window.dispatchEvent(new CustomEvent('gist-remix-error', {
-                    detail: {
-                        error: error.message,
-                        type: 'remix_generation'
-                    }
-                }));
-            }
-        }
-        
-        async function generateRemixText(customPrompt, context) {
-            // Build remix instructions
-            let remixInstructions = 'Transform this article with the following specifications:\n\n';
-            
-            if (customPrompt) {
-                remixInstructions += `Custom requirements: ${customPrompt}\n\n`;
-            }
-            
-            if (remixSelections.tone) {
-                const toneMap = {
-                    'gist': 'concise and summarized',
-                    'funny': 'humorous and entertaining',
-                    'professional': 'formal and business-oriented'
-                };
-                remixInstructions += `Tone: Make it ${toneMap[remixSelections.tone]}\n`;
-            }
-            
-            if (remixSelections.style) {
-                const styleMap = {
-                    'ugc': 'user-generated content style (casual, personal)',
-                    'newscast': 'news broadcast style (formal, structured)',
-                    'text-focused': 'text-heavy format with detailed explanations',
-                    'narrative': 'storytelling format with engaging narrative flow'
-                };
-                remixInstructions += `Style: Use ${styleMap[remixSelections.style]}\n`;
-            }
-            
-            if (remixSelections.format) {
-                const formatMap = {
-                    'video': 'video script format with scene descriptions',
-                    'carousel': 'carousel post format with multiple slides',
-                    'pdf': 'structured document format suitable for PDF',
-                    'audio': 'audio script format for podcast or narration'
-                };
-                remixInstructions += `Format: Structure as ${formatMap[remixSelections.format]}\n`;
-            }
-            
-            const fullPrompt = `${remixInstructions}\n\nOriginal Article Title: ${context.title}\n\nOriginal Article Content:\n${context.content}\n\nPlease provide a creative remix that follows the specified requirements while maintaining the core information from the original article.`;
-            
-            // Show loading state
-            showLoading();
-            
-            // Use Gist API to generate remix
-            const startTime = Date.now();
-            const response = await createChatCompletionForGist(fullPrompt);
-            const responseTime = Date.now() - startTime;
-            
-            // Show the remix result
-            showRemixResult(response.response);
-            
-            // Emit analytics event
-            window.dispatchEvent(new CustomEvent('openai-remix-generated', {
-                detail: {
-                    title: context.title,
-                    customPrompt: customPrompt,
-                    selections: remixSelections,
-                    result: response.response,
-                    responseTime: responseTime,
-                    usage: response.usage,
-                    type: 'text'
-                }
-            }));
-        }
+
         
 
         
@@ -5121,535 +4868,19 @@ Instructions:
         
 
         
-        function showRemixResult(result) {
-            const mockAttributions = generateMockAttributions();
-            
-            let html = `
-                <div class="gist-answer-text gist-content-entering">
-                    ${result.replace(/\n/g, '<br>')}
-                </div>
-            `;
-            
-            // Add attribution section (same as gist)
-            html += `
-                <div class="gist-attributions gist-content-entering gist-stagger-2">
-                    <div class="gist-attributions-title">Sources</div>
-                    <div class="gist-attribution-bar">
-            `;
-            
-            // Add attribution segments
-            for (const attribution of mockAttributions) {
-                const width = attribution.percentage * 100;
-                html += `
-                    <div class="gist-attribution-segment" 
-                         style="width: ${width}%; background-color: ${attribution.color};"
-                         title="${attribution.source}: ${(attribution.percentage * 100).toFixed(1)}%">
-                </div>
-            `;
-        }
 
-            html += `
-                    </div>
-                    <div class="gist-attribution-sources">
-            `;
-            
-            // Add source labels
-            for (const attribution of mockAttributions) {
-                html += `
-                    <div class="gist-attribution-source">
-                        <div class="gist-attribution-dot" style="background-color: ${attribution.color};"></div>
-                        <span>${attribution.source} (${(attribution.percentage * 100).toFixed(1)}%)</span>
-                </div>
-            `;
-        }
-
-            html += `
-                    </div>
-                    <div class="gist-source-previews">
-            `;
-            
-            // Add source preview cards
-            for (const attribution of mockAttributions) {
-                const formatDate = (date) => {
-                    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                    return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-                };
-                
-                html += `
-                    <div class="gist-source-preview" style="--source-color: ${attribution.color};">
-                        <div class="gist-source-preview-image">
-                            <div class="gist-source-preview-icon">${attribution.icon}</div>
-                        </div>
-                        <div class="gist-source-preview-content">
-                            <div class="gist-source-preview-header">
-                                <div class="gist-source-preview-source">${attribution.source}</div>
-                                <div class="gist-source-preview-date">${formatDate(attribution.date)}</div>
-                            </div>
-                            <div class="gist-source-preview-title">${attribution.title}</div>
-                            <div class="gist-source-preview-description">${attribution.description}</div>
-                        </div>
-                        <div class="gist-source-preview-percentage">${(attribution.percentage * 100).toFixed(0)}%</div>
-                    </div>
-                `;
-            }
-            
-            html += `
-                    </div>
-                </div>
-            `;
-            
-            answerContent.innerHTML = html;
-            hasAnswer = true;
-            
-            // Trigger animations
-            setTimeout(() => {
-                const elements = answerContent.querySelectorAll('.gist-content-entering');
-                elements.forEach(el => {
-                    el.classList.remove('gist-content-entering');
-                    el.classList.add('gist-content-entered');
-                });
-                
-                // Apply text reveal animation to remix result text
-                const answerText = answerContent.querySelector('.gist-answer-text');
-                if (answerText) {
-                    applyTextRevealAnimation(answerText);
-                }
-            }, 50);
-        }
-        
-        function showRemixError(errorMessage) {
-            // Build HTML with error content (ads will be shown externally)
-            let html = `
-                <div class="gist-error-content gist-content-entering">
-                    <div class="gist-error-title">Unable to Generate Remix</div>
-                    <div class="gist-error-message">${errorMessage}</div>
-                </div>
-            `;
-            
-            answerContent.innerHTML = html;
-            
-            // Trigger animation
-            setTimeout(() => {
-                const elements = answerContent.querySelectorAll('.gist-content-entering');
-                elements.forEach(el => {
-                    el.classList.remove('gist-content-entering');
-                    el.classList.add('gist-content-entered');
-                });
-                
-                // Show external ads with delay
-                setTimeout(() => {
-                    showExternalAds();
-                }, 200);
-            }, 50);
-        }
-        
-        // Text-to-Speech functionality
-        let ttsState = {
-            isPlaying: false,
-            isPaused: false,
-            isGenerating: false,
-            currentAudio: null,
-            currentWordIndex: 0,
-            words: [],
-            highlights: [],
-            wordQueue: [], // Pre-built queue of word locations
-            currentQueueIndex: 0, // Current position in the queue
-            selectedVoiceId: 'EXAVITQu4vr4xnSDxMaL' // Default to Bella
-        };
-
-        // Available ElevenLabs voices
-        const AVAILABLE_VOICES = [
-            { id: 'EXAVITQu4vr4xnSDxMaL', name: 'Bella', description: 'Warm, friendly female voice', gender: 'female' },
-            { id: 'pNInz6obpgDQGcFmaJgB', name: 'Adam', description: 'Deep, authoritative male voice', gender: 'male' },
-            { id: 'TxGEqnHWrfWFTfGW9XjX', name: 'Josh', description: 'Young, energetic male voice', gender: 'male' },
-            { id: 'VR6AewLTigWG4xSOukaG', name: 'Arnold', description: 'Mature, professional male voice', gender: 'male' },
-            { id: 'ErXwobaYiN019PkySvjV', name: 'Antoni', description: 'Smooth, sophisticated male voice', gender: 'male' },
-            { id: 'MF3mGyEYCl7XYWbV9V6O', name: 'Elli', description: 'Clear, articulate female voice', gender: 'female' },
-            { id: 'AZnzlk1XvdvUeBnXmlld', name: 'Domi', description: 'Confident, strong female voice', gender: 'female' },
-            { id: 'CYw3kZ02Hs0563khs1Fj', name: 'Dave', description: 'Casual, conversational male voice', gender: 'male' }
-        ];
-        
-        async function startTextToSpeech(button, controls, status) {
-            console.log('startTextToSpeech called with:', { button, controls, status });
-            try {
-                // Set generating state
-                ttsState.isGenerating = true;
-                console.log('TTS state set to generating');
-                
-                // Update UI
-                button.disabled = true;
-                const buttonSpan = button.querySelector('span');
-                console.log('Button span found:', buttonSpan);
-                if (buttonSpan) {
-                    buttonSpan.textContent = 'Generating...';
-                }
-                status.textContent = 'Extracting webpage content...';
-                console.log('UI updated, extracting page context...');
-                
-                // Extract webpage content specifically optimized for TTS
-                let textToRead;
-                try {
-                    textToRead = extractContentForTTS();
-                    console.log('Successfully extracted content for TTS:', textToRead.length, 'characters');
-            } catch (error) {
-                    console.warn('TTS content extraction failed, falling back to basic extraction:', error.message);
-                    // Fallback to basic extraction
-                    const context = extractPageContext();
-                    if (!context || !context.content || context.content.length < 50) {
-                        throw new Error('No readable content found on this page');
-                    }
-                    textToRead = context.content;
-                }
-                
-                // Clean and prepare text for TTS
-                textToRead = prepareTextForTTS(textToRead);
-                if (textToRead.length > 4000) {
-                    // Truncate if too long
-                    textToRead = textToRead.substring(0, 4000) + '...';
-                }
-                
-                const selectedVoice = AVAILABLE_VOICES.find(voice => voice.id === ttsState.selectedVoiceId);
-                status.textContent = `Generating speech with ${selectedVoice.name} voice...`;
-                
-                // Generate speech with ElevenLabs
-                const audioUrl = await generateSpeechWithElevenLabs(textToRead);
-                
-
-                
-                // Create audio element
-                ttsState.currentAudio = new Audio(audioUrl);
-                
-                // Set up audio event listeners
-                setupAudioEventListeners(button, controls, status);
-                
-                // Start playback
-                await ttsState.currentAudio.play();
-                ttsState.isPlaying = true;
-                ttsState.isPaused = false;
-                ttsState.isGenerating = false; // Generation complete
-                
-                // Update UI
-                button.style.display = 'none';
-                controls.style.display = 'flex';
-                status.textContent = `Reading with ${selectedVoice.name} voice...`;
-                
-
-                
-            } catch (error) {
-                log('error', 'TTS generation failed', { error: error.message });
-                
-                // Reset state
-                ttsState.isGenerating = false;
-                
-                // Reset UI
-                button.disabled = false;
-                button.querySelector('span').textContent = 'Start Reading';
-                status.textContent = `Error: ${error.message}`;
-                
-                // Hide controls
-                controls.style.display = 'none';
-            }
-        }
-        
-        function extractContentForTTS() {
-            console.log('Extracting content specifically for TTS...');
-            
-            // Step 1: Try to find the main article content using priority selectors
-            const articleSelectors = [
-                'article',
-                '[role="main"] article',
-                'main article',
-                '.article-content',
-                '.post-content',
-                '.entry-content',
-                '.article-body',
-                '.story-body',
-                '.content-body',
-                '.article-text',
-                '.post-body',
-                '.text-content',
-                'main .content',
-                '[data-article-body]',
-                '.article',
-                '#article',
-                '.post',
-                'main',
-                '[role="main"]'
-            ];
-            
-            let contentElement = null;
-            for (const selector of articleSelectors) {
-                const elements = document.querySelectorAll(selector);
-                if (elements.length > 0) {
-                    // Pick the element with the most text content
-                    contentElement = Array.from(elements).reduce((prev, current) => {
-                        const prevText = prev.textContent || '';
-                        const currentText = current.textContent || '';
-                        return currentText.length > prevText.length ? current : prev;
-                    });
-                    if (contentElement && contentElement.textContent.trim().length > 200) {
-                        console.log('Found main content using selector:', selector);
-                        break;
-                    }
-                }
-            }
-            
-            // Step 2: If no main content found, fall back to body but with aggressive filtering
-            if (!contentElement || contentElement.textContent.trim().length < 200) {
-                console.log('No specific article content found, falling back to body with filtering');
-                contentElement = document.body;
-            }
-            
-            if (!contentElement) {
-                throw new Error('No readable content found on this page');
-            }
-            
-            // Step 3: Clone the element to avoid modifying the original
-            const clone = contentElement.cloneNode(true);
-            
-            // Step 4: Remove unwanted elements (navigation, ads, widgets, etc.)
-            const unwantedSelectors = [
-                // Scripts and styles
-                'script', 'style', 'noscript',
-                
-                // Navigation and menus
-                'nav', 'header', 'footer', '.nav', '.navigation', '.menu', '.navbar',
-                '.header', '.footer', '.site-header', '.site-footer', '.page-header',
-                '.main-nav', '.primary-nav', '.secondary-nav', '.breadcrumb', '.breadcrumbs',
-                
-                // Sidebars and asides
-                'aside', '.sidebar', '.aside', '.widget', '.widgets',
-                
-                // Ads and promotional content
-                '.ad', '.ads', '.advertisement', '.banner', '.promo', '.promotion',
-                '.sponsored', '.affiliate', '.marketing', '[data-ad]', '.ad-container',
-                '.google-ad', '.adsense', '.adsbygoogle',
-                
-                // Social and sharing
-                '.social', '.share', '.sharing', '.social-share', '.social-media',
-                '.facebook', '.twitter', '.instagram', '.linkedin',
-                
-                // Comments and related
-                '.comments', '.comment', '.disqus', '.livefyre', '#comments',
-                '.related', '.related-posts', '.recommended', '.more-stories',
-                
-                // Forms and inputs (unless in article)
-                'form:not(article form)', 'input:not(article input)', 'button:not(article button)',
-                
-                // Meta information that's not content
-                '.byline', '.author-info', '.publish-date', '.tags', '.categories',
-                '.meta', '.metadata', '.article-meta:not(.article-meta p)',
-                
-                // Our own widget
-                '#gist-widget-container', '.gist-widget',
-                
-                // Common CMS elements
-                '.wp-caption-text', '.caption', '.image-caption',
-                '.newsletter', '.subscription', '.subscribe',
-                '.popup', '.modal', '.overlay',
-                
-                // Cookie and privacy notices
-                '.cookie', '.gdpr', '.privacy-notice',
-                
-                // Video players and embeds (keep the content but remove controls)
-                '.video-controls', '.player-controls'
-            ];
-            
-            // Remove unwanted elements
-            unwantedSelectors.forEach(selector => {
-                const elements = clone.querySelectorAll(selector);
-                elements.forEach(el => el.remove());
-            });
-            
-            // Step 5: Remove elements with low text-to-HTML ratio (likely navigational)
-            const allElements = clone.querySelectorAll('*');
-            allElements.forEach(el => {
-                const text = el.textContent || '';
-                const html = el.innerHTML || '';
-                const textLength = text.trim().length;
-                const htmlLength = html.length;
-                
-                // If element has very little text compared to HTML, likely navigational
-                if (htmlLength > 100 && textLength < htmlLength * 0.1 && textLength < 50) {
-                    // But don't remove if it contains article content indicators
-                    const articleIndicators = ['paragraph', 'sentence', 'story', 'article'];
-                    const hasArticleIndicator = articleIndicators.some(indicator => 
-                        el.className.toLowerCase().includes(indicator) ||
-                        el.tagName.toLowerCase() === 'p'
-                    );
-                    
-                    if (!hasArticleIndicator) {
-                        el.remove();
-                    }
-                }
-            });
-            
-            // Step 6: Extract and prioritize meaningful text content
-            let textContent = '';
-            
-            // Try to find paragraphs first (main article content)
-            const paragraphs = clone.querySelectorAll('p, .paragraph, .text-block');
-            if (paragraphs.length > 0) {
-                const paragraphTexts = Array.from(paragraphs)
-                    .map(p => p.textContent.trim())
-                    .filter(text => text.length > 20); // Filter out short, likely non-content paragraphs
-                
-                if (paragraphTexts.length > 0) {
-                    textContent = paragraphTexts.join('\n\n');
-                    console.log('Extracted content from paragraphs:', paragraphTexts.length, 'paragraphs');
-                }
-            }
-            
-            // If no substantial paragraph content, fall back to all text
-            if (textContent.length < 200) {
-                textContent = clone.textContent || '';
-                console.log('Falling back to all text content');
-            }
-            
-            // Step 7: Clean up the text
-            textContent = textContent
-                // Remove multiple whitespace
-                .replace(/\s+/g, ' ')
-                // Remove excessive line breaks
-                .replace(/\n\s*\n\s*\n/g, '\n\n')
-                // Remove common navigational text patterns
-                .replace(/\b(Home|About|Contact|Privacy|Terms|Login|Sign up|Subscribe|Newsletter)\b\s*\|?\s*/gi, '')
-                // Remove "Read more" type links
-                .replace(/\b(Read more|Continue reading|Learn more|See more)\b[\s.]*$/gi, '')
-                // Remove social sharing text
-                .replace(/\b(Share on|Follow us|Like us|Tweet this)\b[^.!?]*[.!?]?/gi, '')
-                // Remove common ads text
-                .replace(/\b(Advertisement|Sponsored|Ad|Promote)\b\s*/gi, '')
-                .trim();
-            
-            // Step 8: Validate content quality
-            if (textContent.length < 100) {
-                throw new Error('Insufficient readable content found for text-to-speech');
-            }
-            
-            // Step 9: Add title if available and meaningful
-            const pageTitle = document.title?.trim();
-            if (pageTitle && !textContent.toLowerCase().includes(pageTitle.toLowerCase().substring(0, 20))) {
-                textContent = `${pageTitle}.\n\n${textContent}`;
-            }
-            
-            console.log('TTS content extraction complete:', {
-                originalLength: contentElement.textContent.length,
-                extractedLength: textContent.length,
-                reduction: Math.round((1 - textContent.length / contentElement.textContent.length) * 100) + '%'
-            });
-            
-            return textContent;
-        }
-
-        function prepareTextForTTS(content) {
-            // Remove any remaining HTML tags
-            let text = content.replace(/<[^>]*>/g, ' ');
-            
-            // Additional cleanup for TTS
-            text = text
-                // Replace multiple spaces with single space
-                .replace(/\s+/g, ' ')
-                // Remove special characters that might cause TTS issues
-                .replace(/[^\w\s.,!?;:'"()-]/g, ' ')
-                // Normalize quotes
-                .replace(/[""]/g, '"')
-                .replace(/['']/g, "'")
-                // Add pauses after sentences for better TTS flow
-                .replace(/([.!?])\s+/g, '$1 ')
-                .trim();
-            
-            return text;
-        }
-        
-        async function generateSpeechWithElevenLabs(text) {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-            
-            try {
-                const response = await fetch(`${BACKEND_BASE_URL}/api/tts`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        text: text,
-                        voice_id: ttsState.selectedVoiceId
-                    }),
-                    signal: controller.signal
-                });
-                
-                clearTimeout(timeoutId);
-                
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
-                }
-                
-                const data = await response.json();
-                
-                if (data.audioUrl) {
-                    return data.audioUrl;
-                } else {
-                    throw new Error('Invalid response format from TTS API');
-                }
-                
-            } catch (error) {
-                clearTimeout(timeoutId);
-                throw error;
-            }
-        }
-        
-        function setupAudioEventListeners(button, controls, status) {
-            ttsState.currentAudio.addEventListener('ended', () => {
-                stopTextToSpeech(button, controls, status);
-            });
-            
-            ttsState.currentAudio.addEventListener('error', (e) => {
-                log('error', 'Audio playback error', { error: e });
-                status.textContent = 'Audio playback error';
-                stopTextToSpeech(button, controls, status);
-            });
-        }
         
 
         
-        function pauseTextToSpeech() {
-            if (ttsState.currentAudio && ttsState.isPlaying) {
-                ttsState.currentAudio.pause();
-                ttsState.isPaused = true;
-                ttsState.isPlaying = false;
-            }
-        }
+
         
-        function resumeTextToSpeech() {
-            if (ttsState.currentAudio && ttsState.isPaused) {
-                ttsState.currentAudio.play();
-                ttsState.isPaused = false;
-                ttsState.isPlaying = true;
-            }
-        }
+
         
-        function stopTextToSpeech(button, controls, status) {
-            // Stop audio
-            if (ttsState.currentAudio) {
-                ttsState.currentAudio.pause();
-                ttsState.currentAudio = null;
-            }
-            
-            // Reset state
-            ttsState.isPlaying = false;
-            ttsState.isPaused = false;
-            ttsState.isGenerating = false;
-            
-            // Reset UI
-            button.style.display = 'flex';
-            button.disabled = false;
-            button.querySelector('span').textContent = 'Start Reading';
-            controls.style.display = 'none';
-            status.textContent = '';
-        }
+
+        
+
+
+
         
         // Extract page content for context
         function extractPageContext() {
@@ -6897,15 +6128,14 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                     // We need to regenerate tabs based on new config
                     const toolLabels = {
                         ask: 'Ask',
-                        gist: 'The Gist', 
-                        remix: 'Remix'
+                        gist: 'The Gist'
                     };
                     
                     // Clear existing tabs
                     toolboxTabsContainer.innerHTML = '';
                     
                     // Get enabled tools in the desired order
-                    const toolOrder = ['ask', 'gist', 'remix'];
+                    const toolOrder = ['ask', 'gist'];
                     const enabledTools = toolOrder.filter(tool => TOOLS_CONFIG[tool]);
                     
                     if (enabledTools.length === 0) {
@@ -6975,12 +6205,12 @@ Make the ad relevant to the article topic but appealing and professional. Use em
     console.group('🛠️ Gist Widget Configuration');
     console.log('Tools Configuration:');
     console.log('• TOOLS_CONFIG =', TOOLS_CONFIG);
-    console.log('• GistWidget.configureTools({ remix: false, gist: false })');
+    console.log('• GistWidget.configureTools({ gist: false })');
     console.log('• GistWidget.getToolsConfig()');
     console.log('');
     console.log('Usage Examples:');
-    console.log('• TOOLS_CONFIG.remix = false  // Disable remix tool');
-    console.log('• GistWidget.configureTools({ remix: false, gist: false })  // Disable multiple tools');
+    console.log('• TOOLS_CONFIG.gist = false  // Disable gist tool');
+    console.log('• GistWidget.configureTools({ gist: false })  // Disable gist tool');
     console.groupEnd();
     
     initWidget();
