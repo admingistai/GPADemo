@@ -88,7 +88,7 @@ export default function Home() {
   };
 
   const handleUrlSubmit = async (url) => {
-    setError(null);
+      setError(null);
     setTargetUrl(url);
     setShowFeaturePage(true);
   };
@@ -226,9 +226,9 @@ export default function Home() {
                     onChange={(e) => setSelectedFeatures(prev => ({...prev, theGist: e.target.checked}))}
                   />
                   <label htmlFor="theGist" className="feature-compact-name">Summarize</label>
-                </div>
-                <p className="feature-compact-description">One-sentence AI summary of any story</p>
               </div>
+                <p className="feature-compact-description">One-sentence AI summary of any story</p>
+            </div>
 
 
               
@@ -245,7 +245,7 @@ export default function Home() {
                   <label htmlFor="goDeeper" className="feature-compact-name">Go Deeper</label>
                 </div>
                 <p className="feature-compact-description">Expandable sidebars with related articles and media</p>
-              </div>
+                </div>
                 
 
                 
@@ -260,8 +260,8 @@ export default function Home() {
                   <label htmlFor="customVoices" className="feature-compact-name">Custom Voices</label>
                 </div>
                 <p className="feature-compact-description">Branded TTS and presenter options</p>
-              </div>
-            </div>
+                </div>
+                </div>
                 
             <div className="feature-actions">
               <button className="back-btn" onClick={() => setShowFeaturePage(false)}>
@@ -284,12 +284,12 @@ export default function Home() {
               <img src="/Gist G white no background.png" alt="Gist" className="gist-logo" onClick={() => window.open('https://about.gist.ai', '_blank')} />
               <h1 className="logo">Ask<br />Anything™</h1>
                 </div>
-                        <div className="header-right">
+            <div className="header-right">
               <span className="tagline">100% ethical, uses fully licensed sources</span>
               <div className="auth-buttons">
                 <button className="waitlist-header-btn" onClick={() => setShowLoginPage(true)}>Sign In</button>
               </div>
-            </div>
+              </div>
           </header>
 
           {/* Hero Section */}
@@ -303,7 +303,7 @@ export default function Home() {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                   allowFullScreen>
                 </iframe>
-              </div>
+            </div>
               <div className="hero-content">
                 <h1 className="hero-title">
                   Help people find what they need on your website.
@@ -320,26 +320,26 @@ export default function Home() {
                   </button>
                   <span className="hero-cta-text">or, preview it on your site:</span>
                   <div className="hero-url-input-wrapper">
-                    <input
-                      type="text"
+                  <input
+                    type="text"
                       className="hero-url-input"
                       placeholder="Enter your website URL (e.g., example.com)"
-                      value={targetUrl}
-                      onChange={(e) => setTargetUrl(e.target.value)}
+                    value={targetUrl}
+                    onChange={(e) => setTargetUrl(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && targetUrl.trim() && handleUrlSubmit(targetUrl)}
-                    />
-                    <button
+                  />
+                  <button
                       className="hero-try-btn"
                       onClick={() => targetUrl.trim() && handleUrlSubmit(targetUrl)}
                       disabled={!targetUrl.trim()}
                     >
                       <span className="gist-icon">G</span>
                       Try It
-                    </button>
-                  </div>
-                </div>
-              </div>
+                  </button>
             </div>
+              </div>
+              </div>
+                </div>
           </section>
 
 
@@ -353,19 +353,19 @@ export default function Home() {
                   <div className="benefit-icon">🎯</div>
                   <h3>Stops readers from leaving your site</h3>
                   <p>When readers have questions, they click Ask Anything™ instead of searching Google, keeping them engaged on your page longer.</p>
-                </div>
-                
+                  </div>
+                  
                 <div className="benefit-card stagger-animate">
                   <div className="benefit-icon">📚</div>
                   <h3>Better ads with higher engagement</h3>
                   <p>Interactive AI responses create premium ad inventory with longer dwell times and higher click-through rates than standard display ads.</p>
                 </div>
-                
+                  
                 <div className="benefit-card stagger-animate">
                   <div className="benefit-icon">💰</div>
                   <h3>Completely free with 50/50 revenue split</h3>
                   <p>Zero installation costs, zero monthly fees. We only make money when you make money through our fair 50/50 revenue share.</p>
-                </div>
+                  </div>
               </div>
             </div>
           </section>
@@ -379,12 +379,12 @@ export default function Home() {
                   <h3>Match your brand perfectly</h3>
                   <p>Customize colors, fonts, favicon, and button styling to seamlessly blend with your website's design and brand identity.</p>
                 </div>
-                
+
                 <div className="customization-item stagger-animate">
                   <h3>Choose your tools and features</h3>
                   <p>Enable or disable specific features like Ask Anything™ and Go Deeper based on your needs.</p>
                 </div>
-                
+
                 <div className="customization-item stagger-animate">
                   <h3>Control your advertising</h3>
                   <p>Set ad preferences, choose which types of ads to display, and maintain full control over the advertising experience on your site.</p>
@@ -736,8 +736,8 @@ export default function Home() {
           font-size: 1rem;
           font-style: italic;
           opacity: 0.7;
-          font-weight: 700;
-          letter-spacing: -0.02em;
+           font-weight: 700;
+           letter-spacing: -0.02em;
           line-height: 1.1;
           color: #4a5568;
          }
@@ -869,19 +869,20 @@ export default function Home() {
 
         .hero-cta-text {
           color: #666;
-          font-family: 'Kalam', 'Comic Sans MS', 'Marker Felt', cursive;
-          font-size: 1.1rem;
+          font-family: 'Kalam', cursive;
+          font-size: 1.2rem;
           font-style: italic;
           font-weight: 400;
-          transform: rotate(-1deg);
+          transform: rotate(-2deg);
           text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+          letter-spacing: 0.5px;
         }
 
         .hero-url-input-wrapper {
           display: flex;
-          background: white;
+          background: transparent;
           border-radius: 50px;
-          overflow: hidden;
+          overflow: visible;
           transition: all 0.3s ease;
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
           width: 400px;
@@ -2570,7 +2571,7 @@ export default function Home() {
         .how-it-works-container {
           max-width: 1200px;
           margin: 0 auto;
-          text-align: center;
+           text-align: center;
         }
 
         .how-it-works-header {
@@ -2585,7 +2586,7 @@ export default function Home() {
           letter-spacing: -0.02em;
           line-height: 1.1;
           font-family: 'Inter', sans-serif;
-        }
+         }
 
         .how-it-works-steps {
           display: grid;
@@ -2699,7 +2700,7 @@ export default function Home() {
           }
           
           .step-description {
-            font-size: 0.9rem;
+          font-size: 0.9rem;
           }
         }
 
@@ -2874,15 +2875,15 @@ export default function Home() {
           font-size: 1.75rem;
           font-weight: 700;
           color: white;
-          margin-bottom: 2rem;
+            margin-bottom: 2rem;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.01em;
-        }
+          }
 
         .revenue-features {
           display: flex;
           flex-direction: column;
-          gap: 1.5rem;
+            gap: 1.5rem;
           text-align: left;
         }
 
@@ -3130,16 +3131,16 @@ export default function Home() {
           .footer-cta-title {
             font-size: 1.9rem;
           }
-          
+
           .footer-cta-subtitle {
             font-size: 1rem;
           }
-          
+
           .footer-url-input {
             padding: 0.875rem 1.25rem;
             font-size: 0.9rem;
           }
-          
+
           .footer-generate-btn {
             padding: 0.875rem 1.25rem;
             font-size: 0.9rem;
