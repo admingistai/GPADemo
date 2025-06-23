@@ -378,20 +378,20 @@ export default function Home() {
               <div className="benefits-grid">
                 <div className="benefit-card stagger-animate">
                   <div className="benefit-icon">🎯</div>
-                  <h3>Keep search traffic on your site</h3>
-                  <p>Readers stay engaged with your content instead of bouncing to Google for answers, boosting page views and ad revenue.</p>
+                  <h3>Stops readers from leaving your site</h3>
+                  <p>When readers have questions, they click Ask Anything™ instead of searching Google, keeping them engaged on your page longer.</p>
                 </div>
                 
                 <div className="benefit-card stagger-animate">
                   <div className="benefit-icon">📚</div>
-                  <h3>Higher-quality ads, better revenue</h3>
-                  <p>AI answers pull from your entire article library with proper citations, creating deeper engagement with your archive.</p>
+                  <h3>Better ads with higher engagement</h3>
+                  <p>Interactive AI responses create premium ad inventory with longer dwell times and higher click-through rates than standard display ads.</p>
                 </div>
                 
                 <div className="benefit-card stagger-animate">
                   <div className="benefit-icon">💰</div>
-                  <h3>Free to install</h3>
-                  <p>No upfront costs. We share all the revenue 50/50 with you.</p>
+                  <h3>Completely free with 50/50 revenue split</h3>
+                  <p>Zero installation costs, zero monthly fees. We only make money when you make money through our fair 50/50 revenue share.</p>
                 </div>
               </div>
             </div>
