@@ -340,7 +340,7 @@ export default function Home() {
             </h1>
             
             <div className="drive-growth-text hoverable-text">
-              Add an AI-powered "Ask Anything™" button to your articles that answers reader questions using your content library, keeping traffic and revenue on your site.
+              Add an AI-powered <em>Ask Anything™</em> button to your articles that answers reader questions using your content library, keeping traffic and revenue on your site.
             </div>
             
             <div className="url-input-container">
@@ -348,7 +348,7 @@ export default function Home() {
                 <div className="url-input-inner">
                   <input
                     type="text"
-                    placeholder="Enter your website URL to see Ask Anything™ in action"
+                    placeholder="Enter your sites URL here"
                     value={targetUrl}
                     onChange={(e) => setTargetUrl(e.target.value)}
                     onKeyDown={(e) => {
@@ -392,7 +392,7 @@ export default function Home() {
           </div>
 
           {/* Why Choose Ask Anything™ */}
-          <section className="why-choose-section">
+          <section className="why-choose-section white-section">
             <div className="container">
               <h2 className="section-title">Why choose Ask Anything™</h2>
               <div className="benefits-grid">
@@ -418,7 +418,7 @@ export default function Home() {
           </section>
 
           {/* Make It Yours */}
-          <section className="make-it-yours-section white-section">
+          <section className="make-it-yours-section">
             <div className="container">
               <h2 className="section-title">Make it yours</h2>
               <div className="customization-grid">
@@ -441,7 +441,7 @@ export default function Home() {
           </section>
 
           {/* Final CTA */}
-          <section className="final-cta-section">
+          <section className="final-cta-section white-section">
             <div className="container">
               <h2 className="cta-title">Ready to add Ask Anything™ to your website?</h2>
               <div className="cta-url-input-container">
@@ -1065,6 +1065,48 @@ export default function Home() {
           background: radial-gradient(ellipse at center, #3742fa 0%, #0c1426 100%);
         }
 
+        .why-choose-section.white-section {
+          background: white;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .why-choose-section.white-section::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: 
+            radial-gradient(circle at 20% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 40% 60%, rgba(255, 182, 193, 0.05) 0%, transparent 50%);
+          pointer-events: none;
+        }
+
+        .why-choose-section.white-section .section-title {
+          color: #333;
+          position: relative;
+          z-index: 1;
+        }
+
+        .why-choose-section.white-section .benefit-card {
+          background: rgba(255, 255, 255, 0.8);
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          color: #333;
+          position: relative;
+          z-index: 1;
+        }
+
+        .why-choose-section.white-section .benefit-card h3 {
+          color: #333;
+        }
+
+        .why-choose-section.white-section .benefit-card p {
+          color: #666;
+        }
+
         .container {
           max-width: 1200px;
           margin: 0 auto;
@@ -1128,12 +1170,12 @@ export default function Home() {
         /* Make It Yours Section */
         .make-it-yours-section {
           padding: 5rem 0;
-          background: white;
-          color: #333;
+          background: radial-gradient(ellipse at center, #3742fa 0%, #0c1426 100%);
+          color: white;
         }
 
         .make-it-yours-section .section-title {
-          color: #333;
+          color: white;
         }
 
         .customization-grid {
@@ -1147,13 +1189,13 @@ export default function Home() {
           font-size: 1.4rem;
           font-weight: 600;
           margin-bottom: 1rem;
-          color: #333;
+          color: white;
         }
 
         .customization-item p {
           font-size: 1rem;
           line-height: 1.6;
-          color: #666;
+          color: rgba(255, 255, 255, 0.8);
         }
 
         /* Final CTA Section */
@@ -1163,6 +1205,25 @@ export default function Home() {
           text-align: center;
         }
 
+        .final-cta-section.white-section {
+          background: white;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .final-cta-section.white-section::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: 
+            radial-gradient(circle at 30% 30%, rgba(255, 107, 53, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 70% 70%, rgba(168, 85, 247, 0.08) 0%, transparent 50%);
+          pointer-events: none;
+        }
+
         .cta-title {
           font-size: 2.5rem;
           font-weight: 700;
@@ -1170,9 +1231,17 @@ export default function Home() {
           margin-bottom: 2rem;
         }
 
+        .final-cta-section.white-section .cta-title {
+          color: #333;
+          position: relative;
+          z-index: 1;
+        }
+
         .cta-url-input-container {
           max-width: 600px;
           margin: 0 auto;
+          position: relative;
+          z-index: 1;
         }
 
         .cta-url-input-wrapper {
@@ -1181,6 +1250,11 @@ export default function Home() {
           border-radius: 12px;
           padding: 0.5rem;
           backdrop-filter: blur(10px);
+        }
+
+        .final-cta-section.white-section .cta-url-input-wrapper {
+          background: rgba(0, 0, 0, 0.05);
+          border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .cta-url-input-inner {
@@ -1199,8 +1273,16 @@ export default function Home() {
           font-family: 'Inter', sans-serif;
         }
 
+        .final-cta-section.white-section .cta-url-input {
+          color: #333;
+        }
+
         .cta-url-input::placeholder {
           color: rgba(255, 255, 255, 0.6);
+        }
+
+        .final-cta-section.white-section .cta-url-input::placeholder {
+          color: rgba(0, 0, 0, 0.5);
         }
 
         .cta-generate-btn {
@@ -3014,69 +3096,7 @@ export default function Home() {
            }
          }
 
-        /* Legal Footer */
-        .legal-footer {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 2rem 2rem 1rem 2rem;
-          margin-top: 2rem;
-          font-family: 'Inter', sans-serif;
-        }
-
-        .copyright {
-          color: rgba(255, 255, 255, 0.7);
-          font-size: 0.9rem;
-        }
-
-        .legal-links {
-          display: flex;
-          gap: 2rem;
-        }
-
-        .legal-link {
-          background: none;
-          border: none;
-          color: rgba(255, 255, 255, 0.7);
-          font-size: 0.9rem;
-          cursor: pointer;
-          transition: color 0.3s ease;
-          text-decoration: underline;
-          font-family: 'Inter', sans-serif;
-        }
-
-        .legal-link:hover {
-          color: rgba(255, 255, 255, 0.9);
-        }
-
-        @media (max-width: 768px) {
-          .legal-footer {
-            flex-direction: column;
-            gap: 1rem;
-            text-align: center;
-            padding: 1.5rem 0 1rem 0;
-          }
-
-          .legal-links {
-            gap: 1.5rem;
-          }
-        }
       `}</style>
-
-        {/* Copyright and Legal Footer */}
-        <div className="legal-footer">
-          <div className="copyright">
-            © 2024 Gist AI, Inc. All rights reserved.
-          </div>
-          <div className="legal-links">
-            <button onClick={() => window.open('https://gist.ai/terms', '_blank')} className="legal-link">
-              Terms of Service
-            </button>
-            <button onClick={() => window.open('https://gist.ai/privacy', '_blank')} className="legal-link">
-              Privacy Policy
-            </button>
-          </div>
-        </div>
     </div>
     </>
   );
