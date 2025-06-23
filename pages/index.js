@@ -291,7 +291,43 @@ export default function Home() {
             </div>
           </header>
 
-          {/* Main Content */}
+          {/* Hero Section */}
+          <section className="hero-section">
+            <div className="hero-container">
+              <div className="hero-video">
+                <iframe 
+                  src="https://www.youtube.com/embed/g_XPo_d-Mhw" 
+                  title="YouTube video player" 
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  allowFullScreen>
+                </iframe>
+              </div>
+              <div className="hero-content">
+                <h1 className="hero-title">
+                  Help people find what they need on your website.
+                </h1>
+                <p className="hero-description">
+                  Add a customizable AI-powered search box to your web pages and show fast, relevant results powered by Gist Answers.
+                </p>
+                <div className="hero-cta">
+                  <button
+                    onClick={() => router.push('/waitlist')}
+                    className="get-started-btn"
+                  >
+                    Get Started
+                  </button>
+                  <span className="hero-cta-text">or, try it now:</span>
+                  <div className="try-it-box">
+                    <span className="gist-icon">G</span>
+                    <span className="try-it-text">Ask Anything</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Main Content - Keep existing sections */}
           <main className="main-content">
             <h1 className="main-title hoverable-text">
               Keep readers on your site instead of losing them to Google
@@ -317,19 +353,6 @@ export default function Home() {
             </div>
             
           </main>
-
-          {/* YouTube Video Section */}
-          <div className="video-section">
-            <div className="video-container">
-                              <iframe 
-                  src="https://www.youtube.com/embed/g_XPo_d-Mhw" 
-                  title="YouTube video player" 
-                  frameBorder="0" 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                  allowFullScreen>
-                </iframe>
-            </div>
-          </div>
 
           {/* Why Choose Ask Anything™ */}
           <section className="why-choose-section white-section">
@@ -749,6 +772,161 @@ export default function Home() {
           background: linear-gradient(135deg, #4338ca, #6d28d9);
           transform: translateY(-1px);
           box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+        }
+
+        /* Hero Section */
+        .hero-section {
+          background: white;
+          padding: 4rem 2rem;
+          color: #1a1a1a;
+        }
+
+        .hero-container {
+          max-width: 1200px;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 4rem;
+          align-items: center;
+        }
+
+        .hero-video {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 16 / 9;
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-video iframe {
+          width: 100%;
+          height: 100%;
+          border: none;
+        }
+
+        .hero-content {
+          padding-left: 2rem;
+        }
+
+        .hero-title {
+          font-size: 3.5rem;
+          font-weight: 700;
+          line-height: 1.1;
+          margin-bottom: 1.5rem;
+          color: #1a1a1a;
+          font-family: 'Inter', sans-serif;
+          letter-spacing: -0.02em;
+        }
+
+        .hero-description {
+          font-size: 1.25rem;
+          line-height: 1.5;
+          margin-bottom: 2rem;
+          color: #4a4a4a;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .hero-cta {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+
+        .get-started-btn {
+          background: linear-gradient(135deg, #ff6b35, #f7931e);
+          border: none;
+          color: white;
+          padding: 1rem 2rem;
+          border-radius: 12px;
+          font-family: 'Inter', sans-serif;
+          font-weight: 600;
+          font-size: 1.1rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .get-started-btn:hover {
+          background: linear-gradient(135deg, #e55a2b, #e0821a);
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .hero-cta-text {
+          color: #666;
+          font-family: 'Inter', sans-serif;
+          font-size: 1rem;
+        }
+
+        .try-it-box {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          background: #f8f9fa;
+          border: 1px solid #e9ecef;
+          border-radius: 50px;
+          padding: 0.75rem 1.5rem;
+          transition: all 0.3s ease;
+        }
+
+        .try-it-box:hover {
+          background: #f1f3f4;
+          border-color: #dee2e6;
+        }
+
+        .gist-icon {
+          width: 24px;
+          height: 24px;
+          background: linear-gradient(135deg, #4f46e5, #7c3aed);
+          color: white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 700;
+          font-size: 0.9rem;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .try-it-text {
+          color: #6c757d;
+          font-family: 'Inter', sans-serif;
+          font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+          .hero-section {
+            padding: 2rem 1rem;
+          }
+
+          .hero-container {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+          }
+
+          .hero-content {
+            padding-left: 0;
+            text-align: center;
+          }
+
+          .hero-title {
+            font-size: 2.5rem;
+          }
+
+          .hero-description {
+            font-size: 1.1rem;
+          }
+
+          .hero-cta {
+            justify-content: center;
+          }
+
+          .get-started-btn {
+            padding: 0.875rem 1.75rem;
+            font-size: 1rem;
+          }
         }
 
         /* Main Content */
