@@ -894,6 +894,7 @@ export default function Home() {
 
         .publisher-section {
           margin-top: 1.5rem;
+          margin-bottom: 2rem;
           text-align: center;
           width: 100%;
           position: relative;
