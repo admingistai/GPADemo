@@ -334,7 +334,7 @@ export default function Home() {
                   The perfect AI companion<br />for any website.
                 </h1>
                 <p className="hero-description">
-                  The simple solution to driving AI engagement, grow traffic, and unlock new revenue.
+                  Replace your site's search with the Ask Anything™ button and drive AI engagement, grow traffic, and unlock new revenue.
                 </p>
                 <div className="hero-cta">
                   <button
@@ -863,10 +863,11 @@ export default function Home() {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 4rem;
-          align-items: start;
+          align-items: center;
           position: relative;
           z-index: 1;
-          padding-top: 2rem;
+          padding: 2rem;
+          min-height: 600px;
         }
 
         .hero-video {
@@ -876,6 +877,9 @@ export default function Home() {
           border-radius: 12px;
           overflow: hidden;
           box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         }
 
         .hero-video iframe {
@@ -908,6 +912,10 @@ export default function Home() {
 
         .hero-content {
           padding-left: 2rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          min-height: 500px;
         }
 
         .hero-title {
@@ -920,6 +928,8 @@ export default function Home() {
           letter-spacing: -0.02em;
           transition: all 0.3s ease;
           cursor: default;
+          max-width: none;
+          width: 100%;
         }
 
         .hero-title:hover {
@@ -935,6 +945,8 @@ export default function Home() {
           font-family: 'Inter', sans-serif;
           transition: all 0.3s ease;
           cursor: default;
+          max-width: none;
+          width: 100%;
         }
 
         .hero-description:hover {
@@ -945,7 +957,7 @@ export default function Home() {
         .hero-cta {
           display: flex;
           align-items: center;
-          justify-content: center;
+          justify-content: flex-start;
           gap: 1.5rem;
           flex-wrap: wrap;
           width: 100%;
