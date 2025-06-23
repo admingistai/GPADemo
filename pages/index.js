@@ -88,7 +88,8 @@ export default function Home() {
   };
 
   const handleUrlSubmit = async (url) => {
-      setError(null);
+    setError(null);
+    setTargetUrl(url);
     setShowFeaturePage(true);
   };
 
@@ -318,9 +319,25 @@ export default function Home() {
                     Get Started
                   </button>
                   <span className="hero-cta-text">or, try it now:</span>
-                  <div className="try-it-box">
-                    <span className="gist-icon">G</span>
-                    <span className="try-it-text">Ask Anything</span>
+                  <div className="hero-url-input-container">
+                    <div className="hero-url-input-wrapper">
+                      <input
+                        type="text"
+                        className="hero-url-input"
+                        placeholder="Enter your website URL (e.g., example.com)"
+                        value={targetUrl}
+                        onChange={(e) => setTargetUrl(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && targetUrl.trim() && handleUrlSubmit(targetUrl)}
+                      />
+                      <button
+                        className="hero-try-btn"
+                        onClick={() => targetUrl.trim() && handleUrlSubmit(targetUrl)}
+                        disabled={!targetUrl.trim()}
+                      >
+                        <span className="gist-icon">G</span>
+                        Try It
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -856,40 +873,92 @@ export default function Home() {
           font-size: 1rem;
         }
 
-        .try-it-box {
+        .hero-url-input-container {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+          width: 100%;
+          max-width: 500px;
+        }
+
+        .hero-url-input-wrapper {
+          display: flex;
+          background: white;
+          border: 2px solid #e2e8f0;
+          border-radius: 12px;
+          overflow: hidden;
+          transition: all 0.3s ease;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-url-input-wrapper:hover {
+          border-color: #cbd5e0;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .hero-url-input-wrapper:focus-within {
+          border-color: #667eea;
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .hero-url-input {
+          flex: 1;
+          padding: 0.875rem 1.25rem;
+          border: none;
+          background: transparent;
+          font-family: 'Inter', sans-serif;
+          font-size: 1rem;
+          color: #1a202c;
+          outline: none;
+        }
+
+        .hero-url-input::placeholder {
+          color: #a0aec0;
+        }
+
+        .hero-try-btn {
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          background: #f8f9fa;
-          border: 1px solid #e9ecef;
-          border-radius: 50px;
-          padding: 0.75rem 1.5rem;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 75%, #f5576c 100%);
+          background-size: 400% 400%;
+          border: none;
+          color: white;
+          padding: 0.875rem 1.5rem;
+          font-family: 'Inter', sans-serif;
+          font-weight: 600;
+          font-size: 0.95rem;
+          cursor: pointer;
           transition: all 0.3s ease;
+          animation: gradientFlow 3s ease infinite;
+          white-space: nowrap;
         }
 
-        .try-it-box:hover {
-          background: #f1f3f4;
-          border-color: #dee2e6;
+        .hero-try-btn:hover:not(:disabled) {
+          animation-duration: 1.5s;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .hero-try-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          animation: none;
+          background: #a0aec0;
         }
 
         .gist-icon {
-          width: 24px;
-          height: 24px;
-          background: linear-gradient(135deg, #4f46e5, #7c3aed);
+          width: 20px;
+          height: 20px;
+          background: rgba(255, 255, 255, 0.2);
           color: white;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
           font-weight: 700;
-          font-size: 0.9rem;
+          font-size: 0.8rem;
           font-family: 'Inter', sans-serif;
-        }
-
-        .try-it-text {
-          color: #6c757d;
-          font-family: 'Inter', sans-serif;
-          font-size: 0.95rem;
         }
 
         @media (max-width: 768px) {
@@ -922,6 +991,25 @@ export default function Home() {
           .get-started-btn {
             padding: 0.875rem 1.75rem;
             font-size: 1rem;
+          }
+
+          .hero-url-input-container {
+            max-width: 100%;
+          }
+
+          .hero-url-input-wrapper {
+            flex-direction: column;
+          }
+
+          .hero-url-input {
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+          }
+
+          .hero-try-btn {
+            padding: 0.75rem 1.25rem;
+            font-size: 0.9rem;
+            border-radius: 0 0 12px 12px;
           }
         }
 
