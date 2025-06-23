@@ -953,7 +953,6 @@ export default function Home() {
           background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57);
           border-radius: 50px;
           z-index: 0;
-          animation: rainbowFlow 4s linear infinite;
         }
 
         .hero-url-input-wrapper::after {
@@ -1665,7 +1664,6 @@ export default function Home() {
           background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #ff6b35, #feca57);
           border-radius: 50px;
           z-index: 0;
-          animation: rainbowFlow 4s linear infinite;
         }
 
         .final-url-input-wrapper::after {
