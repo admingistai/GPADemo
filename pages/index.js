@@ -88,9 +88,66 @@ export default function Home() {
   };
 
   const handleUrlSubmit = async (url) => {
-      setError(null);
+    setError(null);
     setTargetUrl(url);
-    setShowFeaturePage(true);
+    setShowLoadingPage(true);
+    
+    // Format the URL automatically
+    const formattedUrl = formatUrl(url);
+    
+    const loadingMessages = [
+      'Generating button design...',
+      'Adding functionality...',
+      'Optimizing user experience...',
+      'Implementing <em>Ask Anything™</em>...',
+      'Configuring smart responses...',
+      'Setting up AI integration...',
+      'Customizing for your site...',
+      'Finalizing button placement...',
+      'Testing compatibility...',
+      'Preparing launch...'
+    ];
+
+    // Show random loading messages
+    const messageInterval = setInterval(() => {
+      const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+      setLoadingMessage(randomMessage);
+    }, 800);
+
+    // Random delay between 3-6 seconds (shorter since no feature selection)
+    const delay = Math.random() * 3000 + 3000;
+    
+    setTimeout(async () => {
+      clearInterval(messageInterval);
+      
+      try {
+        const testResponse = await fetch(`/api/proxy?url=${encodeURIComponent(formattedUrl)}&test=true`);
+        const testResult = await testResponse.json();
+
+        if (!testResponse.ok) {
+          throw new Error(testResult.error || 'Unable to reach the specified website');
+        }
+
+        // Use default widget configuration with Ask Anything enabled
+        const widgetConfig = {
+          ask: true
+        };
+        
+        // Directly open the website with widget in a new tab
+        const configParam = encodeURIComponent(JSON.stringify(widgetConfig));
+        const websiteWithWidgetUrl = `/api/proxy?url=${encodeURIComponent(formattedUrl)}&config=${configParam}`;
+        window.open(websiteWithWidgetUrl, '_blank');
+        
+        // Reset the form for potential next use
+        setShowLoadingPage(false);
+        setTargetUrl('');
+      } catch (err) {
+        setShowLoadingPage(false);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }, delay);
   };
 
   const handleFeatureContinue = async () => {
