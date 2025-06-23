@@ -15,6 +15,7 @@ export default function Home() {
   const [showFeaturePage, setShowFeaturePage] = useState(false);
   const [showLoginPage, setShowLoginPage] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
+  const [isLoaded, setIsLoaded] = useState(false);
   const [selectedFeatures, setSelectedFeatures] = useState({
     ask: true, // Always enabled, non-toggleable
     goDeeper: false,
@@ -24,7 +25,10 @@ export default function Home() {
     customAgents: false
   });
 
-
+  // Trigger fade-in animations on component mount
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
 
   const formatUrl = (inputUrl) => {
     let formattedUrl = inputUrl.trim();
@@ -301,7 +305,7 @@ export default function Home() {
           </header>
 
           {/* Hero Section */}
-          <section className="hero-section">
+          <section className={`hero-section ${isLoaded ? 'fade-in' : ''}`}>
             <div className="hero-container">
               <div className="hero-video">
                 <iframe 
@@ -353,7 +357,7 @@ export default function Home() {
 
 
           {/* Why Choose Ask Anything™ */}
-          <section className="why-choose-section white-section">
+          <section className={`why-choose-section white-section ${isLoaded ? 'fade-in-delayed' : ''}`}>
             <div className="container">
               <h2 className="section-title">Why choose Ask Anything™</h2>
               <div className="benefits-grid">
@@ -379,7 +383,7 @@ export default function Home() {
           </section>
 
           {/* Make It Yours */}
-          <section className="make-it-yours-section">
+          <section className={`make-it-yours-section ${isLoaded ? 'fade-in-delayed-2' : ''}`}>
             <div className="container">
               <h2 className="section-title">Make it yours</h2>
               <div className="customization-grid">
@@ -402,7 +406,7 @@ export default function Home() {
           </section>
 
           {/* Final CTA */}
-          <section className="final-cta-section white-section">
+          <section className={`final-cta-section white-section ${isLoaded ? 'fade-in-delayed-3' : ''}`}>
             <div className="container">
               <h2 className="cta-title">Ready to add Ask Anything™ to your website?</h2>
               <div className="final-cta-actions">
@@ -614,6 +618,32 @@ export default function Home() {
           0% { width: 0%; }
           50% { width: 70%; }
           100% { width: 100%; }
+        }
+
+        /* Fade-in animations */
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        .fade-in {
+          opacity: 0;
+          animation: fadeIn 1s ease-out forwards;
+        }
+
+        .fade-in-delayed {
+          opacity: 0;
+          animation: fadeIn 1s ease-out 0.3s forwards;
+        }
+
+        .fade-in-delayed-2 {
+          opacity: 0;
+          animation: fadeIn 1s ease-out 0.6s forwards;
+        }
+
+        .fade-in-delayed-3 {
+          opacity: 0;
+          animation: fadeIn 1s ease-out 0.9s forwards;
         }
 
         .landing-page {
