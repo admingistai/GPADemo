@@ -498,7 +498,7 @@ export default function Home() {
         .app {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           min-height: 100vh;
-          background: radial-gradient(ellipse at center, #3742fa 0%, #0c1426 100%);
+          background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
         }
 
         /* Loading Page */
@@ -507,7 +507,8 @@ export default function Home() {
           display: flex;
           align-items: center;
           justify-content: center;
-          color: white;
+          color: #1a202c;
+          background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
         }
 
         .loading-content {
@@ -578,7 +579,7 @@ export default function Home() {
           min-height: 100vh;
           display: flex;
           flex-direction: column;
-          color: white;
+          color: #1a202c;
           animation: fadeIn 0.8s ease-out;
          }
 
@@ -666,6 +667,9 @@ export default function Home() {
           padding: 1.5rem 2.85rem;
           position: relative;
           animation: slideInDown 0.6s ease-out 0.2s both;
+          background: rgba(255, 255, 255, 0.8);
+          backdrop-filter: blur(10px);
+          border-bottom: 1px solid rgba(226, 232, 240, 0.8);
         }
 
         @keyframes slideInDown {
@@ -695,7 +699,7 @@ export default function Home() {
           font-size: 1.5rem;
           font-weight: 600;
           line-height: 1.0;
-          color: white;
+          color: #1a202c;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.05em;
           transition: all 0.3s ease;
@@ -704,7 +708,7 @@ export default function Home() {
 
         .header-left .logo:hover {
           transform: scale(1.05);
-          text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+          text-shadow: 0 0 20px rgba(26, 32, 44, 0.2);
         }
 
         .header-right {
@@ -716,10 +720,11 @@ export default function Home() {
         .tagline {
           font-size: 1rem;
           font-style: italic;
-          opacity: 0.9;
-           font-weight: 700;
-           letter-spacing: -0.02em;
+          opacity: 0.7;
+          font-weight: 700;
+          letter-spacing: -0.02em;
           line-height: 1.1;
+          color: #4a5568;
          }
 
         .auth-buttons {
@@ -1123,7 +1128,7 @@ export default function Home() {
         /* Why Choose Section */
         .why-choose-section {
           padding: 5rem 0;
-          background: radial-gradient(ellipse at center, #3742fa 0%, #0c1426 100%);
+          background: linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(241, 245, 249, 0.9) 100%);
         }
 
         .why-choose-section.white-section {
@@ -1177,7 +1182,7 @@ export default function Home() {
         .section-title {
           font-size: 2.5rem;
           font-weight: 700;
-          color: white;
+          color: #1a202c;
           text-align: center;
           margin-bottom: 3rem;
         }
@@ -1190,18 +1195,20 @@ export default function Home() {
         }
 
         .benefit-card {
-          background: rgba(255, 255, 255, 0.08);
-          border: 1px solid rgba(255, 255, 255, 0.12);
+          background: rgba(255, 255, 255, 0.8);
+          border: 1px solid rgba(226, 232, 240, 0.3);
           border-radius: 12px;
           padding: 2rem;
           text-align: center;
           backdrop-filter: blur(10px);
           transition: all 0.3s ease;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
 
         .benefit-card:hover {
           transform: translateY(-4px);
-          box-shadow: 0 8px 30px rgba(255, 107, 53, 0.2);
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+          background: rgba(255, 255, 255, 0.95);
         }
 
         .benefit-icon {
@@ -1211,14 +1218,14 @@ export default function Home() {
         }
 
         .benefit-card h3 {
-          color: white;
+          color: #1a202c;
           font-size: 1.3rem;
           font-weight: 600;
           margin-bottom: 1rem;
         }
 
         .benefit-card p {
-          color: rgba(255, 255, 255, 0.8);
+          color: #4a5568;
           font-size: 1rem;
           line-height: 1.6;
         }
@@ -1231,12 +1238,12 @@ export default function Home() {
         /* Make It Yours Section */
         .make-it-yours-section {
           padding: 5rem 0;
-          background: radial-gradient(ellipse at center, #3742fa 0%, #0c1426 100%);
-          color: white;
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+          color: #1a202c;
         }
 
         .make-it-yours-section .section-title {
-          color: white;
+          color: #1a202c;
         }
 
         .customization-grid {
@@ -1250,19 +1257,19 @@ export default function Home() {
           font-size: 1.4rem;
           font-weight: 600;
           margin-bottom: 1rem;
-          color: white;
+          color: #1a202c;
         }
 
         .customization-item p {
           font-size: 1rem;
           line-height: 1.6;
-          color: rgba(255, 255, 255, 0.8);
+          color: #4a5568;
         }
 
         /* Final CTA Section */
         .final-cta-section {
           padding: 5rem 0;
-          background: radial-gradient(ellipse at center, #3742fa 0%, #0c1426 100%);
+          background: linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(241, 245, 249, 0.9) 100%);
           text-align: center;
         }
 
@@ -1291,7 +1298,7 @@ export default function Home() {
         .cta-title {
           font-size: 2.5rem;
           font-weight: 700;
-          color: white;
+          color: #1a202c;
           margin-bottom: 2rem;
         }
 
@@ -1384,12 +1391,13 @@ export default function Home() {
 
         /* Legal Footer */
         .legal-footer {
-          background: rgba(0, 0, 0, 0.2);
+          background: rgba(248, 250, 252, 0.8);
+          border-top: 1px solid rgba(226, 232, 240, 0.3);
           padding: 1rem 2rem;
           display: flex;
           justify-content: space-between;
           align-items: center;
-          color: rgba(255, 255, 255, 0.7);
+          color: #4a5568;
           font-size: 0.9rem;
         }
 
@@ -1401,7 +1409,7 @@ export default function Home() {
         .legal-links button {
           background: none;
           border: none;
-          color: rgba(255, 255, 255, 0.7);
+          color: #4a5568;
           cursor: pointer;
           text-decoration: underline;
           font-size: 0.9rem;
@@ -1409,7 +1417,7 @@ export default function Home() {
         }
 
         .legal-links button:hover {
-          color: white;
+          color: #1a202c;
         }
 
         @media (max-width: 768px) {
@@ -1426,11 +1434,11 @@ export default function Home() {
 
         /* Feature Page Styles */
         .feature-page {
-          background: radial-gradient(ellipse at center, #3742fa 0%, #0c1426 100%);
+          background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
           min-height: 100vh;
           display: flex;
           flex-direction: column;
-          color: white;
+          color: #1a202c;
           animation: fadeIn 0.8s ease-out;
         }
 
@@ -1450,7 +1458,7 @@ export default function Home() {
           font-weight: 700;
           line-height: 1.1;
           margin-bottom: 1rem;
-          color: white;
+          color: #1a202c;
           font-family: 'Inter', sans-serif;
           letter-spacing: -0.01em;
           text-align: center;
