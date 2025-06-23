@@ -403,18 +403,18 @@ export default function Home() {
               <h2 className="section-title">Make it yours</h2>
               <div className="customization-grid">
                 <div className="customization-item stagger-animate">
-                  <h3>Choose content to search</h3>
-                  <p>Decide if you want Ask Anything™ to search only your website, or include other trusted sources on the web.</p>
+                  <h3>Match your brand perfectly</h3>
+                  <p>Customize colors, fonts, favicon, and button styling to seamlessly blend with your website's design and brand identity.</p>
                 </div>
                 
                 <div className="customization-item stagger-animate">
-                  <h3>Match your site's design</h3>
-                  <p>Choose from several pre-built themes, or customize the button and response styling to match your brand perfectly.</p>
+                  <h3>Choose your tools and features</h3>
+                  <p>Enable or disable specific features like Ask Anything™, Summarize, Multi-Format Sharing, and Go Deeper based on your needs.</p>
                 </div>
                 
                 <div className="customization-item stagger-animate">
-                  <h3>Get it for free or low cost</h3>
-                  <p>Pay nothing upfront and earn revenue from increased engagement, or upgrade for premium features and priority support.</p>
+                  <h3>Control your advertising</h3>
+                  <p>Set ad preferences, choose which types of ads to display, and maintain full control over the advertising experience on your site.</p>
                 </div>
               </div>
             </div>
