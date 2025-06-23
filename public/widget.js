@@ -75,8 +75,7 @@
     // Get initial configuration
     const urlConfig = parseConfigFromUrl();
     const TOOLS_CONFIG = {  
-        ask: true,      // Always enabled - core functionality
-        gist: urlConfig?.gist !== undefined ? urlConfig.gist : true     // Summary tool
+        ask: true      // Always enabled - core functionality
     };
     
     console.log('[GistWidget] Applied tools configuration:', TOOLS_CONFIG);
@@ -3490,15 +3489,14 @@
         function generateToolboxTabs() {
             const toolboxTabsContainer = shadowRoot.getElementById('gist-toolbox-tabs');
             const toolLabels = {
-                ask: 'Explore',
-                gist: 'Summarize'
+                ask: 'Explore'
             };
             
             // Clear existing tabs
             toolboxTabsContainer.innerHTML = '';
             
             // Get enabled tools in the desired order
-            const toolOrder = ['ask', 'gist'];
+            const toolOrder = ['ask'];
             const enabledTools = toolOrder.filter(tool => TOOLS_CONFIG[tool]);
             
             // Generate tabs for enabled tools
@@ -3729,12 +3727,7 @@
                         showSuggestedQuestions();
                     }
                     break;
-                case 'gist':
-                    // Clear Ask-specific answer flag when switching away from Ask
-                    hasAskAnswer = false;
-                    // Generate summary automatically
-                    generateGist();
-                    break;
+
 
 
                 default:
@@ -3753,9 +3746,7 @@
                         'Ask anything about this article or any other topic!' : 
                         'Ask a question to see the answer here!';
                     break;
-                case 'gist':
-                    placeholderText = 'Get a summary of this page. Feature coming soon!';
-                    break;
+
 
 
                 default:
@@ -4359,369 +4350,24 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
             });
         }
         
-        // Generate Gist functionality
-        async function generateGist() {
-            try {
-                // Show loading state
-                showLoading();
-                
-                // Get page context
-                const context = extractPageContext();
-                if (!context || !context.content || context.content.length < 50) {
-                    showGistError('No article content found to summarize.');
-                    return;
-                }
-                
-                // Create a specific prompt for summarization
-                const gistPrompt = `Please summarize the following article into exactly 3 bullet points or fewer. Each bullet point should be concise and capture the main ideas. Focus on the most important information.
 
-Article Title: ${context.title}
+        
 
-Article Content:
-${context.content}
+        
 
-Instructions:
-- Provide exactly 3 bullet points or fewer
-- Each bullet point should be one clear, concise sentence
-- Cover the most important aspects of the article
-- Do not include introductory text, just the bullet points
-- Start each bullet point with a bullet (•) character`;
+        
 
-                // Use Gist API to generate summary
-                const startTime = Date.now();
-                const response = await createChatCompletionForGist(gistPrompt);
-                const responseTime = Date.now() - startTime;
-                
-                // Show the gist summary only if user is still on gist tool
-                if (currentTool === 'gist') {
-                showGistSummary(response.response);
-                }
-                
-                // Emit analytics event
-                window.dispatchEvent(new CustomEvent('gist-gist-generated', {
-                    detail: {
-                        title: context.title,
-                        contentLength: context.content.length,
-                        summary: response.response,
-                        responseTime: responseTime,
-                        usage: response.usage
-                    }
-                }));
-                
-            } catch (error) {
-                log('error', 'Gist generation failed', { error: error.message });
-                if (currentTool === 'gist') {
-                showGistError(error.message);
-                }
-                
-                // Emit error event
-                window.dispatchEvent(new CustomEvent('gist-gist-error', {
-                    detail: {
-                        error: error.message,
-                        type: 'gist_generation'
-                    }
-                }));
-            }
-        }
         
-        // Special API call for gist that doesn't affect conversation history
-        async function createChatCompletionForGist(prompt) {
-            const requestBody = {
-                model: WIDGET_CONFIG.MODEL,
-                messages: [{ role: 'user', content: prompt }],
-                max_tokens: 300 // Shorter limit for concise summaries
-            };
-            
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), WIDGET_CONFIG.TIMEOUT_MS);
-            
-            try {
-                const response = await fetch(WIDGET_CONFIG.CHAT_API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(requestBody),
-                    signal: controller.signal
-                });
-                
-                clearTimeout(timeoutId);
-                
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
-                }
-                
-                const data = await response.json();
-                
-                // Handle both OpenAI direct format and our backend format
-                let responseText;
-                if (data.response) {
-                    // Our backend format
-                    responseText = data.response;
-                } else if (data.choices && data.choices[0] && data.choices[0].message) {
-                    // Direct OpenAI format
-                    responseText = data.choices[0].message.content;
-                        } else {
-                    throw new Error('Invalid response format from API');
-                }
-                
-                return {
-                    response: responseText,
-                    usage: data.usage
-                };
-                
-            } catch (error) {
-                clearTimeout(timeoutId);
-                throw error;
-            }
-        }
-        
-        function showGistSummary(summary) {
-            const mockAttributions = generateMockAttributions();
-            
-            let html = `
-                <div class="gist-answer-text gist-content-entering">
-                    ${summary.replace(/\n/g, '<br>')}
-                </div>
-            `;
-            
-            // Add attribution section
-            html += `
-                <div class="gist-attributions gist-content-entering gist-stagger-2">
-                    <div class="gist-attributions-title">Sources</div>
-                    <div class="gist-attribution-bar">
-            `;
-            
-            // Add attribution segments
-            for (const attribution of mockAttributions) {
-                const width = attribution.percentage * 100;
-                html += `
-                    <div class="gist-attribution-segment" 
-                         style="width: ${width}%; background-color: ${attribution.color};"
-                         title="${attribution.source}: ${(attribution.percentage * 100).toFixed(1)}%">
-                    </div>
-                `;
-            }
-            
-            html += `
-                    </div>
-                    <div class="gist-attribution-sources">
-            `;
-            
-            // Add source labels
-            for (const attribution of mockAttributions) {
-                html += `
-                    <div class="gist-attribution-source">
-                        <div class="gist-attribution-dot" style="background-color: ${attribution.color};"></div>
-                        <span>${attribution.source} (${(attribution.percentage * 100).toFixed(1)}%)</span>
-                    </div>
-                `;
-            }
-            
-            html += `
-                    </div>
-                    <div class="gist-source-previews">
-            `;
-            
-            // Add source preview cards
-            for (const attribution of mockAttributions) {
-                const formatDate = (date) => {
-                    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                    return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-                };
-                
-                html += `
-                    <div class="gist-source-preview" style="--source-color: ${attribution.color};">
-                        <div class="gist-source-preview-image">
-                            <div class="gist-source-preview-icon">${attribution.icon}</div>
-                        </div>
-                        <div class="gist-source-preview-content">
-                            <div class="gist-source-preview-header">
-                                <div class="gist-source-preview-source">${attribution.source}</div>
-                                <div class="gist-source-preview-date">${formatDate(attribution.date)}</div>
-                            </div>
-                            <div class="gist-source-preview-title">${attribution.title}</div>
-                            <div class="gist-source-preview-description">${attribution.description}</div>
-                        </div>
-                        <div class="gist-source-preview-percentage">${(attribution.percentage * 100).toFixed(0)}%</div>
-                    </div>
-                `;
-            }
-            
-            html += `
-                    </div>
-                </div>
-            `;
-            
-            // Add suggested questions section
-            html += `
-                <div class="gist-follow-up-section gist-content-entering gist-stagger-3">
-                    <div class="gist-follow-up-header">
-                        <h4>Explore Further</h4>
-                        <div class="gist-loading-dots">
-                            <span></span><span></span><span></span>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            answerContent.innerHTML = html;
-            hasAnswer = true;
-            
-            // Trigger animations after a brief delay to ensure DOM is updated
-    setTimeout(() => {
-                const elements = answerContent.querySelectorAll('.gist-content-entering');
-                elements.forEach(el => {
-                    el.classList.remove('gist-content-entering');
-                    el.classList.add('gist-content-entered');
-                });
-                
-                // Apply text reveal animation to gist text
-                const answerText = answerContent.querySelector('.gist-answer-text');
-                if (answerText) {
-                    applyTextRevealAnimation(answerText);
-                }
-                
-                // Show external ads with context based on page summary
-                setTimeout(() => {
-                    showExternalAds('page summary and key insights');
-                }, 200);
 
-            }, 50);
-            
-            // Generate suggested questions for the gist
-            generateGistQuestions();
-        }
         
-        // Generate and show suggested questions for the Gist tool
-        async function generateGistQuestions() {
-            try {
-                const questions = await generateSuggestedQuestions();
-                
-                // Only update if user is still on gist tool and has this gist visible
-                if (currentTool !== 'gist' || !hasAnswer) return;
-                
-                const followUpSection = answerContent.querySelector('.gist-follow-up-section');
-                if (!followUpSection) return;
-                
-                let followUpHTML = `
-                    <div class="gist-follow-up-header">
-                        <h4>Explore Further</h4>
-                    </div>
-                    <div class="gist-follow-up-questions">
-                `;
-                
-                questions.forEach((question, index) => {
-                    followUpHTML += `
-                        <button class="gist-follow-up-question" data-question="${question.replace(/"/g, '&quot;')}">
-                            <span class="gist-follow-up-question-icon">${index + 1}</span>
-                            <span class="gist-follow-up-question-text">${question}</span>
-                        </button>
-                    `;
-                });
-                
-                followUpHTML += `</div>`;
-                
-                followUpSection.innerHTML = followUpHTML;
-                
-                // Add click handlers for gist questions
-                const followUpButtons = followUpSection.querySelectorAll('.gist-follow-up-question');
-                followUpButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        const question = button.dataset.question;
-                        askGistQuestion(question);
-                    });
-                });
-                
-            } catch (error) {
-                log('error', 'Failed to generate gist questions', { error: error.message });
-                
-                // Hide the follow-up section if it failed
-                const followUpSection = answerContent.querySelector('.gist-follow-up-section');
-                if (followUpSection) {
-                    followUpSection.style.display = 'none';
-                }
-            }
-        }
-        
-        // Handle clicking on a gist question - switch to Ask tool and ask the question
-        async function askGistQuestion(question) {
-            try {
-                            // Switch to Ask tool
-            switchTool('ask');
-            
-            // Set the input field to show the question
-            input.value = question;
-            
-            // Show loading state
-            showLoading();
-            
-            // Get answer from Gist
-                const startTime = Date.now();
-                const chatResponse = await createChatCompletion(question);
-                const responseTime = Date.now() - startTime;
-                
-                // Display the answer only if user is still on ask tool
-                if (currentTool === 'ask') {
-                    showAnswerWithFollowUps(chatResponse.response, question);
-                }
-                
-                // Clear input
-                input.value = '';
-                
-                // Emit analytics event
-                window.dispatchEvent(new CustomEvent('gist-gist-question', {
-                    detail: {
-                        question: question,
-                        response: chatResponse.response,
-                        responseTime: responseTime,
-                        usage: chatResponse.usage
-                    }
-                }));
-                
-            } catch (error) {
-                log('error', 'Failed to process gist question', { error: error.message });
-                if (currentTool === 'ask') {
-                    showError(error.message);
-                }
-            }
-        }
-        
-        function showGistError(errorMessage) {
-            // Build HTML with error content (ads will be shown externally)
-            let html = `
-                <div class="gist-error-content gist-content-entering">
-                    <div class="gist-error-title">Unable to Generate Summary</div>
-                    <div class="gist-error-message">${errorMessage}</div>
-                </div>
-            `;
-            
-            answerContent.innerHTML = html;
-            
-            // Trigger animation
-            setTimeout(() => {
-                const elements = answerContent.querySelectorAll('.gist-content-entering');
-                elements.forEach(el => {
-                    el.classList.remove('gist-content-entering');
-                    el.classList.add('gist-content-entered');
-                });
-                
-                // Show external ads with context based on error type
-                setTimeout(() => {
-                    showExternalAds('error recovery and troubleshooting');
-                }, 200);
-            }, 50);
-        }
+
         
         // Settings functionality
         function showSettingsMenu() {
             // Mock current settings state
             const mockSettings = {
                 tools: {
-                    ask: true,
-                    gist: TOOLS_CONFIG.gist
+                    ask: true
                 },
                 appearance: {
                     selectedColor: '#6366f1'
@@ -4753,11 +4399,7 @@ Instructions:
                             </button>
                         </div>
                         
-                        <div class="gist-settings-option">
-                            <span class="gist-settings-option-label">The Gist - AI Summaries</span>
-                            <button class="gist-settings-toggle ${mockSettings.tools.gist ? 'enabled' : ''}" data-tool="gist">
-                            </button>
-                        </div>
+
                         
 
                         
@@ -6127,15 +5769,14 @@ Make the ad relevant to the article topic but appealing and professional. Use em
                     // Get the generate function from the widget's scope
                     // We need to regenerate tabs based on new config
                     const toolLabels = {
-                        ask: 'Ask',
-                        gist: 'The Gist'
+                        ask: 'Ask'
                     };
                     
                     // Clear existing tabs
                     toolboxTabsContainer.innerHTML = '';
                     
                     // Get enabled tools in the desired order
-                    const toolOrder = ['ask', 'gist'];
+                    const toolOrder = ['ask'];
                     const enabledTools = toolOrder.filter(tool => TOOLS_CONFIG[tool]);
                     
                     if (enabledTools.length === 0) {
@@ -6205,12 +5846,12 @@ Make the ad relevant to the article topic but appealing and professional. Use em
     console.group('🛠️ Gist Widget Configuration');
     console.log('Tools Configuration:');
     console.log('• TOOLS_CONFIG =', TOOLS_CONFIG);
-    console.log('• GistWidget.configureTools({ gist: false })');
+                    console.log('• GistWidget.configureTools({ ask: true })');
     console.log('• GistWidget.getToolsConfig()');
     console.log('');
     console.log('Usage Examples:');
-    console.log('• TOOLS_CONFIG.gist = false  // Disable gist tool');
-    console.log('• GistWidget.configureTools({ gist: false })  // Disable gist tool');
+                    console.log('• TOOLS_CONFIG.ask = true  // Enable Ask tool');
+                    console.log('• GistWidget.configureTools({ ask: true })  // Configure Ask tool only');
     console.groupEnd();
     
     initWidget();

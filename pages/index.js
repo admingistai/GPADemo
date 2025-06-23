@@ -17,7 +17,6 @@ export default function Home() {
   const [loadingMessage, setLoadingMessage] = useState('');
   const [selectedFeatures, setSelectedFeatures] = useState({
     ask: true, // Always enabled, non-toggleable
-    theGist: true,
     goDeeper: false,
     ethicalAds: false,
     customVoices: false,
@@ -136,8 +135,7 @@ export default function Home() {
 
         // Convert feature selection to widget configuration
         const widgetConfig = {
-          ask: selectedFeatures.ask,
-          gist: selectedFeatures.theGist
+          ask: selectedFeatures.ask
         };
         
         // Directly open the website with widget in a new tab
@@ -383,7 +381,7 @@ export default function Home() {
                 
                 <div className="customization-item stagger-animate">
                   <h3>Choose your tools and features</h3>
-                  <p>Enable or disable specific features like Ask Anything™, Summarize, and Go Deeper based on your needs.</p>
+                  <p>Enable or disable specific features like Ask Anything™ and Go Deeper based on your needs.</p>
                 </div>
                 
                 <div className="customization-item stagger-animate">
