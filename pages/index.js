@@ -316,6 +316,9 @@ export default function Home() {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                   allowFullScreen>
                 </iframe>
+                <div className="publisher-logos">
+                  <img src="/publishers-logos.png" alt="Trusted Publishers" />
+                </div>
             </div>
               <div className="hero-content">
                 <h1 className="hero-title">
@@ -424,7 +427,7 @@ export default function Home() {
                   <input
                     type="text"
                     className="final-url-input"
-                    placeholder="Enter your website URL (e.g., example.com)"
+                    placeholder="Enter your website URL..."
                     value={targetUrl}
                     onChange={(e) => setTargetUrl(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && targetUrl.trim() && handleUrlSubmit(targetUrl)}
@@ -825,9 +828,10 @@ export default function Home() {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 4rem;
-          align-items: center;
+          align-items: start;
           position: relative;
           z-index: 1;
+          padding-top: 2rem;
         }
 
         .hero-video {
@@ -843,6 +847,22 @@ export default function Home() {
           width: 100%;
           height: 100%;
           border: none;
+        }
+
+        .publisher-logos {
+          margin-top: 1.5rem;
+          text-align: center;
+        }
+
+        .publisher-logos img {
+          max-width: 100%;
+          height: auto;
+          opacity: 0.8;
+          transition: opacity 0.3s ease;
+        }
+
+        .publisher-logos:hover img {
+          opacity: 1;
         }
 
         .hero-content {
