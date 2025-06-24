@@ -227,21 +227,42 @@ export default async function handler(req, res) {
           transform: translate(-50%, -50%);
         }
 
-        #gist-widget {
+        #gist-widget-container {
           animation: widgetSpotlight 3s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
         }
       </style>
-      <div id="widget-spotlight"></div>
       <script src="${protocol}://${host}/widget.js"></script>
       <script>
-        // Remove the spotlight after animation
-        setTimeout(() => {
-          const spotlight = document.getElementById('widget-spotlight');
-          if (spotlight) {
-            spotlight.style.opacity = '0';
-            setTimeout(() => spotlight.remove(), 1000);
-          }
-        }, 3000);
+        // Wait for widget to be created
+        function waitForWidget() {
+          const checkInterval = setInterval(() => {
+            const widget = document.querySelector('#gist-widget-container');
+            if (widget) {
+              clearInterval(checkInterval);
+              
+              // Add spotlight element
+              const spotlight = document.createElement('div');
+              spotlight.id = 'widget-spotlight';
+              document.body.appendChild(spotlight);
+
+              // Remove the spotlight after animation
+              setTimeout(() => {
+                spotlight.style.opacity = '0';
+                setTimeout(() => spotlight.remove(), 1000);
+              }, 3000);
+            }
+          }, 100);
+
+          // Timeout after 10 seconds
+          setTimeout(() => clearInterval(checkInterval), 10000);
+        }
+
+        // Start checking once the page is loaded
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', waitForWidget);
+        } else {
+          waitForWidget();
+        }
       </script>`;
       
       // Add demo banner
