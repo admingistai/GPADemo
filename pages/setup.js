@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import { useAmplitude } from '../context/AmplitudeContext';
 
 export default function Setup() {
   const router = useRouter();
+  const { trackEvent } = useAmplitude();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,6 +25,14 @@ export default function Setup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    
+    // Track Generate Widget button click
+    await trackEvent('generate_widget_clicked', {
+      website_url: formData.websiteUrl,
+      enabled_tools: Object.entries(formData.tools)
+        .filter(([_, enabled]) => enabled)
+        .map(([tool]) => tool)
+    });
     
     // Start loading
     setIsGenerating(true);
@@ -73,9 +83,24 @@ export default function Setup() {
 
       setGeneratedCode(code);
       setShowCode(true);
+
+      // Track successful widget generation
+      await trackEvent('widget_generated_success', {
+        setup_id: setupId,
+        website_url: formattedUrl,
+        enabled_tools: Object.entries(formData.tools)
+          .filter(([_, enabled]) => enabled)
+          .map(([tool]) => tool)
+      });
     } catch (error) {
       console.error('Error:', error);
       setError('Failed to generate widget. Please try again.');
+
+      // Track widget generation failure
+      await trackEvent('widget_generated_error', {
+        error_message: error.message,
+        website_url: formattedUrl
+      });
     } finally {
       setIsGenerating(false);
     }
@@ -99,6 +124,15 @@ export default function Setup() {
         [name]: type === 'checkbox' ? checked : value
       }));
     }
+  };
+
+  const handleDashboardClick = async () => {
+    // Track Dashboard button click
+    await trackEvent('dashboard_clicked', {
+      from_page: 'setup',
+      after_widget_generation: true
+    });
+    router.push('/dashboard');
   };
 
   return (
@@ -240,12 +274,12 @@ export default function Setup() {
               </button>
             </div>
             
-                          <button
-                onClick={() => router.push('/dashboard')}
-                className="dashboard-button"
-              >
-                Go to Dashboard
-              </button>
+            <button
+              onClick={handleDashboardClick}
+              className="dashboard-button"
+            >
+              Go to Dashboard
+            </button>
           </div>
         )}
       </div>

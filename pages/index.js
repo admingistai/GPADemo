@@ -162,6 +162,18 @@ export default function Home() {
     router.push('/setup');
   };
 
+  const handleTryItClick = async (location) => {
+    if (!targetUrl.trim()) return;
+
+    // Track Try it button click
+    await trackEvent('try_it_clicked', {
+      location,
+      website_url: targetUrl
+    });
+
+    handleUrlSubmit(targetUrl);
+  };
+
   return (
     <>
       <Head>
@@ -347,11 +359,11 @@ export default function Home() {
                           placeholder="Enter your website URL"
                         value={targetUrl}
                         onChange={(e) => setTargetUrl(e.target.value)}
-                          onKeyPress={(e) => e.key === 'Enter' && targetUrl.trim() && handleUrlSubmit(targetUrl)}
+                          onKeyPress={(e) => e.key === 'Enter' && targetUrl.trim() && handleTryItClick('hero')}
                       />
                       <button
                           className="hero-try-btn"
-                          onClick={() => targetUrl.trim() && handleUrlSubmit(targetUrl)}
+                          onClick={() => handleTryItClick('hero')}
                           disabled={!targetUrl.trim()}
                         >
                           Try It
@@ -447,11 +459,11 @@ export default function Home() {
                         placeholder="Enter your website URL"
                         value={targetUrl}
                         onChange={(e) => setTargetUrl(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && targetUrl.trim() && handleUrlSubmit(targetUrl)}
+                        onKeyPress={(e) => e.key === 'Enter' && targetUrl.trim() && handleTryItClick('final_cta')}
                       />
                       <button
                         className="final-try-btn"
-                        onClick={() => targetUrl.trim() && handleUrlSubmit(targetUrl)}
+                        onClick={() => handleTryItClick('final_cta')}
                         disabled={!targetUrl.trim()}
                       >
                         Try It
