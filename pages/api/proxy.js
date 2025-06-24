@@ -190,76 +190,11 @@ export default async function handler(req, res) {
         </style>
       `;
 
-      // Add widget guide animation
-      const widgetGuide = `
-        <div id="widget-guide" style="
-          position: fixed;
-          bottom: 120px;
-          left: 50%;
-          transform: translateX(-50%);
-          background: rgba(0, 0, 0, 0.75);
-          color: white;
-          padding: 12px 20px;
-          border-radius: 8px;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-          text-align: center;
-          z-index: 999998;
-          opacity: 0;
-          animation: guideFloat 3s ease-in-out forwards;
-          pointer-events: none;
-          backdrop-filter: blur(5px);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-          max-width: 280px;
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        ">
-          <div style="
-            font-size: 14px;
-            line-height: 1.4;
-            font-weight: 500;
-          ">
-            Ask questions about this website
-          </div>
-          <svg width="20" height="20" viewBox="0 0 24 24" style="min-width: 20px;">
-            <path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z" fill="white"/>
-          </svg>
-        </div>
-        <style>
-          @keyframes guideFloat {
-            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            15% { opacity: 1; transform: translateX(-50%) translateY(0); }
-            85% { opacity: 1; transform: translateX(-50%) translateY(0); }
-            100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-          }
-        </style>
-        <script>
-          // Remove the guide after animation
-          setTimeout(() => {
-            const guide = document.getElementById('widget-guide');
-            if (guide) {
-              guide.remove();
-            }
-          }, 3000);
-        </script>
-      `;
-      
-      if (html.includes('</head>')) {
-        // Inject before closing head tag
-        html = html.replace('</head>', `${widgetScript}</head>`);
-      } else if (html.includes('</body>')) {
-        // Fallback: inject before closing body tag
-        html = html.replace('</body>', `${widgetScript}</body>`);
-      } else {
-        // Last resort: append to the end
-        html += widgetScript;
-      }
-      
-      // Add demo banner and widget guide to the body
+      // Add demo banner to the body
       if (html.includes('</body>')) {
-        html = html.replace('</body>', `${demoBanner}${widgetGuide}</body>`);
+        html = html.replace('</body>', `${demoBanner}</body>`);
       } else {
-        html += `${demoBanner}${widgetGuide}`;
+        html += demoBanner;
       }
     }
 
