@@ -189,12 +189,24 @@ export default async function handler(req, res) {
           body { margin-top: 50px !important; }
         </style>
       `;
-
-      // Add demo banner to the body
-      if (html.includes('</body>')) {
-        html = html.replace('</body>', `${demoBanner}</body>`);
+      
+      if (html.includes('</head>')) {
+        // Inject before closing head tag
+        html = html.replace('</head>', `${widgetScript}</head>`);
+      } else if (html.includes('</body>')) {
+        // Fallback: inject before closing body tag
+        html = html.replace('</body>', `${widgetScript}</body>`);
       } else {
-        html += demoBanner;
+        // Last resort: append to the end
+        html += widgetScript;
+      }
+      
+      // Inject demo banner after body tag
+      if (html.includes('<body')) {
+        html = html.replace(/(<body[^>]*>)/, `$1${demoBanner}`);
+      } else {
+        // Fallback: prepend to HTML
+        html = demoBanner + html;
       }
     }
 
