@@ -2,6 +2,19 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
+const TOOL_ICONS = {
+  summarize: '📝',
+  remix: '🎛️',
+  share: '🔗',
+  ads: '💸',
+};
+const TOOL_LABELS = {
+  summarize: 'Summarize',
+  remix: 'Remix',
+  share: 'Share',
+  ads: 'Ads',
+};
+
 const mockSites = [
   {
     id: 1,
@@ -130,6 +143,7 @@ export default function Dashboard() {
     setEditSiteId(null);
   };
 
+  // --- UI ---
   return (
     <>
       <Head>
@@ -160,17 +174,38 @@ export default function Dashboard() {
             <div className="sites-page">
               <div className="sites-header">
                 <h1 className="dashboard-title">Your Sites</h1>
-                <button className="add-site-btn" title="Add Site" onClick={handleAddSite}>+
-                </button>
+                <button className="add-site-btn" title="Add Site" onClick={handleAddSite}>+ Add Site</button>
               </div>
-              <ul className="sites-list">
+              <div className="sites-grid">
                 {sites.map(site => (
-                  <li key={site.id} className="site-item" onClick={() => handleEditSite(site)} tabIndex={0} style={{ cursor: 'pointer' }}>
-                    <span className="site-name">{site.name}</span>
-                    <a href={site.url} target="_blank" rel="noopener noreferrer" className="site-link" onClick={e => e.stopPropagation()}>{site.url}</a>
-                  </li>
+                  <div key={site.id} className="site-card">
+                    <div className="site-card-header">
+                      <div className="site-card-title">
+                        <span className="site-card-favicon" style={{ background: site.color }}>
+                          {site.favicon ? (
+                            <img src={site.favicon} alt="favicon" />
+                          ) : (
+                            <span className="site-card-initial">{site.name[0].toUpperCase()}</span>
+                          )}
+                        </span>
+                        <div>
+                          <div className="site-card-name">{site.name}</div>
+                          <a href={site.url} target="_blank" rel="noopener noreferrer" className="site-card-url">{site.url}</a>
+                        </div>
+                      </div>
+                      <button className="site-card-edit" title="Edit" onClick={e => { e.stopPropagation(); handleEditSite(site); }}>Edit</button>
+                    </div>
+                    <div className="site-card-tools">
+                      {Object.entries(site.tools).map(([tool, enabled]) =>
+                        enabled ? (
+                          <span key={tool} className="site-tool-badge" title={TOOL_LABELS[tool]}>{TOOL_ICONS[tool]}</span>
+                        ) : null
+                      )}
+                      <span className="site-tool-color" title="Widget Color" style={{ background: site.color }}></span>
+                    </div>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           )}
         </main>
@@ -180,22 +215,38 @@ export default function Dashboard() {
               {!showCode ? (
                 <form className="add-site-form" onSubmit={handleModalSubmit}>
                   <h2>{editSiteId ? 'Edit Site' : 'Add a New Site'}</h2>
-                  <label>Site URL
-                    <input type="text" name="url" value={form.url} onChange={handleFormChange} placeholder="yourwebsite.com" required />
-                  </label>
-                  <div className="form-section">
-                    <span>Enable Tools:</span>
-                    <label><input type="checkbox" name="tools.summarize" checked={form.tools.summarize} onChange={handleFormChange} /> Summarize</label>
-                    <label><input type="checkbox" name="tools.remix" checked={form.tools.remix} onChange={handleFormChange} /> Remix</label>
-                    <label><input type="checkbox" name="tools.share" checked={form.tools.share} onChange={handleFormChange} /> Share</label>
-                    <label><input type="checkbox" name="tools.ads" checked={form.tools.ads} onChange={handleFormChange} /> Ads</label>
+                  <div className="modal-form-row">
+                    <div className="modal-form-col">
+                      <label>Site URL
+                        <input type="text" name="url" value={form.url} onChange={handleFormChange} placeholder="yourwebsite.com" required />
+                      </label>
+                      <label>Widget Color
+                        <input type="color" name="color" value={form.color} onChange={handleFormChange} />
+                      </label>
+                      <label>Favicon URL
+                        <input type="text" name="favicon" value={form.favicon} onChange={handleFormChange} placeholder="https://yourwebsite.com/favicon.ico" />
+                      </label>
+                    </div>
+                    <div className="modal-form-col">
+                      <div className="form-section">
+                        <span>Enable Tools:</span>
+                        <div className="tool-toggle-group">
+                          {Object.keys(TOOL_LABELS).map(tool => (
+                            <label key={tool} className={`tool-toggle${form.tools[tool] ? ' enabled' : ''}`} title={TOOL_LABELS[tool]}>
+                              <input type="checkbox" name={`tools.${tool}`} checked={form.tools[tool]} onChange={handleFormChange} />
+                              <span className="tool-toggle-icon">{TOOL_ICONS[tool]}</span>
+                              <span className="tool-toggle-label">{TOOL_LABELS[tool]}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="widget-preview">
+                        <span className="widget-preview-color" style={{ background: form.color }}></span>
+                        {form.favicon && <img src={form.favicon} alt="favicon" className="widget-preview-favicon" />}
+                        <span className="widget-preview-label">Widget Preview</span>
+                      </div>
+                    </div>
                   </div>
-                  <label>Widget Color
-                    <input type="color" name="color" value={form.color} onChange={handleFormChange} />
-                  </label>
-                  <label>Favicon URL
-                    <input type="text" name="favicon" value={form.favicon} onChange={handleFormChange} placeholder="https://yourwebsite.com/favicon.ico" />
-                  </label>
                   <div className="modal-actions">
                     <button type="button" className="modal-cancel" onClick={closeModal}>Cancel</button>
                     <button type="submit" className="modal-submit">Generate Widget Code</button>
@@ -305,14 +356,10 @@ export default function Dashboard() {
           background: linear-gradient(135deg, #ff6b35 0%, #3742fa 100%);
           color: #fff;
           border: none;
-          font-size: 2rem;
+          font-size: 1.1rem;
           font-weight: 700;
-          border-radius: 50%;
-          width: 2.5rem;
-          height: 2.5rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          border-radius: 8px;
+          padding: 0.75rem 1.5rem;
           box-shadow: 0 2px 8px rgba(55,66,250,0.08);
           cursor: pointer;
           transition: background 0.15s, box-shadow 0.15s;
@@ -321,31 +368,108 @@ export default function Dashboard() {
           background: linear-gradient(135deg, #3742fa 0%, #ff6b35 100%);
           box-shadow: 0 4px 16px rgba(55,66,250,0.12);
         }
-        .sites-list {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-          width: 100%;
+        .sites-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 2rem;
         }
-        .site-item {
+        .site-card {
+          background: #fff;
+          border-radius: 16px;
+          box-shadow: 0 4px 24px rgba(55,66,250,0.07);
+          padding: 1.5rem 1.5rem 1rem 1.5rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1.25rem;
+          border: 1.5px solid #e5e7eb;
+          transition: box-shadow 0.15s, border 0.15s;
+        }
+        .site-card:hover {
+          box-shadow: 0 8px 32px rgba(55,66,250,0.13);
+          border: 1.5px solid #3742fa;
+        }
+        .site-card-header {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 1rem 0;
-          border-bottom: 1px solid #e5e7eb;
+          gap: 1rem;
         }
-        .site-item:focus {
-          outline: 2px solid #3742fa;
+        .site-card-title {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
         }
-        .site-name {
-          font-weight: 600;
+        .site-card-favicon {
+          width: 44px;
+          height: 44px;
+          border-radius: 12px;
+          background: #f3f4f6;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          box-shadow: 0 2px 8px rgba(55,66,250,0.07);
+        }
+        .site-card-favicon img {
+          width: 32px;
+          height: 32px;
+          object-fit: contain;
+        }
+        .site-card-initial {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #fff;
+        }
+        .site-card-name {
+          font-size: 1.15rem;
+          font-weight: 700;
           color: #374151;
-          font-size: 1.1rem;
         }
-        .site-link {
+        .site-card-url {
           color: #3742fa;
           text-decoration: underline;
+          font-size: 0.98rem;
+        }
+        .site-card-edit {
+          background: #f3f4f6;
+          color: #374151;
+          border: 1.5px solid #e5e7eb;
+          padding: 0.5rem 1.25rem;
+          border-radius: 8px;
           font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 0.15s, border 0.15s;
+        }
+        .site-card-edit:hover {
+          background: #3742fa;
+          color: #fff;
+          border: 1.5px solid #3742fa;
+        }
+        .site-card-tools {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        }
+        .site-tool-badge {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: #f3f4f6;
+          color: #3742fa;
+          font-size: 1.15rem;
+          border-radius: 8px;
+          padding: 0.25rem 0.6rem;
+          font-weight: 700;
+          border: 1.5px solid #e5e7eb;
+        }
+        .site-tool-color {
+          display: inline-block;
+          width: 22px;
+          height: 22px;
+          border-radius: 6px;
+          border: 2px solid #e5e7eb;
+          margin-left: 0.5rem;
         }
         /* Modal styles */
         .modal-overlay {
@@ -362,8 +486,8 @@ export default function Dashboard() {
           border-radius: 16px;
           box-shadow: 0 8px 40px rgba(55,66,250,0.10);
           padding: 2rem 2.5rem;
-          min-width: 320px;
-          max-width: 95vw;
+          min-width: 340px;
+          max-width: 98vw;
           max-height: 90vh;
           overflow-y: auto;
         }
@@ -372,6 +496,14 @@ export default function Dashboard() {
           font-weight: 700;
           color: #3742fa;
           margin-bottom: 1.5rem;
+        }
+        .modal-form-row {
+          display: flex;
+          gap: 2rem;
+        }
+        .modal-form-col {
+          flex: 1;
+          min-width: 180px;
         }
         .add-site-form label {
           display: block;
@@ -398,15 +530,57 @@ export default function Dashboard() {
         .form-section {
           margin-bottom: 1.25rem;
         }
-        .form-section label {
-          display: inline-flex;
-          align-items: center;
-          font-weight: 500;
-          margin-right: 1.5rem;
-          margin-bottom: 0;
+        .tool-toggle-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
         }
-        .form-section input[type="checkbox"] {
+        .tool-toggle {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          background: #f3f4f6;
+          border-radius: 8px;
+          padding: 0.5rem 0.75rem;
+          font-weight: 600;
+          border: 1.5px solid #e5e7eb;
+          cursor: pointer;
+          transition: background 0.15s, border 0.15s;
+        }
+        .tool-toggle.enabled {
+          background: #3742fa;
+          color: #fff;
+          border: 1.5px solid #3742fa;
+        }
+        .tool-toggle input[type="checkbox"] {
           margin-right: 0.5rem;
+        }
+        .tool-toggle-icon {
+          font-size: 1.15rem;
+        }
+        .widget-preview {
+          margin-top: 2rem;
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        }
+        .widget-preview-color {
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
+          border: 2px solid #e5e7eb;
+        }
+        .widget-preview-favicon {
+          width: 28px;
+          height: 28px;
+          border-radius: 6px;
+          object-fit: contain;
+          border: 1.5px solid #e5e7eb;
+        }
+        .widget-preview-label {
+          font-size: 1rem;
+          color: #6b7280;
+          margin-left: 0.5rem;
         }
         .modal-actions {
           display: flex;
@@ -472,6 +646,16 @@ export default function Dashboard() {
             flex-direction: row;
             gap: 1rem;
             margin-left: 2rem;
+          }
+        }
+        @media (max-width: 700px) {
+          .sites-grid {
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
+          }
+          .modal-form-row {
+            flex-direction: column;
+            gap: 1rem;
           }
         }
         @media (max-width: 600px) {
