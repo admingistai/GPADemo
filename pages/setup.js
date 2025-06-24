@@ -240,15 +240,12 @@ export default function Setup() {
               </button>
             </div>
             
-            <button
-              onClick={() => {
-                setShowCode(false);
-                setGeneratedCode('');
-              }}
-              className="back-button"
-            >
-              Generate Another Widget
-            </button>
+                          <button
+                onClick={() => router.push('/dashboard')}
+                className="dashboard-button"
+              >
+                Go to Dashboard
+              </button>
           </div>
         )}
       </div>
@@ -405,11 +402,11 @@ export default function Setup() {
         }
 
         .loading-spinner {
-          border: 4px solid #F3F4F6;
+          border: 4px solid #f3f3f3;
           border-top: 4px solid #6366F1;
           border-radius: 50%;
-          width: 50px;
-          height: 50px;
+          width: 40px;
+          height: 40px;
           animation: spin 1s linear infinite;
           margin: 0 auto 2rem;
         }
@@ -455,7 +452,7 @@ export default function Setup() {
           background: #4B5563;
         }
 
-        .back-button {
+        .dashboard-button {
           padding: 1rem 2rem;
           background: #6366F1;
           color: white;
@@ -467,7 +464,7 @@ export default function Setup() {
           transition: all 0.2s;
         }
 
-        .back-button:hover {
+        .dashboard-button:hover {
           background: #4F46E5;
         }
 
