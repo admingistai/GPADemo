@@ -190,90 +190,102 @@ export default async function handler(req, res) {
         </style>
       `;
 
-      // Add widget attention animation
-      const widgetAnimation = `
-        <style>
-          @keyframes widgetAttentionPulse {
-            0% { transform: scale(1); opacity: 0; }
-            20% { transform: scale(1.2); opacity: 0.8; }
-            40% { transform: scale(1); opacity: 0.5; }
-            60% { transform: scale(1.1); opacity: 0.8; }
-            80% { transform: scale(1); opacity: 0.5; }
-            100% { transform: scale(1); opacity: 0; }
-          }
-
-          @keyframes widgetArrowBounce {
-            0% { transform: translateY(0) rotate(45deg); opacity: 0; }
-            20% { transform: translateY(-10px) rotate(45deg); opacity: 1; }
-            40% { transform: translateY(0) rotate(45deg); opacity: 0.8; }
-            60% { transform: translateY(-5px) rotate(45deg); opacity: 1; }
-            80% { transform: translateY(0) rotate(45deg); opacity: 0.8; }
-            100% { transform: translateY(0) rotate(45deg); opacity: 0; }
-          }
-
-          .widget-attention {
-            position: fixed;
-            bottom: 100px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: 3px solid #0070f3;
-            pointer-events: none;
-            z-index: 999998;
-            animation: widgetAttentionPulse 3s ease-out forwards;
-          }
-
-          .widget-arrow {
-            position: fixed;
-            bottom: 170px;
-            right: 50px;
-            width: 20px;
-            height: 20px;
-            border-right: 4px solid #0070f3;
-            border-bottom: 4px solid #0070f3;
-            pointer-events: none;
-            z-index: 999998;
-            animation: widgetArrowBounce 3s ease-out forwards;
-          }
-
-          .widget-tooltip {
-            position: fixed;
-            bottom: 180px;
-            right: 80px;
-            background: #0070f3;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-family: Arial, sans-serif;
+      // Add widget guide animation
+      const widgetGuide = `
+        <div id="widget-guide" style="
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: rgba(0, 0, 0, 0.8);
+          color: white;
+          padding: 20px;
+          border-radius: 12px;
+          font-family: Arial, sans-serif;
+          text-align: center;
+          z-index: 999998;
+          opacity: 0;
+          animation: fadeInOut 4s ease-in-out forwards;
+          pointer-events: none;
+        ">
+          <div style="
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: bold;
+          ">
+            Ask Anything™ Widget
+          </div>
+          <div style="
             font-size: 14px;
-            pointer-events: none;
-            z-index: 999998;
-            opacity: 0;
-            animation: fadeInOut 3s ease-out forwards;
-          }
-
+            margin-bottom: 20px;
+          ">
+            Click the button below to start asking questions
+          </div>
+          <div style="
+            width: 2px;
+            height: 100px;
+            background: white;
+            margin: 0 auto;
+            position: relative;
+            animation: extendLine 1s ease-out forwards;
+          ">
+            <div style="
+              position: absolute;
+              bottom: -10px;
+              left: 50%;
+              transform: translateX(-50%);
+              width: 20px;
+              height: 20px;
+              border-left: 2px solid white;
+              border-bottom: 2px solid white;
+              transform-origin: bottom left;
+              animation: pointDown 1s infinite;
+            "></div>
+          </div>
+        </div>
+        <style>
           @keyframes fadeInOut {
-            0% { opacity: 0; transform: translateY(10px); }
-            20% { opacity: 1; transform: translateY(0); }
-            80% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-10px); }
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+          }
+          @keyframes extendLine {
+            from { height: 0; }
+            to { height: 100px; }
+          }
+          @keyframes pointDown {
+            0%, 100% { transform: translateX(-50%) rotate(-45deg) translateY(0); }
+            50% { transform: translateX(-50%) rotate(-45deg) translateY(10px); }
           }
         </style>
-        <div class="widget-attention"></div>
-        <div class="widget-arrow"></div>
-        <div class="widget-tooltip">Ask me anything about this page!</div>
+        <script>
+          // Remove the guide after animation
+          setTimeout(() => {
+            const guide = document.getElementById('widget-guide');
+            if (guide) {
+              guide.remove();
+            }
+          }, 4000);
+        </script>
       `;
       
       if (html.includes('</head>')) {
         // Inject before closing head tag
-        html = html.replace('</head>', `${widgetScript}${widgetAnimation}</head>`);
+        html = html.replace('</head>', `${widgetScript}</head>`);
       } else if (html.includes('</body>')) {
         // Fallback: inject before closing body tag
-        html = html.replace('</body>', `${widgetScript}${widgetAnimation}</body>`);
+        html = html.replace('</body>', `${widgetScript}</body>`);
       } else {
         // Last resort: append to the end
-        html += widgetScript + widgetAnimation;
+        html += widgetScript;
+      }
+      
+      // Add demo banner and widget guide to the body
+      if (html.includes('</body>')) {
+        html = html.replace('</body>', `${demoBanner}${widgetGuide}</body>`);
+      } else {
+        html += `${demoBanner}${widgetGuide}`;
       }
     }
 
