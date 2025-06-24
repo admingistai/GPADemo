@@ -4,9 +4,11 @@ import { useRouter } from 'next/router';
 import URLInputForm from '../components/URLInputForm';
 import WebsiteDisplay from '../components/WebsiteDisplay';
 import ErrorDisplay from '../components/ErrorDisplay';
+import { useAmplitude } from '../context/AmplitudeContext';
 
 export default function Home() {
   const router = useRouter();
+  const { trackEvent } = useAmplitude();
   const [targetUrl, setTargetUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -116,6 +118,22 @@ export default function Home() {
     setShowFeaturePage(false);
     setTargetUrl('');
     setLoading(false);
+  };
+
+  const handleGetStartedClick = () => {
+    trackEvent('get_started_clicked', {
+      location: 'hero_section',
+      page: 'home'
+    });
+    router.push('/setup');
+  };
+
+  const handleFinalGetStartedClick = () => {
+    trackEvent('get_started_clicked', {
+      location: 'final_cta_section',
+      page: 'home'
+    });
+    router.push('/setup');
   };
 
   return (
@@ -283,7 +301,7 @@ export default function Home() {
                 </p>
                 <div className="hero-cta">
                   <button
-                    onClick={() => router.push('/setup')}
+                    onClick={handleGetStartedClick}
                     className="get-started-btn"
                   >
                     Get Started
@@ -383,7 +401,7 @@ export default function Home() {
               <h2 className="cta-title">Ready to add Ask Anything™ to your website?</h2>
               <div className="final-cta-actions">
                 <button
-                  onClick={() => router.push('/setup')}
+                  onClick={handleFinalGetStartedClick}
                   className="final-get-started-btn"
                 >
                   Get Started
