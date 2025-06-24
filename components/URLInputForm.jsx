@@ -9,7 +9,7 @@ export default function URLInputForm({ onSubmit, loading, error }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Clear previous validation errorx
+    // Clear previous validation error
     setValidationError('');
 
     // Debug logging
@@ -31,7 +31,8 @@ export default function URLInputForm({ onSubmit, loading, error }) {
   };
 
   const handleInputChange = (e) => {
-    setUrl(e.target.value);
+    const value = e.target.value.toLowerCase(); // Convert to lowercase for consistency
+    setUrl(value);
     // Clear validation error when user types
     if (validationError) {
       setValidationError('');

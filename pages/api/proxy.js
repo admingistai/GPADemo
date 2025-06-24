@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { URL } from 'url';
+import { validateUrl } from '../../utils/urlValidator';
 
 // Simple rate limiting (in-memory for serverless)
 const requestCounts = new Map();
@@ -22,23 +23,23 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'URL parameter is required' });
     }
 
-    // Basic URL validation
-    let parsedUrl;
-    try {
-      parsedUrl = new URL(targetUrl);
-    } catch (e) {
-      return res.status(400).json({ error: 'Invalid URL format' });
+    // Use our URL validator to normalize and validate the URL
+    const validation = validateUrl(targetUrl);
+    if (!validation.isValid) {
+      return res.status(400).json({ error: validation.error });
     }
+
+    const normalizedUrl = validation.normalizedUrl;
 
     // Security checks - block internal/private IPs
     const blockedHosts = ['localhost', '127.0.0.1', '0.0.0.0', '::1'];
-    if (blockedHosts.includes(parsedUrl.hostname)) {
+    if (blockedHosts.includes(new URL(normalizedUrl).hostname)) {
       return res.status(403).json({ error: 'Access to local addresses is not allowed' });
     }
 
     // Check for private IP ranges (RFC 1918)
     const privateIPRegex = /^(10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.)/;
-    if (privateIPRegex.test(parsedUrl.hostname)) {
+    if (privateIPRegex.test(new URL(normalizedUrl).hostname)) {
       return res.status(403).json({ error: 'Access to private IP addresses is not allowed' });
     }
 
@@ -66,7 +67,7 @@ export default async function handler(req, res) {
     if (isTest) {
       try {
         // Do a HEAD request to check if URL is reachable
-        await axios.head(targetUrl, { 
+        await axios.head(normalizedUrl, { 
           timeout: 8000, // Increased timeout for slow websites
           validateStatus: status => status < 500,
           headers: {
@@ -76,7 +77,7 @@ export default async function handler(req, res) {
         });
         return res.status(200).json({ success: true });
       } catch (error) {
-        console.error('Test request failed for:', targetUrl, error.message);
+        console.error('Test request failed for:', normalizedUrl, error.message);
         
         // Provide more specific error messages
         if (error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT') {
@@ -105,7 +106,7 @@ export default async function handler(req, res) {
     }
 
     // Fetch the target website
-    const response = await axios.get(targetUrl, {
+    const response = await axios.get(normalizedUrl, {
       timeout: 30000, // 30 seconds for main request
       maxRedirects: 5,
       validateStatus: status => status < 500,
@@ -131,7 +132,7 @@ export default async function handler(req, res) {
     let html = response.data;
     if (contentType.includes('text/html')) {
       // Basic URL rewriting - convert relative URLs to absolute
-      const baseUrl = new URL(targetUrl).origin;
+      const baseUrl = new URL(normalizedUrl).origin;
       
       // Fix relative links
       html = html.replace(/href="\/([^"]*)"/, `href="${baseUrl}/$1"`);
@@ -139,7 +140,7 @@ export default async function handler(req, res) {
       
       // Add base tag for better relative URL handling
       if (html.includes('<head>')) {
-        html = html.replace('<head>', `<head><base href="${targetUrl}">`);
+        html = html.replace('<head>', `<head><base href="${normalizedUrl}">`);
       }
 
       // Inject widget.js script into the HTML with absolute URL and no defer
@@ -211,7 +212,7 @@ export default async function handler(req, res) {
 
     // Set appropriate headers
     res.setHeader('Content-Type', contentType);
-    res.setHeader('X-Proxied-URL', targetUrl);
+    res.setHeader('X-Proxied-URL', normalizedUrl);
     
     // Remove headers that might prevent embedding
     res.removeHeader('X-Frame-Options');
