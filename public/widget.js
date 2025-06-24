@@ -1311,6 +1311,27 @@
             .gist-remix-create:active {
                 transform: translateY(0);
             }
+            
+            /* Engagement footer fade-in animation */
+            .gist-engagement-footer.hidden {
+                opacity: 0;
+                visibility: hidden;
+            }
+            
+            .gist-engagement-footer.fade-in {
+                animation: fadeIn 0.5s ease-in forwards;
+            }
+            
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
         `;
     }
 
@@ -1901,7 +1922,7 @@ Return exactly 3 questions, one per line, no numbering:`;
                 
                 // Add engagement footer with buttons
                 const engagementFooter = document.createElement('div');
-                engagementFooter.className = 'gist-engagement-footer';
+                engagementFooter.className = 'gist-engagement-footer hidden';
                 engagementFooter.innerHTML = `
                     <div class="gist-engagement-buttons">
                         <button class="gist-engagement-btn gist-like-btn" title="Like">
@@ -1935,7 +1956,7 @@ Return exactly 3 questions, one per line, no numbering:`;
                 
                 // Add suggested questions section after engagement footer
                 const suggestedQuestionsSection = document.createElement('div');
-                suggestedQuestionsSection.className = 'gist-follow-up-questions';
+                suggestedQuestionsSection.className = 'gist-follow-up-questions hidden';
                 suggestedQuestionsSection.innerHTML = `
                     <div class="gist-follow-up-title">Ask a follow-up question:</div>
                     <div class="gist-follow-up-loading">Generating relevant questions...</div>
@@ -1946,10 +1967,19 @@ Return exactly 3 questions, one per line, no numbering:`;
                 currentSession.appendChild(answerLayout);
                 
                 // Start typewriter effect
-                typewriterEffect(answer, uniqueId);
+                typewriterEffect(answer, uniqueId, () => {
+                    const footer = currentSession.querySelector('.gist-engagement-footer');
+                    if (footer) {
+                        footer.classList.remove('hidden');
+                        footer.classList.add('fade-in');
+                    }
+                });
                 
                 // Generate and add follow-up questions after typewriter completes
                 setTimeout(async () => {
+                    // Show the follow-up questions section
+                    suggestedQuestionsSection.classList.remove('hidden');
+                    suggestedQuestionsSection.classList.add('fade-in');
                     await addFollowUpQuestions(suggestedQuestionsSection, question, answer);
                 }, answer.length * 5 + 500); // Wait for typewriter to finish + buffer
                 
@@ -2020,7 +2050,7 @@ Return exactly 3 questions, one per line, no numbering:`;
         }
 
         // Typewriter effect
-        function typewriterEffect(text, targetId) {
+        function typewriterEffect(text, targetId, onComplete) {
             const target = shadowRoot.getElementById(targetId);
             if (!target) return;
             
@@ -2032,6 +2062,8 @@ Return exactly 3 questions, one per line, no numbering:`;
                     target.textContent += text.charAt(index);
                     index++;
                     setTimeout(type, speed);
+                } else if (index >= text.length && onComplete) {
+                    onComplete();
                 }
             }
             
