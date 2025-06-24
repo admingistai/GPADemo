@@ -101,83 +101,80 @@ export default function Setup() {
           <main className="main-content">
             {!showCode ? (
               <>
-                <h1 className="main-title">
-                  Setup Your Ask Anything™ Widget
-                </h1>
-                
-                <p className="setup-subhead">
-                  Configure your widget settings and generate the code to add to your website.
-                </p>
+                <div className="compact-header">
+                  <h1 className="main-title">Widget Setup</h1>
+                  <p className="setup-subhead">Configure your settings and get your code</p>
+                </div>
                 
                 <div className="setup-form-container">
-                  <div className="setup-card">
-                    <form onSubmit={handleSubmit} className="setup-form">
-                      <div className="form-section">
-                        <h3 className="section-title">Website Information</h3>
-                        <div className="form-group">
-                          <label htmlFor="websiteUrl">Website URL *</label>
+                  <form onSubmit={handleSubmit} className="setup-form">
+                    
+                    {/* Website URL - Single field */}
+                    <div className="form-section compact">
+                      <div className="form-group">
+                        <label htmlFor="websiteUrl">
+                          <span className="label-icon">🌐</span>
+                          Website URL *
+                        </label>
+                        <input
+                          type="url"
+                          id="websiteUrl"
+                          name="websiteUrl"
+                          value={formData.websiteUrl}
+                          onChange={handleInputChange}
+                          required
+                          placeholder="https://yourwebsite.com"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Tools & Features - Compact grid */}
+                    <div className="form-section compact">
+                      <h3 className="section-title">
+                        <span className="section-icon">⚡</span>
+                        Features
+                      </h3>
+                      <div className="tools-compact-grid">
+                        <div className="tool-compact-item">
                           <input
-                            type="url"
-                            id="websiteUrl"
-                            name="websiteUrl"
-                            value={formData.websiteUrl}
+                            type="checkbox"
+                            id="summarize"
+                            name="tools.summarize"
+                            checked={formData.tools.summarize}
                             onChange={handleInputChange}
-                            required
-                            placeholder="https://yourwebsite.com"
                           />
+                          <label htmlFor="summarize" className="tool-compact-label">
+                            <span className="tool-name">Summarize</span>
+                          </label>
                         </div>
-                      </div>
-
-                      <div className="form-section">
-                        <h3 className="section-title">Tools</h3>
-                        <div className="tools-grid">
-                          <div className="tool-item">
-                            <input
-                              type="checkbox"
-                              id="summarize"
-                              name="tools.summarize"
-                              checked={formData.tools.summarize}
-                              onChange={handleInputChange}
-                            />
-                            <label htmlFor="summarize" className="tool-label">
-                              <span className="tool-name">Summarize</span>
-                              <span className="tool-description">One-sentence AI summary of any content</span>
-                            </label>
-                          </div>
-                          
-                          <div className="tool-item">
-                            <input
-                              type="checkbox"
-                              id="remix"
-                              name="tools.remix"
-                              checked={formData.tools.remix}
-                              onChange={handleInputChange}
-                            />
-                            <label htmlFor="remix" className="tool-label">
-                              <span className="tool-name">Remix</span>
-                              <span className="tool-description">Transform content into different formats</span>
-                            </label>
-                          </div>
-                          
-                          <div className="tool-item">
-                            <input
-                              type="checkbox"
-                              id="share"
-                              name="tools.share"
-                              checked={formData.tools.share}
-                              onChange={handleInputChange}
-                            />
-                            <label htmlFor="share" className="tool-label">
-                              <span className="tool-name">Share</span>
-                              <span className="tool-description">Enhanced sharing with AI-powered insights</span>
-                            </label>
-                          </div>
+                        
+                        <div className="tool-compact-item">
+                          <input
+                            type="checkbox"
+                            id="remix"
+                            name="tools.remix"
+                            checked={formData.tools.remix}
+                            onChange={handleInputChange}
+                          />
+                          <label htmlFor="remix" className="tool-compact-label">
+                            <span className="tool-name">Remix</span>
+                          </label>
                         </div>
-                      </div>
-
-                      <div className="form-section">
-                        <h3 className="section-title">Ad Settings</h3>
-                        <div className="tool-item">
+                        
+                        <div className="tool-compact-item">
+                          <input
+                            type="checkbox"
+                            id="share"
+                            name="tools.share"
+                            checked={formData.tools.share}
+                            onChange={handleInputChange}
+                          />
+                          <label htmlFor="share" className="tool-compact-label">
+                            <span className="tool-name">Share</span>
+                          </label>
+                        </div>
+                        
+                        <div className="tool-compact-item">
                           <input
                             type="checkbox"
                             id="proRataAds"
@@ -185,59 +182,62 @@ export default function Setup() {
                             checked={formData.adSettings.proRataAds}
                             onChange={handleInputChange}
                           />
-                          <label htmlFor="proRataAds" className="tool-label">
+                          <label htmlFor="proRataAds" className="tool-compact-label">
                             <span className="tool-name">ProRata Ads</span>
-                            <span className="tool-description">Enable revenue-sharing advertising</span>
                           </label>
                         </div>
                       </div>
+                    </div>
 
-                      <div className="form-section">
-                        <h3 className="section-title">Theme</h3>
-                        <div className="form-row">
-                          <div className="form-group">
-                            <label htmlFor="color">Primary Color</label>
-                            <div className="color-input-wrapper">
-                              <input
-                                type="color"
-                                id="color"
-                                name="theme.color"
-                                value={formData.theme.color}
-                                onChange={handleInputChange}
-                              />
-                              <input
-                                type="text"
-                                value={formData.theme.color}
-                                onChange={handleInputChange}
-                                name="theme.color"
-                                placeholder="#3742fa"
-                                className="color-text-input"
-                              />
-                            </div>
-                          </div>
-
-                          <div className="form-group">
-                            <label htmlFor="faviconLogo">Favicon Logo URL</label>
+                    {/* Theme Settings - Side by side */}
+                    <div className="form-section compact">
+                      <h3 className="section-title">
+                        <span className="section-icon">🎨</span>
+                        Appearance
+                      </h3>
+                      <div className="theme-grid">
+                        <div className="form-group">
+                          <label htmlFor="color">Primary Color</label>
+                          <div className="color-input-wrapper">
                             <input
-                              type="url"
-                              id="faviconLogo"
-                              name="theme.faviconLogo"
-                              value={formData.theme.faviconLogo}
+                              type="color"
+                              id="color"
+                              name="theme.color"
+                              value={formData.theme.color}
                               onChange={handleInputChange}
-                              placeholder="https://yoursite.com/favicon.png"
+                            />
+                            <input
+                              type="text"
+                              value={formData.theme.color}
+                              onChange={handleInputChange}
+                              name="theme.color"
+                              placeholder="#3742fa"
+                              className="color-text-input"
                             />
                           </div>
                         </div>
-                      </div>
 
-                      <button 
-                        type="submit"
-                        className="btn--primary"
-                      >
-                        Generate Widget Code
-                      </button>
-                    </form>
-                  </div>
+                        <div className="form-group">
+                          <label htmlFor="faviconLogo">Logo URL</label>
+                          <input
+                            type="url"
+                            id="faviconLogo"
+                            name="theme.faviconLogo"
+                            value={formData.theme.faviconLogo}
+                            onChange={handleInputChange}
+                            placeholder="https://yoursite.com/logo.png"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <button 
+                      type="submit"
+                      className="btn--primary generate-btn"
+                    >
+                      🚀 Generate Widget Code
+                    </button>
+                  </form>
                 </div>
               </>
             ) : (
@@ -382,59 +382,71 @@ export default function Setup() {
 
           .main-content {
             flex: 1;
-            padding: 4rem 3rem;
-            max-width: 1000px;
+            padding: 2rem 1.5rem;
+            max-width: 800px;
             margin: 0 auto;
             width: 100%;
           }
 
-          .main-title {
-            font-size: 3rem;
-            font-weight: 700;
+          .compact-header {
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+          }
+
+          .main-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
             color: #111827;
             letter-spacing: -0.02em;
             line-height: 1.2;
           }
 
           .setup-subhead, .code-subhead {
-            font-size: 1.2rem;
-            text-align: center;
+            font-size: 1.1rem;
             color: #6b7280;
-            margin-bottom: 3rem;
-            line-height: 1.6;
+            margin-bottom: 0;
+            line-height: 1.5;
           }
 
           .setup-form-container {
-            max-width: 800px;
-            margin: 0 auto;
+            max-width: 100%;
           }
 
-          .setup-card {
+          .setup-form {
             background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 3rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
           }
 
-          .form-section {
-            margin-bottom: 3rem;
-          }
-
-          .form-section:last-of-type {
+          .form-section.compact {
             margin-bottom: 2rem;
           }
 
+          .form-section.compact:last-of-type {
+            margin-bottom: 1.5rem;
+          }
+
           .section-title {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: 600;
             color: #111827;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #f3f4f6;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+          }
+
+          .section-icon {
+            font-size: 1.1rem;
+          }
+
+          .label-icon {
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
           }
 
           .form-group {
@@ -475,38 +487,36 @@ export default function Setup() {
             box-shadow: 0 0 0 3px rgba(55, 66, 250, 0.1);
           }
 
-          .tools-grid {
+          .tools-compact-grid {
             display: grid;
-            gap: 1rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
           }
 
-          .tool-item {
+          .tool-compact-item {
             display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            padding: 1.5rem;
-            background: #f9fafb;
-            border: 2px solid #f3f4f6;
-            border-radius: 12px;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
             transition: all 0.2s ease;
           }
 
-          .tool-item:hover {
-            border-color: #e5e7eb;
-            background: #ffffff;
+          .tool-compact-item:hover {
+            border-color: #3742fa;
+            background: #f1f5f9;
           }
 
-          .tool-item input[type="checkbox"] {
-            margin-top: 0.25rem;
-            width: 1.25rem;
-            height: 1.25rem;
+          .tool-compact-item input[type="checkbox"] {
+            width: 1.125rem;
+            height: 1.125rem;
             accent-color: #3742fa;
+            margin: 0;
           }
 
-          .tool-label {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
+          .tool-compact-label {
             cursor: pointer;
             flex: 1;
           }
@@ -514,13 +524,13 @@ export default function Setup() {
           .tool-name {
             font-weight: 600;
             color: #111827;
-            font-size: 1rem;
+            font-size: 0.95rem;
           }
 
-          .tool-description {
-            font-size: 0.9rem;
-            color: #6b7280;
-            line-height: 1.4;
+          .theme-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
           }
 
           .color-input-wrapper {
@@ -559,6 +569,13 @@ export default function Setup() {
           .btn--primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(55, 66, 250, 0.3);
+          }
+
+          .generate-btn {
+            margin-top: 1.5rem;
+            padding: 1.125rem 2rem;
+            font-size: 1.125rem;
+            font-weight: 700;
           }
 
           .btn--secondary {
@@ -691,22 +708,26 @@ export default function Setup() {
 
           @media (max-width: 768px) {
             .header {
-              padding: 1.5rem 2rem;
+              padding: 1.5rem 1rem;
             }
 
             .main-content {
-              padding: 3rem 2rem;
+              padding: 1.5rem 1rem;
             }
 
             .main-title {
-              font-size: 2.5rem;
+              font-size: 2rem;
             }
 
-            .setup-card {
-              padding: 2rem;
+            .setup-form {
+              padding: 1.5rem;
             }
 
-            .form-row {
+            .tools-compact-grid {
+              grid-template-columns: 1fr;
+            }
+
+            .theme-grid {
               grid-template-columns: 1fr;
             }
 
@@ -735,23 +756,31 @@ export default function Setup() {
 
           @media (max-width: 480px) {
             .header {
-              padding: 1rem;
+              padding: 1rem 0.75rem;
             }
 
             .main-content {
-              padding: 2rem 1rem;
+              padding: 1rem 0.75rem;
             }
 
             .main-title {
-              font-size: 2rem;
+              font-size: 1.75rem;
             }
 
-            .setup-card {
-              padding: 1.5rem;
+            .setup-form {
+              padding: 1.25rem;
+            }
+
+            .section-title {
+              font-size: 1.1rem;
             }
 
             .tagline {
               display: none;
+            }
+
+            .form-section.compact {
+              margin-bottom: 1.5rem;
             }
           }
         `}</style>
