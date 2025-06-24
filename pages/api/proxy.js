@@ -163,7 +163,86 @@ export default async function handler(req, res) {
       const updateUrlScript = widgetParams.toString() ? 
         `<script>history.replaceState({}, '', '${currentPageUrl}');</script>` : '';
       
-      const widgetScript = `${updateUrlScript}<script src="${protocol}://${host}/widget.js"></script>`;
+      const widgetScript = `${updateUrlScript}
+      <style>
+        @keyframes widgetSpotlight {
+          0% {
+            opacity: 0;
+            transform: scale(0.5) translateY(100px);
+          }
+          20% {
+            opacity: 1;
+            transform: scale(1.1) translateY(0);
+          }
+          30% {
+            transform: scale(1) translateY(0);
+          }
+          40% {
+            box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.6);
+          }
+          60% {
+            box-shadow: 0 0 0 20px rgba(66, 133, 244, 0);
+          }
+          100% {
+            box-shadow: 0 0 0 0 rgba(66, 133, 244, 0);
+          }
+        }
+
+        @keyframes widgetArrow {
+          0% {
+            opacity: 0;
+            transform: translateY(-100px);
+          }
+          20% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          80% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+        }
+
+        #widget-spotlight {
+          position: fixed;
+          bottom: 100px;
+          right: 30px;
+          width: 80px;
+          height: 80px;
+          pointer-events: none;
+          z-index: 999998;
+          animation: widgetArrow 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        #widget-spotlight::before {
+          content: "👇";
+          position: absolute;
+          font-size: 40px;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+        }
+
+        #gist-widget {
+          animation: widgetSpotlight 3s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+        }
+      </style>
+      <div id="widget-spotlight"></div>
+      <script src="${protocol}://${host}/widget.js"></script>
+      <script>
+        // Remove the spotlight after animation
+        setTimeout(() => {
+          const spotlight = document.getElementById('widget-spotlight');
+          if (spotlight) {
+            spotlight.style.opacity = '0';
+            setTimeout(() => spotlight.remove(), 1000);
+          }
+        }, 3000);
+      </script>`;
       
       // Add demo banner
       const demoBanner = `
