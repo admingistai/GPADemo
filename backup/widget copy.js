@@ -3604,7 +3604,7 @@
                     <button class="gist-secret-settings-btn" id="gist-secret-settings-btn" title="Widget Settings">⚙️</button>
                     <div class="gist-answer-content">
                         <div class="gist-answer-placeholder">
-                            Ask a question to see the answer here! <a href="/setup" style="color: inherit; text-decoration: underline; font-weight: bold; margin-left: 10px;">GET A REAL ONE</a>
+                            Ask a question to see the answer here! <a href="https://getaskanything.com/setup" style="color: inherit; text-decoration: underline; font-weight: bold; margin-left: 10px;">GET A REAL ONE</a>
                         </div>
                     </div>
                     <div class="gist-answer-footer">
@@ -3911,20 +3911,20 @@
                     const context = extractPageContext();
                     const hasContext = context && context.content && context.content.length > 50;
                     placeholderText = hasContext ? 
-                        'Ask anything about this article or any other topic! <a href="/setup" style="color: inherit; text-decoration: underline; font-weight: bold; margin-left: 10px;">GET A REAL ONE</a>' : 
+                        'Ask anything about this article or any other topic! <a href="https://getaskanything.com/setup" style="color: inherit; text-decoration: underline; font-weight: bold; margin-left: 10px;">GET A REAL ONE</a>' : 
                         'Ask a question to see the answer here! <a href="/setup" style="color: inherit; text-decoration: underline; font-weight: bold; margin-left: 10px;">GET A REAL ONE</a>';
                     break;
                 case 'gist':
-                    placeholderText = 'Get a summary of this page. Feature coming soon! <a href="/setup" style="color: inherit; text-decoration: underline; font-weight: bold; margin-left: 10px;">GET A REAL ONE</a>';
+                    placeholderText = 'Get a summary of this page. Feature coming soon! <a href="https://getaskanything.com/setup" style="color: inherit; text-decoration: underline; font-weight: bold; margin-left: 10px;">GET A REAL ONE</a>';
                     break;
                 case 'remix':
                     placeholderText = '';
                     break;
                 case 'share':
-                    placeholderText = 'Share insights from this page. Feature coming soon! <a href="/setup" style="color: inherit; text-decoration: underline; font-weight: bold; margin-left: 10px;">GET A REAL ONE</a>';
+                    placeholderText = 'Share insights from this page. Feature coming soon! <a href="https://getaskanything.com/setup" style="color: inherit; text-decoration: underline; font-weight: bold; margin-left: 10px;">GET A REAL ONE</a>';
                     break;
                 default:
-                    placeholderText = 'Select a tool to get started! <a href="/setup" style="color: inherit; text-decoration: underline; font-weight: bold; margin-left: 10px;">GET A REAL ONE</a>';
+                    placeholderText = 'Select a tool to get started! <a href="https://getaskanything.com/setup" style="color: inherit; text-decoration: underline; font-weight: bold; margin-left: 10px;">GET A REAL ONE</a>';
             }
             
             if (placeholderText) {
@@ -4960,7 +4960,7 @@ Instructions:
                     </div>
                     
                     <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #9ca3af; font-style: italic;">
-                        🚧 Demo Mode - Changes won't be saved. <a href="/setup" style="color: inherit; text-decoration: underline; font-weight: bold; margin-left: 10px;">GET A REAL ONE</a>
+                        🚧 Demo Mode - Changes won't be saved. <a href="https://getaskanything.com/setup" style="color: inherit; text-decoration: underline; font-weight: bold; margin-left: 10px;">GET A REAL ONE</a>
                     </div>
                 </div>
             `;

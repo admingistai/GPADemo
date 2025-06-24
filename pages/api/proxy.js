@@ -184,7 +184,7 @@ export default async function handler(req, res) {
           box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         ">
           THIS IS A DEMO, NOT A LIVE VERSION OF YOUR WEBSITE. 
-          <a href="/setup" style="
+          <a href="https://getaskanything.com/setup" style="
             margin-left: 10px;
             color: #000;
             text-decoration: underline;
