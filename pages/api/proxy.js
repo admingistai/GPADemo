@@ -210,25 +210,20 @@ export default async function handler(req, res) {
           backdrop-filter: blur(5px);
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
           max-width: 280px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
         ">
           <div style="
             font-size: 14px;
             line-height: 1.4;
             font-weight: 500;
           ">
-            Ask questions about this website using the button below
+            Ask questions about this website
           </div>
-          <div style="
-            margin-top: 8px;
-            width: 24px;
-            height: 24px;
-            margin-left: auto;
-            margin-right: auto;
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-            animation: pulse 2s infinite;
-          "></div>
+          <svg width="20" height="20" viewBox="0 0 24 24" style="min-width: 20px;">
+            <path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z" fill="white"/>
+          </svg>
         </div>
         <style>
           @keyframes guideFloat {
@@ -236,11 +231,6 @@ export default async function handler(req, res) {
             15% { opacity: 1; transform: translateX(-50%) translateY(0); }
             85% { opacity: 1; transform: translateX(-50%) translateY(0); }
             100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-          }
-          @keyframes pulse {
-            0% { opacity: 1; transform: rotate(45deg) scale(1); }
-            50% { opacity: 0.5; transform: rotate(45deg) scale(0.8); }
-            100% { opacity: 1; transform: rotate(45deg) scale(1); }
           }
         </style>
         <script>
