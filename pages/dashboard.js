@@ -537,14 +537,14 @@ export default function Dashboard() {
           background: #f3f4f6;
           border-radius: 8px;
           padding: 0.75rem 1rem;
-          font-weight: 600;
+          font-weight: 400;
           border: 1.5px solid #e5e7eb;
           cursor: pointer;
           transition: background 0.15s, border 0.15s;
         }
         .tool-toggle.enabled {
           background: #e0e7ff;
-          color: #3742fa;
+          color: #000000;
           border: 1.5px solid #6366f1;
         }
         .tool-toggle input[type="checkbox"] {
@@ -557,8 +557,8 @@ export default function Dashboard() {
         }
         .tool-toggle-label {
           font-size: 1.1rem;
-          font-weight: 700;
-          color: #374151;
+          font-weight: 400;
+          color: #000000;
         }
         .modal-actions {
           display: flex;
