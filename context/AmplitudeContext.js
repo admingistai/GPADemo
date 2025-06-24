@@ -11,58 +11,37 @@ export function AmplitudeProvider({ children }) {
     // Initialize Amplitude with your API key
     const AMPLITUDE_API_KEY = process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY;
     try {
-      amplitude.init(AMPLITUDE_API_KEY, undefined, {
+      console.log('🔄 Initializing Amplitude...');
+      amplitude.init(AMPLITUDE_API_KEY, {
+        logLevel: amplitude.Types.LogLevel.Debug, // Enable debug logs
         defaultTracking: {
           sessions: true,
-        },
-        logLevel: amplitude.Types.LogLevel.None, // Suppress console logs
-        transportProvider: {
-          send: async (payload) => {
-            try {
-              const response = await fetch('https://api2.amplitude.com/2/httpapi', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Accept': '*/*'
-                },
-                body: JSON.stringify(payload)
-              });
-              if (!response.ok) throw new Error('Failed to send analytics');
-              
-              // Log successful event submission
-              const events = JSON.parse(payload.body).events || [];
-              events.forEach(event => {
-                console.log('📊 Amplitude Event:', {
-                  name: event.event_type,
-                  properties: event.event_properties,
-                  timestamp: new Date(event.time).toISOString()
-                });
-              });
-              
-              return response;
-            } catch (error) {
-              // Silently fail if blocked by content blocker
-              setIsAmplitudeBlocked(true);
-              return null;
-            }
-          }
         }
       });
+      console.log('✅ Amplitude initialized successfully');
     } catch (error) {
-      // Silently handle initialization errors
+      console.log('❌ Amplitude initialization failed:', error);
       setIsAmplitudeBlocked(true);
     }
   }, []);
 
-  const trackEvent = (eventName, eventProperties = {}) => {
+  const trackEvent = async (eventName, eventProperties = {}) => {
+    console.log('📊 Attempting to track event:', { eventName, eventProperties });
+    
     if (isAmplitudeBlocked) {
-      // Silently skip tracking if Amplitude is blocked
+      console.log('⚠️ Amplitude is blocked, skipping event tracking');
       return;
     }
+
     try {
-      amplitude.track(eventName, eventProperties);
+      await amplitude.track(eventName, eventProperties);
+      console.log('✅ Event tracked successfully:', {
+        name: eventName,
+        properties: eventProperties,
+        timestamp: new Date().toISOString()
+      });
     } catch (error) {
-      // Silently handle tracking errors
+      console.log('❌ Failed to track event:', error);
       setIsAmplitudeBlocked(true);
     }
   };
