@@ -249,11 +249,6 @@ export default function Dashboard() {
                           ))}
                         </div>
                       </div>
-                      <div className="widget-preview">
-                        <span className="widget-preview-color" style={{ background: form.color }}></span>
-                        {form.favicon && <img src={form.favicon} alt="favicon" className="widget-preview-favicon" />}
-                        <span className="widget-preview-label">Widget Preview</span>
-                      </div>
                     </div>
                   </div>
                   <div className="modal-actions">
@@ -542,15 +537,15 @@ export default function Dashboard() {
         .tool-toggle-group {
           display: flex;
           flex-direction: column;
-          gap: 0.5rem;
+          gap: 0.75rem;
         }
         .tool-toggle {
           display: flex;
           align-items: center;
-          gap: 0.5rem;
+          gap: 0.75rem;
           background: #f3f4f6;
           border-radius: 8px;
-          padding: 0.5rem 0.75rem;
+          padding: 0.75rem 1rem;
           font-weight: 600;
           border: 1.5px solid #e5e7eb;
           cursor: pointer;
@@ -565,34 +560,14 @@ export default function Dashboard() {
           margin-right: 0.5rem;
         }
         .tool-toggle-icon {
-          font-size: 1.15rem;
           display: flex;
           align-items: center;
-          margin-right: 0.5rem;
+          margin-right: 0.25rem;
         }
-        .widget-preview {
-          margin-top: 2rem;
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-        }
-        .widget-preview-color {
-          width: 32px;
-          height: 32px;
-          border-radius: 8px;
-          border: 2px solid #e5e7eb;
-        }
-        .widget-preview-favicon {
-          width: 28px;
-          height: 28px;
-          border-radius: 6px;
-          object-fit: contain;
-          border: 1.5px solid #e5e7eb;
-        }
-        .widget-preview-label {
-          font-size: 1rem;
-          color: #6b7280;
-          margin-left: 0.5rem;
+        .tool-toggle-label {
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: #374151;
         }
         .modal-actions {
           display: flex;
