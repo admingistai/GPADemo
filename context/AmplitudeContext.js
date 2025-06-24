@@ -8,19 +8,45 @@ export function AmplitudeProvider({ children }) {
   const [isAmplitudeBlocked, setIsAmplitudeBlocked] = useState(false);
 
   useEffect(() => {
-    // Initialize Amplitude with your API key
     const AMPLITUDE_API_KEY = process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY;
+    
+    // Debug API key
+    console.log('🔑 Checking Amplitude API key:', 
+      AMPLITUDE_API_KEY ? 'Key exists' : 'Key is missing',
+      'Length:', AMPLITUDE_API_KEY?.length || 0
+    );
+
+    if (!AMPLITUDE_API_KEY) {
+      console.error('❌ Amplitude API key is missing');
+      setIsAmplitudeBlocked(true);
+      return;
+    }
+
     try {
       console.log('🔄 Initializing Amplitude...');
-      amplitude.init(AMPLITUDE_API_KEY, {
-        logLevel: amplitude.Types.LogLevel.Debug, // Enable debug logs
+      
+      // Initialize with debug mode and proper configuration
+      amplitude.init(AMPLITUDE_API_KEY, undefined, {
+        logLevel: amplitude.Types.LogLevel.Debug,
         defaultTracking: {
           sessions: true,
-        }
+          pageViews: true,
+          formInteractions: true,
+          fileDownloads: true,
+        },
+        minIdLength: 1,
+        serverUrl: 'https://api2.amplitude.com/2/httpapi',
+        serverZone: 'US',
+        useBatch: false, // Disable batching for immediate sending
+        debug: true
       });
-      console.log('✅ Amplitude initialized successfully');
+
+      // Verify initialization
+      const instanceName = amplitude.getInstanceName();
+      console.log('✅ Amplitude initialized successfully with instance:', instanceName);
+      
     } catch (error) {
-      console.log('❌ Amplitude initialization failed:', error);
+      console.error('❌ Amplitude initialization failed:', error);
       setIsAmplitudeBlocked(true);
     }
   }, []);
@@ -34,14 +60,22 @@ export function AmplitudeProvider({ children }) {
     }
 
     try {
-      await amplitude.track(eventName, eventProperties);
+      // Add timestamp and session ID to properties
+      const enhancedProperties = {
+        ...eventProperties,
+        timestamp: Date.now(),
+        sessionId: amplitude.getSessionId()
+      };
+
+      await amplitude.track(eventName, enhancedProperties);
       console.log('✅ Event tracked successfully:', {
         name: eventName,
-        properties: eventProperties,
-        timestamp: new Date().toISOString()
+        properties: enhancedProperties,
+        instanceName: amplitude.getInstanceName(),
+        sessionId: amplitude.getSessionId()
       });
     } catch (error) {
-      console.log('❌ Failed to track event:', error);
+      console.error('❌ Failed to track event:', error);
       setIsAmplitudeBlocked(true);
     }
   };
