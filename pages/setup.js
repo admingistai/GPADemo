@@ -579,11 +579,12 @@ export default function Setup() {
           }
 
           .code-container {
-            background: #1f2937;
+            background: #0d1117;
             border-radius: 16px;
             margin: 2rem 0;
             overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border: 1px solid #30363d;
           }
 
           .code-header {
@@ -591,42 +592,47 @@ export default function Setup() {
             justify-content: space-between;
             align-items: center;
             padding: 1rem 1.5rem;
-            background: #374151;
-            border-bottom: 1px solid #4b5563;
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
           }
 
           .code-title {
-            color: #f9fafb;
+            color: #f0f6fc;
             font-weight: 600;
             font-size: 0.95rem;
           }
 
           .copy-btn {
-            background: #3742fa;
+            background: #238636;
             color: white;
             border: none;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.25rem;
             border-radius: 8px;
             font-size: 0.875rem;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
+            border: 1px solid #2ea043;
           }
 
           .copy-btn:hover {
-            background: #5b67f7;
+            background: #2ea043;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(46, 160, 67, 0.3);
           }
 
           .code-block {
             padding: 2rem;
             margin: 0;
-            background: #1f2937;
-            color: #f9fafb;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 0.9rem;
-            line-height: 1.6;
+            background: #0d1117;
+            color: #e6edf3;
+            font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace;
+            font-size: 1rem;
+            line-height: 1.8;
             overflow-x: auto;
             text-align: left;
+            white-space: pre;
+            word-wrap: break-word;
           }
 
           .code-actions {
