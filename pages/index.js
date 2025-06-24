@@ -216,7 +216,7 @@ export default function Home() {
             <div className="header-right">
               <span className="tagline">100% ethical, uses fully licensed sources</span>
               <div className="auth-buttons">
-                <button className="waitlist-header-btn" onClick={() => router.push('/setup')}>Setup</button>
+                <button className="waitlist-header-btn" onClick={() => router.push('/dashboard')}>Dashboard</button>
               </div>
             </div>
           </header>
@@ -341,7 +341,7 @@ export default function Home() {
                 </p>
                 <div className="hero-cta">
                   <button
-                    onClick={() => router.push('/setup')}
+                    onClick={() => router.push('/dashboard')}
                     className="get-started-btn"
                   >
                     Get Started
@@ -453,7 +453,7 @@ export default function Home() {
               <h2 className="cta-title">Ready to add Ask Anything™ to your website?</h2>
               <div className="final-cta-actions">
                 <button
-                  onClick={() => router.push('/setup')}
+                  onClick={() => router.push('/dashboard')}
                   className="final-get-started-btn"
                 >
                   Get Started
