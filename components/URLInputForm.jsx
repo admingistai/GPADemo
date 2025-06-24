@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { validateUrl } from '../utils/urlValidator';
 
-export default function URLInputForm({ onSubmit, loading, error }) {
-  const [url, setUrl] = useState('');
+export default function AskAnythingForm({ onSubmit, loading, error }) {
+  const [question, setQuestion] = useState('');
   const [validationError, setValidationError] = useState('');
   const [isFocused, setIsFocused] = useState(false);
 
@@ -13,25 +12,27 @@ export default function URLInputForm({ onSubmit, loading, error }) {
     setValidationError('');
 
     // Debug logging
-    console.log('URLInputForm: Submitting URL:', url);
-    console.log('URLInputForm: URL trimmed:', url.trim());
-    console.log('URLInputForm: URL length:', url.length);
+    console.log('AskAnythingForm: Submitting question:', question);
+    console.log('AskAnythingForm: Question trimmed:', question.trim());
+    console.log('AskAnythingForm: Question length:', question.length);
 
-    // Validate URL
-    const validation = validateUrl(url);
-    console.log('URLInputForm: Validation result:', validation);
-    
-    if (!validation.isValid) {
-      setValidationError(validation.error);
+    // Validate question
+    if (!question.trim()) {
+      setValidationError('Please enter a question');
       return;
     }
 
-    // Submit the normalized URL (which includes auto-added protocol)
-    await onSubmit(validation.normalizedUrl);
+    if (question.trim().length < 3) {
+      setValidationError('Please enter a more detailed question');
+      return;
+    }
+
+    // Submit the question
+    await onSubmit(question.trim());
   };
 
   const handleInputChange = (e) => {
-    setUrl(e.target.value);
+    setQuestion(e.target.value);
     // Clear validation error when user types
     if (validationError) {
       setValidationError('');
@@ -47,7 +48,7 @@ export default function URLInputForm({ onSubmit, loading, error }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="url-form">
+    <form onSubmit={handleSubmit} className="ask-anything-form">
       <div className="form-group">
         <div className={`input-wrapper ${isFocused ? 'focused' : ''} ${loading ? 'loading' : ''}`}>
           {/* Animated background particles */}
@@ -63,48 +64,46 @@ export default function URLInputForm({ onSubmit, loading, error }) {
           {/* Gradient border animation */}
           <div className="gradient-border"></div>
           
-          <input
-            type="text"
-            id="urlInput"
-            value={url}
+          <textarea
+            id="questionInput"
+            value={question}
             onChange={handleInputChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            placeholder="example.com"
+            placeholder="Ask anything..."
             required
-            maxLength={2048}
-            aria-describedby="urlError"
+            maxLength={2000}
+            rows={3}
+            aria-describedby="questionError"
             aria-invalid={!!validationError || !!error}
             disabled={loading}
             autoFocus
           />
           <button 
             type="submit" 
-            disabled={loading || !url.trim()}
+            disabled={loading || !question.trim()}
             aria-busy={loading}
           >
             {loading ? (
               <>
                 <span className="spinner"></span>
-                Loading...
+                Getting Answer...
               </>
             ) : (
-              'Add Widget'
+              'Ask'
             )}
           </button>
         </div>
         {validationError && (
-          <div id="urlError" role="alert" className="error-message">
+          <div id="questionError" role="alert" className="error-message">
             {validationError}
           </div>
         )}
       </div>
 
-
-
       <style jsx>{`
-        .url-form {
-          max-width: 600px;
+        .ask-anything-form {
+          max-width: 800px;
           margin: 2rem auto;
           position: relative;
         }
@@ -123,18 +122,19 @@ export default function URLInputForm({ onSubmit, loading, error }) {
 
         .input-wrapper {
           display: flex;
-          gap: 0.5rem;
-          align-items: stretch;
+          gap: 1rem;
+          align-items: flex-start;
           position: relative;
           overflow: hidden;
-          border-radius: 16px;
+          border-radius: 20px;
           background: white;
           border: 1px solid #e5e7eb;
           box-shadow: 
-            0 1px 3px 0 rgba(0, 0, 0, 0.1), 
-            0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+            0 2px 4px -1px rgba(0, 0, 0, 0.06);
           transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
           backdrop-filter: blur(8px);
+          padding: 1.5rem;
         }
 
         /* Particles Container */
@@ -211,234 +211,163 @@ export default function URLInputForm({ onSubmit, loading, error }) {
         }
 
         @keyframes float6 {
-          0% { transform: translateY(100%) translateX(60%); opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { transform: translateY(-20%) translateX(15%); opacity: 0; }
-        }
-
-        @keyframes float7 {
-          0% { transform: translateY(100%) translateX(35%); opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { transform: translateY(-20%) translateX(85%); opacity: 0; }
-        }
-
-        @keyframes float8 {
-          0% { transform: translateY(100%) translateX(85%); opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { transform: translateY(-20%) translateX(40%); opacity: 0; }
-        }
-
-        @keyframes float9 {
-          0% { transform: translateY(100%) translateX(15%); opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { transform: translateY(-20%) translateX(75%); opacity: 0; }
-        }
-
-        @keyframes float10 {
-          0% { transform: translateY(100%) translateX(75%); opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { transform: translateY(-20%) translateX(25%); opacity: 0; }
-        }
-
-        @keyframes float11 {
-          0% { transform: translateY(100%) translateX(25%); opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { transform: translateY(-20%) translateX(60%); opacity: 0; }
-        }
-
-        @keyframes float12 {
-          0% { transform: translateY(100%) translateX(50%); opacity: 0; }
+          0% { transform: translateY(100%) translateX(90%); opacity: 0; }
           10% { opacity: 1; }
           90% { opacity: 1; }
           100% { transform: translateY(-20%) translateX(10%); opacity: 0; }
         }
 
-        /* Subtle Border Glow Effect */
+        @keyframes float7 {
+          0% { transform: translateY(100%) translateX(60%); opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { transform: translateY(-20%) translateX(40%); opacity: 0; }
+        }
+
+        @keyframes float8 {
+          0% { transform: translateY(100%) translateX(30%); opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { transform: translateY(-20%) translateX(60%); opacity: 0; }
+        }
+
         .border-glow {
           position: absolute;
-          top: -1px;
-          left: -1px;
-          right: -1px;
-          bottom: -1px;
-          background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(29, 78, 216, 0.2));
-          border-radius: 17px;
-          z-index: -1;
+          top: -2px;
+          left: -2px;
+          right: -2px;
+          bottom: -2px;
+          background: linear-gradient(45deg, #3b82f6, #8b5cf6, #06b6d4, #10b981);
+          border-radius: 20px;
           opacity: 0;
+          z-index: -1;
           transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          filter: blur(8px);
         }
 
         .input-wrapper.focused .border-glow {
-          opacity: 1;
+          opacity: 0.3;
+          animation: borderPulse 3s ease-in-out infinite;
         }
 
-        .input-wrapper.loading .border-glow {
-          opacity: 1;
-          animation: subtlePulse 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+        @keyframes borderPulse {
+          0%, 100% { opacity: 0.3; transform: scale(1); }
+          50% { opacity: 0.6; transform: scale(1.02); }
         }
 
-        @keyframes subtlePulse {
-          0%, 100% { 
-            transform: scale(1);
-            opacity: 0.7;
-          }
-          50% { 
-            transform: scale(1.005);
-            opacity: 1;
-          }
-        }
-
-        /* Ripple Effect */
         .gradient-border {
           position: absolute;
-          top: 50%;
-          left: 50%;
-          width: 0;
-          height: 0;
-          background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 40%, transparent 70%);
-          border-radius: 50%;
-          z-index: 0;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          border-radius: 20px;
+          padding: 2px;
+          background: linear-gradient(45deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+          mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          mask-composite: exclude;
           opacity: 0;
-          transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-          transform: translate(-50%, -50%);
-          pointer-events: none;
+          z-index: -1;
+          transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .input-wrapper.focused .gradient-border {
-          width: 140%;
-          height: 140%;
           opacity: 1;
+          animation: gradientSpin 4s linear infinite;
         }
 
-        /* Input and Button Styling */
-        input {
+        @keyframes gradientSpin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
+        textarea {
           flex: 1;
-          padding: 0.875rem 1.25rem;
-          font-size: 1rem;
           border: none;
-          background: transparent;
-          border-radius: 12px;
-          transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-          font-family: inherit;
-          position: relative;
-          z-index: 3;
-          color: #374151;
-          font-weight: 400;
-          letter-spacing: -0.01em;
-        }
-
-        input:focus {
           outline: none;
-          transform: none;
+          font-size: 1.2rem;
+          background: transparent;
+          resize: vertical;
+          min-height: 80px;
+          max-height: 200px;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          line-height: 1.5;
+          z-index: 2;
+          position: relative;
         }
 
-        input:disabled {
-          background: rgba(245, 245, 245, 0.8);
+        textarea::placeholder {
+          color: #9ca3af;
+          font-size: 1.2rem;
+        }
+
+        textarea:disabled {
+          opacity: 0.7;
           cursor: not-allowed;
         }
 
-        input[aria-invalid="true"] {
-          background: rgba(254, 242, 242, 0.9);
-        }
-
-        input::placeholder {
-          color: #9ca3af;
-          transition: color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-          font-weight: 400;
-        }
-
-        .input-wrapper.focused input::placeholder {
-          color: rgba(59, 130, 246, 0.6);
-        }
-
         button {
-          padding: 0.875rem 1.75rem;
-          font-size: 0.95rem;
-          font-weight: 600;
+          background: linear-gradient(135deg, #3b82f6, #1d4ed8);
           color: white;
-          background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
           border: none;
+          padding: 1rem 2rem;
           border-radius: 12px;
+          font-weight: 600;
+          font-size: 1.1rem;
           cursor: pointer;
           transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          min-width: 120px;
+          height: fit-content;
           display: flex;
           align-items: center;
+          justify-content: center;
           gap: 0.5rem;
-          white-space: nowrap;
+          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+          z-index: 2;
           position: relative;
-          z-index: 3;
-          overflow: hidden;
-          letter-spacing: -0.01em;
-          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        }
-
-        button::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-          transition: left 0.5s ease;
-        }
-
-        button:hover:not(:disabled)::before {
-          left: 100%;
+          align-self: flex-end;
         }
 
         button:hover:not(:disabled) {
-          background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
-          transform: translateY(-1px);
-          box-shadow: 
-            0 4px 6px -1px rgba(0, 0, 0, 0.1),
-            0 10px 15px -3px rgba(59, 130, 246, 0.4);
+          background: linear-gradient(135deg, #2563eb, #1e40af);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
         }
 
         button:active:not(:disabled) {
           transform: translateY(0);
-          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
         button:disabled {
-          background: #ccc;
+          opacity: 0.6;
           cursor: not-allowed;
           transform: none;
+          box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
         }
 
         .spinner {
-          display: inline-block;
-          width: 14px;
-          height: 14px;
-          border: 2px solid rgba(255, 255, 255, 0.3);
-          border-top-color: white;
+          width: 16px;
+          height: 16px;
+          border: 2px solid transparent;
+          border-top: 2px solid currentColor;
           border-radius: 50%;
-          animation: spin 0.8s linear infinite;
+          animation: spin 1s linear infinite;
         }
 
         @keyframes spin {
-          to {
-            transform: rotate(360deg);
-          }
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
 
         .error-message {
-          margin-top: 0.5rem;
-          color: #dc3545;
+          color: #ef4444;
           font-size: 0.9rem;
+          margin-top: 0.5rem;
           display: flex;
           align-items: center;
           gap: 0.5rem;
           animation: slideIn 0.3s ease-out;
-        }
-
-        .error-message::before {
-          content: "⚠️";
         }
 
         @keyframes slideIn {
@@ -452,71 +381,41 @@ export default function URLInputForm({ onSubmit, loading, error }) {
           }
         }
 
-        /* Enhanced Focus State */
-        .input-wrapper.focused {
-          transform: translateY(-1px);
-          border-color: rgba(59, 130, 246, 0.5);
-          box-shadow: 
-            0 4px 6px -1px rgba(0, 0, 0, 0.1),
-            0 2px 4px -1px rgba(0, 0, 0, 0.06),
-            0 8px 25px rgba(59, 130, 246, 0.15),
-            0 0 0 1px rgba(59, 130, 246, 0.1);
-        }
-
-        /* Loading State Enhancements */
         .input-wrapper.loading {
-          border-color: rgba(59, 130, 246, 0.4);
-          animation: loadingPulse 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+          opacity: 0.8;
         }
 
-        @keyframes loadingPulse {
-          0%, 100% { 
-            transform: translateY(0);
-            box-shadow: 
-              0 1px 3px 0 rgba(0, 0, 0, 0.1), 
-              0 1px 2px 0 rgba(0, 0, 0, 0.06),
-              0 0 0 1px rgba(59, 130, 246, 0.2);
-          }
-          50% { 
-            transform: translateY(-0.5px);
-            box-shadow: 
-              0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-              0 2px 4px -1px rgba(0, 0, 0, 0.06),
-              0 8px 20px rgba(59, 130, 246, 0.2),
-              0 0 0 2px rgba(59, 130, 246, 0.3);
-          }
+        .input-wrapper.loading .particles-container {
+          opacity: 1;
         }
 
-        @media (max-width: 640px) {
+        .input-wrapper.loading .border-glow {
+          opacity: 0.5;
+          animation: borderPulse 1.5s ease-in-out infinite;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+          .ask-anything-form {
+            margin: 1rem;
+            max-width: none;
+          }
+
           .input-wrapper {
             flex-direction: column;
+            padding: 1rem;
+            gap: 1rem;
+          }
+
+          textarea {
+            font-size: 1.1rem;
+            min-height: 100px;
           }
 
           button {
-            width: 100%;
-            justify-content: center;
-          }
-
-          .particles-container {
-            display: none; /* Hide particles on mobile for performance */
-          }
-        }
-
-        /* Reduce motion for accessibility */
-        @media (prefers-reduced-motion: reduce) {
-          .particle,
-          .border-glow,
-          .gradient-border,
-          .input-wrapper {
-            animation: none !important;
-          }
-          
-          .input-wrapper.focused {
-            transform: none;
-          }
-          
-          button:hover:not(:disabled) {
-            transform: none;
+            align-self: stretch;
+            padding: 0.875rem 1.5rem;
+            font-size: 1rem;
           }
         }
       `}</style>
