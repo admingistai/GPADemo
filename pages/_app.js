@@ -1,19 +1,7 @@
-import { useEffect } from 'react';
-import { initAnalytics } from '../utils/analytics';
 import '../styles/globals.css';
 import Head from 'next/head';
 
 export default function App({ Component, pageProps }) {
-  useEffect(() => {
-    // Initialize Amplitude with API key from environment variable
-    const AMPLITUDE_API_KEY = process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY;
-    if (AMPLITUDE_API_KEY) {
-      initAnalytics(AMPLITUDE_API_KEY);
-    } else {
-      console.warn('Amplitude API key not found in environment variables');
-    }
-  }, []);
-
   return (
     <>
       <Head>

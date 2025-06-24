@@ -46,7 +46,7 @@ export default function Dashboard() {
             <div className="logo-section">
               <Image src="/Gist G white no background.png" alt="Gist" className="logo-img" width={40} height={40} />
               <h1 className="logo">Ask Anything™</h1>
-            </div>
+          </div>
             <span className="site-selector">
               <select value={selectedSite} onChange={(e) => setSelectedSite(e.target.value)}>
                 <option value="the-harbor">The Harbor</option>
@@ -63,8 +63,8 @@ export default function Dashboard() {
               <button className="nav-tab">Engagement</button>
               <button className="nav-tab">Revenue</button>
               <button className="nav-tab">Content</button>
-            </nav>
-          </div>
+          </nav>
+              </div>
           
           <div className="header-right">
             <select className="time-selector" value={timeRange} onChange={(e) => setTimeRange(e.target.value)}>
@@ -74,7 +74,7 @@ export default function Dashboard() {
               <option value="90d">Last 90 days</option>
             </select>
             <button className="settings-btn">Settings</button>
-          </div>
+                        </div>
         </header>
 
         {/* Main Content */}
@@ -87,35 +87,35 @@ export default function Dashboard() {
                 <div className="metric-header">
                   <span className="metric-label">Questions Answered</span>
                   <span className="metric-trend positive">+12.4%</span>
-                </div>
+                      </div>
                 <div className="metric-value">147.2K</div>
                 <div className="metric-sparkline">
                   <svg viewBox="0 0 100 30" className="sparkline">
                     <polyline points="0,25 20,20 40,15 60,12 80,8 100,5" />
                   </svg>
-                </div>
+                    </div>
                 <div className="metric-footer">96.4% answer rate</div>
-              </div>
+                    </div>
 
               <div className="metric-card">
                 <div className="metric-header">
                   <span className="metric-label">Avg Response Time</span>
                   <span className="metric-trend positive">-8.2%</span>
-                </div>
+                  </div>
                 <div className="metric-value">1.3s</div>
                 <div className="metric-sparkline">
                   <svg viewBox="0 0 100 30" className="sparkline">
                     <polyline points="0,5 20,8 40,12 60,10 80,15 100,20" />
                   </svg>
-                </div>
-                <div className="metric-footer">Below 2s target</div>
               </div>
+                <div className="metric-footer">Below 2s target</div>
+            </div>
 
               <div className="metric-card">
                 <div className="metric-header">
                   <span className="metric-label">Session Duration</span>
                   <span className="metric-trend positive">+23.7%</span>
-                </div>
+                    </div>
                 <div className="metric-value">5m 54s</div>
                 <div className="metric-sparkline">
                   <svg viewBox="0 0 100 30" className="sparkline">
@@ -254,11 +254,11 @@ export default function Dashboard() {
                     <div key={idx} className="legend-item">
                       <span className="legend-color" style={{background: dataset.color}}></span>
                       <span className="legend-label">{dataset.label}</span>
-                    </div>
+                        </div>
                   ))}
-                </div>
-              </div>
-            </div>
+                      </div>
+                    </div>
+                  </div>
           </section>
 
           {/* AI Performance Detailed Metrics */}
@@ -279,12 +279,12 @@ export default function Dashboard() {
                   <div className="metric-row">
                     <span className="metric-name">Sources per Answer</span>
                     <span className="metric-value">3.6</span>
-                  </div>
+                </div>
                   <div className="metric-row">
                     <span className="metric-name">Accuracy Score</span>
                     <span className="metric-value">98.7%</span>
-                  </div>
-                </div>
+            </div>
+          </div>
                 
                 <div className="top-questions">
                   <h4 className="subsection-title">Top Question Categories</h4>
@@ -293,7 +293,7 @@ export default function Dashboard() {
                       <span className="category-name">Technical Details</span>
                       <div className="category-bar">
                         <div className="category-fill" style={{width: '85%'}}></div>
-                      </div>
+      </div>
                       <span className="category-count">2.1K</span>
                     </div>
                     <div className="category-item">
@@ -1230,15 +1230,15 @@ export default function Dashboard() {
         /* User Satisfaction */
         .satisfaction-metrics {
           display: flex;
-          flex-direction: column;
+            flex-direction: column;
           gap: 1.5rem;
         }
 
         .nps-score {
           display: flex;
-          align-items: center;
+            align-items: center;
           gap: 1rem;
-          padding: 1rem;
+            padding: 1rem;
           background: rgba(0, 0, 0, 0.03);
           border-radius: 8px;
         }
@@ -1268,7 +1268,7 @@ export default function Dashboard() {
         .feedback-item {
           display: grid;
           grid-template-columns: 1fr 100px 50px;
-          gap: 1rem;
+            gap: 1rem;
           align-items: center;
         }
 
@@ -1299,9 +1299,9 @@ export default function Dashboard() {
         /* AI Insights */
         .ai-insights {
           display: flex;
-          flex-direction: column;
-          gap: 1rem;
-        }
+            flex-direction: column;
+            gap: 1rem;
+          }
 
         .insight {
           display: flex;
@@ -1389,4 +1389,4 @@ export default function Dashboard() {
       `}</style>
     </>
   );
-}
+} 
