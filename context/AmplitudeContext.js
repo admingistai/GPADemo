@@ -42,8 +42,7 @@ export function AmplitudeProvider({ children }) {
       });
 
       // Verify initialization
-      const instanceName = amplitude.getInstanceName();
-      console.log('✅ Amplitude initialized successfully with instance:', instanceName);
+      console.log('✅ Amplitude initialized successfully');
       
     } catch (error) {
       console.error('❌ Amplitude initialization failed:', error);
@@ -60,19 +59,16 @@ export function AmplitudeProvider({ children }) {
     }
 
     try {
-      // Add timestamp and session ID to properties
+      // Add timestamp to properties
       const enhancedProperties = {
         ...eventProperties,
         timestamp: Date.now(),
-        sessionId: amplitude.getSessionId()
       };
 
       await amplitude.track(eventName, enhancedProperties);
       console.log('✅ Event tracked successfully:', {
         name: eventName,
-        properties: enhancedProperties,
-        instanceName: amplitude.getInstanceName(),
-        sessionId: amplitude.getSessionId()
+        properties: enhancedProperties
       });
     } catch (error) {
       console.error('❌ Failed to track event:', error);
