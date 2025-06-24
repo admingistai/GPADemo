@@ -35,13 +35,15 @@ export function AmplitudeProvider({ children }) {
           fileDownloads: true,
         },
         minIdLength: 1,
-        serverUrl: 'https://api2.amplitude.com/2/httpapi',
-        serverZone: 'US',
-        useBatch: false, // Disable batching for immediate sending
-        debug: true
+        debug: true,
+        // Remove serverUrl and serverZone as they're not needed for browser SDK
       });
 
-      // Verify initialization
+      // Set a default user ID if none exists
+      if (!amplitude.getUserId()) {
+        amplitude.setUserId(`anonymous_${Date.now()}`);
+      }
+
       console.log('✅ Amplitude initialized successfully');
       
     } catch (error) {
@@ -59,16 +61,18 @@ export function AmplitudeProvider({ children }) {
     }
 
     try {
-      // Add timestamp to properties
+      // Add timestamp and user ID to properties
       const enhancedProperties = {
         ...eventProperties,
         timestamp: Date.now(),
+        user_id: amplitude.getUserId() || `anonymous_${Date.now()}`
       };
 
       await amplitude.track(eventName, enhancedProperties);
       console.log('✅ Event tracked successfully:', {
         name: eventName,
-        properties: enhancedProperties
+        properties: enhancedProperties,
+        userId: amplitude.getUserId()
       });
     } catch (error) {
       console.error('❌ Failed to track event:', error);
