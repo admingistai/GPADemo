@@ -28,6 +28,17 @@ export function AmplitudeProvider({ children }) {
                 body: JSON.stringify(payload)
               });
               if (!response.ok) throw new Error('Failed to send analytics');
+              
+              // Log successful event submission
+              const events = JSON.parse(payload.body).events || [];
+              events.forEach(event => {
+                console.log('📊 Amplitude Event:', {
+                  name: event.event_type,
+                  properties: event.event_properties,
+                  timestamp: new Date(event.time).toISOString()
+                });
+              });
+              
               return response;
             } catch (error) {
               // Silently fail if blocked by content blocker

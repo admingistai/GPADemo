@@ -121,7 +121,7 @@ export default function Home() {
   };
 
   const handleGetStartedClick = () => {
-    trackEvent('get_started_clicked', {
+    trackEvent('Get Started Clicked', {
       location: 'hero_section',
       page: 'home'
     });
@@ -129,7 +129,7 @@ export default function Home() {
   };
 
   const handleFinalGetStartedClick = () => {
-    trackEvent('get_started_clicked', {
+    trackEvent('Get Started Clicked', {
       location: 'final_cta_section',
       page: 'home'
     });
