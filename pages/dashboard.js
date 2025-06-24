@@ -4,18 +4,10 @@ import { useState } from 'react';
 
 // SVG clipart icons for tools
 const TOOL_ICONS = {
-  summarize: (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="3" fill="#FDE68A"/><rect x="6" y="6" width="8" height="1.5" rx="0.75" fill="#F59E42"/><rect x="6" y="9" width="5" height="1.5" rx="0.75" fill="#F59E42"/><rect x="6" y="12" width="6" height="1.5" rx="0.75" fill="#F59E42"/></svg>
-  ),
-  remix: (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="3" fill="#E0E7FF"/><circle cx="7" cy="7" r="2" fill="#6366F1"/><circle cx="13" cy="7" r="2" fill="#6366F1"/><circle cx="7" cy="13" r="2" fill="#6366F1"/><circle cx="13" cy="13" r="2" fill="#6366F1"/></svg>
-  ),
-  share: (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="3" fill="#A7F3D0"/><path d="M7 10l6-3M7 10l6 3M7 10V7" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-  ),
-  ads: (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="3" fill="#FECACA"/><rect x="6" y="6" width="8" height="8" rx="2" fill="#EF4444"/><path d="M8 8h4v4H8z" fill="#fff"/></svg>
-  ),
+  summarize: 'Summarize',
+  remix: 'Remix',
+  share: 'Share',
+  ads: 'Ads',
 };
 const TOOL_LABELS = {
   summarize: 'Summarize',
@@ -243,7 +235,6 @@ export default function Dashboard() {
                           {Object.keys(TOOL_LABELS).map(tool => (
                             <label key={tool} className={`tool-toggle${form.tools[tool] ? ' enabled' : ''}`} title={TOOL_LABELS[tool]}>
                               <input type="checkbox" name={`tools.${tool}`} checked={form.tools[tool]} onChange={handleFormChange} />
-                              <span className="tool-toggle-icon">{TOOL_ICONS[tool]}</span>
                               <span className="tool-toggle-label">{TOOL_LABELS[tool]}</span>
                             </label>
                           ))}
