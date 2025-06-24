@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 export default function Setup() {
   const router = useRouter();
@@ -15,46 +15,9 @@ export default function Setup() {
       ads: false
     }
   });
-  const [generatedCode, setGeneratedCode] = useState('');
-  const [showCode, setShowCode] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    // Start loading
-    setIsGenerating(true);
-    
-    // Format the URL to include protocol if missing
-    let formattedUrl = formData.websiteUrl.trim();
-    if (formattedUrl && !formattedUrl.match(/^https?:\/\//)) {
-      formattedUrl = 'https://' + formattedUrl;
-    }
-    
-    // Simulate code generation delay
-    setTimeout(() => {
-      // Generate the widget code based on form data
-      const widgetConfig = {
-        url: formattedUrl,
-        features: formData.tools,
-        user: {
-          name: formData.name,
-          email: formData.email
-        }
-      };
-
-      const code = `<!-- Gist Widget -->
-<script>
-  window.gistConfig = ${JSON.stringify(widgetConfig, null, 2)};
-</script>
-<script src="https://widget.gist.ai/widget.js" async></script>
-<!-- End Gist Widget -->`;
-
-      setGeneratedCode(code);
-      setIsGenerating(false);
-      setShowCode(true);
-    }, 2000); // 2 second delay to show loading
-  };
+  const [showCode, setShowCode] = useState(false);
+  const [generatedCode, setGeneratedCode] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -76,6 +39,46 @@ export default function Setup() {
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsGenerating(true);
+
+    try {
+      // Format the URL to include protocol if missing
+      let formattedUrl = formData.websiteUrl.trim();
+      if (!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://')) {
+        formattedUrl = 'https://' + formattedUrl;
+      }
+
+      // Generate widget code (simplified example)
+      const code = `
+<!-- Gist Widget -->
+<script>
+  window.GIST_CONFIG = {
+    website: "${formattedUrl}",
+    features: {
+      summarize: ${formData.tools.summarize},
+      remix: ${formData.tools.remix},
+      share: ${formData.tools.share},
+      ads: ${formData.tools.ads}
+    }
+  };
+</script>
+<script src="https://widget.gist.ai/v1/widget.js" async></script>
+      `.trim();
+
+      // Simulate API delay
+      setTimeout(() => {
+        setGeneratedCode(code);
+        setIsGenerating(false);
+        setShowCode(true);
+      }, 2000); // 2 second delay to show loading
+    } catch (error) {
+      console.error('Error generating widget:', error);
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <>
       <Head>
@@ -90,7 +93,29 @@ export default function Setup() {
             <h2>Generating Your Widget...</h2>
             <p>This will only take a moment</p>
           </div>
-        ) : !showCode ? (
+        ) : showCode ? (
+          <div className="code-result">
+            <h1>Your Widget is Ready!</h1>
+            <p>Copy the code below and paste it into your website's HTML where you want the widget to appear.</p>
+            
+            <div className="code-container">
+              <pre><code>{generatedCode}</code></pre>
+              <button 
+                onClick={() => navigator.clipboard.writeText(generatedCode)}
+                className="copy-button"
+              >
+                Copy Code
+              </button>
+            </div>
+
+            <button 
+              onClick={() => router.push('/dashboard')}
+              className="dashboard-button"
+            >
+              Go to Dashboard
+            </button>
+          </div>
+        ) : (
           <div className="setup-form-container">
             <h1>Setup Your Widget</h1>
             <p className="setup-description">Configure your widget settings and get started in minutes</p>
@@ -191,28 +216,6 @@ export default function Setup() {
                 Generate Widget
               </button>
             </form>
-          </div>
-        ) : (
-          <div className="code-result">
-            <h1>Your Widget is Ready!</h1>
-            <p>Copy the code below and paste it into your website's HTML where you want the widget to appear.</p>
-            
-            <div className="code-container">
-              <pre><code>{generatedCode}</code></pre>
-              <button 
-                onClick={() => navigator.clipboard.writeText(generatedCode)}
-                className="copy-button"
-              >
-                Copy Code
-              </button>
-            </div>
-
-            <button 
-              onClick={() => router.push('/dashboard')}
-              className="dashboard-button"
-            >
-              Go to Dashboard
-            </button>
           </div>
         )}
       </div>
