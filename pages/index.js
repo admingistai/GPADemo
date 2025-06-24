@@ -19,6 +19,62 @@ export default function Home() {
     setActiveTab(tabName);
   };
 
+  const handleLogoClick = () => {
+    console.log('Logo clicked!'); // Debug log
+    
+    // Trigger rotation
+    const logo = document.getElementById('gist-logo-easter-egg');
+    if (logo) {
+      console.log('Logo element found, adding rotation class');
+      logo.classList.add('rotating');
+      
+      // Remove rotation class after animation
+      setTimeout(() => {
+        logo.classList.remove('rotating');
+        console.log('Rotation class removed');
+      }, 600);
+    } else {
+      console.error('Logo element not found!');
+    }
+    
+    // Show popup
+    showPopupNotification();
+  };
+
+  const showPopupNotification = () => {
+    console.log('Creating popup notification');
+    
+    // Create popup element
+    const popup = document.createElement('div');
+    popup.className = 'remix-activated-popup';
+    popup.innerHTML = `
+      <div class='popup-content'>
+        <span class='popup-icon'>🎨</span>
+        <span class='popup-text'>Remix button activated!</span>
+      </div>
+    `;
+    
+    // Add to body
+    document.body.appendChild(popup);
+    console.log('Popup added to body');
+    
+    // Trigger animation
+    setTimeout(() => {
+      popup.classList.add('show');
+      console.log('Popup show class added');
+    }, 10);
+    
+    // Remove after delay
+    setTimeout(() => {
+      popup.classList.remove('show');
+      console.log('Popup show class removed');
+      setTimeout(() => {
+        popup.remove();
+        console.log('Popup removed from DOM');
+      }, 300);
+    }, 2500);
+  };
+
   return (
     <>
       <Head>
@@ -409,6 +465,19 @@ export default function Home() {
         {/* Final CTA Section */}
         <section className="final-cta-section section-highlight">
           <div className="final-cta-content">
+            <button 
+              id='gist-logo-easter-egg' 
+              className='gist-logo-button'
+              onClick={handleLogoClick}
+            >
+              <Image 
+                src='/Gist G white no background.png' 
+                alt='Gist Logo' 
+                width={80} 
+                height={80}
+                className='gist-logo-image'
+              />
+            </button>
             <h2>Ready to add Ask Anything™<br />to your website?</h2>
             <button className="waitlist-btn" onClick={handleGetStarted}>Get an Ask Anything™ Button</button>
           </div>
@@ -502,6 +571,11 @@ export default function Home() {
           .section-highlight > * {
             position: relative;
             z-index: 1;
+          }
+
+          /* Specific z-index for interactive elements */
+          .section-highlight .gist-logo-button {
+            z-index: 20;
           }
 
           .app {
@@ -1576,6 +1650,88 @@ export default function Home() {
             transform: translateY(0);
           }
 
+          /* Gist Logo Easter Egg */
+          .gist-logo-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            margin-bottom: 32px;
+            transition: transform 0.3s ease;
+            display: inline-block;
+            position: relative;
+            z-index: 10;
+            pointer-events: auto;
+          }
+          
+          .gist-logo-button:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.4));
+          }
+
+          .gist-logo-button:focus {
+            outline: 2px solid rgba(102, 126, 234, 0.5);
+            outline-offset: 4px;
+          }
+          
+          .gist-logo-button.rotating {
+            animation: rotate360 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+          }
+          
+          @keyframes rotate360 {
+            from { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            to { transform: rotate(360deg) scale(1); }
+          }
+          
+          .gist-logo-image {
+            transition: all 0.3s ease;
+          }
+          
+          /* Remix Activated Popup */
+          .remix-activated-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 24px 48px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 999999;
+            pointer-events: none;
+            backdrop-filter: blur(10px);
+            visibility: hidden;
+          }
+          
+          .remix-activated-popup.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            visibility: visible;
+          }
+          
+          .popup-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            white-space: nowrap;
+          }
+          
+          .popup-icon {
+            font-size: 28px;
+            animation: bounce 0.6s ease-in-out;
+          }
+          
+          @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+          }
+
           /* Footer */
           .footer {
             background: #000;
@@ -1734,6 +1890,26 @@ export default function Home() {
 
             .final-cta-content h2 {
               font-size: 2rem;
+            }
+
+            .gist-logo-button {
+              margin-bottom: 24px;
+            }
+
+            .gist-logo-button img {
+              width: 60px;
+              height: 60px;
+            }
+
+            .popup-content {
+              font-size: 16px;
+              gap: 12px;
+            }
+
+            .remix-activated-popup {
+              padding: 20px 32px;
+              margin: 0 20px;
+              max-width: calc(100vw - 40px);
             }
 
             .waitlist-btn {
