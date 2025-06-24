@@ -440,24 +440,6 @@ export default function Home() {
                 >
                   Get Started
                 </button>
-                <span className="final-cta-text">or, preview it on your site:</span>
-                <div className="final-url-input-wrapper">
-                  <input
-                    type="text"
-                    className="final-url-input"
-                    placeholder="Enter your website URL"
-                    value={targetUrl}
-                    onChange={(e) => setTargetUrl(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && targetUrl.trim() && handleUrlSubmit(targetUrl)}
-                  />
-                  <button
-                    className="final-try-btn"
-                    onClick={() => targetUrl.trim() && handleUrlSubmit(targetUrl)}
-                    disabled={!targetUrl.trim()}
-                  >
-                    Try It
-                  </button>
-                </div>
               </div>
             </div>
           </section>
