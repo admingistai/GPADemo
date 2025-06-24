@@ -305,6 +305,10 @@ export default function Setup() {
           .setup-page, .setup-page * {
             color: #111827 !important;
           }
+
+          .code-block, .code-block * {
+            color: #f0f6fc !important;
+          }
         `}</style>
         <style jsx>{`
           * {
@@ -625,7 +629,7 @@ export default function Setup() {
             padding: 2rem;
             margin: 0;
             background: #0d1117;
-            color: #e6edf3;
+            color: #f0f6fc !important;
             font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace;
             font-size: 1rem;
             line-height: 1.8;
@@ -633,6 +637,13 @@ export default function Setup() {
             text-align: left;
             white-space: pre;
             word-wrap: break-word;
+          }
+
+          .code-block code {
+            color: #f0f6fc !important;
+            background: transparent;
+            font-family: inherit;
+            font-size: inherit;
           }
 
           .code-actions {
