@@ -2,14 +2,23 @@ import * as amplitude from '@amplitude/analytics-browser';
 
 // Initialize Amplitude with configuration
 export const initAnalytics = (apiKey) => {
-  amplitude.init(apiKey, undefined, {
-    defaultTracking: {
-      sessions: true,
-      pageViews: true,
-      formInteractions: true,
-      fileDownloads: true
-    }
-  });
+  if (!apiKey) {
+    console.warn('Amplitude API key not found');
+    return;
+  }
+  
+  try {
+    amplitude.init(apiKey, undefined, {
+      defaultTracking: {
+        sessions: true,
+        pageViews: true,
+        formInteractions: true,
+        fileDownloads: true
+      }
+    });
+  } catch (error) {
+    console.error('Failed to initialize Amplitude:', error);
+  }
 };
 
 // Export amplitude instance for direct usage
