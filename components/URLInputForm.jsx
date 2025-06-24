@@ -9,7 +9,7 @@ export default function URLInputForm({ onSubmit, loading, error }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Clear previous validation error
+    // Clear previous validation errorx
     setValidationError('');
 
     // Debug logging
@@ -21,7 +21,7 @@ export default function URLInputForm({ onSubmit, loading, error }) {
     const validation = validateUrl(url);
     console.log('URLInputForm: Validation result:', validation);
     
-    if (!validation.isValid) {
+    if (!validation.isValid) {  
       setValidationError(validation.error);
       return;
     }

@@ -1,658 +1,1392 @@
-import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { useState } from 'react';
-
-// SVG clipart icons for tools
-const TOOL_ICONS = {
-  summarize: 'Summarize',
-  remix: 'Remix',
-  share: 'Share',
-  ads: 'Ads',
-};
-const TOOL_LABELS = {
-  summarize: 'Summarize',
-  remix: 'Remix',
-  share: 'Share',
-  ads: 'Ads',
-};
-
-const mockSites = [
-  {
-    id: 1,
-    name: 'theatlantic.com',
-    url: 'https://theatlantic.com',
-    tools: { summarize: true, remix: false, share: true, ads: false },
-    color: '#3742fa',
-    favicon: '',
-  },
-  {
-    id: 2,
-    name: 'example.com',
-    url: 'https://example.com',
-    tools: { summarize: false, remix: true, share: false, ads: true },
-    color: '#ff6b35',
-    favicon: '',
-  },
-];
+import Head from 'next/head';
+import Image from 'next/image';
 
 export default function Dashboard() {
-  const router = useRouter();
-  const [activePage, setActivePage] = useState('home');
-  const [sites, setSites] = useState(mockSites);
-  const [showModal, setShowModal] = useState(false);
-  const [showCode, setShowCode] = useState(false);
-  const [generatedCode, setGeneratedCode] = useState('');
-  const [form, setForm] = useState({
-    url: '',
-    tools: { summarize: false, remix: false, share: false, ads: false },
-    color: '#3742fa',
-    favicon: '',
-  });
-  const [editSiteId, setEditSiteId] = useState(null);
+  const [selectedMetric, setSelectedMetric] = useState('ai_performance');
+  const [timeRange, setTimeRange] = useState('7d');
+  const [selectedSite, setSelectedSite] = useState('the-harbor');
 
-  const handleAddSite = () => {
-    setShowModal(true);
-    setShowCode(false);
-    setEditSiteId(null);
-    setForm({
-      url: '',
-      tools: { summarize: false, remix: false, share: false, ads: false },
-      color: '#3742fa',
-      favicon: '',
-    });
-  };
-
-  const handleEditSite = (site) => {
-    setShowModal(true);
-    setShowCode(false);
-    setEditSiteId(site.id);
-    setForm({
-      url: site.url.replace(/^https?:\/\//, ''),
-      tools: { ...site.tools },
-      color: site.color || '#3742fa',
-      favicon: site.favicon || '',
-    });
-  };
-
-  const handleFormChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    if (name.startsWith('tools.')) {
-      const tool = name.split('.')[1];
-      setForm((prev) => ({
-        ...prev,
-        tools: { ...prev.tools, [tool]: checked },
-      }));
-    } else {
-      setForm((prev) => ({ ...prev, [name]: value }));
+  // Chart data for different metrics
+  const chartData = {
+    ai_performance: {
+      title: 'AI Performance',
+      datasets: [
+        { label: 'Questions Asked', data: [2450, 2680, 2890, 3120, 3340, 3560, 3890], color: '#667eea' },
+        { label: 'Answered Rate', data: [94.2, 94.8, 95.1, 95.3, 95.7, 96.1, 96.4], color: '#818cf8' }
+      ]
+    },
+    engagement: {
+      title: 'User Engagement',
+      datasets: [
+        { label: 'Session Duration', data: [4.2, 4.5, 4.8, 5.1, 5.3, 5.6, 5.9], color: '#667eea' },
+        { label: 'Pages/Session', data: [3.8, 4.1, 4.3, 4.6, 4.8, 5.1, 5.4], color: '#818cf8' }
+      ]
+    },
+    revenue: {
+      title: 'Revenue Impact',
+      datasets: [
+        { label: 'Revenue/Session', data: [2.45, 2.68, 2.89, 3.12, 3.34, 3.56, 3.89], color: '#667eea' },
+        { label: 'Ad Impressions', data: [12.4, 13.2, 14.1, 15.2, 16.3, 17.5, 18.8], color: '#818cf8' }
+      ]
     }
   };
 
-  const handleModalSubmit = (e) => {
-    e.preventDefault();
-    // Generate widget code
-    let formattedUrl = form.url.trim();
-    if (formattedUrl && !formattedUrl.match(/^https?:\/\//)) {
-      formattedUrl = 'https://' + formattedUrl;
-    }
-    const widgetConfig = {
-      url: formattedUrl,
-      features: {
-        summarize: form.tools.summarize,
-        remix: form.tools.remix,
-        share: form.tools.share,
-      },
-      ads: { proRataAds: form.tools.ads },
-      theme: { color: form.color, faviconLogo: form.favicon },
-    };
-    const code = `<!-- Ask Anything™ Widget -->\n<script>\n  window.askAnythingConfig = ${JSON.stringify(widgetConfig, null, 2)};\n</script>\n<script src=\"https://widget.ask-anything.ai/widget.js\" async></script>\n<!-- End Ask Anything™ Widget -->`;
-    setGeneratedCode(code);
-    setShowCode(true);
-    // Add or update site in mock list
-    setSites((prev) => {
-      if (editSiteId) {
-        return prev.map(site =>
-          site.id === editSiteId
-            ? {
-                ...site,
-                name: formattedUrl.replace(/^https?:\/\//, ''),
-                url: formattedUrl,
-                tools: { ...form.tools },
-                color: form.color,
-                favicon: form.favicon,
-              }
-            : site
-        );
-      } else {
-        return [
-          ...prev,
-          {
-            id: prev.length + 1,
-            name: formattedUrl.replace(/^https?:\/\//, ''),
-            url: formattedUrl,
-            tools: { ...form.tools },
-            color: form.color,
-            favicon: form.favicon,
-          },
-        ];
-      }
-    });
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-    setShowCode(false);
-    setEditSiteId(null);
-  };
-
-  // --- UI ---
   return (
     <>
       <Head>
-        <title>Dashboard - Ask Anything™</title>
-        <meta name="description" content="Your dashboard for managing Ask Anything™ widgets and sites." />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/Gist_Mark_000000.png" />
+        <title>AI Analytics - Ask Anything™</title>
+        <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="dashboard-app">
-        <aside className="dashboard-sidebar">
-          <div className="sidebar-header">
-            <img src="/Gist_Mark_000000.png" alt="Logo" className="sidebar-logo" onClick={() => router.push('/')} />
-            <h2 className="sidebar-title">Ask Anything™</h2>
+      
+      <div className="dashboard">
+        {/* Header */}
+        <header className="header">
+          <div className="header-left">
+            <div className="logo-section">
+              <Image src="/Gist G white no background.png" alt="Gist" className="logo-img" width={40} height={40} />
+              <h1 className="logo">Ask Anything™</h1>
+            </div>
+            <span className="site-selector">
+              <select value={selectedSite} onChange={(e) => setSelectedSite(e.target.value)}>
+                <option value="the-harbor">The Harbor</option>
+                <option value="tech-daily">Tech Daily</option>
+                <option value="finance-weekly">Finance Weekly</option>
+              </select>
+            </span>
           </div>
-          <nav className="sidebar-nav">
-            <button className={`sidebar-link${activePage === 'home' ? ' active' : ''}`} onClick={() => setActivePage('home')}>Home</button>
-            <button className={`sidebar-link${activePage === 'sites' ? ' active' : ''}`} onClick={() => setActivePage('sites')}>Sites</button>
-          </nav>
-        </aside>
-        <main className="dashboard-main">
-          {activePage === 'home' && (
-            <>
-              <h1 className="dashboard-title">Welcome to your Dashboard</h1>
-              <p className="dashboard-desc">This is your central hub for managing your Ask Anything™ widgets and sites. More features coming soon!</p>
-            </>
-          )}
-          {activePage === 'sites' && (
-            <div className="sites-page">
-              <div className="sites-header">
-                <h1 className="dashboard-title">Your Sites</h1>
-                <button className="add-site-btn" title="Add Site" onClick={handleAddSite}>+ Add Site</button>
+          
+          <div className="header-center">
+            <nav className="nav-tabs">
+              <button className="nav-tab active">Overview</button>
+              <button className="nav-tab">AI Performance</button>
+              <button className="nav-tab">Engagement</button>
+              <button className="nav-tab">Revenue</button>
+              <button className="nav-tab">Content</button>
+            </nav>
+          </div>
+          
+          <div className="header-right">
+            <select className="time-selector" value={timeRange} onChange={(e) => setTimeRange(e.target.value)}>
+              <option value="24h">Last 24 hours</option>
+              <option value="7d">Last 7 days</option>
+              <option value="30d">Last 30 days</option>
+              <option value="90d">Last 90 days</option>
+            </select>
+            <button className="settings-btn">Settings</button>
+          </div>
+        </header>
+
+        {/* Main Content */}
+        <main className="main-content">
+          {/* Overview Cards */}
+          <section className="overview-section">
+            <div className="metric-grid">
+              {/* AI Performance Cards */}
+              <div className="metric-card">
+                <div className="metric-header">
+                  <span className="metric-label">Questions Answered</span>
+                  <span className="metric-trend positive">+12.4%</span>
+                </div>
+                <div className="metric-value">147.2K</div>
+                <div className="metric-sparkline">
+                  <svg viewBox="0 0 100 30" className="sparkline">
+                    <polyline points="0,25 20,20 40,15 60,12 80,8 100,5" />
+                  </svg>
+                </div>
+                <div className="metric-footer">96.4% answer rate</div>
               </div>
-              <div className="sites-grid">
-                {sites.map(site => (
-                  <div key={site.id} className="site-card">
-                    <div className="site-card-header">
-                      <div className="site-card-title">
-                        <span className="site-card-favicon" style={{ background: site.color }}>
-                          {site.favicon ? (
-                            <img src={site.favicon} alt="favicon" />
-                          ) : (
-                            <span className="site-card-initial">{site.name[0].toUpperCase()}</span>
-                          )}
-                        </span>
-                        <div>
-                          <div className="site-card-name">{site.name}</div>
-                          <a href={site.url} target="_blank" rel="noopener noreferrer" className="site-card-url">{site.url}</a>
-                        </div>
-                      </div>
-                      <button className="site-card-edit" title="Edit" onClick={e => { e.stopPropagation(); handleEditSite(site); }}>Edit</button>
-                    </div>
-                    <div className="site-card-tools">
-                      {Object.entries(site.tools).map(([tool, enabled]) =>
-                        enabled ? (
-                          <span key={tool} className="site-tool-badge" title={TOOL_LABELS[tool]}>{TOOL_ICONS[tool]}</span>
-                        ) : null
-                      )}
-                      <span className="site-tool-color" title="Widget Color" style={{ background: site.color }}></span>
-                    </div>
-                  </div>
-                ))}
+
+              <div className="metric-card">
+                <div className="metric-header">
+                  <span className="metric-label">Avg Response Time</span>
+                  <span className="metric-trend positive">-8.2%</span>
+                </div>
+                <div className="metric-value">1.3s</div>
+                <div className="metric-sparkline">
+                  <svg viewBox="0 0 100 30" className="sparkline">
+                    <polyline points="0,5 20,8 40,12 60,10 80,15 100,20" />
+                  </svg>
+                </div>
+                <div className="metric-footer">Below 2s target</div>
+              </div>
+
+              <div className="metric-card">
+                <div className="metric-header">
+                  <span className="metric-label">Session Duration</span>
+                  <span className="metric-trend positive">+23.7%</span>
+                </div>
+                <div className="metric-value">5m 54s</div>
+                <div className="metric-sparkline">
+                  <svg viewBox="0 0 100 30" className="sparkline">
+                    <polyline points="0,20 20,18 40,15 60,12 80,8 100,5" />
+                  </svg>
+                </div>
+                <div className="metric-footer">vs 4m 46s baseline</div>
+              </div>
+
+              <div className="metric-card">
+                <div className="metric-header">
+                  <span className="metric-label">Revenue Impact</span>
+                  <span className="metric-trend positive">+31.2%</span>
+                </div>
+                <div className="metric-value">$42.7K</div>
+                <div className="metric-sparkline">
+                  <svg viewBox="0 0 100 30" className="sparkline">
+                    <polyline points="0,25 20,22 40,18 60,15 80,10 100,5" />
+                  </svg>
+                </div>
+                <div className="metric-footer">This week</div>
+              </div>
+
+              <div className="metric-card">
+                <div className="metric-header">
+                  <span className="metric-label">Content Discovery</span>
+                  <span className="metric-trend positive">+18.9%</span>
+                </div>
+                <div className="metric-value">3.8x</div>
+                <div className="metric-sparkline">
+                  <svg viewBox="0 0 100 30" className="sparkline">
+                    <polyline points="0,20 20,18 40,15 60,12 80,10 100,8" />
+                  </svg>
+                </div>
+                <div className="metric-footer">Articles per session</div>
+              </div>
+
+              <div className="metric-card">
+                <div className="metric-header">
+                  <span className="metric-label">User Satisfaction</span>
+                  <span className="metric-trend positive">+4.1%</span>
+                </div>
+                <div className="metric-value">4.7/5</div>
+                <div className="metric-sparkline">
+                  <svg viewBox="0 0 100 30" className="sparkline">
+                    <polyline points="0,15 20,12 40,10 60,8 80,6 100,5" />
+                  </svg>
+                </div>
+                <div className="metric-footer">8,234 ratings</div>
               </div>
             </div>
-          )}
-        </main>
-        {showModal && (
-          <div className="modal-overlay" onClick={closeModal}>
-            <div className="modal" onClick={e => e.stopPropagation()}>
-              {!showCode ? (
-                <form className="add-site-form" onSubmit={handleModalSubmit}>
-                  <h2>{editSiteId ? 'Edit Site' : 'Add a New Site'}</h2>
-                  <div className="modal-form-row">
-                    <div className="modal-form-col">
-                      <label>Site URL
-                        <input type="text" name="url" value={form.url} onChange={handleFormChange} placeholder="yourwebsite.com" required />
-                      </label>
-                      <label>Widget Color
-                        <input type="color" name="color" value={form.color} onChange={handleFormChange} />
-                      </label>
-                      <label>Favicon URL
-                        <input type="text" name="favicon" value={form.favicon} onChange={handleFormChange} placeholder="https://yourwebsite.com/favicon.ico" />
-                      </label>
+          </section>
+
+          {/* Main Performance Chart */}
+          <section className="chart-section">
+            <div className="chart-container">
+              <div className="chart-header">
+                <h2 className="chart-title">Performance Overview</h2>
+                <div className="chart-controls">
+                  <button 
+                    className={`chart-btn ${selectedMetric === 'ai_performance' ? 'active' : ''}`}
+                    onClick={() => setSelectedMetric('ai_performance')}
+                  >
+                    AI Performance
+                  </button>
+                  <button 
+                    className={`chart-btn ${selectedMetric === 'engagement' ? 'active' : ''}`}
+                    onClick={() => setSelectedMetric('engagement')}
+                  >
+                    Engagement
+                  </button>
+                  <button 
+                    className={`chart-btn ${selectedMetric === 'revenue' ? 'active' : ''}`}
+                    onClick={() => setSelectedMetric('revenue')}
+                  >
+                    Revenue
+                  </button>
+                </div>
+              </div>
+              
+              <div className="chart-body">
+                <svg viewBox="0 0 800 400" className="main-chart">
+                  {/* Grid lines */}
+                  {[0, 1, 2, 3, 4].map(i => (
+                    <line 
+                      key={i}
+                      x1="50" 
+                      y1={50 + i * 75} 
+                      x2="750" 
+                      y2={50 + i * 75}
+                      stroke="rgba(255,255,255,0.05)"
+                      strokeWidth="1"
+                    />
+                  ))}
+                  
+                  {/* Chart lines */}
+                  {chartData[selectedMetric].datasets.map((dataset, idx) => (
+                    <g key={idx}>
+                      <polyline
+                        points={dataset.data.map((val, i) => 
+                          `${50 + i * 100},${350 - (val / Math.max(...dataset.data)) * 250}`
+                        ).join(' ')}
+                        fill="none"
+                        stroke={dataset.color}
+                        strokeWidth="2"
+                      />
+                      {dataset.data.map((val, i) => (
+                        <circle
+                          key={i}
+                          cx={50 + i * 100}
+                          cy={350 - (val / Math.max(...dataset.data)) * 250}
+                          r="4"
+                          fill={dataset.color}
+                        />
+                      ))}
+                    </g>
+                  ))}
+                  
+                  {/* X-axis labels */}
+                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, i) => (
+                    <text
+                      key={day}
+                      x={50 + i * 100}
+                      y={380}
+                      textAnchor="middle"
+                      fill="rgba(255,255,255,0.5)"
+                      fontSize="12"
+                    >
+                      {day}
+                    </text>
+                  ))}
+                </svg>
+                
+                <div className="chart-legend">
+                  {chartData[selectedMetric].datasets.map((dataset, idx) => (
+                    <div key={idx} className="legend-item">
+                      <span className="legend-color" style={{background: dataset.color}}></span>
+                      <span className="legend-label">{dataset.label}</span>
                     </div>
-                    <div className="modal-form-col">
-                      <div className="form-section">
-                        <span>Enable Tools:</span>
-                        <div className="tool-toggle-group">
-                          {Object.keys(TOOL_LABELS).map(tool => (
-                            <label key={tool} className={`tool-toggle${form.tools[tool] ? ' enabled' : ''}`} title={TOOL_LABELS[tool]}>
-                              <input type="checkbox" name={`tools.${tool}`} checked={form.tools[tool]} onChange={handleFormChange} />
-                              <span className="tool-toggle-label">{TOOL_LABELS[tool]}</span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* AI Performance Detailed Metrics */}
+          <section className="detailed-metrics">
+            <div className="metrics-row">
+              {/* Question Analytics */}
+              <div className="analytics-card">
+                <h3 className="card-title">Question Analytics</h3>
+                <div className="question-metrics">
+                  <div className="metric-row">
+                    <span className="metric-name">Average Complexity Score</span>
+                    <span className="metric-value">7.8/10</span>
                   </div>
-                  <div className="modal-actions">
-                    <button type="button" className="modal-cancel" onClick={closeModal}>Cancel</button>
-                    <button type="submit" className="modal-submit">Generate Widget Code</button>
+                  <div className="metric-row">
+                    <span className="metric-name">Multi-turn Conversations</span>
+                    <span className="metric-value">34.2%</span>
                   </div>
-                </form>
-              ) : (
-                <div className="code-result">
-                  <h2>Your Widget Code</h2>
-                  <pre className="code-block"><code>{generatedCode}</code></pre>
-                  <div className="modal-actions">
-                    <button type="button" className="modal-cancel" onClick={closeModal}>Close</button>
+                  <div className="metric-row">
+                    <span className="metric-name">Sources per Answer</span>
+                    <span className="metric-value">3.6</span>
+                  </div>
+                  <div className="metric-row">
+                    <span className="metric-name">Accuracy Score</span>
+                    <span className="metric-value">98.7%</span>
                   </div>
                 </div>
-              )}
+                
+                <div className="top-questions">
+                  <h4 className="subsection-title">Top Question Categories</h4>
+                  <div className="category-list">
+                    <div className="category-item">
+                      <span className="category-name">Technical Details</span>
+                      <div className="category-bar">
+                        <div className="category-fill" style={{width: '85%'}}></div>
+                      </div>
+                      <span className="category-count">2.1K</span>
+                    </div>
+                    <div className="category-item">
+                      <span className="category-name">Comparisons</span>
+                      <div className="category-bar">
+                        <div className="category-fill" style={{width: '72%'}}></div>
+                      </div>
+                      <span className="category-count">1.8K</span>
+                    </div>
+                    <div className="category-item">
+                      <span className="category-name">Implementation</span>
+                      <div className="category-bar">
+                        <div className="category-fill" style={{width: '68%'}}></div>
+                      </div>
+                      <span className="category-count">1.7K</span>
+                    </div>
+                    <div className="category-item">
+                      <span className="category-name">Pricing</span>
+                      <div className="category-bar">
+                        <div className="category-fill" style={{width: '55%'}}></div>
+                      </div>
+                      <span className="category-count">1.4K</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Content Intelligence */}
+              <div className="analytics-card">
+                <h3 className="card-title">Content Intelligence</h3>
+                <div className="content-insights">
+                  <div className="insight-item">
+                    <h4 className="insight-label">Most Queried Articles</h4>
+                    <div className="article-list">
+                      <div className="article-item">
+                        <span className="article-title">AI Revolution in Healthcare</span>
+                        <span className="article-queries">847</span>
+                      </div>
+                      <div className="article-item">
+                        <span className="article-title">Climate Tech Breakthroughs 2025</span>
+                        <span className="article-queries">623</span>
+                      </div>
+                      <div className="article-item">
+                        <span className="article-title">Future of Remote Work</span>
+                        <span className="article-queries">541</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="insight-item">
+                    <h4 className="insight-label">Content Gaps Identified</h4>
+                    <div className="gap-list">
+                      <div className="gap-item">
+                        <span className="gap-topic">Quantum computing basics</span>
+                        <span className="gap-demand">High</span>
+                      </div>
+                      <div className="gap-item">
+                        <span className="gap-topic">Sustainability metrics</span>
+                        <span className="gap-demand">Medium</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Revenue Attribution */}
+              <div className="analytics-card">
+                <h3 className="card-title">Revenue Attribution</h3>
+                <div className="revenue-breakdown">
+                  <div className="revenue-metric">
+                    <span className="revenue-label">Direct AI Session Value</span>
+                    <span className="revenue-value">$3.89</span>
+                  </div>
+                  <div className="revenue-metric">
+                    <span className="revenue-label">Extended Session Revenue</span>
+                    <span className="revenue-value">$2.47</span>
+                  </div>
+                  <div className="revenue-metric">
+                    <span className="revenue-label">Subscription Lift</span>
+                    <span className="revenue-value">+18.3%</span>
+                  </div>
+                  
+                  <div className="revenue-chart">
+                    <h4 className="subsection-title">Revenue by Feature</h4>
+                    <div className="feature-revenue">
+                      <div className="feature-item">
+                        <span className="feature-name">Ask Anything</span>
+                        <span className="feature-value">45%</span>
+                      </div>
+                      <div className="feature-item">
+                        <span className="feature-name">AI Summaries</span>
+                        <span className="feature-value">28%</span>
+                      </div>
+                      <div className="feature-item">
+                        <span className="feature-name">Smart Remixing</span>
+                        <span className="feature-value">18%</span>
+                      </div>
+                      <div className="feature-item">
+                        <span className="feature-name">Deep Dive</span>
+                        <span className="feature-value">9%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        )}
+          </section>
+
+          {/* Real-time Activity Feed */}
+          <section className="activity-section">
+            <div className="activity-container">
+              <h3 className="section-title">Real-time Activity</h3>
+              <div className="activity-feed">
+                <div className="activity-item">
+                  <span className="activity-time">14:32:18</span>
+                  <span className="activity-type">Question</span>
+                  <span className="activity-content">"How does this compare to competitors?"</span>
+                  <span className="activity-article">AI in Healthcare</span>
+                  <span className="activity-metrics">
+                    <span className="metric">3 sources</span>
+                    <span className="metric">1.2s</span>
+                  </span>
+                </div>
+                <div className="activity-item">
+                  <span className="activity-time">14:32:15</span>
+                  <span className="activity-type">Deep Dive</span>
+                  <span className="activity-content">User exploring related articles</span>
+                  <span className="activity-article">Climate Tech</span>
+                  <span className="activity-metrics">
+                    <span className="metric">4 articles</span>
+                    <span className="metric">+$0.48</span>
+                  </span>
+                </div>
+                <div className="activity-item">
+                  <span className="activity-time">14:32:12</span>
+                  <span className="activity-type">Share</span>
+                  <span className="activity-content">AI summary shared on LinkedIn</span>
+                  <span className="activity-article">Remote Work</span>
+                  <span className="activity-metrics">
+                    <span className="metric">12 reactions</span>
+                    <span className="metric">Viral</span>
+                  </span>
+                </div>
+                <div className="activity-item">
+                  <span className="activity-time">14:32:08</span>
+                  <span className="activity-type">Question</span>
+                  <span className="activity-content">"What are the implementation costs?"</span>
+                  <span className="activity-article">Quantum Computing</span>
+                  <span className="activity-metrics">
+                    <span className="metric">5 sources</span>
+                    <span className="metric">0.9s</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Technical Performance & User Satisfaction */}
+          <section className="performance-section">
+            <div className="performance-grid">
+              {/* Technical Metrics */}
+              <div className="performance-card">
+                <h3 className="card-title">Technical Performance</h3>
+                <div className="tech-metrics">
+                  <div className="tech-metric">
+                    <span className="tech-label">Widget Load Impact</span>
+                    <span className="tech-value">+82ms</span>
+                    <span className="tech-status good">Optimal</span>
+                  </div>
+                  <div className="tech-metric">
+                    <span className="tech-label">API Response Time</span>
+                    <span className="tech-value">124ms</span>
+                    <span className="tech-status good">P95</span>
+                  </div>
+                  <div className="tech-metric">
+                    <span className="tech-label">Error Rate</span>
+                    <span className="tech-value">0.03%</span>
+                    <span className="tech-status good">Low</span>
+                  </div>
+                  <div className="tech-metric">
+                    <span className="tech-label">Browser Support</span>
+                    <span className="tech-value">99.2%</span>
+                    <span className="tech-status good">Excellent</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* User Satisfaction */}
+              <div className="performance-card">
+                <h3 className="card-title">User Satisfaction</h3>
+                <div className="satisfaction-metrics">
+                  <div className="nps-score">
+                    <span className="nps-label">NPS Score</span>
+                    <span className="nps-value">72</span>
+                    <span className="nps-trend">+8 pts</span>
+                  </div>
+                  
+                  <div className="feedback-breakdown">
+                    <div className="feedback-item">
+                      <span className="feedback-label">Answer Quality</span>
+                      <div className="feedback-bar">
+                        <div className="feedback-fill" style={{width: '92%'}}></div>
+                      </div>
+                      <span className="feedback-score">4.6/5</span>
+                    </div>
+                    <div className="feedback-item">
+                      <span className="feedback-label">Response Speed</span>
+                      <div className="feedback-bar">
+                        <div className="feedback-fill" style={{width: '88%'}}></div>
+                      </div>
+                      <span className="feedback-score">4.4/5</span>
+                    </div>
+                    <div className="feedback-item">
+                      <span className="feedback-label">Relevance</span>
+                      <div className="feedback-bar">
+                        <div className="feedback-fill" style={{width: '94%'}}></div>
+                      </div>
+                      <span className="feedback-score">4.7/5</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Predictive Insights */}
+              <div className="performance-card">
+                <h3 className="card-title">AI-Powered Insights</h3>
+                <div className="ai-insights">
+                  <div className="insight">
+                    <span className="insight-icon">↑</span>
+                    <span className="insight-text">Question volume predicted to increase 23% next week based on trending topics</span>
+                  </div>
+                  <div className="insight">
+                    <span className="insight-icon">💡</span>
+                    <span className="insight-text">Create content on "AI Ethics" - 847 unanswered queries detected</span>
+                  </div>
+                  <div className="insight">
+                    <span className="insight-icon">⚡</span>
+                    <span className="insight-text">Enable smart summaries on long-form articles to boost engagement by ~15%</span>
+                  </div>
+                  <div className="insight">
+                    <span className="insight-icon">$</span>
+                    <span className="insight-text">Premium content unlock feature could generate additional $18K/month</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
       </div>
-      <style jsx global>{`
-        body {
-          background: linear-gradient(135deg, #F2F0FE 0%, #FFEFF6 100%);
-          min-height: 100vh;
-        }
-      `}</style>
+
       <style jsx>{`
-        .dashboard-app {
-          display: flex;
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        .dashboard {
+          background: #f8fafc;
           min-height: 100vh;
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          color: #1e293b;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
-        .dashboard-sidebar {
-          width: 240px;
-          background: rgba(255,255,255,0.95);
-          border-right: 1px solid #e5e7eb;
+
+        /* Header */
+        .header {
+          background: #ffffff;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+          padding: 1rem 2rem;
           display: flex;
-          flex-direction: column;
-          padding: 2rem 1.5rem 1.5rem 1.5rem;
-          box-shadow: 2px 0 24px rgba(55,66,250,0.04);
+          align-items: center;
+          justify-content: space-between;
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        .sidebar-header {
+
+        .header-left {
+          display: flex;
+          align-items: center;
+          gap: 2rem;
+        }
+
+        .logo-section {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .logo-img {
+          height: 24px;
+          width: auto;
+        }
+
+        .logo {
+          font-size: 1.25rem;
+          font-weight: 600;
+          margin: 0;
+        }
+
+        .site-selector select {
+          background: #ffffff;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          color: #1e293b;
+          padding: 0.5rem 1rem;
+          border-radius: 6px;
+          font-size: 0.875rem;
+          cursor: pointer;
+        }
+
+        .site-selector select:focus {
+          outline: none;
+          border-color: #667eea;
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .header-center {
+          flex: 1;
+          display: flex;
+          justify-content: center;
+        }
+
+        .nav-tabs {
+          display: flex;
+          gap: 2rem;
+        }
+
+        .nav-tab {
+          background: none;
+          border: none;
+          color: rgba(30, 41, 59, 0.6);
+          font-size: 0.875rem;
+          cursor: pointer;
+          padding: 0.5rem 0;
+          transition: all 0.2s;
+          position: relative;
+        }
+
+        .nav-tab:hover {
+          color: rgba(30, 41, 59, 0.8);
+        }
+
+        .nav-tab.active {
+          color: #1e293b;
+        }
+
+        .nav-tab.active::after {
+          content: '';
+          position: absolute;
+          bottom: -1rem;
+          left: 0;
+          right: 0;
+          height: 2px;
+          background: #667eea;
+        }
+
+        .header-right {
           display: flex;
           align-items: center;
           gap: 1rem;
-          margin-bottom: 2.5rem;
         }
-        .sidebar-logo {
-          width: 40px;
-          height: 40px;
+
+        .time-selector {
+          background: #ffffff;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          color: #1e293b;
+          padding: 0.5rem 1rem;
+          border-radius: 6px;
+          font-size: 0.875rem;
           cursor: pointer;
         }
-        .sidebar-title {
-          font-size: 1.25rem;
-          font-weight: 700;
-          color: #111827;
-          letter-spacing: -0.01em;
+
+        .time-selector:focus {
+          outline: none;
+          border-color: #667eea;
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
-        .sidebar-nav {
-          display: flex;
-          flex-direction: column;
+
+        .settings-btn {
+          background: #ffffff;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          color: rgba(30, 41, 59, 0.8);
+          padding: 0.5rem 1rem;
+          border-radius: 6px;
+          font-size: 0.875rem;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .settings-btn:hover {
+          border-color: rgba(0, 0, 0, 0.2);
+          color: #1e293b;
+          background: #f1f5f9;
+        }
+
+        /* Main Content */
+        .main-content {
+          padding: 2rem;
+          max-width: 1600px;
+          margin: 0 auto;
+        }
+
+        /* Overview Section */
+        .overview-section {
+          margin-bottom: 3rem;
+        }
+
+        .metric-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
           gap: 1rem;
         }
-        .sidebar-link {
-          background: none;
-          border: none;
-          color: #374151;
-          font-size: 1.1rem;
-          font-weight: 600;
-          text-align: left;
-          padding: 0.75rem 1rem;
+
+        .metric-card {
+          background: #ffffff;
+          border: 1px solid rgba(0, 0, 0, 0.1);
           border-radius: 8px;
-          transition: background 0.15s, color 0.15s;
-          cursor: pointer;
+          padding: 1.5rem;
+          transition: all 0.2s;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        .sidebar-link.active, .sidebar-link:hover {
-          background: linear-gradient(90deg, #3742fa 0%, #8b5cf6 100%);
-          color: #fff;
+
+        .metric-card:hover {
+          border-color: rgba(0, 0, 0, 0.2);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
-        .dashboard-main {
-          flex: 1;
-          padding: 4rem 3rem;
+
+        .metric-header {
           display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-          justify-content: flex-start;
-        }
-        .dashboard-title {
-          font-size: 2.5rem;
-          font-weight: 700;
-          color: #111827;
+          justify-content: space-between;
+          align-items: center;
           margin-bottom: 1rem;
         }
-        .dashboard-desc {
-          font-size: 1.2rem;
-          color: #6b7280;
+
+        .metric-label {
+          font-size: 0.875rem;
+          color: rgba(30, 41, 59, 0.6);
         }
-        /* Sites page styles */
-        .sites-page {
-          width: 100%;
+
+        .metric-trend {
+          font-size: 0.75rem;
+          font-weight: 500;
         }
-        .sites-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 2rem;
+
+        .metric-trend.positive {
+          color: #10b981;
         }
-        .add-site-btn {
-          background: linear-gradient(135deg, #ff6b35 0%, #3742fa 100%);
-          color: #fff;
-          border: none;
-          font-size: 1.1rem;
-          font-weight: 700;
-          border-radius: 8px;
-          padding: 0.75rem 1.5rem;
-          box-shadow: 0 2px 8px rgba(55,66,250,0.08);
-          cursor: pointer;
-          transition: background 0.15s, box-shadow 0.15s;
+
+        .metric-trend.negative {
+          color: #ef4444;
         }
-        .add-site-btn:hover {
-          background: linear-gradient(135deg, #3742fa 0%, #ff6b35 100%);
-          box-shadow: 0 4px 16px rgba(55,66,250,0.12);
-        }
-        .sites-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-          gap: 2rem;
-        }
-        .site-card {
-          background: #fff;
-          border-radius: 16px;
-          box-shadow: 0 4px 24px rgba(55,66,250,0.07);
-          padding: 1.5rem 1.5rem 1rem 1.5rem;
-          display: flex;
-          flex-direction: column;
-          gap: 1.25rem;
-          border: 1.5px solid #e5e7eb;
-          transition: box-shadow 0.15s, border 0.15s;
-        }
-        .site-card:hover {
-          box-shadow: 0 8px 32px rgba(55,66,250,0.13);
-          border: 1.5px solid #3742fa;
-        }
-        .site-card-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 1rem;
-        }
-        .site-card-title {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-        }
-        .site-card-favicon {
-          width: 44px;
-          height: 44px;
-          border-radius: 12px;
-          background: #f3f4f6;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          overflow: hidden;
-          box-shadow: 0 2px 8px rgba(55,66,250,0.07);
-        }
-        .site-card-favicon img {
-          width: 32px;
-          height: 32px;
-          object-fit: contain;
-        }
-        .site-card-initial {
-          font-size: 1.5rem;
-          font-weight: 700;
-          color: #fff;
-        }
-        .site-card-name {
-          font-size: 1.15rem;
-          font-weight: 700;
-          color: #374151;
-        }
-        .site-card-url {
-          color: #3742fa;
-          text-decoration: underline;
-          font-size: 0.98rem;
-        }
-        .site-card-edit {
-          background: #f3f4f6;
-          color: #374151;
-          border: 1.5px solid #e5e7eb;
-          padding: 0.5rem 1.25rem;
-          border-radius: 8px;
-          font-size: 1rem;
+
+        .metric-value {
+          font-size: 2rem;
           font-weight: 600;
-          cursor: pointer;
-          transition: background 0.15s, border 0.15s;
+          margin-bottom: 1rem;
         }
-        .site-card-edit:hover {
-          background: #3742fa;
-          color: #fff;
-          border: 1.5px solid #3742fa;
-        }
-        .site-card-tools {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-        }
-        .site-tool-badge {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          background: #f3f4f6;
-          color: #3742fa;
-          font-size: 1.15rem;
-          border-radius: 8px;
-          padding: 0.25rem 0.6rem;
-          font-weight: 700;
-          border: 1.5px solid #e5e7eb;
-        }
-        .site-tool-color {
-          display: inline-block;
-          width: 22px;
-          height: 22px;
-          border-radius: 6px;
-          border: 2px solid #e5e7eb;
-          margin-left: 0.5rem;
-        }
-        /* Modal styles */
-        .modal-overlay {
-          position: fixed;
-          top: 0; left: 0; right: 0; bottom: 0;
-          background: rgba(0,0,0,0.25);
-          z-index: 1000;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .modal {
-          background: #fff;
-          border-radius: 16px;
-          box-shadow: 0 8px 40px rgba(55,66,250,0.10);
-          padding: 2rem 2.5rem;
-          min-width: 340px;
-          max-width: 98vw;
-          max-height: 90vh;
-          overflow-y: auto;
-        }
-        .add-site-form h2, .code-result h2 {
-          font-size: 1.5rem;
-          font-weight: 700;
-          color: #3742fa;
-          margin-bottom: 1.5rem;
-        }
-        .modal-form-row {
-          display: flex;
-          gap: 2rem;
-        }
-        .modal-form-col {
-          flex: 1;
-          min-width: 180px;
-        }
-        .add-site-form label {
-          display: block;
-          font-weight: 600;
-          color: #374151;
+
+        .metric-sparkline {
+          height: 30px;
           margin-bottom: 0.5rem;
         }
-        .add-site-form input[type="text"] {
+
+        .sparkline {
           width: 100%;
-          padding: 0.75rem 1rem;
-          border: 1.5px solid #e5e7eb;
+          height: 100%;
+        }
+
+        .sparkline polyline {
+          fill: none;
+          stroke: #667eea;
+          stroke-width: 2;
+          opacity: 0.6;
+        }
+
+        .metric-footer {
+          font-size: 0.75rem;
+          color: rgba(30, 41, 59, 0.5);
+        }
+
+        /* Chart Section */
+        .chart-section {
+          margin-bottom: 3rem;
+        }
+
+        .chart-container {
+          background: #ffffff;
+          border: 1px solid rgba(0, 0, 0, 0.1);
           border-radius: 8px;
-          font-size: 1rem;
-          margin-bottom: 1.25rem;
+          padding: 2rem;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        .add-site-form input[type="color"] {
-          margin-left: 0.5rem;
-          width: 2.5rem;
-          height: 2rem;
-          border: none;
-          background: none;
-          vertical-align: middle;
+
+        .chart-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 2rem;
         }
-        .form-section {
-          margin-bottom: 1.25rem;
+
+        .chart-title {
+          font-size: 1.25rem;
+          font-weight: 500;
+          margin: 0;
         }
-        .tool-toggle-group {
+
+        .chart-controls {
+          display: flex;
+          gap: 0.5rem;
+        }
+
+        .chart-btn {
+          background: #f8fafc;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          color: rgba(30, 41, 59, 0.6);
+          padding: 0.5rem 1rem;
+          border-radius: 6px;
+          font-size: 0.875rem;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .chart-btn:hover {
+          border-color: rgba(0, 0, 0, 0.2);
+          color: rgba(30, 41, 59, 0.8);
+          background: #f1f5f9;
+        }
+
+        .chart-btn.active {
+          background: rgba(102, 126, 234, 0.1);
+          border-color: #667eea;
+          color: #667eea;
+        }
+
+        .chart-body {
+          position: relative;
+        }
+
+        .main-chart {
+          width: 100%;
+          height: 400px;
+        }
+
+        .chart-legend {
+          display: flex;
+          gap: 2rem;
+          justify-content: center;
+          margin-top: 1rem;
+        }
+
+        .legend-item {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .legend-color {
+          width: 12px;
+          height: 12px;
+          border-radius: 2px;
+        }
+
+        .legend-label {
+          font-size: 0.875rem;
+          color: rgba(30, 41, 59, 0.6);
+        }
+
+        /* Detailed Metrics */
+        .detailed-metrics {
+          margin-bottom: 3rem;
+        }
+
+        .metrics-row {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+          gap: 1rem;
+        }
+
+        .analytics-card {
+          background: #ffffff;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          border-radius: 8px;
+          padding: 1.5rem;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+          font-size: 1.125rem;
+          font-weight: 500;
+          margin: 0 0 1.5rem 0;
+        }
+
+        .question-metrics {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+          margin-bottom: 2rem;
+        }
+
+        .metric-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.5rem 0;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .metric-name {
+          font-size: 0.875rem;
+          color: rgba(30, 41, 59, 0.7);
+        }
+
+        .metric-value {
+          font-size: 0.875rem;
+          font-weight: 500;
+        }
+
+        .subsection-title {
+          font-size: 0.875rem;
+          font-weight: 500;
+          margin: 0 0 1rem 0;
+          color: rgba(30, 41, 59, 0.8);
+        }
+
+        .category-list {
           display: flex;
           flex-direction: column;
           gap: 0.75rem;
         }
-        .tool-toggle {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          background: #f3f4f6;
-          border-radius: 8px;
-          padding: 0.75rem 1rem;
-          font-weight: 400;
-          border: 1.5px solid #e5e7eb;
-          cursor: pointer;
-          transition: background 0.15s, border 0.15s;
-        }
-        .tool-toggle.enabled {
-          background: #e0e7ff;
-          color: #000000;
-          border: 1.5px solid #6366f1;
-        }
-        .tool-toggle input[type="checkbox"] {
-          margin-right: 0.5rem;
-        }
-        .tool-toggle-icon {
-          display: flex;
-          align-items: center;
-          margin-right: 0.25rem;
-        }
-        .tool-toggle-label {
-          font-size: 1.1rem;
-          font-weight: 400;
-          color: #000000;
-        }
-        .modal-actions {
-          display: flex;
-          justify-content: flex-end;
+
+        .category-item {
+          display: grid;
+          grid-template-columns: 1fr 100px 50px;
           gap: 1rem;
+          align-items: center;
+        }
+
+        .category-name {
+          font-size: 0.875rem;
+          color: rgba(30, 41, 59, 0.7);
+        }
+
+        .category-bar {
+          background: rgba(0, 0, 0, 0.05);
+          height: 6px;
+          border-radius: 3px;
+          overflow: hidden;
+        }
+
+        .category-fill {
+          height: 100%;
+          background: #667eea;
+          border-radius: 3px;
+        }
+
+        .category-count {
+          font-size: 0.875rem;
+          font-weight: 500;
+          text-align: right;
+        }
+
+        /* Content Intelligence */
+        .content-insights {
+          display: flex;
+          flex-direction: column;
+          gap: 2rem;
+        }
+
+        .insight-item {
+          border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+          padding-bottom: 1rem;
+        }
+
+        .insight-item:last-child {
+          border-bottom: none;
+        }
+
+        .insight-label {
+          font-size: 0.875rem;
+          font-weight: 500;
+          margin: 0 0 0.75rem 0;
+          color: rgba(30, 41, 59, 0.8);
+        }
+
+        .article-list {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .article-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.5rem 0;
+        }
+
+        .article-title {
+          font-size: 0.875rem;
+          color: rgba(30, 41, 59, 0.7);
+        }
+
+        .article-queries {
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: #667eea;
+        }
+
+        .gap-list {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .gap-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.5rem;
+          background: rgba(0, 0, 0, 0.03);
+          border-radius: 4px;
+        }
+
+        .gap-topic {
+          font-size: 0.875rem;
+          color: rgba(30, 41, 59, 0.7);
+        }
+
+        .gap-demand {
+          font-size: 0.75rem;
+          padding: 0.25rem 0.5rem;
+          background: rgba(102, 126, 234, 0.1);
+          color: #667eea;
+          border-radius: 4px;
+        }
+
+        /* Revenue Attribution */
+        .revenue-breakdown {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .revenue-metric {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.75rem 0;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .revenue-label {
+          font-size: 0.875rem;
+          color: rgba(30, 41, 59, 0.7);
+        }
+
+        .revenue-value {
+          font-size: 1.125rem;
+          font-weight: 500;
+          color: #10b981;
+        }
+
+        .revenue-chart {
           margin-top: 1.5rem;
         }
-        .modal-cancel {
-          background: #f3f4f6;
-          color: #374151;
-          border: 1.5px solid #e5e7eb;
-          padding: 0.75rem 1.5rem;
+
+        .feature-revenue {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .feature-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.5rem;
+          background: rgba(0, 0, 0, 0.03);
+          border-radius: 4px;
+        }
+
+        .feature-name {
+          font-size: 0.875rem;
+          color: rgba(30, 41, 59, 0.7);
+        }
+
+        .feature-value {
+          font-size: 0.875rem;
+          font-weight: 500;
+        }
+
+        /* Activity Feed */
+        .activity-section {
+          margin-bottom: 3rem;
+        }
+
+        .activity-container {
+          background: #ffffff;
+          border: 1px solid rgba(0, 0, 0, 0.1);
           border-radius: 8px;
-          font-size: 1rem;
-          font-weight: 600;
-          cursor: pointer;
+          padding: 1.5rem;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        .modal-submit {
-          background: linear-gradient(135deg, #3742fa 0%, #8b5cf6 100%);
-          color: #fff;
-          border: none;
-          padding: 0.75rem 1.5rem;
-          border-radius: 8px;
-          font-size: 1rem;
-          font-weight: 700;
-          cursor: pointer;
+
+        .section-title {
+          font-size: 1.125rem;
+          font-weight: 500;
+          margin: 0 0 1.5rem 0;
         }
-        .modal-submit:hover {
-          background: linear-gradient(135deg, #8b5cf6 0%, #3742fa 100%);
+
+        .activity-feed {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+          max-height: 300px;
+          overflow-y: auto;
         }
-        .code-result {
+
+        .activity-item {
+          display: grid;
+          grid-template-columns: 80px 80px 1fr 150px 120px;
+          gap: 1rem;
+          align-items: center;
+          padding: 0.75rem;
+          background: rgba(0, 0, 0, 0.02);
+          border-radius: 4px;
+          transition: all 0.2s;
+        }
+
+        .activity-item:hover {
+          background: rgba(0, 0, 0, 0.05);
+        }
+
+        .activity-time {
+          font-size: 0.75rem;
+          color: rgba(30, 41, 59, 0.5);
+          font-family: monospace;
+        }
+
+        .activity-type {
+          font-size: 0.75rem;
+          padding: 0.25rem 0.5rem;
+          background: rgba(102, 126, 234, 0.1);
+          color: #667eea;
+          border-radius: 4px;
           text-align: center;
         }
-        .code-block {
-          background: #161b22;
-          color: #fff;
-          border-radius: 12px;
+
+        .activity-content {
+          font-size: 0.875rem;
+          color: rgba(30, 41, 59, 0.8);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .activity-article {
+          font-size: 0.875rem;
+          color: rgba(30, 41, 59, 0.6);
+        }
+
+        .activity-metrics {
+          display: flex;
+          gap: 0.5rem;
+          justify-content: flex-end;
+        }
+
+        .activity-metrics .metric {
+          font-size: 0.75rem;
+          padding: 0.25rem 0.5rem;
+          background: rgba(0, 0, 0, 0.05);
+          border-radius: 4px;
+        }
+
+        /* Performance Section */
+        .performance-section {
+          margin-bottom: 3rem;
+        }
+
+        .performance-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+          gap: 1rem;
+        }
+
+        .performance-card {
+          background: #ffffff;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          border-radius: 8px;
           padding: 1.5rem;
-          margin: 1.5rem 0;
-          font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace;
-          font-size: 0.95rem;
-          text-align: left;
-          overflow-x: auto;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        @media (max-width: 900px) {
-          .dashboard-app {
-            flex-direction: column;
-          }
-          .dashboard-sidebar {
-            width: 100%;
-            flex-direction: row;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 1rem;
-            border-right: none;
-            border-bottom: 1px solid #e5e7eb;
-            box-shadow: none;
-          }
-          .sidebar-header {
-            margin-bottom: 0;
-          }
-          .sidebar-nav {
-            flex-direction: row;
-            gap: 1rem;
-            margin-left: 2rem;
-          }
+
+        /* Technical Metrics */
+        .tech-metrics {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
         }
-        @media (max-width: 700px) {
-          .sites-grid {
+
+        .tech-metric {
+          display: grid;
+          grid-template-columns: 1fr 80px 60px;
+          gap: 1rem;
+          align-items: center;
+          padding: 0.75rem 0;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .tech-label {
+          font-size: 0.875rem;
+          color: rgba(30, 41, 59, 0.7);
+        }
+
+        .tech-value {
+          font-size: 0.875rem;
+          font-weight: 500;
+          text-align: right;
+        }
+
+        .tech-status {
+          font-size: 0.75rem;
+          padding: 0.25rem 0.5rem;
+          border-radius: 4px;
+          text-align: center;
+        }
+
+        .tech-status.good {
+          background: rgba(16, 185, 129, 0.1);
+          color: #10b981;
+        }
+
+        /* User Satisfaction */
+        .satisfaction-metrics {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+
+        .nps-score {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          padding: 1rem;
+          background: rgba(0, 0, 0, 0.03);
+          border-radius: 8px;
+        }
+
+        .nps-label {
+          font-size: 0.875rem;
+          color: rgba(30, 41, 59, 0.7);
+        }
+
+        .nps-value {
+          font-size: 2rem;
+          font-weight: 600;
+          color: #10b981;
+        }
+
+        .nps-trend {
+          font-size: 0.875rem;
+          color: #10b981;
+        }
+
+        .feedback-breakdown {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+
+        .feedback-item {
+          display: grid;
+          grid-template-columns: 1fr 100px 50px;
+          gap: 1rem;
+          align-items: center;
+        }
+
+        .feedback-label {
+          font-size: 0.875rem;
+          color: rgba(30, 41, 59, 0.7);
+        }
+
+        .feedback-bar {
+          background: rgba(0, 0, 0, 0.05);
+          height: 6px;
+          border-radius: 3px;
+          overflow: hidden;
+        }
+
+        .feedback-fill {
+          height: 100%;
+          background: #667eea;
+          border-radius: 3px;
+        }
+
+        .feedback-score {
+          font-size: 0.875rem;
+          font-weight: 500;
+          text-align: right;
+        }
+
+        /* AI Insights */
+        .ai-insights {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .insight {
+          display: flex;
+          gap: 0.75rem;
+          padding: 0.75rem;
+          background: rgba(102, 126, 234, 0.05);
+          border: 1px solid rgba(102, 126, 234, 0.1);
+          border-radius: 6px;
+        }
+
+        .insight-icon {
+          font-size: 1.25rem;
+        }
+
+        .insight-text {
+          font-size: 0.875rem;
+          color: rgba(30, 41, 59, 0.8);
+          line-height: 1.4;
+        }
+
+        /* Scrollbar */
+        .activity-feed::-webkit-scrollbar {
+          width: 4px;
+        }
+
+        .activity-feed::-webkit-scrollbar-track {
+          background: rgba(0, 0, 0, 0.05);
+        }
+
+        .activity-feed::-webkit-scrollbar-thumb {
+          background: rgba(0, 0, 0, 0.2);
+          border-radius: 2px;
+        }
+
+        .activity-feed::-webkit-scrollbar-thumb:hover {
+          background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+          .metrics-row {
             grid-template-columns: 1fr;
-            gap: 1.25rem;
           }
-          .modal-form-row {
-            flex-direction: column;
-            gap: 1rem;
+          
+          .performance-grid {
+            grid-template-columns: 1fr;
           }
         }
-        @media (max-width: 600px) {
-          .dashboard-main {
-            padding: 2rem 1rem;
-          }
-          .dashboard-title {
-            font-size: 1.5rem;
-          }
-          .sites-header {
+
+        @media (max-width: 768px) {
+          .header {
             flex-direction: column;
-            align-items: flex-start;
             gap: 1rem;
+            padding: 1rem;
           }
-          .modal {
-            padding: 1rem 0.5rem;
+          
+          .header-center {
+            width: 100%;
+          }
+          
+          .nav-tabs {
+            overflow-x: auto;
+            width: 100%;
+          }
+          
+          .metric-grid {
+            grid-template-columns: 1fr;
+          }
+          
+          .activity-item {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+          }
+          
+          .activity-time,
+          .activity-type {
+            display: inline-block;
+            margin-right: 0.5rem;
+          }
+          
+          .activity-metrics {
+            margin-top: 0.5rem;
           }
         }
       `}</style>
     </>
   );
-} 
+}
