@@ -3,8 +3,22 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 const mockSites = [
-  { id: 1, name: 'theatlantic.com', url: 'https://theatlantic.com' },
-  { id: 2, name: 'example.com', url: 'https://example.com' },
+  {
+    id: 1,
+    name: 'theatlantic.com',
+    url: 'https://theatlantic.com',
+    tools: { summarize: true, remix: false, share: true, ads: false },
+    color: '#3742fa',
+    favicon: '',
+  },
+  {
+    id: 2,
+    name: 'example.com',
+    url: 'https://example.com',
+    tools: { summarize: false, remix: true, share: false, ads: true },
+    color: '#ff6b35',
+    favicon: '',
+  },
 ];
 
 export default function Dashboard() {
@@ -16,24 +30,33 @@ export default function Dashboard() {
   const [generatedCode, setGeneratedCode] = useState('');
   const [form, setForm] = useState({
     url: '',
-    tools: {
-      summarize: false,
-      remix: false,
-      share: false,
-      ads: false,
-    },
+    tools: { summarize: false, remix: false, share: false, ads: false },
     color: '#3742fa',
     favicon: '',
   });
+  const [editSiteId, setEditSiteId] = useState(null);
 
   const handleAddSite = () => {
     setShowModal(true);
     setShowCode(false);
+    setEditSiteId(null);
     setForm({
       url: '',
       tools: { summarize: false, remix: false, share: false, ads: false },
       color: '#3742fa',
       favicon: '',
+    });
+  };
+
+  const handleEditSite = (site) => {
+    setShowModal(true);
+    setShowCode(false);
+    setEditSiteId(site.id);
+    setForm({
+      url: site.url.replace(/^https?:\/\//, ''),
+      tools: { ...site.tools },
+      color: site.color || '#3742fa',
+      favicon: site.favicon || '',
     });
   };
 
@@ -70,16 +93,41 @@ export default function Dashboard() {
     const code = `<!-- Ask Anything™ Widget -->\n<script>\n  window.askAnythingConfig = ${JSON.stringify(widgetConfig, null, 2)};\n</script>\n<script src=\"https://widget.ask-anything.ai/widget.js\" async></script>\n<!-- End Ask Anything™ Widget -->`;
     setGeneratedCode(code);
     setShowCode(true);
-    // Optionally add to sites list (mock)
-    setSites((prev) => [
-      ...prev,
-      { id: prev.length + 1, name: formattedUrl.replace(/^https?:\/\//, ''), url: formattedUrl },
-    ]);
+    // Add or update site in mock list
+    setSites((prev) => {
+      if (editSiteId) {
+        return prev.map(site =>
+          site.id === editSiteId
+            ? {
+                ...site,
+                name: formattedUrl.replace(/^https?:\/\//, ''),
+                url: formattedUrl,
+                tools: { ...form.tools },
+                color: form.color,
+                favicon: form.favicon,
+              }
+            : site
+        );
+      } else {
+        return [
+          ...prev,
+          {
+            id: prev.length + 1,
+            name: formattedUrl.replace(/^https?:\/\//, ''),
+            url: formattedUrl,
+            tools: { ...form.tools },
+            color: form.color,
+            favicon: form.favicon,
+          },
+        ];
+      }
+    });
   };
 
   const closeModal = () => {
     setShowModal(false);
     setShowCode(false);
+    setEditSiteId(null);
   };
 
   return (
@@ -117,9 +165,9 @@ export default function Dashboard() {
               </div>
               <ul className="sites-list">
                 {sites.map(site => (
-                  <li key={site.id} className="site-item">
+                  <li key={site.id} className="site-item" onClick={() => handleEditSite(site)} tabIndex={0} style={{ cursor: 'pointer' }}>
                     <span className="site-name">{site.name}</span>
-                    <a href={site.url} target="_blank" rel="noopener noreferrer" className="site-link">{site.url}</a>
+                    <a href={site.url} target="_blank" rel="noopener noreferrer" className="site-link" onClick={e => e.stopPropagation()}>{site.url}</a>
                   </li>
                 ))}
               </ul>
@@ -131,7 +179,7 @@ export default function Dashboard() {
             <div className="modal" onClick={e => e.stopPropagation()}>
               {!showCode ? (
                 <form className="add-site-form" onSubmit={handleModalSubmit}>
-                  <h2>Add a New Site</h2>
+                  <h2>{editSiteId ? 'Edit Site' : 'Add a New Site'}</h2>
                   <label>Site URL
                     <input type="text" name="url" value={form.url} onChange={handleFormChange} placeholder="yourwebsite.com" required />
                   </label>
@@ -285,6 +333,9 @@ export default function Dashboard() {
           justify-content: space-between;
           padding: 1rem 0;
           border-bottom: 1px solid #e5e7eb;
+        }
+        .site-item:focus {
+          outline: 2px solid #3742fa;
         }
         .site-name {
           font-weight: 600;
