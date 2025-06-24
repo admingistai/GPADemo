@@ -289,13 +289,18 @@ export default function Setup() {
         }
 
         .feature-toggle {
-          display: flex;
-          flex-direction: column;
+          display: grid;
+          grid-template-areas:
+            "checkbox header"
+            "description description";
+          grid-template-columns: auto 1fr;
+          gap: 0.5rem 1rem;
           padding: 1rem;
           border: 1px solid #E5E7EB;
           border-radius: 8px;
           cursor: pointer;
           transition: all 0.2s;
+          align-items: center;
         }
 
         .feature-toggle:hover {
@@ -303,15 +308,25 @@ export default function Setup() {
           background: #F9FAFB;
         }
 
+        .feature-toggle input[type="checkbox"] {
+          grid-area: checkbox;
+          margin: 0;
+          width: 1.2rem;
+          height: 1.2rem;
+        }
+
         .feature-label {
+          grid-area: header;
           font-weight: 600;
-          margin-bottom: 0.25rem;
           color: #111827;
+          margin: 0;
         }
 
         .feature-description {
+          grid-area: description;
           font-size: 0.875rem;
           color: #6B7280;
+          margin: 0;
         }
 
         .submit-button {
