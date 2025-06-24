@@ -193,72 +193,76 @@ export default async function handler(req, res) {
       // Add widget attention animation
       const widgetAnimation = `
         <style>
-          @keyframes pulseArrow {
-            0% { transform: translateX(0); opacity: 0; }
-            20% { opacity: 1; }
-            80% { opacity: 1; }
-            100% { transform: translateX(-20px); opacity: 0; }
+          @keyframes widgetAttentionPulse {
+            0% { transform: scale(1); opacity: 0; }
+            20% { transform: scale(1.2); opacity: 0.8; }
+            40% { transform: scale(1); opacity: 0.5; }
+            60% { transform: scale(1.1); opacity: 0.8; }
+            80% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 0; }
           }
 
-          @keyframes fadeInOut {
-            0% { opacity: 0; }
-            20% { opacity: 1; }
-            80% { opacity: 1; }
-            100% { opacity: 0; }
+          @keyframes widgetArrowBounce {
+            0% { transform: translateY(0) rotate(45deg); opacity: 0; }
+            20% { transform: translateY(-10px) rotate(45deg); opacity: 1; }
+            40% { transform: translateY(0) rotate(45deg); opacity: 0.8; }
+            60% { transform: translateY(-5px) rotate(45deg); opacity: 1; }
+            80% { transform: translateY(0) rotate(45deg); opacity: 0.8; }
+            100% { transform: translateY(0) rotate(45deg); opacity: 0; }
           }
 
           .widget-attention {
             position: fixed;
             bottom: 100px;
-            right: 80px;
-            z-index: 999998;
-            display: flex;
-            align-items: center;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid #0070f3;
             pointer-events: none;
-            animation: fadeInOut 4s ease-in-out forwards;
+            z-index: 999998;
+            animation: widgetAttentionPulse 3s ease-out forwards;
           }
 
-          .widget-attention-text {
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-family: Arial, sans-serif;
-            font-size: 16px;
-            margin-right: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-          }
-
-          .widget-attention-arrow {
-            width: 40px;
-            height: 40px;
-            position: relative;
-          }
-
-          .widget-attention-arrow::after {
-            content: '';
-            position: absolute;
+          .widget-arrow {
+            position: fixed;
+            bottom: 170px;
+            right: 50px;
             width: 20px;
             height: 20px;
-            border-right: 4px solid #FFD700;
-            border-bottom: 4px solid #FFD700;
-            transform: rotate(-45deg);
-            animation: pulseArrow 2s ease-in-out infinite;
+            border-right: 4px solid #0070f3;
+            border-bottom: 4px solid #0070f3;
+            pointer-events: none;
+            z-index: 999998;
+            animation: widgetArrowBounce 3s ease-out forwards;
+          }
+
+          .widget-tooltip {
+            position: fixed;
+            bottom: 180px;
+            right: 80px;
+            background: #0070f3;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 999998;
+            opacity: 0;
+            animation: fadeInOut 3s ease-out forwards;
+          }
+
+          @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(10px); }
+            20% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
           }
         </style>
-        <div class="widget-attention">
-          <div class="widget-attention-text">Ask me anything about this website!</div>
-          <div class="widget-attention-arrow"></div>
-        </div>
-        <script>
-          // Remove the animation after it plays once
-          setTimeout(() => {
-            const attention = document.querySelector('.widget-attention');
-            if (attention) {
-              attention.style.display = 'none';
-            }
-          }, 4000);
-        </script>
+        <div class="widget-attention"></div>
+        <div class="widget-arrow"></div>
+        <div class="widget-tooltip">Ask me anything about this page!</div>
       `;
       
       if (html.includes('</head>')) {
@@ -270,14 +274,6 @@ export default async function handler(req, res) {
       } else {
         // Last resort: append to the end
         html += widgetScript + widgetAnimation;
-      }
-      
-      // Inject demo banner after body tag
-      if (html.includes('<body')) {
-        html = html.replace(/(<body[^>]*>)/, `$1${demoBanner}`);
-      } else {
-        // Fallback: prepend to HTML
-        html = demoBanner + html;
       }
     }
 
