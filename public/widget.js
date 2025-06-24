@@ -1127,6 +1127,190 @@
             .gist-follow-up-question:nth-child(3) {
                 animation-delay: 0.3s;
             }
+            
+            /* Remix functionality styles */
+            .gist-remix-btn {
+                background: linear-gradient(135deg, #8b5cf6 0%, #667eea 100%);
+                color: white !important;
+                border: none;
+                border-radius: 20px;
+                padding: 6px 16px;
+                transition: all 0.2s ease;
+            }
+
+            .gist-remix-btn:hover {
+                background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+            }
+
+            .gist-remix-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.7);
+                z-index: 10001;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                backdrop-filter: blur(4px);
+            }
+
+            .gist-remix-modal.visible {
+                opacity: 1;
+            }
+
+            .gist-remix-content {
+                background: ${isDark ? '#1f2937' : '#ffffff'};
+                border-radius: 16px;
+                padding: 24px;
+                max-width: 500px;
+                width: 90vw;
+                max-height: 80vh;
+                overflow-y: auto;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                transform: scale(0.9) translateY(20px);
+                transition: transform 0.3s ease;
+            }
+
+            .gist-remix-modal.visible .gist-remix-content {
+                transform: scale(1) translateY(0);
+            }
+
+            .gist-remix-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 24px;
+                padding-bottom: 16px;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .gist-remix-title {
+                font-size: 20px;
+                font-weight: 700;
+                color: var(--text-color);
+                margin: 0;
+            }
+
+            .gist-remix-close {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                background: ${isDark ? 'rgba(107, 114, 128, 0.2)' : 'rgba(107, 114, 128, 0.1)'};
+                border: none;
+                color: ${isDark ? '#d1d5db' : '#6b7280'};
+                font-size: 18px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+            }
+
+            .gist-remix-close:hover {
+                background: ${isDark ? 'rgba(107, 114, 128, 0.3)' : 'rgba(107, 114, 128, 0.2)'};
+                transform: scale(1.1);
+            }
+
+            .gist-remix-tabs {
+                display: flex;
+                gap: 8px;
+                margin-bottom: 24px;
+                background: ${isDark ? 'rgba(55, 65, 81, 0.5)' : 'rgba(243, 244, 246, 0.8)'};
+                border-radius: 12px;
+                padding: 4px;
+            }
+
+            .gist-remix-tab {
+                flex: 1;
+                padding: 12px 16px;
+                background: transparent;
+                border: none;
+                border-radius: 8px;
+                color: ${isDark ? '#9ca3af' : '#6b7280'};
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-family: inherit;
+            }
+
+            .gist-remix-tab.active {
+                background: linear-gradient(135deg, #8b5cf6 0%, #667eea 100%);
+                color: white;
+                box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+            }
+
+            .gist-remix-tab:hover:not(.active) {
+                background: ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
+                color: var(--text-color);
+            }
+
+            .gist-remix-options {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                margin-bottom: 24px;
+            }
+
+            .gist-remix-option-group {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .gist-remix-option-label {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--text-color);
+            }
+
+            .gist-remix-select {
+                padding: 12px 16px;
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                background: var(--background-color);
+                color: var(--text-color);
+                font-size: 14px;
+                font-family: inherit;
+                cursor: pointer;
+                transition: border-color 0.2s ease;
+            }
+
+            .gist-remix-select:focus {
+                outline: none;
+                border-color: #8b5cf6;
+                box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+            }
+
+            .gist-remix-create {
+                width: 100%;
+                padding: 16px 24px;
+                background: linear-gradient(135deg, #8b5cf6 0%, #667eea 100%);
+                color: white;
+                border: none;
+                border-radius: 12px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-family: inherit;
+            }
+
+            .gist-remix-create:hover {
+                background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+            }
+
+            .gist-remix-create:active {
+                transform: translateY(0);
+            }
         `;
     }
 
@@ -1738,6 +1922,13 @@ Return exactly 3 questions, one per line, no numbering:`;
                             </svg>
                             <span>Share</span>
                         </button>
+                        <button class="gist-engagement-btn gist-remix-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 7l-7 5 7 5V7z"></path>
+                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                            </svg>
+                            <span>Remix</span>
+                        </button>
                     </div>
                 `;
                 answerLayout.appendChild(engagementFooter);
@@ -1767,6 +1958,7 @@ Return exactly 3 questions, one per line, no numbering:`;
                     const likeBtn = engagementFooter.querySelector('.gist-like-btn');
                     const dislikeBtn = engagementFooter.querySelector('.gist-dislike-btn');
                     const shareBtn = engagementFooter.querySelector('.gist-share-btn');
+                    const remixBtn = engagementFooter.querySelector('.gist-remix-btn');
                     
                     likeBtn.addEventListener('click', () => {
                         likeBtn.classList.toggle('active');
@@ -1813,8 +2005,12 @@ Return exactly 3 questions, one per line, no numbering:`;
                                 `;
                             }, 2000);
                         }
-                });
-            }, 100);
+                    });
+                    
+                    remixBtn.addEventListener('click', () => {
+                        createRemixModal(answer);
+                    });
+                }, 100);
             
                 // Scroll to show the new answer
                     setTimeout(() => {
@@ -2030,6 +2226,151 @@ Return exactly 3 questions, one per line, no numbering:`;
             }
         }
 
+        // Create remix modal
+        function createRemixModal(content) {
+            // Remove existing modal if any
+            const existingModal = shadowRoot.querySelector('.gist-remix-modal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            // Create modal overlay
+            const modal = document.createElement('div');
+            modal.className = 'gist-remix-modal';
+            
+            modal.innerHTML = `
+                <div class="gist-remix-content">
+                    <div class="gist-remix-header">
+                        <h3 class="gist-remix-title">Remix</h3>
+                        <button class="gist-remix-close">×</button>
+                    </div>
+                    
+                    <div class="gist-remix-tabs">
+                        <button class="gist-remix-tab active" data-type="image">Image</button>
+                        <button class="gist-remix-tab" data-type="video">Video</button>
+                        <button class="gist-remix-tab" data-type="audio">Audio</button>
+                        <button class="gist-remix-tab" data-type="meme">Meme</button>
+                    </div>
+                    
+                    <div class="gist-remix-options">
+                        <div class="gist-remix-option-group">
+                            <label class="gist-remix-option-label">Style</label>
+                            <select class="gist-remix-select" id="remix-style">
+                                <option value="professional">Professional</option>
+                                <option value="casual">Casual</option>
+                                <option value="creative">Creative</option>
+                                <option value="minimalist">Minimalist</option>
+                            </select>
+                        </div>
+                        
+                        <div class="gist-remix-option-group">
+                            <label class="gist-remix-option-label">Format</label>
+                            <select class="gist-remix-select" id="remix-format">
+                                <option value="square">Square (1:1)</option>
+                                <option value="landscape">Landscape (16:9)</option>
+                                <option value="portrait">Portrait (9:16)</option>
+                                <option value="story">Story (9:16)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button class="gist-remix-create">Create</button>
+                </div>
+            `;
+
+            // Add to shadow root
+            shadowRoot.appendChild(modal);
+
+            // Get elements
+            const closeBtn = modal.querySelector('.gist-remix-close');
+            const tabs = modal.querySelectorAll('.gist-remix-tab');
+            const createBtn = modal.querySelector('.gist-remix-create');
+            const styleSelect = modal.querySelector('#remix-style');
+            const formatSelect = modal.querySelector('#remix-format');
+
+            let selectedType = 'image';
+
+            // Event listeners
+            closeBtn.addEventListener('click', () => {
+                modal.classList.remove('visible');
+                setTimeout(() => modal.remove(), 300);
+            });
+
+            // Close on backdrop click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('visible');
+                    setTimeout(() => modal.remove(), 300);
+                }
+            });
+
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    selectedType = tab.dataset.type;
+                });
+            });
+
+            // Create button
+            createBtn.addEventListener('click', () => {
+                const style = styleSelect.value;
+                const format = formatSelect.value;
+                createRemixContent(selectedType, style, format, content);
+                modal.classList.remove('visible');
+                setTimeout(() => modal.remove(), 300);
+            });
+
+            // Show modal with animation
+            setTimeout(() => {
+                modal.classList.add('visible');
+            }, 10);
+        }
+
+        // Create remix content
+        function createRemixContent(selectedType, style, format, content) {
+            console.log('Creating remix content:', {
+                type: selectedType,
+                style: style,
+                format: format,
+                content: content.substring(0, 200) + '...'
+            });
+
+            // Show success message temporarily
+            const successMessage = document.createElement('div');
+            successMessage.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, #8b5cf6 0%, #667eea 100%);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                font-size: 14px;
+                font-weight: 500;
+                z-index: 10002;
+                box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            `;
+            successMessage.textContent = `Creating ${selectedType} with ${style} style in ${format} format...`;
+            
+            shadowRoot.appendChild(successMessage);
+            
+            setTimeout(() => {
+                successMessage.style.opacity = '1';
+            }, 10);
+
+            setTimeout(() => {
+                successMessage.style.opacity = '0';
+                setTimeout(() => successMessage.remove(), 300);
+            }, 3000);
+
+            // TODO: Implement actual API call to generate remix content
+            // For now, just log the parameters
+        }
 
         
         // Submit query
