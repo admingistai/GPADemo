@@ -18,9 +18,11 @@ export default function Setup() {
   const [generatedCode, setGeneratedCode] = useState('');
   const [showCode, setShowCode] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
     
     // Start loading
     setIsGenerating(true);
@@ -30,17 +32,36 @@ export default function Setup() {
     if (formattedUrl && !formattedUrl.match(/^https?:\/\//)) {
       formattedUrl = 'https://' + formattedUrl;
     }
-    
-    // Simulate code generation delay
-    setTimeout(() => {
-      // Generate the widget code based on form data
+
+    try {
+      // Store the setup data in Vercel Blob
+      const response = await fetch('/api/store-setup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          websiteUrl: formattedUrl,
+          timestamp: new Date().toISOString(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to store setup data');
+      }
+
+      const { setupId, url } = await response.json();
+
+      // Generate the widget code with the setup ID
       const widgetConfig = {
         url: formattedUrl,
         features: formData.tools,
         user: {
           name: formData.name,
           email: formData.email
-        }
+        },
+        setupId // Include the setup ID in the widget config
       };
 
       const code = `<!-- Gist Widget -->
@@ -51,9 +72,13 @@ export default function Setup() {
 <!-- End Gist Widget -->`;
 
       setGeneratedCode(code);
-      setIsGenerating(false);
       setShowCode(true);
-    }, 2000); // 2 second delay to show loading
+    } catch (error) {
+      console.error('Error:', error);
+      setError('Failed to generate widget. Please try again.');
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -94,6 +119,12 @@ export default function Setup() {
           <div className="setup-form-container">
             <h1>Setup Your Widget</h1>
             <p className="setup-description">Configure your widget settings and get started in minutes</p>
+            
+            {error && (
+              <div className="error-message">
+                {error}
+              </div>
+            )}
             
             <form onSubmit={handleSubmit} className="setup-form">
               <div className="form-section">
@@ -198,20 +229,25 @@ export default function Setup() {
             <p>Copy the code below and paste it into your website's HTML where you want the widget to appear.</p>
             
             <div className="code-container">
-              <pre><code>{generatedCode}</code></pre>
-              <button 
+              <pre>
+                <code>{generatedCode}</code>
+              </pre>
+              <button
                 onClick={() => navigator.clipboard.writeText(generatedCode)}
                 className="copy-button"
               >
                 Copy Code
               </button>
             </div>
-
-            <button 
-              onClick={() => router.push('/dashboard')}
-              className="dashboard-button"
+            
+            <button
+              onClick={() => {
+                setShowCode(false);
+                setGeneratedCode('');
+              }}
+              className="back-button"
             >
-              Go to Dashboard
+              Generate Another Widget
             </button>
           </div>
         )}
@@ -221,7 +257,16 @@ export default function Setup() {
         .setup-container {
           max-width: 800px;
           margin: 0 auto;
-          padding: 40px 20px;
+          padding: 2rem;
+        }
+
+        .error-message {
+          background-color: #fee2e2;
+          border: 1px solid #ef4444;
+          color: #b91c1c;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          margin-bottom: 1.5rem;
         }
 
         h1 {
@@ -410,7 +455,7 @@ export default function Setup() {
           background: #4B5563;
         }
 
-        .dashboard-button {
+        .back-button {
           padding: 1rem 2rem;
           background: #6366F1;
           color: white;
@@ -422,7 +467,7 @@ export default function Setup() {
           transition: all 0.2s;
         }
 
-        .dashboard-button:hover {
+        .back-button:hover {
           background: #4F46E5;
         }
 

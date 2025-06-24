@@ -184,6 +184,27 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Next.js team for the excellent framework
 - The developer community for best practices and patterns
 
+## Environment Variables
+
+The following environment variables are required for the application to work:
+
+### Vercel Blob Storage
+To store setup configurations, you need to set up Vercel Blob storage:
+
+1. Create a Vercel account if you haven't already
+2. Install the Vercel CLI: `npm i -g vercel`
+3. Link your project: `vercel link`
+4. Create a new Blob store: `vercel blob create`
+5. Get your Blob token from the Vercel dashboard:
+   - Go to your project settings
+   - Navigate to the "Storage" tab
+   - Create or copy your Blob token
+6. Create a `.env.local` file in your project root and add:
+   ```
+   BLOB_READ_WRITE_TOKEN=your_blob_token_here
+   ```
+7. Add the same environment variable in your Vercel project settings for production
+
 ---
 
 Built with ❤️ for a cleaner, more user-friendly web experience.
