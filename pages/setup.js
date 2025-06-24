@@ -21,9 +21,13 @@ export default function Setup() {
   });
   const [generatedCode, setGeneratedCode] = useState('');
   const [showCode, setShowCode] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Start loading
+    setIsGenerating(true);
     
     // Format the URL to include protocol if missing
     let formattedUrl = formData.websiteUrl.trim();
@@ -31,23 +35,27 @@ export default function Setup() {
       formattedUrl = 'https://' + formattedUrl;
     }
     
-    // Generate the widget code based on form data
-    const widgetConfig = {
-      url: formattedUrl,
-      features: formData.tools,
-      ads: formData.adSettings,
-      theme: formData.theme
-    };
+    // Simulate code generation delay
+    setTimeout(() => {
+      // Generate the widget code based on form data
+      const widgetConfig = {
+        url: formattedUrl,
+        features: formData.tools,
+        ads: formData.adSettings,
+        theme: formData.theme
+      };
 
-    const code = `<!-- Ask Anything™ Widget -->
+      const code = `<!-- Ask Anything™ Widget -->
 <script>
   window.askAnythingConfig = ${JSON.stringify(widgetConfig, null, 2)};
 </script>
 <script src="https://widget.ask-anything.ai/widget.js" async></script>
 <!-- End Ask Anything™ Widget -->`;
 
-    setGeneratedCode(code);
-    setShowCode(true);
+      setGeneratedCode(code);
+      setIsGenerating(false);
+      setShowCode(true);
+    }, 2000); // 2 second delay to show loading
   };
 
   const handleInputChange = (e) => {
@@ -105,7 +113,20 @@ export default function Setup() {
           </header>
 
           <main className="main-content">
-            {!showCode ? (
+            {isGenerating ? (
+              <div className="loading-screen">
+                <div className="loading-content">
+                  <div className="loading-spinner">
+                    <div className="spinner"></div>
+                  </div>
+                  <h2 className="loading-title">Creating Your Widget</h2>
+                  <p className="loading-message">Generating custom code for your website...</p>
+                  <div className="loading-progress">
+                    <div className="progress-bar"></div>
+                  </div>
+                </div>
+              </div>
+            ) : !showCode ? (
               <>
                 <div className="compact-header">
                   <h1 className="main-title">Widget Setup</h1>
@@ -273,7 +294,10 @@ export default function Setup() {
                 
                 <div className="code-actions">
                   <button 
-                    onClick={() => setShowCode(false)}
+                    onClick={() => {
+                      setShowCode(false);
+                      setIsGenerating(false);
+                    }}
                     className="btn--secondary"
                   >
                     ← Back to Setup
@@ -539,6 +563,73 @@ export default function Setup() {
             gap: 1rem;
           }
 
+          /* Loading Screen */
+          .loading-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+          }
+
+          .loading-content {
+            text-align: center;
+            max-width: 400px;
+          }
+
+          .loading-spinner {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+          }
+
+          .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #3742fa;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+          }
+
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+
+          .loading-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+          }
+
+          .loading-message {
+            font-size: 1.1rem;
+            color: #6b7280;
+            margin-bottom: 2rem;
+          }
+
+          .loading-progress {
+            width: 100%;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+          }
+
+          .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3742fa, #8b5cf6);
+            border-radius: 2px;
+            animation: progress 2s ease-in-out;
+          }
+
+          @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+          }
+
           .color-input-wrapper {
             display: flex;
             gap: 1rem;
@@ -789,6 +880,19 @@ export default function Setup() {
 
             .form-section.compact {
               margin-bottom: 1.5rem;
+            }
+
+            .loading-title {
+              font-size: 1.5rem;
+            }
+
+            .loading-message {
+              font-size: 1rem;
+            }
+
+            .spinner {
+              width: 50px;
+              height: 50px;
             }
           }
         `}</style>
