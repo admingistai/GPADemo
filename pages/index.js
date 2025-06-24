@@ -57,14 +57,15 @@ export default function Home() {
         throw new Error(testResult.error || 'Unable to reach the specified website');
       }
 
-      setTargetUrl(url);
-      setShowWebsite(true);
-      trackEvent('Website Preview Loaded', {
+      // Track the event
+      trackEvent('Website Loaded', {
         url: url
       });
+
+      // Directly navigate to the proxied URL
+      window.location.href = `/api/proxy?url=${encodeURIComponent(url)}`;
     } catch (err) {
       setError(err.message);
-    } finally {
       setLoading(false);
     }
   };
