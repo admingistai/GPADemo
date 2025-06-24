@@ -98,6 +98,11 @@ export default function URLInputForm({ onSubmit, loading, error }) {
             {validationError}
           </div>
         )}
+        {error && !validationError && (
+          <div id="submitError" role="alert" className="error-message">
+            {error}
+          </div>
+        )}
       </div>
 
 
