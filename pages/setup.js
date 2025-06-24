@@ -25,9 +25,15 @@ export default function Setup() {
   const handleSubmit = (e) => {
     e.preventDefault();
     
+    // Format the URL to include protocol if missing
+    let formattedUrl = formData.websiteUrl.trim();
+    if (formattedUrl && !formattedUrl.match(/^https?:\/\//)) {
+      formattedUrl = 'https://' + formattedUrl;
+    }
+    
     // Generate the widget code based on form data
     const widgetConfig = {
-      url: formData.websiteUrl,
+      url: formattedUrl,
       features: formData.tools,
       ads: formData.adSettings,
       theme: formData.theme
@@ -116,15 +122,15 @@ export default function Setup() {
                           <span className="label-icon">🌐</span>
                           Website URL *
                         </label>
-                        <input
-                          type="url"
-                          id="websiteUrl"
-                          name="websiteUrl"
-                          value={formData.websiteUrl}
-                          onChange={handleInputChange}
-                          required
-                          placeholder="https://yourwebsite.com"
-                        />
+                                                  <input
+                            type="text"
+                            id="websiteUrl"
+                            name="websiteUrl"
+                            value={formData.websiteUrl}
+                            onChange={handleInputChange}
+                            required
+                            placeholder="yourwebsite.com"
+                          />
                       </div>
                     </div>
 
@@ -235,7 +241,7 @@ export default function Setup() {
                       type="submit"
                       className="btn--primary generate-btn"
                     >
-                      🚀 Generate Widget Code
+                      Generate Widget
                     </button>
                   </form>
                 </div>
@@ -306,8 +312,8 @@ export default function Setup() {
             color: #111827 !important;
           }
 
-          .code-block, .code-block * {
-            color: #f0f6fc !important;
+          .code-block, .code-block *, .code-header, .code-header * {
+            color: white !important;
           }
         `}</style>
         <style jsx>{`
@@ -576,6 +582,8 @@ export default function Setup() {
             padding: 1.125rem 2rem;
             font-size: 1.125rem;
             font-weight: 700;
+            background: linear-gradient(135deg, #ff6b35 0%, #3742fa 50%, #8b5cf6 100%);
+            color: white !important;
           }
 
           .btn--secondary {
@@ -618,14 +626,14 @@ export default function Setup() {
           }
 
           .code-title {
-            color: #f0f6fc;
+            color: white !important;
             font-weight: 600;
             font-size: 0.95rem;
           }
 
           .copy-btn {
             background: #238636;
-            color: white;
+            color: white !important;
             border: none;
             padding: 0.75rem 1.25rem;
             border-radius: 8px;
