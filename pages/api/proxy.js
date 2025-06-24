@@ -194,69 +194,53 @@ export default async function handler(req, res) {
       const widgetGuide = `
         <div id="widget-guide" style="
           position: fixed;
-          top: 50%;
+          bottom: 120px;
           left: 50%;
-          transform: translate(-50%, -50%);
-          background: rgba(0, 0, 0, 0.8);
+          transform: translateX(-50%);
+          background: rgba(0, 0, 0, 0.75);
           color: white;
-          padding: 20px;
-          border-radius: 12px;
-          font-family: Arial, sans-serif;
+          padding: 12px 20px;
+          border-radius: 8px;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           text-align: center;
           z-index: 999998;
           opacity: 0;
-          animation: fadeInOut 4s ease-in-out forwards;
+          animation: guideFloat 3s ease-in-out forwards;
           pointer-events: none;
+          backdrop-filter: blur(5px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          max-width: 280px;
         ">
           <div style="
-            font-size: 18px;
-            margin-bottom: 15px;
-            font-weight: bold;
-          ">
-            Ask Anything™ Widget
-          </div>
-          <div style="
             font-size: 14px;
-            margin-bottom: 20px;
+            line-height: 1.4;
+            font-weight: 500;
           ">
-            Click the button below to start asking questions
+            Ask questions about this website using the button below
           </div>
           <div style="
-            width: 2px;
-            height: 100px;
-            background: white;
-            margin: 0 auto;
-            position: relative;
-            animation: extendLine 1s ease-out forwards;
-          ">
-            <div style="
-              position: absolute;
-              bottom: -10px;
-              left: 50%;
-              transform: translateX(-50%);
-              width: 20px;
-              height: 20px;
-              border-left: 2px solid white;
-              border-bottom: 2px solid white;
-              transform-origin: bottom left;
-              animation: pointDown 1s infinite;
-            "></div>
-          </div>
+            margin-top: 8px;
+            width: 24px;
+            height: 24px;
+            margin-left: auto;
+            margin-right: auto;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            animation: pulse 2s infinite;
+          "></div>
         </div>
         <style>
-          @keyframes fadeInOut {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-            20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+          @keyframes guideFloat {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
           }
-          @keyframes extendLine {
-            from { height: 0; }
-            to { height: 100px; }
-          }
-          @keyframes pointDown {
-            0%, 100% { transform: translateX(-50%) rotate(-45deg) translateY(0); }
-            50% { transform: translateX(-50%) rotate(-45deg) translateY(10px); }
+          @keyframes pulse {
+            0% { opacity: 1; transform: rotate(45deg) scale(1); }
+            50% { opacity: 0.5; transform: rotate(45deg) scale(0.8); }
+            100% { opacity: 1; transform: rotate(45deg) scale(1); }
           }
         </style>
         <script>
@@ -266,7 +250,7 @@ export default async function handler(req, res) {
             if (guide) {
               guide.remove();
             }
-          }, 4000);
+          }, 3000);
         </script>
       `;
       
