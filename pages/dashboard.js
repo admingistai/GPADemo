@@ -11,13 +11,75 @@ export default function Dashboard() {
   const router = useRouter();
   const [activePage, setActivePage] = useState('home');
   const [sites, setSites] = useState(mockSites);
+  const [showModal, setShowModal] = useState(false);
+  const [showCode, setShowCode] = useState(false);
+  const [generatedCode, setGeneratedCode] = useState('');
+  const [form, setForm] = useState({
+    url: '',
+    tools: {
+      summarize: false,
+      remix: false,
+      share: false,
+      ads: false,
+    },
+    color: '#3742fa',
+    favicon: '',
+  });
 
   const handleAddSite = () => {
-    // For now, just add a placeholder site
-    setSites([
-      ...sites,
-      { id: sites.length + 1, name: 'newsite.com', url: 'https://newsite.com' },
+    setShowModal(true);
+    setShowCode(false);
+    setForm({
+      url: '',
+      tools: { summarize: false, remix: false, share: false, ads: false },
+      color: '#3742fa',
+      favicon: '',
+    });
+  };
+
+  const handleFormChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    if (name.startsWith('tools.')) {
+      const tool = name.split('.')[1];
+      setForm((prev) => ({
+        ...prev,
+        tools: { ...prev.tools, [tool]: checked },
+      }));
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleModalSubmit = (e) => {
+    e.preventDefault();
+    // Generate widget code
+    let formattedUrl = form.url.trim();
+    if (formattedUrl && !formattedUrl.match(/^https?:\/\//)) {
+      formattedUrl = 'https://' + formattedUrl;
+    }
+    const widgetConfig = {
+      url: formattedUrl,
+      features: {
+        summarize: form.tools.summarize,
+        remix: form.tools.remix,
+        share: form.tools.share,
+      },
+      ads: { proRataAds: form.tools.ads },
+      theme: { color: form.color, faviconLogo: form.favicon },
+    };
+    const code = `<!-- Ask Anything™ Widget -->\n<script>\n  window.askAnythingConfig = ${JSON.stringify(widgetConfig, null, 2)};\n</script>\n<script src=\"https://widget.ask-anything.ai/widget.js\" async></script>\n<!-- End Ask Anything™ Widget -->`;
+    setGeneratedCode(code);
+    setShowCode(true);
+    // Optionally add to sites list (mock)
+    setSites((prev) => [
+      ...prev,
+      { id: prev.length + 1, name: formattedUrl.replace(/^https?:\/\//, ''), url: formattedUrl },
     ]);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setShowCode(false);
   };
 
   return (
@@ -64,6 +126,45 @@ export default function Dashboard() {
             </div>
           )}
         </main>
+        {showModal && (
+          <div className="modal-overlay" onClick={closeModal}>
+            <div className="modal" onClick={e => e.stopPropagation()}>
+              {!showCode ? (
+                <form className="add-site-form" onSubmit={handleModalSubmit}>
+                  <h2>Add a New Site</h2>
+                  <label>Site URL
+                    <input type="text" name="url" value={form.url} onChange={handleFormChange} placeholder="yourwebsite.com" required />
+                  </label>
+                  <div className="form-section">
+                    <span>Enable Tools:</span>
+                    <label><input type="checkbox" name="tools.summarize" checked={form.tools.summarize} onChange={handleFormChange} /> Summarize</label>
+                    <label><input type="checkbox" name="tools.remix" checked={form.tools.remix} onChange={handleFormChange} /> Remix</label>
+                    <label><input type="checkbox" name="tools.share" checked={form.tools.share} onChange={handleFormChange} /> Share</label>
+                    <label><input type="checkbox" name="tools.ads" checked={form.tools.ads} onChange={handleFormChange} /> Ads</label>
+                  </div>
+                  <label>Widget Color
+                    <input type="color" name="color" value={form.color} onChange={handleFormChange} />
+                  </label>
+                  <label>Favicon URL
+                    <input type="text" name="favicon" value={form.favicon} onChange={handleFormChange} placeholder="https://yourwebsite.com/favicon.ico" />
+                  </label>
+                  <div className="modal-actions">
+                    <button type="button" className="modal-cancel" onClick={closeModal}>Cancel</button>
+                    <button type="submit" className="modal-submit">Generate Widget Code</button>
+                  </div>
+                </form>
+              ) : (
+                <div className="code-result">
+                  <h2>Your Widget Code</h2>
+                  <pre className="code-block"><code>{generatedCode}</code></pre>
+                  <div className="modal-actions">
+                    <button type="button" className="modal-cancel" onClick={closeModal}>Close</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
       <style jsx global>{`
         body {
@@ -195,6 +296,110 @@ export default function Dashboard() {
           text-decoration: underline;
           font-size: 1rem;
         }
+        /* Modal styles */
+        .modal-overlay {
+          position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0,0,0,0.25);
+          z-index: 1000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .modal {
+          background: #fff;
+          border-radius: 16px;
+          box-shadow: 0 8px 40px rgba(55,66,250,0.10);
+          padding: 2rem 2.5rem;
+          min-width: 320px;
+          max-width: 95vw;
+          max-height: 90vh;
+          overflow-y: auto;
+        }
+        .add-site-form h2, .code-result h2 {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #3742fa;
+          margin-bottom: 1.5rem;
+        }
+        .add-site-form label {
+          display: block;
+          font-weight: 600;
+          color: #374151;
+          margin-bottom: 0.5rem;
+        }
+        .add-site-form input[type="text"] {
+          width: 100%;
+          padding: 0.75rem 1rem;
+          border: 1.5px solid #e5e7eb;
+          border-radius: 8px;
+          font-size: 1rem;
+          margin-bottom: 1.25rem;
+        }
+        .add-site-form input[type="color"] {
+          margin-left: 0.5rem;
+          width: 2.5rem;
+          height: 2rem;
+          border: none;
+          background: none;
+          vertical-align: middle;
+        }
+        .form-section {
+          margin-bottom: 1.25rem;
+        }
+        .form-section label {
+          display: inline-flex;
+          align-items: center;
+          font-weight: 500;
+          margin-right: 1.5rem;
+          margin-bottom: 0;
+        }
+        .form-section input[type="checkbox"] {
+          margin-right: 0.5rem;
+        }
+        .modal-actions {
+          display: flex;
+          justify-content: flex-end;
+          gap: 1rem;
+          margin-top: 1.5rem;
+        }
+        .modal-cancel {
+          background: #f3f4f6;
+          color: #374151;
+          border: 1.5px solid #e5e7eb;
+          padding: 0.75rem 1.5rem;
+          border-radius: 8px;
+          font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+        }
+        .modal-submit {
+          background: linear-gradient(135deg, #3742fa 0%, #8b5cf6 100%);
+          color: #fff;
+          border: none;
+          padding: 0.75rem 1.5rem;
+          border-radius: 8px;
+          font-size: 1rem;
+          font-weight: 700;
+          cursor: pointer;
+        }
+        .modal-submit:hover {
+          background: linear-gradient(135deg, #8b5cf6 0%, #3742fa 100%);
+        }
+        .code-result {
+          text-align: center;
+        }
+        .code-block {
+          background: #161b22;
+          color: #fff;
+          border-radius: 12px;
+          padding: 1.5rem;
+          margin: 1.5rem 0;
+          font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace;
+          font-size: 0.95rem;
+          text-align: left;
+          overflow-x: auto;
+        }
         @media (max-width: 900px) {
           .dashboard-app {
             flex-direction: column;
@@ -229,6 +434,9 @@ export default function Dashboard() {
             flex-direction: column;
             align-items: flex-start;
             gap: 1rem;
+          }
+          .modal {
+            padding: 1rem 0.5rem;
           }
         }
       `}</style>
