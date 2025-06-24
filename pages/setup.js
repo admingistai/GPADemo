@@ -332,18 +332,26 @@ export default function Setup() {
         .submit-button {
           width: 100%;
           padding: 1rem;
-          background: #6366F1;
+          background: linear-gradient(135deg, #FF6B6B 0%, #4F46E5 50%, #9333EA 100%);
           color: white;
           border: none;
           border-radius: 6px;
           font-size: 1rem;
           font-weight: 600;
           cursor: pointer;
-          transition: all 0.2s;
+          transition: all 0.3s;
+          position: relative;
+          overflow: hidden;
         }
 
         .submit-button:hover {
-          background: #4F46E5;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+          background: linear-gradient(135deg, #FF8787 0%, #6366F1 50%, #A855F7 100%);
+        }
+
+        .submit-button:active {
+          transform: translateY(0);
         }
 
         .loading-screen {
