@@ -131,17 +131,6 @@ export default function Home() {
       </Head>
       
           <div className="app">
-        <div className="hero-section">
-          <h1>Welcome to Gist</h1>
-          <p>Configure your AI-powered widget in minutes</p>
-          <button 
-            className="get-started-button"
-            onClick={() => router.push('/setup')}
-          >
-            Get Started
-          </button>
-        </div>
-
       {/* Loading Page */}
       {showLoadingPage && (
         <div className="loading-page">
@@ -294,7 +283,7 @@ export default function Home() {
                 </p>
                 <div className="hero-cta">
                   <button
-                    onClick={() => router.push('/dashboard')}
+                    onClick={() => router.push('/setup')}
                     className="get-started-btn"
                   >
                     Get Started
@@ -394,7 +383,7 @@ export default function Home() {
               <h2 className="cta-title">Ready to add Ask Anything™ to your website?</h2>
               <div className="final-cta-actions">
                 <button
-                  onClick={() => router.push('/dashboard')}
+                  onClick={() => router.push('/setup')}
                   className="final-get-started-btn"
                 >
                   Get Started
@@ -3530,43 +3519,6 @@ export default function Home() {
         }
 
 
-
-        /* Hero Section Styles */
-        .hero-section {
-          text-align: center;
-          padding: 4rem 2rem;
-          background: linear-gradient(135deg, #F2F0FE 0%, #FFEFF6 100%);
-        }
-
-        .hero-section h1 {
-          font-size: 3rem;
-          font-weight: 700;
-          color: #111827;
-          margin-bottom: 1rem;
-        }
-
-        .hero-section p {
-          font-size: 1.25rem;
-          color: #6B7280;
-          margin-bottom: 2rem;
-        }
-
-        .get-started-button {
-          padding: 1rem 2rem;
-          font-size: 1.125rem;
-          font-weight: 600;
-          color: white;
-          background: #6366F1;
-          border: none;
-          border-radius: 8px;
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-
-        .get-started-button:hover {
-          background: #4F46E5;
-          transform: translateY(-2px);
-        }
 
         /* Tablet Specific Adjustments */
         @media (min-width: 769px) and (max-width: 1024px) {
