@@ -7,9 +7,9 @@ interface YouTubeEmbedProps {
 }
 
 export default function YouTubeEmbed({ 
-  videoId = "0vLp7Ri_33M", 
-  title = "Product Demo Video",
-  className = ""
+  videoId = '0vLp7Ri_33M', 
+  title = 'Product Demo Video',
+  className = ''
 }: YouTubeEmbedProps) {
   return (
     <div 
@@ -28,9 +28,9 @@ export default function YouTubeEmbed({
       <iframe
         src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&fs=1&cc_load_policy=0&iv_load_policy=3&autohide=0&controls=1`}
         title={title}
-        frameBorder="0"
-        loading="lazy"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        frameBorder='0'
+        loading='lazy'
+        allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
         allowFullScreen
         aria-label={`YouTube video: ${title}`}
         style={{

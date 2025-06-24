@@ -123,10 +123,10 @@ class HeaderProcessor {
 
   /**
    * Process Set-Cookie headers
-   * @param {string|string[]} cookies - Cookie header value(s)
+   * @param {string|string[]} _cookies - Cookie header value(s)
    * @returns {string|string[]|null} Modified cookie value(s)
    */
-  processCookies(cookies) {
+  processCookies(_cookies) {
     // For now, we'll strip cookies to avoid security issues
     // In a production system, you might want to handle these more carefully
     return null;

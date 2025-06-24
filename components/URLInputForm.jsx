@@ -13,13 +13,13 @@ export default function URLInputForm({ onSubmit, loading, error }) {
     setValidationError('');
 
     // Debug logging
-    console.log('URLInputForm: Submitting URL:', url);
-    console.log('URLInputForm: URL trimmed:', url.trim());
-    console.log('URLInputForm: URL length:', url.length);
+    // console.log('URLInputForm: Submitting URL:', url);
+    // console.log('URLInputForm: URL trimmed:', url.trim());
+    // console.log('URLInputForm: URL length:', url.length);
 
     // Validate URL
     const validation = validateUrl(url);
-    console.log('URLInputForm: Validation result:', validation);
+    // console.log('URLInputForm: Validation result:', validation);
     
     if (!validation.isValid) {
       setValidationError(validation.error);

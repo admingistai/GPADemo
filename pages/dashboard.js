@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 export default function Dashboard() {
-  const router = useRouter();
   const [selectedMetric, setSelectedMetric] = useState('ai_performance');
   const [timeRange, setTimeRange] = useState('7d');
   const [selectedSite, setSelectedSite] = useState('the-harbor');
@@ -45,7 +44,7 @@ export default function Dashboard() {
         <header className="header">
           <div className="header-left">
             <div className="logo-section">
-              <img src="/Gist G white no background.png" alt="Gist" className="logo-img" />
+              <Image src="/Gist G white no background.png" alt="Gist" className="logo-img" width={40} height={40} />
               <h1 className="logo">Ask Anything™</h1>
             </div>
             <span className="site-selector">

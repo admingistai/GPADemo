@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Head from 'next/head';
 import Script from 'next/script';
+import Image from 'next/image';
+import Link from 'next/link';
 import Headline from '../components/Headline';
 import YouTubeEmbed from '../components/YouTubeEmbed';
 
 export default function Home() {
   const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('analytics');
 
   const handleGetStarted = () => {
@@ -31,7 +32,7 @@ export default function Home() {
         src="/widget.js" 
         strategy="afterInteractive"
         onLoad={() => {
-          console.log('Ask Anything widget loaded');
+          // console.log('Ask Anything widget loaded');
         }}
       />
       
@@ -39,12 +40,12 @@ export default function Home() {
         {/* Header */}
         <header className="header">
           <a href="https://gist.ai" className="logo-section">
-            <img src="/Gist G white no background.png" alt="Gist" className="logo" />
+            <Image src="/Gist G white no background.png" alt="Gist" className="logo" width={40} height={40} />
             <span className="brand-name">Ask Anything™</span>
           </a>
           <div className="header-actions">
             <a href="https://gist.ai/login" className="login-btn">Log in</a>
-            <a href="/dashboard" className="demo-btn">Demo Dashboard</a>
+            <Link href="/dashboard" className="demo-btn">Demo Dashboard</Link>
           </div>
         </header>
 
@@ -72,7 +73,7 @@ export default function Home() {
           <h2 className="teams-heading">The teams we empower</h2>
           <p className="teams-subtitle">Trusted by leading publishers and media companies worldwide</p>
           <div className="publishers-logos">
-            <img src="/publishers-logos.png" alt="Publishers we empower including major news outlets and content creators" />
+            <Image src="/publishers-logos.png" alt="Publishers we empower including major news outlets and content creators" width={800} height={200} />
           </div>
         </section>
 
@@ -217,7 +218,7 @@ export default function Home() {
                   
                   <div className="feature-item">
                     <h4>✅ Reality check</h4>
-                    <p>AIs hallucinate and often can't separate fact from fiction. That's why we use our proprietary attribution technology to identify and eliminate any unsupported claims.</p>
+                    <p>AIs hallucinate and often can&apos;t separate fact from fiction. That&apos;s why we use our proprietary attribution technology to identify and eliminate any unsupported claims.</p>
                   </div>
                   
                   <div className="feature-item">
@@ -466,7 +467,7 @@ export default function Home() {
             text-wrap: balance;
           }
 
-          /* Fallback for browsers that don't support text-wrap */
+                          /* Fallback for browsers that don&apos;t support text-wrap */
           @supports not (text-wrap: pretty) {
             h1, h2, h3, h4, h5, h6, p {
               word-spacing: 0.1em;

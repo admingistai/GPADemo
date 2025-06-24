@@ -15,7 +15,7 @@ export default function Headline({ className = '' }: HeadlineProps) {
   const CHAR_DELAY = 35; // ms per character (lower = faster typing)
   const START_DELAY = 300; // ms delay before animation starts
   const CURSOR_BLINK_DURATION = 2000; // ms to show cursor after typing completes
-  const FULL_TEXT = "instead of losing them to Google";
+  const FULL_TEXT = 'instead of losing them to Google';
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -53,13 +53,13 @@ export default function Headline({ className = '' }: HeadlineProps) {
         gsap.registerPlugin(TextPlugin);
         
         // Set initial state
-        gsap.set(element, { text: "" });
+        gsap.set(element, { text: '' });
         
         // Animate text typing
         gsap.to(element, {
           duration: (FULL_TEXT.length * CHAR_DELAY) / 1000,
           text: FULL_TEXT,
-          ease: "power1.inOut",
+          ease: 'power1.inOut',
           delay: START_DELAY / 1000,
           onComplete: () => {
             // Hide cursor after typing completes
@@ -71,7 +71,7 @@ export default function Headline({ className = '' }: HeadlineProps) {
         
         return true;
       } catch (error) {
-        console.warn('GSAP failed to load, falling back to CSS animation:', error);
+        // console.warn('GSAP failed to load, falling back to CSS animation:', error);
         return false;
       }
     };

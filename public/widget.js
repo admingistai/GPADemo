@@ -414,18 +414,18 @@
                 color: ${isDark ? '#9ca3af' : '#6b7280'};
             }
             
-                        .gist-pill-submit {
+            .gist-pill-submit {
                 width: 28px;
                 height: 28px;
                 background: #8b5cf6;
                 border: none;
                 border-radius: 50%;
                 color: white;
-                font-size: 14px;
+        font-size: 14px;
                 cursor: pointer;
                 transition: all 0.2s ease;
-                display: flex;
-                align-items: center;
+        display: flex;
+        align-items: center;
                 justify-content: center;
             }
             

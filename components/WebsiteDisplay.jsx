@@ -30,7 +30,7 @@ export default function WebsiteDisplay({ url, onBack }) {
       }
     } catch (e) {
       // Expected for cross-origin content
-      console.log('Cross-origin content - using default height');
+              // console.log('Cross-origin content - using default height');
     }
   };
 

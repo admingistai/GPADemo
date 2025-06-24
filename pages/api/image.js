@@ -55,13 +55,12 @@ export default async function handler(req, res) {
     }
 
     // Extract request data
-    const { 
-      prompt, 
-      size = '1024x1024', 
-      quality = 'standard',
-      style = 'vivid',
-      n = 1 
-    } = req.body;
+      const { 
+    prompt, 
+    size = '1024x1024', 
+    quality = 'standard',
+    style = 'vivid'
+  } = req.body;
 
     // Validate request
     if (!prompt || typeof prompt !== 'string' || prompt.trim().length === 0) {
@@ -81,7 +80,7 @@ export default async function handler(req, res) {
     // Clean and enhance prompt for better results
     const cleanPrompt = prompt.trim();
     
-    console.log(`[Image API] Generating image with prompt: "${cleanPrompt}"`);
+    // console.log(`[Image API] Generating image with prompt: "${cleanPrompt}"`);
 
     // Make OpenAI DALL-E API call
     const imageResponse = await openai.images.generate({
@@ -101,7 +100,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'No image generated' });
     }
 
-    console.log(`[Image API] Successfully generated image: ${imageUrl}`);
+    // console.log(`[Image API] Successfully generated image: ${imageUrl}`);
 
     // Return successful response
     return res.status(200).json({

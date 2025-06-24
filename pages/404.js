@@ -6,7 +6,7 @@ export default function Custom404() {
       <div className="error-content">
         <div className="error-icon">🔍</div>
         <h1>404 - Page Not Found</h1>
-        <p>The page you're looking for doesn't exist.</p>
+        <p>The page you&apos;re looking for doesn&apos;t exist.</p>
         <Link href="/" className="home-button">
           Go back home
         </Link>
