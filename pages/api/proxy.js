@@ -163,107 +163,7 @@ export default async function handler(req, res) {
       const updateUrlScript = widgetParams.toString() ? 
         `<script>history.replaceState({}, '', '${currentPageUrl}');</script>` : '';
       
-      const widgetScript = `${updateUrlScript}
-      <style>
-        @keyframes widgetSpotlight {
-          0% {
-            opacity: 0;
-            transform: scale(0.5) translateY(100px);
-          }
-          20% {
-            opacity: 1;
-            transform: scale(1.1) translateY(0);
-          }
-          30% {
-            transform: scale(1) translateY(0);
-          }
-          40% {
-            box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.6);
-          }
-          60% {
-            box-shadow: 0 0 0 20px rgba(66, 133, 244, 0);
-          }
-          100% {
-            box-shadow: 0 0 0 0 rgba(66, 133, 244, 0);
-          }
-        }
-
-        @keyframes widgetArrow {
-          0% {
-            opacity: 0;
-            transform: translateY(-100px);
-          }
-          20% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-          80% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-          100% {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-        }
-
-        #widget-spotlight {
-          position: fixed;
-          bottom: 100px;
-          right: 30px;
-          width: 80px;
-          height: 80px;
-          pointer-events: none;
-          z-index: 999998;
-          animation: widgetArrow 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-
-        #widget-spotlight::before {
-          content: "👇";
-          position: absolute;
-          font-size: 40px;
-          left: 50%;
-          top: 50%;
-          transform: translate(-50%, -50%);
-        }
-
-        #gist-widget-container {
-          animation: widgetSpotlight 3s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
-        }
-      </style>
-      <script src="${protocol}://${host}/widget.js"></script>
-      <script>
-        // Wait for widget to be created
-        function waitForWidget() {
-          const checkInterval = setInterval(() => {
-            const widget = document.querySelector('#gist-widget-container');
-            if (widget) {
-              clearInterval(checkInterval);
-              
-              // Add spotlight element
-              const spotlight = document.createElement('div');
-              spotlight.id = 'widget-spotlight';
-              document.body.appendChild(spotlight);
-
-              // Remove the spotlight after animation
-              setTimeout(() => {
-                spotlight.style.opacity = '0';
-                setTimeout(() => spotlight.remove(), 1000);
-              }, 3000);
-            }
-          }, 100);
-
-          // Timeout after 10 seconds
-          setTimeout(() => clearInterval(checkInterval), 10000);
-        }
-
-        // Start checking once the page is loaded
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', waitForWidget);
-        } else {
-          waitForWidget();
-        }
-      </script>`;
+      const widgetScript = `${updateUrlScript}<script src="${protocol}://${host}/widget.js"></script>`;
       
       // Add demo banner
       const demoBanner = `
@@ -289,16 +189,87 @@ export default async function handler(req, res) {
           body { margin-top: 50px !important; }
         </style>
       `;
+
+      // Add widget attention animation
+      const widgetAnimation = `
+        <style>
+          @keyframes pulseArrow {
+            0% { transform: translateX(0); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateX(-20px); opacity: 0; }
+          }
+
+          @keyframes fadeInOut {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+          }
+
+          .widget-attention {
+            position: fixed;
+            bottom: 100px;
+            right: 80px;
+            z-index: 999998;
+            display: flex;
+            align-items: center;
+            pointer-events: none;
+            animation: fadeInOut 4s ease-in-out forwards;
+          }
+
+          .widget-attention-text {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            margin-right: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+          }
+
+          .widget-attention-arrow {
+            width: 40px;
+            height: 40px;
+            position: relative;
+          }
+
+          .widget-attention-arrow::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-right: 4px solid #FFD700;
+            border-bottom: 4px solid #FFD700;
+            transform: rotate(-45deg);
+            animation: pulseArrow 2s ease-in-out infinite;
+          }
+        </style>
+        <div class="widget-attention">
+          <div class="widget-attention-text">Ask me anything about this website!</div>
+          <div class="widget-attention-arrow"></div>
+        </div>
+        <script>
+          // Remove the animation after it plays once
+          setTimeout(() => {
+            const attention = document.querySelector('.widget-attention');
+            if (attention) {
+              attention.style.display = 'none';
+            }
+          }, 4000);
+        </script>
+      `;
       
       if (html.includes('</head>')) {
         // Inject before closing head tag
-        html = html.replace('</head>', `${widgetScript}</head>`);
+        html = html.replace('</head>', `${widgetScript}${widgetAnimation}</head>`);
       } else if (html.includes('</body>')) {
         // Fallback: inject before closing body tag
-        html = html.replace('</body>', `${widgetScript}</body>`);
+        html = html.replace('</body>', `${widgetScript}${widgetAnimation}</body>`);
       } else {
         // Last resort: append to the end
-        html += widgetScript;
+        html += widgetScript + widgetAnimation;
       }
       
       // Inject demo banner after body tag
