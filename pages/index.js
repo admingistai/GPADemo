@@ -1022,7 +1022,7 @@ export default function Home() {
         .hero-subheader {
           font-size: 1.125rem;
           font-weight: 600;
-          margin-bottom: 2rem;
+          margin-bottom: 1.5rem;
           color: #1a1a1a;
           font-family: 'Inter', sans-serif;
         }
