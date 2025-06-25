@@ -204,7 +204,7 @@ export default async function handler(req, res) {
           }
 
           #admin-sidebar.minimized {
-            transform: translateX(280px) !important;
+            transform: translateX(260px) !important;
           }
 
           #admin-sidebar .header {
@@ -223,15 +223,27 @@ export default async function handler(req, res) {
             font-size: 20px !important;
             line-height: 1 !important;
             border-radius: 4px !important;
-            transition: background 0.2s !important;
+            transition: all 0.2s !important;
+            position: absolute !important;
+            left: -40px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            background: white !important;
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1) !important;
+            width: 30px !important;
+            height: 30px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+          }
+
+          #admin-sidebar.minimized .minimize-btn {
+            transform: translateY(-50%) rotate(180deg) !important;
           }
 
           #admin-sidebar .minimize-btn:hover {
             background: #f5f5f5 !important;
-          }
-
-          #admin-sidebar.minimized .minimize-btn {
-            transform: rotate(180deg) !important;
+            color: #333 !important;
           }
 
           #admin-sidebar h2 {
@@ -414,46 +426,62 @@ export default async function handler(req, res) {
               isMinimized: false
             };
 
+            // Handle source toggles
             document.querySelectorAll('.source-toggle input').forEach(toggle => {
               const sourceType = toggle.id.replace('source-', '');
+              
+              // Set initial state
               toggle.checked = adminPanel.sources[sourceType];
+              
               toggle.addEventListener('change', function() {
                 adminPanel.sources[sourceType] = this.checked;
                 console.log('Source updated:', sourceType, this.checked);
-                const toggleSwitch = this.nextElementSibling;
-                toggleSwitch.style.background = this.checked ? '#4CAF50' : '#e4e4e4';
+                
+                // Dispatch custom event for widget to handle
                 window.dispatchEvent(new CustomEvent('sourceToggle', {
-                  detail: { source: sourceType, enabled: this.checked }
+                  detail: {
+                    source: sourceType,
+                    enabled: this.checked
+                  }
                 }));
               });
             });
 
+            // Handle size buttons
             document.querySelectorAll('.size-btn').forEach(btn => {
               btn.addEventListener('click', function() {
                 document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
+                
                 const newSize = this.dataset.size;
                 adminPanel.widgetSize = newSize;
                 console.log('Widget size updated:', newSize);
+                
                 window.dispatchEvent(new CustomEvent('widgetSizeChange', {
                   detail: { size: newSize }
                 }));
               });
             });
 
+            // Handle panel minimization
             const sidebar = document.getElementById('admin-sidebar');
             const minimizeBtn = document.querySelector('.minimize-btn');
             
             minimizeBtn.addEventListener('click', function() {
               adminPanel.isMinimized = !adminPanel.isMinimized;
               sidebar.classList.toggle('minimized');
+              
+              // Update minimize button text
               this.textContent = adminPanel.isMinimized ? '→' : '←';
               this.title = adminPanel.isMinimized ? 'Expand panel' : 'Minimize panel';
+              
+              // Update body margin
               if (window.innerWidth > 768) {
                 document.body.style.marginRight = adminPanel.isMinimized ? '60px' : '340px';
               }
             });
 
+            // Handle window resize
             window.addEventListener('resize', function() {
               if (window.innerWidth <= 768) {
                 document.body.style.marginRight = '0';
@@ -462,14 +490,18 @@ export default async function handler(req, res) {
               }
             });
 
+            // Store panel state in localStorage
             function savePanelState() {
               localStorage.setItem('adminPanelState', JSON.stringify(adminPanel));
             }
 
+            // Load panel state from localStorage
             function loadPanelState() {
               const savedState = localStorage.getItem('adminPanelState');
               if (savedState) {
                 const state = JSON.parse(savedState);
+                
+                // Restore sources
                 Object.entries(state.sources).forEach(([source, enabled]) => {
                   const toggle = document.getElementById('source-' + source);
                   if (toggle) {
@@ -477,15 +509,24 @@ export default async function handler(req, res) {
                     toggle.dispatchEvent(new Event('change'));
                   }
                 });
+                
+                // Restore size
                 const sizeBtn = document.querySelector('.size-btn[data-size="' + state.widgetSize + '"]');
                 if (sizeBtn) sizeBtn.click();
-                if (state.isMinimized) minimizeBtn.click();
+                
+                // Restore minimized state
+                if (state.isMinimized) {
+                  minimizeBtn.click();
+                }
               }
             }
 
+            // Save state when changes occur
             window.addEventListener('sourceToggle', savePanelState);
             window.addEventListener('widgetSizeChange', savePanelState);
             minimizeBtn.addEventListener('click', savePanelState);
+
+            // Load saved state
             loadPanelState();
           });
         </script>
