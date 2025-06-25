@@ -267,10 +267,12 @@ export default async function handler(req, res) {
           }
 
           .source-toggle {
+            position: relative !important;
             display: flex !important;
             align-items: center !important;
             margin-bottom: 8px !important;
             cursor: pointer !important;
+            user-select: none !important;
           }
 
           .source-toggle label {
@@ -287,7 +289,8 @@ export default async function handler(req, res) {
             background: #e4e4e4 !important;
             border-radius: 10px !important;
             padding: 2px !important;
-            transition: background 0.3s !important;
+            transition: all 0.3s ease !important;
+            cursor: pointer !important;
           }
 
           .toggle-switch::before {
@@ -299,7 +302,8 @@ export default async function handler(req, res) {
             background: white !important;
             top: 2px !important;
             left: 2px !important;
-            transition: transform 0.3s !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
           }
 
           .source-toggle input:checked + .toggle-switch {
@@ -311,7 +315,11 @@ export default async function handler(req, res) {
           }
 
           .source-toggle input {
-            display: none !important;
+            position: absolute !important;
+            opacity: 0 !important;
+            cursor: pointer !important;
+            height: 0 !important;
+            width: 0 !important;
           }
 
           .size-selector {
@@ -363,41 +371,41 @@ export default async function handler(req, res) {
           
           <div class="admin-section">
             <h3>Source Selection</h3>
-            <div class="source-toggle">
-              <input type="checkbox" id="source-news" checked>
+            <label class="source-toggle">
+              <input type="checkbox" id="source-news">
               <div class="toggle-switch"></div>
-              <label for="source-news">News</label>
-            </div>
-            <div class="source-toggle">
-              <input type="checkbox" id="source-business" checked>
+              <span>News</span>
+            </label>
+            <label class="source-toggle">
+              <input type="checkbox" id="source-business">
               <div class="toggle-switch"></div>
-              <label for="source-business">Business</label>
-            </div>
-            <div class="source-toggle">
+              <span>Business</span>
+            </label>
+            <label class="source-toggle">
               <input type="checkbox" id="source-lifestyle">
               <div class="toggle-switch"></div>
-              <label for="source-lifestyle">Lifestyle</label>
-            </div>
-            <div class="source-toggle">
+              <span>Lifestyle</span>
+            </label>
+            <label class="source-toggle">
               <input type="checkbox" id="source-sports">
               <div class="toggle-switch"></div>
-              <label for="source-sports">Sports</label>
-            </div>
-            <div class="source-toggle">
+              <span>Sports</span>
+            </label>
+            <label class="source-toggle">
               <input type="checkbox" id="source-books">
               <div class="toggle-switch"></div>
-              <label for="source-books">Books</label>
-            </div>
-            <div class="source-toggle">
-              <input type="checkbox" id="source-academic" checked>
+              <span>Books</span>
+            </label>
+            <label class="source-toggle">
+              <input type="checkbox" id="source-academic">
               <div class="toggle-switch"></div>
-              <label for="source-academic">Academic</label>
-            </div>
-            <div class="source-toggle">
-              <input type="checkbox" id="source-reference" checked>
+              <span>Academic</span>
+            </label>
+            <label class="source-toggle">
+              <input type="checkbox" id="source-reference">
               <div class="toggle-switch"></div>
-              <label for="source-reference">Reference</label>
-            </div>
+              <span>Reference</span>
+            </label>
           </div>
 
           <div class="admin-section">
@@ -412,6 +420,7 @@ export default async function handler(req, res) {
 
         <script>
           document.addEventListener('DOMContentLoaded', function() {
+            // Initialize admin panel state
             const adminPanel = {
               sources: {
                 news: true,
@@ -427,13 +436,15 @@ export default async function handler(req, res) {
             };
 
             // Handle source toggles
-            document.querySelectorAll('.source-toggle input').forEach(toggle => {
+            document.querySelectorAll('.source-toggle input[type="checkbox"]').forEach(toggle => {
               const sourceType = toggle.id.replace('source-', '');
               
               // Set initial state
               toggle.checked = adminPanel.sources[sourceType];
               
-              toggle.addEventListener('change', function() {
+              // Add click handler to both the input and its parent label
+              toggle.addEventListener('change', function(e) {
+                e.stopPropagation(); // Prevent event bubbling
                 adminPanel.sources[sourceType] = this.checked;
                 console.log('Source updated:', sourceType, this.checked);
                 
@@ -444,6 +455,9 @@ export default async function handler(req, res) {
                     enabled: this.checked
                   }
                 }));
+
+                // Save state
+                savePanelState();
               });
             });
 
