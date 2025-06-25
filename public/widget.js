@@ -4,6 +4,38 @@
     const scriptPath = scriptElement.src;
     const basePath = scriptPath.substring(0, scriptPath.lastIndexOf('/'));
 
+    // Function to detect website name from common elements
+    function detectWebsiteName() {
+        // Try to find website name from various sources
+        const possibleElements = [
+            // Check for og:site_name meta tag
+            document.querySelector('meta[property="og:site_name"]'),
+            // Check for common logo elements
+            document.querySelector('.logo img[alt]'),
+            document.querySelector('#logo img[alt]'),
+            document.querySelector('header img[alt]'),
+            // Check for title tag
+            document.querySelector('title')
+        ];
+
+        for (const element of possibleElements) {
+            if (element) {
+                if (element.tagName === 'META') {
+                    return element.getAttribute('content');
+                } else if (element.tagName === 'IMG') {
+                    return element.alt;
+                } else if (element.tagName === 'TITLE') {
+                    // Clean up title text (remove " - Home" or similar suffixes)
+                    return element.textContent.split(/[-|]/)[0].trim();
+                }
+            }
+        }
+
+        // Fallback to domain name if no other source found
+        const domain = window.location.hostname.replace('www.', '');
+        return domain.split('.')[0].charAt(0).toUpperCase() + domain.split('.')[0].slice(1);
+    }
+
     // Create and inject styles
     const styles = `
         .gist-widget-container {
@@ -45,7 +77,6 @@
 
         .gist-search-input::placeholder {
             color: #666;
-            font-style: italic;
         }
 
         .gist-search-icon {
@@ -89,11 +120,14 @@
     styleSheet.textContent = styles;
     document.head.appendChild(styleSheet);
 
+    // Get website name
+    const websiteName = detectWebsiteName();
+    
     // Create widget HTML using the correct path to sparkles.png
     const widgetHTML = `
         <div class="gist-widget-container">
             <img src="${basePath}/sparkles.png" class="gist-search-icon" alt="sparkles icon">
-            <input type="text" class="gist-search-input" placeholder="Ask anything...">
+            <input type="text" class="gist-search-input" placeholder="Ask ${websiteName} anything...">
             <button class="gist-arrow-button">
                 <svg class="gist-arrow-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7 17L17 7M17 7H10M17 7V14" stroke-linecap="round" stroke-linejoin="round"/>
