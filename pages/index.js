@@ -46,7 +46,7 @@ export default function Home() {
 
   const handleUrlSubmit = async (url) => {
     setLoading(true);
-    setError(null);
+      setError(null);
     setShowLoadingPage(true);
     
     // Show random loading messages
@@ -67,40 +67,40 @@ export default function Home() {
 
     // Random delay between 2-4 seconds
     const delay = Math.random() * 2000 + 2000;
-    
-    try {
+      
+      try {
       // Test if the URL is accessible
       const testResponse = await fetch(`/api/proxy?url=${encodeURIComponent(url)}&test=true`);
-      const testResult = await testResponse.json();
+        const testResult = await testResponse.json();
 
-      if (!testResponse.ok) {
-        throw new Error(testResult.error || 'Unable to reach the specified website');
-      }
+        if (!testResponse.ok) {
+          throw new Error(testResult.error || 'Unable to reach the specified website');
+        }
 
       // Track the event
       trackEvent('Website Loaded', {
         url: url
       });
-
+        
       // Wait for the minimum delay before proceeding
       await new Promise(resolve => setTimeout(resolve, delay));
 
       // Clear the loading message interval
       clearInterval(messageInterval);
-      
+        
       // Reset states
-      setShowLoadingPage(false);
+        setShowLoadingPage(false);
       setLoading(false);
-      setTargetUrl('');
+        setTargetUrl('');
 
       // Open the proxied URL in a new tab
       window.open(`/api/proxy?url=${encodeURIComponent(url)}`, '_blank');
-    } catch (err) {
+      } catch (err) {
       clearInterval(messageInterval);
-      setShowLoadingPage(false);
-      setError(err.message);
-      setLoading(false);
-    }
+        setShowLoadingPage(false);
+        setError(err.message);
+        setLoading(false);
+      }
   };
 
   const handleBack = () => {
@@ -219,7 +219,7 @@ export default function Home() {
         <script src="/widget.js" async></script>
       </Head>
       
-          <div className="app">
+    <div className="app">
       {showWebsite ? (
         <WebsiteDisplay 
           url={targetUrl} 
@@ -227,363 +227,363 @@ export default function Home() {
         />
       ) : (
         <>
-          {/* Loading Page */}
-          {showLoadingPage && (
-            <div className="loading-page">
-              <div className="loading-content">
-                <div className="loading-spinner">
+      {/* Loading Page */}
+      {showLoadingPage && (
+        <div className="loading-page">
+          <div className="loading-content">
+            <div className="loading-spinner">
                   <img src="/Gist_Mark_000000.png" alt="Gist Logo" className="spinning-logo" />
-                </div>
+              </div>
                 <h2 className="loading-title">Setting up <em>Ask Anything™</em> Preview</h2>
                 <p className="loading-message" dangerouslySetInnerHTML={{ __html: loadingMessage }}></p>
-                <div className="loading-progress">
-                  <div className="progress-bar"></div>
-                </div>
+            <div className="loading-progress">
+              <div className="progress-bar"></div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Feature Selection Page */}
+      {showFeaturePage && (
+        <div className="feature-page">
+          <header className="header">
+            <div className="header-left">
+              <img src="/Gist_Mark_000000.png" alt="Gist" className="gist-logo" onClick={() => window.open('https://about.gist.ai', '_blank')} />
+              <h1 className="logo">Ask<br />Anything™</h1>
+            </div>
+            <div className="header-right">
+              <span className="tagline">100% ethical, uses fully licensed sources</span>
+              <div className="auth-buttons">
+                <button className="waitlist-header-btn" onClick={() => router.push('/dashboard')}>Dashboard</button>
               </div>
             </div>
-          )}
+          </header>
 
-          {/* Feature Selection Page */}
-          {showFeaturePage && (
-            <div className="feature-page">
-              <header className="header">
-                <div className="header-left">
-                  <img src="/Gist_Mark_000000.png" alt="Gist" className="gist-logo" onClick={() => window.open('https://about.gist.ai', '_blank')} />
-                  <h1 className="logo">Ask<br />Anything™</h1>
+          <main className="feature-content">
+            <h1 className="feature-title">
+              Configure Features
+            </h1>
+            <p className="feature-subtitle">
+              Select additional features for {targetUrl}. Ask Anything™ is always enabled.
+            </p>
+              
+            <div className="features-compact-grid">
+              <div className="feature-compact-card">
+                <div className="feature-compact-header">
+                  <input
+                    type="checkbox"
+                    id="theGist"
+                    checked={selectedFeatures.theGist}
+                    onChange={(e) => setSelectedFeatures(prev => ({...prev, theGist: e.target.checked}))}
+                  />
+                  <label htmlFor="theGist" className="feature-compact-name">Summarize</label>
+              </div>
+                <p className="feature-compact-description">One-sentence AI summary of any story</p>
+            </div>
+
+
+              
+
+                
+              <div className="feature-compact-card">
+                <div className="feature-compact-header">
+                  <input
+                    type="checkbox"
+                    id="goDeeper"
+                    checked={selectedFeatures.goDeeper}
+                    onChange={(e) => setSelectedFeatures(prev => ({...prev, goDeeper: e.target.checked}))}
+                  />
+                  <label htmlFor="goDeeper" className="feature-compact-name">Go Deeper</label>
                 </div>
-                <div className="header-right">
-                  <span className="tagline">100% ethical, uses fully licensed sources</span>
-                  <div className="auth-buttons">
-                    <button className="waitlist-header-btn" onClick={() => router.push('/dashboard')}>Dashboard</button>
+                <p className="feature-compact-description">Expandable sidebars with related articles and media</p>
+                </div>
+                
+
+                
+              <div className="feature-compact-card">
+                <div className="feature-compact-header">
+                  <input
+                    type="checkbox"
+                    id="customVoices"
+                    checked={selectedFeatures.customVoices}
+                    onChange={(e) => setSelectedFeatures(prev => ({...prev, customVoices: e.target.checked}))}
+                  />
+                  <label htmlFor="customVoices" className="feature-compact-name">Custom Voices</label>
+                </div>
+                <p className="feature-compact-description">Branded TTS and presenter options</p>
+                </div>
+                </div>
+                
+            <div className="feature-actions">
+              <button className="back-btn" onClick={() => setShowFeaturePage(false)}>
+                ← Back
+              </button>
+              <button className="continue-btn" onClick={handleFeatureContinue}>
+                Continue with Selected Features
+              </button>
+                </div>
+          </main>
+        </div>
+      )}
+
+      {/* Main Landing Page */}
+      {!showWebsite && !showLoadingPage && !showFeaturePage && (
+        <div className="landing-page">
+          {/* Header */}
+          <header className="header">
+            <div className="header-left">
+              <img src="/Gist_Mark_000000.png" alt="Gist" className="gist-logo" onClick={() => window.open('https://about.gist.ai', '_blank')} />
+              <h1 className="logo">Ask<br />Anything™</h1>
+                </div>
+            <div className="header-right">
+              <span className="tagline">100% ethical, uses fully licensed sources</span>
+              <div className="auth-buttons">
+                <button className="waitlist-header-btn" onClick={() => setShowLoginPage(true)}>Sign In</button>
+              </div>
+              </div>
+          </header>
+
+          {/* Hero Section */}
+          <section className={`hero-section ${isLoaded ? 'fade-in' : ''}`}>
+            <div className="hero-container">
+              <div className="hero-video">
+                <video 
+                  title="GPA Demo Video"
+                  controls
+                  autoPlay
+                  muted
+                  loop
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                >
+                  <source src="/GPA-basic-demo-gif.mp4" type="video/mp4" />
+                  <source src="/GPA-basic-demo-gif.webm" type="video/webm" />
+                  <source src="/GPA%20basic%20demo%20gif.mov" type="video/quicktime" />
+                  Your browser does not support the video tag.
+                </video>
+                <div className="publisher-section">
+                  <p className="publisher-text">Trusted by 500+ publishers</p>
+                  <div className="publisher-logos">
+                    <img src="/publishers-logos-black.png" alt="Trusted Publishers" onError={(e) => {
+                      console.error('Image failed to load:', e.target.src);
+                      e.target.src = '/publishers-logos.png'; // Fallback to original
+                    }} />
                   </div>
                 </div>
-              </header>
-
-              <main className="feature-content">
-                <h1 className="feature-title">
-                  Configure Features
+            </div>
+              <div className="hero-content">
+                <h1 className="hero-title">
+                  The perfect AI companion<br />for any website.
                 </h1>
-                <p className="feature-subtitle">
-                  Select additional features for {targetUrl}. Ask Anything™ is always enabled.
+                <p className="hero-description">
+                  Replace your site's search with the Ask Anything™ button and drive AI engagement, grow traffic, and unlock new revenue.
                 </p>
-                  
-                <div className="features-compact-grid">
-                  <div className="feature-compact-card">
-                    <div className="feature-compact-header">
-                      <input
-                        type="checkbox"
-                        id="theGist"
-                        checked={selectedFeatures.theGist}
-                        onChange={(e) => setSelectedFeatures(prev => ({...prev, theGist: e.target.checked}))}
-                      />
-                      <label htmlFor="theGist" className="feature-compact-name">Summarize</label>
-                  </div>
-                    <p className="feature-compact-description">One-sentence AI summary of any story</p>
-                </div>
-
-
-                  
-
-                    
-                  <div className="feature-compact-card">
-                    <div className="feature-compact-header">
-                      <input
-                        type="checkbox"
-                        id="goDeeper"
-                        checked={selectedFeatures.goDeeper}
-                        onChange={(e) => setSelectedFeatures(prev => ({...prev, goDeeper: e.target.checked}))}
-                      />
-                      <label htmlFor="goDeeper" className="feature-compact-name">Go Deeper</label>
-                    </div>
-                    <p className="feature-compact-description">Expandable sidebars with related articles and media</p>
-                    </div>
-                    
-
-                    
-                  <div className="feature-compact-card">
-                    <div className="feature-compact-header">
-                      <input
-                        type="checkbox"
-                        id="customVoices"
-                        checked={selectedFeatures.customVoices}
-                        onChange={(e) => setSelectedFeatures(prev => ({...prev, customVoices: e.target.checked}))}
-                      />
-                      <label htmlFor="customVoices" className="feature-compact-name">Custom Voices</label>
-                    </div>
-                    <p className="feature-compact-description">Branded TTS and presenter options</p>
-                    </div>
-                    </div>
-                    
-                <div className="feature-actions">
-                  <button className="back-btn" onClick={() => setShowFeaturePage(false)}>
-                    ← Back
-                  </button>
-                  <button className="continue-btn" onClick={handleFeatureContinue}>
-                    Continue with Selected Features
-                  </button>
-                    </div>
-              </main>
-            </div>
-          )}
-
-          {/* Main Landing Page */}
-          {!showWebsite && !showLoadingPage && !showFeaturePage && (
-            <div className="landing-page">
-              {/* Header */}
-              <header className="header">
-                <div className="header-left">
-                  <img src="/Gist_Mark_000000.png" alt="Gist" className="gist-logo" onClick={() => window.open('https://about.gist.ai', '_blank')} />
-                  <h1 className="logo">Ask<br />Anything™</h1>
-                    </div>
-                <div className="header-right">
-                  <span className="tagline">100% ethical, uses fully licensed sources</span>
-                  <div className="auth-buttons">
-                    <button className="waitlist-header-btn" onClick={() => setShowLoginPage(true)}>Sign In</button>
-                  </div>
-                  </div>
-              </header>
-
-              {/* Hero Section */}
-              <section className={`hero-section ${isLoaded ? 'fade-in' : ''}`}>
-                <div className="hero-container">
-                  <div className="hero-video">
-                    <video 
-                      title="GPA Demo Video"
-                      controls
-                      autoPlay
-                      muted
-                      loop
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    >
-                      <source src="/GPA-basic-demo-gif.mp4" type="video/mp4" />
-                      <source src="/GPA-basic-demo-gif.webm" type="video/webm" />
-                      <source src="/GPA%20basic%20demo%20gif.mov" type="video/quicktime" />
-                      Your browser does not support the video tag.
-                    </video>
-                    <div className="publisher-section">
-                      <p className="publisher-text">Trusted by 500+ publishers</p>
-                      <div className="publisher-logos">
-                        <img src="/publishers-logos-black.png" alt="Trusted Publishers" onError={(e) => {
-                          console.error('Image failed to load:', e.target.src);
-                          e.target.src = '/publishers-logos.png'; // Fallback to original
-                        }} />
-                      </div>
-                    </div>
-                </div>
-                  <div className="hero-content">
-                    <h1 className="hero-title">
-                      The perfect AI companion<br />for any website.
-                    </h1>
-                    <p className="hero-description">
-                      Replace your site's search with the Ask Anything™ button and drive AI engagement, grow traffic, and unlock new revenue.
-                    </p>
-                    <div className="hero-cta">
-                      <button
+                <div className="hero-cta">
+                  <button
                         onClick={handleGetStartedClick}
-                        className="get-started-btn"
-                      >
-                        Get Started
-                      </button>
-                      <span className="hero-cta-text">or, preview it on your site:</span>
-                      <div className="hero-url-input-wrapper">
-                      <input
-                        type="text"
-                          className="hero-url-input"
-                          placeholder="Enter your website URL"
-                        value={targetUrl}
-                        onChange={(e) => setTargetUrl(e.target.value)}
-                          onKeyPress={(e) => e.key === 'Enter' && targetUrl.trim() && handleTryItClick('hero')}
-                      />
-                      <button
-                          className="hero-try-btn"
-                          onClick={() => handleTryItClick('hero')}
-                          disabled={!targetUrl.trim()}
-                        >
-                          Try It
-                      </button>
-                </div>
-                  </div>
-                  </div>
-                    </div>
-              </section>
-
-
-
-              {/* Why Choose Ask Anything™ */}
-              <section className={`why-choose-section white-section ${isLoaded ? 'fade-in-delayed' : ''}`}>
-                <div className="container">
-                  <h2 className="section-title">Why choose Ask Anything™</h2>
-                  <div className="benefits-grid">
-                    <div className="benefit-card">
-                      <div className="benefit-icon">
-                        ✓
-                      </div>
-                      <h3>Accurate, trusted answers</h3>
-                      <p>Built on licensed publishers & your own content- always cited, never scraped.</p>
-                    </div>
-                      
-                    <div className="benefit-card">
-                      <div className="benefit-icon">
-                        🔒
-                      </div>
-                      <h3>Privacy-first by design</h3>
-                      <p>Zero cookies, zero fingerprinting; GDPR & CCPA-ready out of the box.</p>
-                    </div>
-                  
-                    <div className="benefit-card">
-                      <div className="benefit-icon">
-                        ⚡
-                      </div>
-                      <h3>45-second install</h3>
-                      <p>Copy-paste one line of code. No complex integrations or setup required.</p>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* Make It Yours */}
-              <section className={`make-it-yours-section ${isLoaded ? 'fade-in-delayed-2' : ''}`}>
-                <div className="container">
-                  <h2 className="section-title">Make it <span style={{fontStyle: 'italic'}}>yours</span>.</h2>
-                  <div className="customization-grid">
-                    <div className="customization-item">
-                      <div className="customization-icon">
-                        📦
-                      </div>
-                      <h3>Choose sources to include</h3>
-                      <p>Pick pages on your site- or add any whitelisted publisher with one click.</p>
-                    </div>
-
-                    <div className="customization-item">
-                      <div className="customization-icon">
-                        🎨
-                      </div>
-                      <h3>Match the design of your brand</h3>
-                      <p>Customize colors, fonts, avatars, even the answer voice.</p>
-                    </div>
-
-                    <div className="customization-item">
-                      <div className="customization-icon">
-                        📈
-                      </div>
-                      <h3>Optimize any goal</h3>
-                      <p>Increase engagement, sales, growth, monetization, or whatever matters to you.</p>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* Final CTA */}
-              <section className={`final-cta-section white-section ${isLoaded ? 'fade-in-delayed-3' : ''}`}>
-                <div className="container">
-                  <h2 className="cta-title">Ready to add Ask Anything™ to your website?</h2>
-                  <div className="final-cta-actions">
-                    <button
-                      onClick={handleFinalGetStartedClick}
-                      className="final-get-started-btn"
-                    >
-                      Get Started
-                    </button>
-                    <span className="final-cta-text">or, preview it on your site:</span>
-                    <div className="final-url-input-wrapper">
-                      <input
-                        type="text"
-                        className="final-url-input"
-                        placeholder="Enter your website URL"
-                        value={targetUrl}
-                        onChange={(e) => setTargetUrl(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && targetUrl.trim() && handleTryItClick('final_cta')}
-                      />
-                      <button
-                        className="final-try-btn"
-                        onClick={() => handleTryItClick('final_cta')}
-                        disabled={!targetUrl.trim()}
-                      >
-                        Try It
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* Legal Footer */}
-              <footer className="legal-footer">
-                <div>© 2024 Gist AI, Inc. All rights reserved.</div>
-                <div className="legal-links">
-                  <button onClick={() => window.open('https://about.gist.ai/terms', '_blank')}>Terms of Service</button>
-                  <button onClick={() => window.open('https://about.gist.ai/privacy', '_blank')}>Privacy Policy</button>
-                </div>
-              </footer>
-            </div>
-          )}
-
-          {/* Login Page Modal */}
-          {showLoginPage && (
-            <div className="login-modal-overlay" onClick={() => setShowLoginPage(false)}>
-              <div className="login-modal" onClick={(e) => e.stopPropagation()}>
-                <button className="login-close-btn" onClick={() => setShowLoginPage(false)}>×</button>
-                
-                <div className="login-header">
-                  <h2 className="login-title">Welcome to <em>Ask Anything™</em></h2>
-                  <p className="login-subtitle">Sign in to unlock premium features</p>
-                </div>
-                
-                <form className="login-form" onSubmit={(e) => e.preventDefault()}>
-                  <div className="login-field">
-                    <label htmlFor="email">Email</label>
-                    <input 
-                      type="email" 
-                      id="email" 
-                      placeholder="Enter your email"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="login-field">
-                    <label htmlFor="password">Password</label>
-                    <input 
-                      type="password" 
-                      id="password" 
-                      placeholder="Enter your password"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="login-options">
-                    <label className="remember-me">
-                      <input type="checkbox" />
-                      <span>Remember me</span>
-                    </label>
-                    <a href="#" className="forgot-password">Forgot password?</a>
-                  </div>
-                  
-                  <button type="submit" className="login-submit-btn">
-                    Sign In
+                    className="get-started-btn"
+                  >
+                    Get Started
                   </button>
-                  
-                  <div className="login-divider">
-                    <span>or</span>
+                  <span className="hero-cta-text">or, preview it on your site:</span>
+                  <div className="hero-url-input-wrapper">
+                  <input
+                    type="text"
+                      className="hero-url-input"
+                      placeholder="Enter your website URL"
+                    value={targetUrl}
+                    onChange={(e) => setTargetUrl(e.target.value)}
+                          onKeyPress={(e) => e.key === 'Enter' && targetUrl.trim() && handleTryItClick('hero')}
+                  />
+                  <button
+                      className="hero-try-btn"
+                          onClick={() => handleTryItClick('hero')}
+                      disabled={!targetUrl.trim()}
+                    >
+                      Try It
+                  </button>
+            </div>
+              </div>
+              </div>
+                </div>
+          </section>
+
+
+
+          {/* Why Choose Ask Anything™ */}
+          <section className={`why-choose-section white-section ${isLoaded ? 'fade-in-delayed' : ''}`}>
+            <div className="container">
+              <h2 className="section-title">Why choose Ask Anything™</h2>
+              <div className="benefits-grid">
+                <div className="benefit-card">
+                  <div className="benefit-icon">
+                        ✓
                   </div>
+                  <h3>Accurate, trusted answers</h3>
+                  <p>Built on licensed publishers & your own content- always cited, never scraped.</p>
+                </div>
                   
-                  <div className="social-login">
-                    <button type="button" className="social-btn google-btn">
-                      <span className="social-icon">G</span>
-                      Continue with Google
-                    </button>
-                    
-                    <button type="button" className="social-btn apple-btn">
-                      <span className="social-icon">🍎</span>
-                      Continue with Apple
-                    </button>
+                <div className="benefit-card">
+                  <div className="benefit-icon">
+                        🔒
                   </div>
-                  
-                  <div className="login-footer">
-                    <p>Don't have an account? <a href="#" className="signup-link">Sign up</a></p>
+                  <h3>Privacy-first by design</h3>
+                  <p>Zero cookies, zero fingerprinting; GDPR & CCPA-ready out of the box.</p>
+                </div>
+              
+                <div className="benefit-card">
+                  <div className="benefit-icon">
+                        ⚡
                   </div>
-                </form>
+                  <h3>45-second install</h3>
+                      <p>Copy-paste one line of code. No complex integrations or setup required.</p>
+                  </div>
               </div>
             </div>
-          )}
+          </section>
+
+          {/* Make It Yours */}
+          <section className={`make-it-yours-section ${isLoaded ? 'fade-in-delayed-2' : ''}`}>
+            <div className="container">
+              <h2 className="section-title">Make it <span style={{fontStyle: 'italic'}}>yours</span>.</h2>
+              <div className="customization-grid">
+                <div className="customization-item">
+                  <div className="customization-icon">
+                        📦
+                  </div>
+                  <h3>Choose sources to include</h3>
+                  <p>Pick pages on your site- or add any whitelisted publisher with one click.</p>
+                </div>
+
+                <div className="customization-item">
+                  <div className="customization-icon">
+                        🎨
+                  </div>
+                  <h3>Match the design of your brand</h3>
+                  <p>Customize colors, fonts, avatars, even the answer voice.</p>
+                </div>
+
+                <div className="customization-item">
+                  <div className="customization-icon">
+                        📈
+                </div>
+                  <h3>Optimize any goal</h3>
+                  <p>Increase engagement, sales, growth, monetization, or whatever matters to you.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Final CTA */}
+          <section className={`final-cta-section white-section ${isLoaded ? 'fade-in-delayed-3' : ''}`}>
+            <div className="container">
+              <h2 className="cta-title">Ready to add Ask Anything™ to your website?</h2>
+              <div className="final-cta-actions">
+                <button
+                      onClick={handleFinalGetStartedClick}
+                  className="final-get-started-btn"
+                >
+                  Get Started
+                </button>
+                <span className="final-cta-text">or, preview it on your site:</span>
+                <div className="final-url-input-wrapper">
+                  <input
+                    type="text"
+                    className="final-url-input"
+                    placeholder="Enter your website URL"
+                    value={targetUrl}
+                    onChange={(e) => setTargetUrl(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && targetUrl.trim() && handleTryItClick('final_cta')}
+                  />
+                  <button
+                    className="final-try-btn"
+                        onClick={() => handleTryItClick('final_cta')}
+                    disabled={!targetUrl.trim()}
+                  >
+                    Try It
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Legal Footer */}
+          <footer className="legal-footer">
+            <div>© 2024 Gist AI, Inc. All rights reserved.</div>
+            <div className="legal-links">
+              <button onClick={() => window.open('https://about.gist.ai/terms', '_blank')}>Terms of Service</button>
+              <button onClick={() => window.open('https://about.gist.ai/privacy', '_blank')}>Privacy Policy</button>
+            </div>
+          </footer>
+        </div>
+      )}
+
+      {/* Login Page Modal */}
+      {showLoginPage && (
+        <div className="login-modal-overlay" onClick={() => setShowLoginPage(false)}>
+          <div className="login-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="login-close-btn" onClick={() => setShowLoginPage(false)}>×</button>
+            
+            <div className="login-header">
+              <h2 className="login-title">Welcome to <em>Ask Anything™</em></h2>
+              <p className="login-subtitle">Sign in to unlock premium features</p>
+            </div>
+            
+            <form className="login-form" onSubmit={(e) => e.preventDefault()}>
+              <div className="login-field">
+                <label htmlFor="email">Email</label>
+                <input 
+                  type="email" 
+                  id="email" 
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+              
+              <div className="login-field">
+                <label htmlFor="password">Password</label>
+                <input 
+                  type="password" 
+                  id="password" 
+                  placeholder="Enter your password"
+                  required
+                />
+              </div>
+              
+              <div className="login-options">
+                <label className="remember-me">
+                  <input type="checkbox" />
+                  <span>Remember me</span>
+                </label>
+                <a href="#" className="forgot-password">Forgot password?</a>
+              </div>
+              
+              <button type="submit" className="login-submit-btn">
+                Sign In
+              </button>
+              
+              <div className="login-divider">
+                <span>or</span>
+              </div>
+              
+              <div className="social-login">
+                <button type="button" className="social-btn google-btn">
+                      <span className="social-icon">G</span>
+                  Continue with Google
+                </button>
+                
+                <button type="button" className="social-btn apple-btn">
+                      <span className="social-icon">🍎</span>
+                  Continue with Apple
+                </button>
+              </div>
+              
+              <div className="login-footer">
+                <p>Don't have an account? <a href="#" className="signup-link">Sign up</a></p>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
         </>
       )}
 
@@ -633,7 +633,7 @@ export default function Home() {
                     @keyframes spin {
               0% { transform: rotate(360deg); }
               100% { transform: rotate(0deg); }
-            }
+         }
 
         .loading-title {
           font-size: 1.5rem;

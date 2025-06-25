@@ -183,7 +183,7 @@ export default async function handler(req, res) {
           z-index: 999999;
           box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         ">
-          THIS IS A DEMO, NOT A LIVE VERSION OF YOUR WEBSITE. 
+          THIS IS A DEMO, NOT A LIVE VERSION OF YOUR WEBSITE.
           <a href="https://getaskanything.com/setup" style="
             margin-left: 10px;
             color: #000;
