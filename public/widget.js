@@ -131,10 +131,10 @@
     // Get website name
     const websiteName = getWebsiteName();
 
-    // Create widget HTML using absolute path for sparkles.png
+    // Create widget HTML using GitHub raw URL for sparkles.png
     const widgetHTML = `
         <div class="gist-widget-container">
-            <img src="/sparkles.png" class="gist-search-icon" alt="sparkles icon" onerror="this.style.display='none'">
+            <img src="https://raw.githubusercontent.com/admingistai/GPADemo/main/public/sparkles.png" class="gist-search-icon" alt="sparkles icon" onerror="this.style.display='none'">
             <input type="text" class="gist-search-input" data-placeholder-parts="Ask ,${websiteName}, anything...">
             <button class="gist-arrow-button">
                 <svg class="gist-arrow-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
