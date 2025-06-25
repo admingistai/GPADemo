@@ -186,6 +186,184 @@ export default async function handler(req, res) {
         </div>
       `;
       
+      // Create admin sidebar
+      const adminSidebar = `
+        <style>
+          #admin-sidebar {
+            position: fixed !important;
+            top: 60px !important;
+            right: 20px !important;
+            width: 300px !important;
+            background: #ffffff !important;
+            border-radius: 12px !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+            padding: 20px !important;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+            z-index: 999998 !important;
+          }
+
+          #admin-sidebar h2 {
+            margin: 0 0 20px 0 !important;
+            font-size: 18px !important;
+            color: #1a1a1a !important;
+            font-weight: 600 !important;
+          }
+
+          .admin-section {
+            margin-bottom: 24px !important;
+          }
+
+          .admin-section h3 {
+            font-size: 14px !important;
+            color: #666 !important;
+            margin: 0 0 12px 0 !important;
+            font-weight: 500 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+          }
+
+          .source-toggle {
+            display: flex !important;
+            align-items: center !important;
+            margin-bottom: 8px !important;
+            cursor: pointer !important;
+          }
+
+          .source-toggle label {
+            margin-left: 8px !important;
+            font-size: 14px !important;
+            color: #333 !important;
+            cursor: pointer !important;
+          }
+
+          .toggle-switch {
+            position: relative !important;
+            width: 36px !important;
+            height: 20px !important;
+            background: #e4e4e4 !important;
+            border-radius: 10px !important;
+            padding: 2px !important;
+            transition: background 0.3s !important;
+          }
+
+          .toggle-switch::before {
+            content: "" !important;
+            position: absolute !important;
+            width: 16px !important;
+            height: 16px !important;
+            border-radius: 50% !important;
+            background: white !important;
+            top: 2px !important;
+            left: 2px !important;
+            transition: transform 0.3s !important;
+          }
+
+          .source-toggle input:checked + .toggle-switch {
+            background: #4CAF50 !important;
+          }
+
+          .source-toggle input:checked + .toggle-switch::before {
+            transform: translateX(16px) !important;
+          }
+
+          .source-toggle input {
+            display: none !important;
+          }
+
+          .size-selector {
+            display: flex !important;
+            gap: 8px !important;
+          }
+
+          .size-btn {
+            flex: 1 !important;
+            padding: 8px !important;
+            border: 1px solid #e4e4e4 !important;
+            border-radius: 6px !important;
+            background: white !important;
+            color: #666 !important;
+            cursor: pointer !important;
+            transition: all 0.2s !important;
+            font-size: 13px !important;
+          }
+
+          .size-btn.active {
+            background: #4CAF50 !important;
+            color: white !important;
+            border-color: #4CAF50 !important;
+          }
+
+          .size-btn:hover:not(.active) {
+            background: #f5f5f5 !important;
+          }
+
+          body {
+            margin-right: 340px !important;
+          }
+
+          @media (max-width: 768px) {
+            #admin-sidebar {
+              display: none !important;
+            }
+            body {
+              margin-right: 0 !important;
+            }
+          }
+        </style>
+
+        <div id="admin-sidebar">
+          <h2>Widget Admin Panel</h2>
+          
+          <div class="admin-section">
+            <h3>Source Selection</h3>
+            <div class="source-toggle">
+              <input type="checkbox" id="source-news" checked>
+              <div class="toggle-switch"></div>
+              <label for="source-news">News</label>
+            </div>
+            <div class="source-toggle">
+              <input type="checkbox" id="source-business" checked>
+              <div class="toggle-switch"></div>
+              <label for="source-business">Business</label>
+            </div>
+            <div class="source-toggle">
+              <input type="checkbox" id="source-lifestyle">
+              <div class="toggle-switch"></div>
+              <label for="source-lifestyle">Lifestyle</label>
+            </div>
+            <div class="source-toggle">
+              <input type="checkbox" id="source-sports">
+              <div class="toggle-switch"></div>
+              <label for="source-sports">Sports</label>
+            </div>
+            <div class="source-toggle">
+              <input type="checkbox" id="source-books">
+              <div class="toggle-switch"></div>
+              <label for="source-books">Books</label>
+            </div>
+            <div class="source-toggle">
+              <input type="checkbox" id="source-academic" checked>
+              <div class="toggle-switch"></div>
+              <label for="source-academic">Academic</label>
+            </div>
+            <div class="source-toggle">
+              <input type="checkbox" id="source-reference" checked>
+              <div class="toggle-switch"></div>
+              <label for="source-reference">Reference</label>
+            </div>
+          </div>
+
+          <div class="admin-section">
+            <h3>Widget Size</h3>
+            <div class="size-selector">
+              <button class="size-btn" data-size="small">Small</button>
+              <button class="size-btn active" data-size="medium">Medium</button>
+              <button class="size-btn" data-size="large">Large</button>
+            </div>
+          </div>
+        </div>
+      `;
+      
       console.log(`Injecting widget script: ${widgetScript}`);
       
       // More robust injection logic
@@ -209,12 +387,12 @@ export default async function handler(req, res) {
       
       // Inject demo banner right after opening body tag
       if (html.includes('<body')) {
-        html = html.replace(/(<body[^>]*>)/, `$1${demoBanner}`);
-        console.log('Demo banner injected after <body>');
+        html = html.replace(/(<body[^>]*>)/, `$1${demoBanner}${adminSidebar}`);
+        console.log('Demo banner and admin sidebar injected after <body>');
       } else {
         // Fallback: add at the beginning of the HTML
-        html = demoBanner + html;
-        console.log('Demo banner added at beginning of HTML');
+        html = demoBanner + adminSidebar + html;
+        console.log('Demo banner and admin sidebar added at beginning of HTML');
       }
       
       // Verify injection
