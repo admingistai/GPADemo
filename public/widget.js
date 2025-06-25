@@ -181,6 +181,60 @@
                 background-clip: padding-box, border-box;
             }
 
+            .gist-attribution {
+                margin-top: 20px;
+                padding-top: 15px;
+                border-top: 1px solid #eee;
+                opacity: 0;
+                transform: translateY(10px);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .gist-attribution.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .gist-attribution-title {
+                font-size: 12px;
+                color: #666;
+                margin-bottom: 8px;
+            }
+
+            .gist-attribution-bar {
+                height: 6px;
+                background: #f0f0f0;
+                border-radius: 3px;
+                overflow: hidden;
+                display: flex;
+            }
+
+            .gist-attribution-segment {
+                height: 100%;
+                transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .gist-attribution-legend {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                margin-top: 8px;
+                font-size: 12px;
+            }
+
+            .gist-attribution-source {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                color: #666;
+            }
+
+            .gist-attribution-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+            }
+
             .gist-answer-container.visible {
                 opacity: 1;
                 transform: translateX(-50%) translateY(0);
@@ -490,16 +544,50 @@
 
                         const data = await response.json();
 
-                        // Update container with answer
-                        answerContainer.innerHTML = `
-                            <div class="gist-answer">${data.answer}</div>
+                        // Generate mock attribution data (this would come from the API in a real implementation)
+                        const sources = [
+                            { name: 'Current Page', percentage: 45, color: '#4B9FE1' },
+                            { name: 'Documentation', percentage: 30, color: '#8860D0' },
+                            { name: 'Knowledge Base', percentage: 25, color: '#FF8C42' }
+                        ];
+
+                        // Create attribution bar HTML
+                        const attributionHTML = `
+                            <div class="gist-attribution">
+                                <div class="gist-attribution-title">Answer sources:</div>
+                                <div class="gist-attribution-bar">
+                                    ${sources.map(source => 
+                                        `<div class="gist-attribution-segment" style="width: ${source.percentage}%; background: ${source.color};"></div>`
+                                    ).join('')}
+                                </div>
+                                <div class="gist-attribution-legend">
+                                    ${sources.map(source => `
+                                        <div class="gist-attribution-source">
+                                            <div class="gist-attribution-dot" style="background: ${source.color};"></div>
+                                            ${source.name} (${source.percentage}%)
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
                         `;
 
-                        // Animate the answer in
+                        // Update container with answer and attribution
+                        answerContainer.innerHTML = `
+                            <div class="gist-answer">${data.answer}</div>
+                            ${attributionHTML}
+                        `;
+
+                        // Animate the answer and attribution in
                         requestAnimationFrame(() => {
                             const answerElement = answerContainer.querySelector('.gist-answer');
+                            const attributionElement = answerContainer.querySelector('.gist-attribution');
                             if (answerElement) {
                                 answerElement.classList.add('visible');
+                            }
+                            if (attributionElement) {
+                                setTimeout(() => {
+                                    attributionElement.classList.add('visible');
+                                }, 300); // Delay attribution animation
                             }
                         });
 
