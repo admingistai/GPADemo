@@ -87,6 +87,132 @@
     window.TOOLS_CONFIG = TOOLS_CONFIG;
     
     // ================================
+    // FEATURE TOGGLE SYSTEM
+    // ================================
+    
+    // Feature toggle functions that can be called from the sidebar
+    window.toggleAskFeature = function(enabled) {
+        console.log(`[GistWidget] Toggling Ask feature: ${enabled}`);
+        TOOLS_CONFIG.ask = enabled;
+        
+        // If currently on ask tool and it's being disabled, switch to first available tool
+        if (!enabled && window.gistCurrentTool === 'ask') {
+            const enabledTools = ['gist', 'remix', 'share'].find(tool => TOOLS_CONFIG[tool]);
+            if (enabledTools) {
+                if (typeof window.switchTool === 'function') {
+                    window.switchTool(enabledTools);
+                }
+            }
+        }
+        
+        // Regenerate toolbox tabs
+        if (typeof window.regenerateToolboxTabs === 'function') {
+            window.regenerateToolboxTabs();
+        }
+    };
+    
+    window.toggleSummarizeFeature = function(enabled) {
+        console.log(`[GistWidget] Toggling Summarize feature: ${enabled}`);
+        TOOLS_CONFIG.gist = enabled;
+        
+        // If currently on gist tool and it's being disabled, switch to first available tool
+        if (!enabled && window.gistCurrentTool === 'gist') {
+            const enabledTools = ['ask', 'remix', 'share'].find(tool => TOOLS_CONFIG[tool]);
+            if (enabledTools) {
+                if (typeof window.switchTool === 'function') {
+                    window.switchTool(enabledTools);
+                }
+            }
+        }
+        
+        // Regenerate toolbox tabs
+        if (typeof window.regenerateToolboxTabs === 'function') {
+            window.regenerateToolboxTabs();
+        }
+    };
+    
+    window.toggleListenFeature = function(enabled) {
+        console.log(`[GistWidget] Toggling Listen feature: ${enabled}`);
+        TOOLS_CONFIG.remix = enabled; // Listen maps to the remix tool
+        
+        // If currently on remix tool and it's being disabled, switch to first available tool
+        if (!enabled && window.gistCurrentTool === 'remix') {
+            const enabledTools = ['ask', 'gist', 'share'].find(tool => TOOLS_CONFIG[tool]);
+            if (enabledTools) {
+                if (typeof window.switchTool === 'function') {
+                    window.switchTool(enabledTools);
+                }
+            }
+        }
+        
+        // Regenerate toolbox tabs
+        if (typeof window.regenerateToolboxTabs === 'function') {
+            window.regenerateToolboxTabs();
+        }
+    };
+    
+    window.toggleShareFeature = function(enabled) {
+        console.log(`[GistWidget] Toggling Share feature: ${enabled}`);
+        TOOLS_CONFIG.share = enabled;
+        
+        // If currently on share tool and it's being disabled, switch to first available tool
+        if (!enabled && window.gistCurrentTool === 'share') {
+            const enabledTools = ['ask', 'gist', 'remix'].find(tool => TOOLS_CONFIG[tool]);
+            if (enabledTools) {
+                if (typeof window.switchTool === 'function') {
+                    window.switchTool(enabledTools);
+                }
+            }
+        }
+        
+        // Regenerate toolbox tabs
+        if (typeof window.regenerateToolboxTabs === 'function') {
+            window.regenerateToolboxTabs();
+        }
+    };
+    
+    // Listen for feature toggle events from the sidebar
+    window.addEventListener('featureToggle', function(event) {
+        const { feature, toolsConfigKey, enabled } = event.detail;
+        console.log(`[GistWidget] Received feature toggle event for ${feature}: ${enabled}`);
+        
+        // Map toolsConfigKey for listen -> remix
+        let actualToolsConfigKey = toolsConfigKey;
+        if (feature === 'listen') {
+            actualToolsConfigKey = 'remix';
+        }
+        
+        // Update the TOOLS_CONFIG
+        if (actualToolsConfigKey && TOOLS_CONFIG.hasOwnProperty(actualToolsConfigKey)) {
+            TOOLS_CONFIG[actualToolsConfigKey] = enabled;
+        }
+        
+        // Call the appropriate toggle function
+        switch (feature) {
+            case 'ask':
+                if (typeof window.toggleAskFeature === 'function') {
+                    window.toggleAskFeature(enabled);
+                }
+                break;
+            case 'summarize':
+                if (typeof window.toggleSummarizeFeature === 'function') {
+                    window.toggleSummarizeFeature(enabled);
+                }
+                break;
+            case 'listen':
+                if (typeof window.toggleListenFeature === 'function') {
+                    window.toggleListenFeature(enabled);
+                }
+                break;
+            case 'share':
+                if (typeof window.toggleShareFeature === 'function') {
+                    window.toggleShareFeature(enabled);
+                }
+                break;
+        }
+    });
+    
+    // ================================
     // WEBSITE STYLING SCRAPER SYSTEM
     // ================================
     
@@ -3662,6 +3788,31 @@
         
         // Generate the tabs
         generateToolboxTabs();
+        
+        // Function to regenerate toolbox tabs (called when features are toggled)
+        window.regenerateToolboxTabs = function() {
+            console.log('[GistWidget] Regenerating toolbox tabs');
+            generateToolboxTabs();
+            optimizeToolboxAlignment();
+            
+            // Re-attach event listeners to new tabs
+            toolboxTabs = toolbox.querySelectorAll('.gist-toolbox-tab');
+            toolboxTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tool = this.getAttribute('data-tool');
+                    switchTool(tool);
+                });
+            });
+            
+            // Ensure current tool is still valid, switch to first available if not
+            const enabledTools = ['ask', 'gist', 'remix', 'share'].filter(tool => TOOLS_CONFIG[tool]);
+            if (!TOOLS_CONFIG[currentTool] && enabledTools.length > 0) {
+                switchTool(enabledTools[0]);
+            }
+        };
+        
+        // Expose switchTool globally for sidebar integration
+        window.switchTool = switchTool;
         
         // Get elements for event handling
         const pill = shadowRoot.getElementById('gist-pill');

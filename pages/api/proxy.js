@@ -165,7 +165,7 @@ export default async function handler(req, res) {
       
       const widgetScript = `${updateUrlScript}<script src="${protocol}://${host}/widget.js"></script>`;
       
-      // Add demo banner
+      // Add demo banner and feature sidebar
       const demoBanner = `
         <div id="demo-banner" style="
           position: fixed;
@@ -191,9 +191,575 @@ export default async function handler(req, res) {
             font-weight: bold;
           ">GET A REAL ONE</a>
         </div>
+        
+        <!-- Feature Control Sidebar -->
+        <div id="feature-sidebar" style="
+          position: fixed;
+          top: 60px;
+          right: 20px;
+          width: 280px;
+          background: #ffffff;
+          border: 1px solid #e5e7eb;
+          border-radius: 12px;
+          padding: 20px;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+          font-size: 14px;
+          z-index: 999998;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+          max-height: calc(100vh - 100px);
+          overflow-y: auto;
+        ">
+          <div style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f3f4f6;
+          ">
+            <h3 style="
+              margin: 0;
+              font-size: 16px;
+              font-weight: 600;
+              color: #111827;
+            ">Widget Features</h3>
+            <button id="sidebar-toggle" style="
+              background: none;
+              border: none;
+              cursor: pointer;
+              font-size: 18px;
+              color: #6b7280;
+              padding: 4px;
+            ">−</button>
+          </div>
+          
+          <div id="sidebar-content">
+            <div style="margin-bottom: 16px;">
+              <label style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 8px 0;
+                cursor: pointer;
+                color: #374151;
+                font-weight: 500;
+              ">
+                <span>Ask/Explore</span>
+                <div style="position: relative;">
+                  <input type="checkbox" id="toggle-ask" checked style="
+                    position: absolute;
+                    opacity: 0;
+                    cursor: pointer;
+                  ">
+                  <span style="
+                    display: inline-block;
+                    width: 44px;
+                    height: 24px;
+                    background: #10b981;
+                    border-radius: 12px;
+                    position: relative;
+                    transition: background 0.2s;
+                  ">
+                    <span style="
+                      position: absolute;
+                      top: 2px;
+                      left: 20px;
+                      width: 20px;
+                      height: 20px;
+                      background: white;
+                      border-radius: 50%;
+                      transition: left 0.2s;
+                    "></span>
+                  </span>
+                </div>
+              </label>
+              
+              <label style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 8px 0;
+                cursor: pointer;
+                color: #374151;
+                font-weight: 500;
+              ">
+                <span>Summarize</span>
+                <div style="position: relative;">
+                  <input type="checkbox" id="toggle-summarize" checked style="
+                    position: absolute;
+                    opacity: 0;
+                    cursor: pointer;
+                  ">
+                  <span style="
+                    display: inline-block;
+                    width: 44px;
+                    height: 24px;
+                    background: #10b981;
+                    border-radius: 12px;
+                    position: relative;
+                    transition: background 0.2s;
+                  ">
+                    <span style="
+                      position: absolute;
+                      top: 2px;
+                      left: 20px;
+                      width: 20px;
+                      height: 20px;
+                      background: white;
+                      border-radius: 50%;
+                      transition: left 0.2s;
+                    "></span>
+                  </span>
+                </div>
+              </label>
+              
+              <label style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 8px 0;
+                cursor: pointer;
+                color: #374151;
+                font-weight: 500;
+              ">
+                <span>Listen</span>
+                <div style="position: relative;">
+                  <input type="checkbox" id="toggle-listen" checked style="
+                    position: absolute;
+                    opacity: 0;
+                    cursor: pointer;
+                  ">
+                  <span style="
+                    display: inline-block;
+                    width: 44px;
+                    height: 24px;
+                    background: #10b981;
+                    border-radius: 12px;
+                    position: relative;
+                    transition: background 0.2s;
+                  ">
+                    <span style="
+                      position: absolute;
+                      top: 2px;
+                      left: 20px;
+                      width: 20px;
+                      height: 20px;
+                      background: white;
+                      border-radius: 50%;
+                      transition: left 0.2s;
+                    "></span>
+                  </span>
+                </div>
+              </label>
+              
+              <label style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 8px 0;
+                cursor: pointer;
+                color: #374151;
+                font-weight: 500;
+              ">
+                <span>Basic Share</span>
+                <div style="position: relative;">
+                  <input type="checkbox" id="toggle-share" checked style="
+                    position: absolute;
+                    opacity: 0;
+                    cursor: pointer;
+                  ">
+                  <span style="
+                    display: inline-block;
+                    width: 44px;
+                    height: 24px;
+                    background: #10b981;
+                    border-radius: 12px;
+                    position: relative;
+                    transition: background 0.2s;
+                  ">
+                    <span style="
+                      position: absolute;
+                      top: 2px;
+                      left: 20px;
+                      width: 20px;
+                      height: 20px;
+                      background: white;
+                      border-radius: 50%;
+                      transition: left 0.2s;
+                    "></span>
+                  </span>
+                </div>
+              </label>
+            </div>
+            
+            <div style="
+              border-top: 1px solid #f3f4f6;
+              padding-top: 16px;
+              margin-top: 16px;
+            ">
+              <p style="
+                margin: 0 0 12px 0;
+                font-size: 12px;
+                color: #6b7280;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+              ">Coming Soon</p>
+              
+              <label style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 8px 0;
+                cursor: not-allowed;
+                color: #9ca3af;
+                font-weight: 500;
+              ">
+                <span>Dive Deeper*</span>
+                <div style="position: relative;">
+                  <input type="checkbox" id="toggle-deeper" disabled style="
+                    position: absolute;
+                    opacity: 0;
+                    cursor: not-allowed;
+                  ">
+                  <span style="
+                    display: inline-block;
+                    width: 44px;
+                    height: 24px;
+                    background: #e5e7eb;
+                    border-radius: 12px;
+                    position: relative;
+                  ">
+                    <span style="
+                      position: absolute;
+                      top: 2px;
+                      left: 2px;
+                      width: 20px;
+                      height: 20px;
+                      background: white;
+                      border-radius: 50%;
+                    "></span>
+                  </span>
+                </div>
+              </label>
+              
+              <label style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 8px 0;
+                cursor: not-allowed;
+                color: #9ca3af;
+                font-weight: 500;
+              ">
+                <span>Chat/Speak*</span>
+                <div style="position: relative;">
+                  <input type="checkbox" id="toggle-chat" disabled style="
+                    position: absolute;
+                    opacity: 0;
+                    cursor: not-allowed;
+                  ">
+                  <span style="
+                    display: inline-block;
+                    width: 44px;
+                    height: 24px;
+                    background: #e5e7eb;
+                    border-radius: 12px;
+                    position: relative;
+                  ">
+                    <span style="
+                      position: absolute;
+                      top: 2px;
+                      left: 2px;
+                      width: 20px;
+                      height: 20px;
+                      background: white;
+                      border-radius: 50%;
+                    "></span>
+                  </span>
+                </div>
+              </label>
+              
+              <label style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 8px 0;
+                cursor: not-allowed;
+                color: #9ca3af;
+                font-weight: 500;
+              ">
+                <span>Avatar*</span>
+                <div style="position: relative;">
+                  <input type="checkbox" id="toggle-avatar" disabled style="
+                    position: absolute;
+                    opacity: 0;
+                    cursor: not-allowed;
+                  ">
+                  <span style="
+                    display: inline-block;
+                    width: 44px;
+                    height: 24px;
+                    background: #e5e7eb;
+                    border-radius: 12px;
+                    position: relative;
+                  ">
+                    <span style="
+                      position: absolute;
+                      top: 2px;
+                      left: 2px;
+                      width: 20px;
+                      height: 20px;
+                      background: white;
+                      border-radius: 50%;
+                    "></span>
+                  </span>
+                </div>
+              </label>
+              
+              <label style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 8px 0;
+                cursor: not-allowed;
+                color: #9ca3af;
+                font-weight: 500;
+              ">
+                <span>Smart Alerts*</span>
+                <div style="position: relative;">
+                  <input type="checkbox" id="toggle-alerts" disabled style="
+                    position: absolute;
+                    opacity: 0;
+                    cursor: not-allowed;
+                  ">
+                  <span style="
+                    display: inline-block;
+                    width: 44px;
+                    height: 24px;
+                    background: #e5e7eb;
+                    border-radius: 12px;
+                    position: relative;
+                  ">
+                    <span style="
+                      position: absolute;
+                      top: 2px;
+                      left: 2px;
+                      width: 20px;
+                      height: 20px;
+                      background: white;
+                      border-radius: 50%;
+                    "></span>
+                  </span>
+                </div>
+              </label>
+              
+              <label style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 8px 0;
+                cursor: not-allowed;
+                color: #9ca3af;
+                font-weight: 500;
+              ">
+                <span>Multi-Format Sharing*</span>
+                <div style="position: relative;">
+                  <input type="checkbox" id="toggle-multi-share" disabled style="
+                    position: absolute;
+                    opacity: 0;
+                    cursor: not-allowed;
+                  ">
+                  <span style="
+                    display: inline-block;
+                    width: 44px;
+                    height: 24px;
+                    background: #e5e7eb;
+                    border-radius: 12px;
+                    position: relative;
+                  ">
+                    <span style="
+                      position: absolute;
+                      top: 2px;
+                      left: 2px;
+                      width: 20px;
+                      height: 20px;
+                      background: white;
+                      border-radius: 50%;
+                    "></span>
+                  </span>
+                </div>
+              </label>
+              
+              <label style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 8px 0;
+                cursor: not-allowed;
+                color: #9ca3af;
+                font-weight: 500;
+              ">
+                <span>Adaptive Social Sharing*</span>
+                <div style="position: relative;">
+                  <input type="checkbox" id="toggle-adaptive-share" disabled style="
+                    position: absolute;
+                    opacity: 0;
+                    cursor: not-allowed;
+                  ">
+                  <span style="
+                    display: inline-block;
+                    width: 44px;
+                    height: 24px;
+                    background: #e5e7eb;
+                    border-radius: 12px;
+                    position: relative;
+                  ">
+                    <span style="
+                      position: absolute;
+                      top: 2px;
+                      left: 2px;
+                      width: 20px;
+                      height: 20px;
+                      background: white;
+                      border-radius: 50%;
+                    "></span>
+                  </span>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+        
         <style>
-          body { margin-top: 50px !important; }
+          body { 
+            margin-top: 50px !important; 
+            margin-right: 320px !important;
+          }
+          
+          /* Custom toggle styles */
+          #feature-sidebar input[type="checkbox"]:checked + span {
+            background: #10b981 !important;
+          }
+          
+          #feature-sidebar input[type="checkbox"]:not(:checked) + span {
+            background: #e5e7eb !important;
+          }
+          
+          #feature-sidebar input[type="checkbox"]:checked + span span {
+            left: 20px !important;
+          }
+          
+          #feature-sidebar input[type="checkbox"]:not(:checked) + span span {
+            left: 2px !important;
+          }
+          
+          /* Sidebar toggle functionality */
+          #feature-sidebar.collapsed {
+            width: 60px;
+            height: 60px;
+            padding: 15px;
+            overflow: hidden;
+          }
+          
+          #feature-sidebar.collapsed #sidebar-content {
+            display: none;
+          }
+          
+          #feature-sidebar.collapsed h3 {
+            display: none;
+          }
+          
+          /* Responsive design */
+          @media (max-width: 1024px) {
+            body {
+              margin-right: 0 !important;
+            }
+            
+            #feature-sidebar {
+              display: none !important;
+            }
+          }
+          
+          /* Ensure widgets don't overlap with sidebar */
+          @media (min-width: 1025px) {
+            .gist-widget, [id*="widget"], [class*="widget"] {
+              margin-right: 320px !important;
+            }
+          }
         </style>
+        
+        <script>
+          // Feature toggle functionality
+          document.addEventListener('DOMContentLoaded', function() {
+            // Sidebar toggle
+            const sidebar = document.getElementById('feature-sidebar');
+            const toggleBtn = document.getElementById('sidebar-toggle');
+            
+            toggleBtn.addEventListener('click', function() {
+              sidebar.classList.toggle('collapsed');
+              toggleBtn.textContent = sidebar.classList.contains('collapsed') ? '+' : '−';
+            });
+            
+            // Feature toggles
+            const featureToggles = {
+              'toggle-ask': { 
+                feature: 'ask', 
+                toolsConfigKey: 'ask',
+                widgetFunction: 'toggleAskFeature'
+              },
+              'toggle-summarize': { 
+                feature: 'summarize', 
+                toolsConfigKey: 'gist',
+                widgetFunction: 'toggleSummarizeFeature'
+              },
+              'toggle-listen': { 
+                feature: 'listen', 
+                toolsConfigKey: 'remix',
+                widgetFunction: 'toggleListenFeature'
+              },
+              'toggle-share': { 
+                feature: 'share', 
+                toolsConfigKey: 'share',
+                widgetFunction: 'toggleShareFeature'
+              }
+            };
+            
+            Object.keys(featureToggles).forEach(toggleId => {
+              const toggle = document.getElementById(toggleId);
+              const config = featureToggles[toggleId];
+              
+              toggle.addEventListener('change', function() {
+                const isEnabled = this.checked;
+                console.log(\`[FeatureSidebar] Toggling \${config.feature}: \${isEnabled}\`);
+                
+                // Update TOOLS_CONFIG in widget if it exists
+                if (window.TOOLS_CONFIG && config.toolsConfigKey) {
+                  window.TOOLS_CONFIG[config.toolsConfigKey] = isEnabled;
+                  console.log(\`[FeatureSidebar] Updated TOOLS_CONFIG.\${config.toolsConfigKey} = \${isEnabled}\`);
+                }
+                
+                // Call specific widget function if it exists
+                if (window[config.widgetFunction] && typeof window[config.widgetFunction] === 'function') {
+                  window[config.widgetFunction](isEnabled);
+                } else {
+                  console.log(\`[FeatureSidebar] Widget function \${config.widgetFunction} not found\`);
+                }
+                
+                // Dispatch custom event for the widget to listen to
+                window.dispatchEvent(new CustomEvent('featureToggle', {
+                  detail: {
+                    feature: config.feature,
+                    toolsConfigKey: config.toolsConfigKey,
+                    enabled: isEnabled
+                  }
+                }));
+              });
+            });
+            
+            console.log('[FeatureSidebar] Feature sidebar initialized');
+          });
+        </script>
       `;
       
       if (html.includes('</head>')) {
