@@ -1,44 +1,4 @@
 (function() {
-    // Get the script's location to reference assets relatively
-    const scriptElement = document.currentScript;
-    const scriptPath = scriptElement.src;
-    const basePath = scriptPath.substring(0, scriptPath.lastIndexOf('/'));
-
-    // Function to get absolute URL for assets
-    function getAssetUrl(relativePath) {
-        // Try different possible locations
-        const locations = [
-            `${basePath}/${relativePath}`,                    // Same directory as script
-            `${window.location.origin}/${relativePath}`,      // Root of the website
-            `${window.location.origin}/public/${relativePath}` // Public directory
-        ];
-
-        // Test each location
-        return new Promise((resolve, reject) => {
-            let attempted = 0;
-            
-            function tryNextLocation() {
-                if (attempted >= locations.length) {
-                    reject(new Error(`Could not load ${relativePath} from any location`));
-                    return;
-                }
-
-                const url = locations[attempted];
-                const img = new Image();
-                
-                img.onload = () => resolve(url);
-                img.onerror = () => {
-                    attempted++;
-                    tryNextLocation();
-                };
-                
-                img.src = url;
-            }
-
-            tryNextLocation();
-        });
-    }
-
     // Function to get website name
     function getWebsiteName() {
         // Try to get from meta tags first
@@ -166,88 +126,79 @@
     // Get website name
     const websiteName = getWebsiteName();
 
-    // Initialize widget after ensuring assets are loaded
-    getAssetUrl('sparkles.png')
-        .then(sparklesUrl => {
-            // Create widget HTML using the verified sparkles URL
-            const widgetHTML = `
-                <div class="gist-widget-container">
-                    <img src="${sparklesUrl}" class="gist-search-icon" alt="sparkles icon" data-source="verified">
-                    <input type="text" class="gist-search-input" data-placeholder-parts="Ask ,${websiteName}, anything...">
-                    <button class="gist-arrow-button">
-                        <svg class="gist-arrow-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7 17L17 7M17 7H10M17 7V14" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
-                </div>
-            `;
+    // Determine the sparkles image URL
+    const scriptElement = document.currentScript;
+    let sparklesUrl;
+    
+    if (scriptElement && scriptElement.src) {
+        // Get the base URL of where this script is loaded from
+        const scriptUrl = new URL(scriptElement.src);
+        sparklesUrl = `${scriptUrl.protocol}//${scriptUrl.host}${scriptUrl.pathname.replace('widget.js', 'sparkles.png')}`;
+    } else {
+        // Fallback to current origin
+        sparklesUrl = `${window.location.origin}/sparkles.png`;
+    }
 
-            // Create container element
-            const container = document.createElement('div');
-            container.innerHTML = widgetHTML;
-            document.body.appendChild(container.firstElementChild);
+    // Create widget HTML
+    const widgetHTML = `
+        <div class="gist-widget-container">
+            <img src="${sparklesUrl}" class="gist-search-icon" alt="sparkles icon" onerror="this.style.display='none'">
+            <input type="text" class="gist-search-input" data-placeholder-parts="Ask ,${websiteName}, anything...">
+            <button class="gist-arrow-button">
+                <svg class="gist-arrow-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 17L17 7M17 7H10M17 7V14" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+    `;
 
-            // Add input event listener and setup placeholder
-            const searchInput = document.querySelector('.gist-search-input');
-            
-            // Function to update placeholder with bold website name
-            function updatePlaceholder(input) {
-                const parts = input.dataset.placeholderParts.split(',');
-                const placeholderSpan = document.createElement('span');
-                placeholderSpan.style.position = 'absolute';
-                placeholderSpan.style.left = '52px';
-                placeholderSpan.style.top = '50%';
-                placeholderSpan.style.transform = 'translateY(-50%)';
-                placeholderSpan.style.color = '#666';
-                placeholderSpan.style.pointerEvents = 'none';
-                
-                placeholderSpan.innerHTML = `${parts[0]}<strong>${parts[1]}</strong>${parts[2]}`;
-                
-                const existingSpan = input.parentElement.querySelector('.placeholder-span');
-                if (existingSpan) {
-                    existingSpan.remove();
-                }
-                
-                placeholderSpan.className = 'placeholder-span';
-                if (!input.value) {
-                    input.parentElement.appendChild(placeholderSpan);
-                }
-            }
+    // Create container element
+    const container = document.createElement('div');
+    container.innerHTML = widgetHTML;
+    document.body.appendChild(container.firstElementChild);
 
-            // Initial setup
-            updatePlaceholder(searchInput);
+    // Add input event listener and setup placeholder
+    const searchInput = document.querySelector('.gist-search-input');
+    
+    // Function to update placeholder with bold website name
+    function updatePlaceholder(input) {
+        const parts = input.dataset.placeholderParts.split(',');
+        const placeholderSpan = document.createElement('span');
+        placeholderSpan.style.position = 'absolute';
+        placeholderSpan.style.left = '52px';
+        placeholderSpan.style.top = '50%';
+        placeholderSpan.style.transform = 'translateY(-50%)';
+        placeholderSpan.style.color = '#666';
+        placeholderSpan.style.pointerEvents = 'none';
+        
+        placeholderSpan.innerHTML = `${parts[0]}<strong>${parts[1]}</strong>${parts[2]}`;
+        
+        const existingSpan = input.parentElement.querySelector('.placeholder-span');
+        if (existingSpan) {
+            existingSpan.remove();
+        }
+        
+        placeholderSpan.className = 'placeholder-span';
+        if (!input.value) {
+            input.parentElement.appendChild(placeholderSpan);
+        }
+    }
 
-            // Handle input changes
-            searchInput.addEventListener('input', function() {
-                const placeholderSpan = this.parentElement.querySelector('.placeholder-span');
-                if (placeholderSpan) {
-                    placeholderSpan.style.display = this.value ? 'none' : 'block';
-                }
-            });
+    // Initial setup
+    updatePlaceholder(searchInput);
 
-            searchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    // TODO: Handle search query
-                    console.log('Search query:', e.target.value);
-                }
-            });
-        })
-        .catch(error => {
-            console.error('Failed to load sparkles icon:', error);
-            // Create widget without the sparkles icon as fallback
-            const widgetHTML = `
-                <div class="gist-widget-container">
-                    <input type="text" class="gist-search-input" data-placeholder-parts="Ask ,${websiteName}, anything..." style="padding-left: 24px;">
-                    <button class="gist-arrow-button">
-                        <svg class="gist-arrow-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7 17L17 7M17 7H10M17 7V14" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
-                </div>
-            `;
+    // Handle input changes
+    searchInput.addEventListener('input', function() {
+        const placeholderSpan = this.parentElement.querySelector('.placeholder-span');
+        if (placeholderSpan) {
+            placeholderSpan.style.display = this.value ? 'none' : 'block';
+        }
+    });
 
-            const container = document.createElement('div');
-            container.innerHTML = widgetHTML;
-            document.body.appendChild(container.firstElementChild);
-        });
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            // TODO: Handle search query
+            console.log('Search query:', e.target.value);
+        }
+    });
 })();
