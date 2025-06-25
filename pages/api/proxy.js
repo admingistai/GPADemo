@@ -112,25 +112,45 @@ export default async function handler(req, res) {
       }
     });
 
-    // Get content type
-    const contentType = response.headers['content-type'] || 'text/html';
+    // Get content type and check if it's HTML
+    const contentType = response.headers['content-type'] || '';
+    console.log('Response content type:', contentType);
+    
+    // More thorough HTML content type check
+    const isHtml = contentType.includes('text/html') || 
+                  contentType.includes('application/xhtml') ||
+                  (!contentType.includes('/') && response.data.trim().toLowerCase().startsWith('<!doctype html>'));
 
     // If not HTML, return the response as-is
-    if (!contentType.includes('text/html')) {
+    if (!isHtml) {
+      console.log('Not HTML content, returning as-is');
       res.setHeader('Content-Type', contentType);
       return res.send(response.data);
     }
 
+    console.log('HTML content detected, proceeding with modification');
+
     // Get the current host for widget injection
     const currentHost = req.headers.host || process.env.VERCEL_URL || 'localhost:3000';
+    console.log('Current host:', currentHost);
 
     // Use HTML modifier to handle all HTML modifications
     const modifiedHtml = htmlModifier.modifyHtml(response.data, normalizedUrl, currentHost);
 
-    // Set response headers
+    // Debug: Check if widget script was injected
+    if (!modifiedHtml.includes('widget.js')) {
+      console.error('Widget script was not injected into HTML');
+      console.log('Content type:', contentType);
+      console.log('HTML length:', modifiedHtml.length);
+      console.log('First 500 chars of HTML:', modifiedHtml.substring(0, 500));
+    } else {
+      console.log('Widget script was successfully injected');
+    }
+
+    // Set response headers with permissive CSP
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-    res.setHeader('Content-Security-Policy', "frame-ancestors 'self'");
+    res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; style-src * 'unsafe-inline';");
 
     // Send modified HTML
     res.send(modifiedHtml);

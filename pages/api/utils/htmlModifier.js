@@ -11,11 +11,18 @@ class HtmlModifier {
    */
   modifyHtml(html, targetUrl, currentHost) {
     try {
+      console.log('Starting HTML modification for URL:', targetUrl);
+      console.log('Using current host:', currentHost);
+
       // Load HTML with cheerio
       const $ = cheerio.load(html, {
         decodeEntities: false,
         scriptingEnabled: true
       });
+
+      console.log('HTML loaded with cheerio');
+      console.log('Found body tags:', $('body').length);
+      console.log('Found html tags:', $('html').length);
 
       // Parse the target URL for base URL construction
       const parsedUrl = new URL(targetUrl);
@@ -47,16 +54,28 @@ class HtmlModifier {
    */
   injectWidget($, currentHost) {
     const protocol = currentHost.includes('localhost') ? 'http://' : 'https://';
-    const widgetScript = '<script src="/api/proxy?url=' + encodeURIComponent(protocol + currentHost + '/widget.js') + '" data-injected="true"></script>';
+    const nonce = Math.random().toString(36).substring(2);
+    const widgetScript = `<script nonce="${nonce}" type="text/javascript" src="/api/proxy?url=${encodeURIComponent(protocol + currentHost + '/widget.js')}" data-injected="true" defer></script>`;
     
+    console.log('Attempting to inject widget script');
+    console.log('Widget script tag:', widgetScript);
+
+    // Add CSP meta tag to allow our script
+    if ($('head').length > 0) {
+      $('head').prepend(`<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'nonce-${nonce}' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';">`);
+    }
+
     // Try to inject before closing body tag
     if ($('body').length > 0) {
+      console.log('Found body tag, injecting at end of body');
       $('body').append(widgetScript);
     } else if ($('html').length > 0) {
       // If no body tag, append to html
+      console.log('No body tag found, injecting at end of html');
       $('html').append(widgetScript);
     } else {
       // Last resort: append to end of document
+      console.log('No html tag found, injecting at root');
       $.root().append(widgetScript);
     }
 
