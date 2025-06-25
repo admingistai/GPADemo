@@ -200,10 +200,42 @@ export default async function handler(req, res) {
             padding: 20px !important;
             font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
             z-index: 999998 !important;
+            transition: transform 0.3s ease, width 0.3s ease !important;
+          }
+
+          #admin-sidebar.minimized {
+            transform: translateX(280px) !important;
+          }
+
+          #admin-sidebar .header {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            margin-bottom: 20px !important;
+          }
+
+          #admin-sidebar .minimize-btn {
+            background: none !important;
+            border: none !important;
+            color: #666 !important;
+            cursor: pointer !important;
+            padding: 4px 8px !important;
+            font-size: 20px !important;
+            line-height: 1 !important;
+            border-radius: 4px !important;
+            transition: background 0.2s !important;
+          }
+
+          #admin-sidebar .minimize-btn:hover {
+            background: #f5f5f5 !important;
+          }
+
+          #admin-sidebar.minimized .minimize-btn {
+            transform: rotate(180deg) !important;
           }
 
           #admin-sidebar h2 {
-            margin: 0 0 20px 0 !important;
+            margin: 0 !important;
             font-size: 18px !important;
             color: #1a1a1a !important;
             font-weight: 600 !important;
@@ -312,7 +344,10 @@ export default async function handler(req, res) {
         </style>
 
         <div id="admin-sidebar">
-          <h2>Widget Admin Panel</h2>
+          <div class="header">
+            <h2>Widget Admin Panel</h2>
+            <button class="minimize-btn" title="Minimize panel">←</button>
+          </div>
           
           <div class="admin-section">
             <h3>Source Selection</h3>
@@ -362,6 +397,98 @@ export default async function handler(req, res) {
             </div>
           </div>
         </div>
+
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            const adminPanel = {
+              sources: {
+                news: true,
+                business: true,
+                lifestyle: false,
+                sports: false,
+                books: false,
+                academic: true,
+                reference: true
+              },
+              widgetSize: 'medium',
+              isMinimized: false
+            };
+
+            document.querySelectorAll('.source-toggle input').forEach(toggle => {
+              const sourceType = toggle.id.replace('source-', '');
+              toggle.checked = adminPanel.sources[sourceType];
+              toggle.addEventListener('change', function() {
+                adminPanel.sources[sourceType] = this.checked;
+                console.log('Source updated:', sourceType, this.checked);
+                const toggleSwitch = this.nextElementSibling;
+                toggleSwitch.style.background = this.checked ? '#4CAF50' : '#e4e4e4';
+                window.dispatchEvent(new CustomEvent('sourceToggle', {
+                  detail: { source: sourceType, enabled: this.checked }
+                }));
+              });
+            });
+
+            document.querySelectorAll('.size-btn').forEach(btn => {
+              btn.addEventListener('click', function() {
+                document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const newSize = this.dataset.size;
+                adminPanel.widgetSize = newSize;
+                console.log('Widget size updated:', newSize);
+                window.dispatchEvent(new CustomEvent('widgetSizeChange', {
+                  detail: { size: newSize }
+                }));
+              });
+            });
+
+            const sidebar = document.getElementById('admin-sidebar');
+            const minimizeBtn = document.querySelector('.minimize-btn');
+            
+            minimizeBtn.addEventListener('click', function() {
+              adminPanel.isMinimized = !adminPanel.isMinimized;
+              sidebar.classList.toggle('minimized');
+              this.textContent = adminPanel.isMinimized ? '→' : '←';
+              this.title = adminPanel.isMinimized ? 'Expand panel' : 'Minimize panel';
+              if (window.innerWidth > 768) {
+                document.body.style.marginRight = adminPanel.isMinimized ? '60px' : '340px';
+              }
+            });
+
+            window.addEventListener('resize', function() {
+              if (window.innerWidth <= 768) {
+                document.body.style.marginRight = '0';
+              } else {
+                document.body.style.marginRight = adminPanel.isMinimized ? '60px' : '340px';
+              }
+            });
+
+            function savePanelState() {
+              localStorage.setItem('adminPanelState', JSON.stringify(adminPanel));
+            }
+
+            function loadPanelState() {
+              const savedState = localStorage.getItem('adminPanelState');
+              if (savedState) {
+                const state = JSON.parse(savedState);
+                Object.entries(state.sources).forEach(([source, enabled]) => {
+                  const toggle = document.getElementById('source-' + source);
+                  if (toggle) {
+                    toggle.checked = enabled;
+                    toggle.dispatchEvent(new Event('change'));
+                  }
+                });
+                const sizeBtn = document.querySelector('.size-btn[data-size="' + state.widgetSize + '"]');
+                if (sizeBtn) sizeBtn.click();
+                if (state.isMinimized) minimizeBtn.click();
+              }
+            }
+
+            window.addEventListener('sourceToggle', savePanelState);
+            window.addEventListener('widgetSizeChange', savePanelState);
+            minimizeBtn.addEventListener('click', savePanelState);
+            loadPanelState();
+          });
+        </script>
       `;
       
       console.log(`Injecting widget script: ${widgetScript}`);
