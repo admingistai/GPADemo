@@ -7242,9 +7242,9 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             expandWidget();
             input.focus();
             
-            // Ensure Ask tool content is shown if no other tool is active
-            if (currentTool === 'ask' && !hasAskAnswer) {
-                showSuggestedQuestions();
+            // Only show answer container if there's already an answer
+            if (hasAnswer || hasAskAnswer) {
+                showAnswerContainer();
             }
         });
         
@@ -7253,11 +7253,10 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             isActive = true;
             userIsInteracting = true;
             expandWidget();
-            showAnswerContainer();
             
-            // Show Ask tool content if no answer exists
-            if (currentTool === 'ask' && !hasAskAnswer) {
-                showSuggestedQuestions();
+            // Don't show answer container by default, only show it when there's an answer or when needed
+            if (hasAnswer || hasAskAnswer) {
+                showAnswerContainer();
             }
         });
         
@@ -7380,12 +7379,15 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             if (widget) {
                 widget.classList.add('loaded');
                 
-                // Initialize widget in expanded state
+                // Initialize widget in expanded state with only textbox and toolbar visible
                 widget.classList.add('active');
                 toolbox.classList.add('visible');
                 
-                // Show initial content for the default tool
-                showAnswerContainer();
+                // Ensure answer container is hidden initially
+                const answerContainer = shadowRoot.getElementById('gist-answer-container');
+                if (answerContainer) {
+                    answerContainer.classList.remove('visible');
+                }
             }
         }, 100);
         
