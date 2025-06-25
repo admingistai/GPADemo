@@ -1,11 +1,17 @@
 import { useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 export default function Dashboard() {
+  const router = useRouter();
   const [selectedMetric, setSelectedMetric] = useState('ai_performance');
   const [timeRange, setTimeRange] = useState('7d');
   const [selectedSite, setSelectedSite] = useState('the-harbor');
+
+  const handleSettingsClick = () => {
+    router.push('/dashboard_lightmode');
+  };
 
   // Chart data for different metrics
   const chartData = {
@@ -73,7 +79,7 @@ export default function Dashboard() {
               <option value="30d">Last 30 days</option>
               <option value="90d">Last 90 days</option>
             </select>
-            <button className="settings-btn">Settings</button>
+            <button className="settings-btn" onClick={handleSettingsClick}>Settings</button>
           </div>
         </header>
 
