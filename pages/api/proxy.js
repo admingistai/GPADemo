@@ -243,162 +243,70 @@ export default async function handler(req, res) {
           </div>
           
           <div id="sidebar-content">
-            <div style="margin-bottom: 16px;">
-              <label style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 8px 0;
-                cursor: pointer;
-                color: #374151;
-                font-weight: 500;
-              ">
-                <span>Ask/Explore</span>
-                <div style="position: relative;">
-                  <input type="checkbox" id="toggle-ask" checked style="
-                    position: absolute;
-                    opacity: 0;
-                    cursor: pointer;
-                  ">
-                  <span style="
-                    display: inline-block;
-                    width: 44px;
-                    height: 24px;
-                    background: #10b981;
-                    border-radius: 12px;
-                    position: relative;
-                    transition: background 0.2s;
-                  ">
-                    <span style="
-                      position: absolute;
-                      top: 2px;
-                      left: 20px;
-                      width: 20px;
-                      height: 20px;
-                      background: white;
-                      border-radius: 50%;
-                      transition: left 0.2s;
-                    "></span>
-                  </span>
-                </div>
-              </label>
-              
-              <label style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 8px 0;
-                cursor: pointer;
-                color: #374151;
-                font-weight: 500;
-              ">
-                <span>Summarize</span>
-                <div style="position: relative;">
-                  <input type="checkbox" id="toggle-summarize" checked style="
-                    position: absolute;
-                    opacity: 0;
-                    cursor: pointer;
-                  ">
-                  <span style="
-                    display: inline-block;
-                    width: 44px;
-                    height: 24px;
-                    background: #10b981;
-                    border-radius: 12px;
-                    position: relative;
-                    transition: background 0.2s;
-                  ">
-                    <span style="
-                      position: absolute;
-                      top: 2px;
-                      left: 20px;
-                      width: 20px;
-                      height: 20px;
-                      background: white;
-                      border-radius: 50%;
-                      transition: left 0.2s;
-                    "></span>
-                  </span>
-                </div>
-              </label>
-              
-              <label style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 8px 0;
-                cursor: pointer;
-                color: #374151;
-                font-weight: 500;
-              ">
-                <span>Listen</span>
-                <div style="position: relative;">
-                  <input type="checkbox" id="toggle-listen" checked style="
-                    position: absolute;
-                    opacity: 0;
-                    cursor: pointer;
-                  ">
-                  <span style="
-                    display: inline-block;
-                    width: 44px;
-                    height: 24px;
-                    background: #10b981;
-                    border-radius: 12px;
-                    position: relative;
-                    transition: background 0.2s;
-                  ">
-                    <span style="
-                      position: absolute;
-                      top: 2px;
-                      left: 20px;
-                      width: 20px;
-                      height: 20px;
-                      background: white;
-                      border-radius: 50%;
-                      transition: left 0.2s;
-                    "></span>
-                  </span>
-                </div>
-              </label>
-              
-              <label style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 8px 0;
-                cursor: pointer;
-                color: #374151;
-                font-weight: 500;
-              ">
-                <span>Basic Share</span>
-                <div style="position: relative;">
-                  <input type="checkbox" id="toggle-share" checked style="
-                    position: absolute;
-                    opacity: 0;
-                    cursor: pointer;
-                  ">
-                  <span style="
-                    display: inline-block;
-                    width: 44px;
-                    height: 24px;
-                    background: #10b981;
-                    border-radius: 12px;
-                    position: relative;
-                    transition: background 0.2s;
-                  ">
-                    <span style="
-                      position: absolute;
-                      top: 2px;
-                      left: 20px;
-                      width: 20px;
-                      height: 20px;
-                      background: white;
-                      border-radius: 50%;
-                      transition: left 0.2s;
-                    "></span>
-                  </span>
-                </div>
-              </label>
+            <!-- Widget Placement Tool -->
+            <div style="margin-bottom: 18px;">
+              <label style="font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; display: block;">Widget Placement</label>
+              <div id="widget-placement-group" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 13px;">
+                  <input type="radio" name="widget-placement" value="bottom-right" checked style="accent-color: #6366f1;">BR
+                </label>
+                <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 13px;">
+                  <input type="radio" name="widget-placement" value="bottom-left" style="accent-color: #6366f1;">BL
+                </label>
+                <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 13px;">
+                  <input type="radio" name="widget-placement" value="top-right" style="accent-color: #6366f1;">TR
+                </label>
+                <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 13px;">
+                  <input type="radio" name="widget-placement" value="top-left" style="accent-color: #6366f1;">TL
+                </label>
+              </div>
+            </div>
+
+            <!-- Features Toggle Group -->
+            <div style="margin-bottom: 16px; border-radius: 8px; border: 1px solid #f3f4f6; background: #fafbfc;">
+              <div id="features-toggle-header" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; cursor: pointer; border-bottom: 1px solid #f3f4f6;">
+                <span style="font-size: 15px; font-weight: 600; color: #222;">Features</span>
+                <span id="features-chevron" style="font-size: 18px; transition: transform 0.2s;">▼</span>
+              </div>
+              <div id="features-toggle-group" style="padding: 8px 12px 0 12px; display: block;">
+                <!-- All feature toggles (Ask/Explore, Summarize, Listen, Basic Share) go here -->
+                <label style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; cursor: pointer; color: #374151; font-weight: 500;">
+                  <span>Ask/Explore</span>
+                  <div style="position: relative;">
+                    <input type="checkbox" id="toggle-ask" checked style="position: absolute; opacity: 0; cursor: pointer;">
+                    <span style="display: inline-block; width: 44px; height: 24px; background: #10b981; border-radius: 12px; position: relative; transition: background 0.2s;">
+                      <span style="position: absolute; top: 2px; left: 20px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: left 0.2s;"></span>
+                    </span>
+                  </div>
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; cursor: pointer; color: #374151; font-weight: 500;">
+                  <span>Summarize</span>
+                  <div style="position: relative;">
+                    <input type="checkbox" id="toggle-summarize" checked style="position: absolute; opacity: 0; cursor: pointer;">
+                    <span style="display: inline-block; width: 44px; height: 24px; background: #10b981; border-radius: 12px; position: relative; transition: background 0.2s;">
+                      <span style="position: absolute; top: 2px; left: 20px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: left 0.2s;"></span>
+                    </span>
+                  </div>
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; cursor: pointer; color: #374151; font-weight: 500;">
+                  <span>Listen</span>
+                  <div style="position: relative;">
+                    <input type="checkbox" id="toggle-listen" checked style="position: absolute; opacity: 0; cursor: pointer;">
+                    <span style="display: inline-block; width: 44px; height: 24px; background: #10b981; border-radius: 12px; position: relative; transition: background 0.2s;">
+                      <span style="position: absolute; top: 2px; left: 20px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: left 0.2s;"></span>
+                    </span>
+                  </div>
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; cursor: pointer; color: #374151; font-weight: 500;">
+                  <span>Basic Share</span>
+                  <div style="position: relative;">
+                    <input type="checkbox" id="toggle-share" checked style="position: absolute; opacity: 0; cursor: pointer;">
+                    <span style="display: inline-block; width: 44px; height: 24px; background: #10b981; border-radius: 12px; position: relative; transition: background 0.2s;">
+                      <span style="position: absolute; top: 2px; left: 20px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: left 0.2s;"></span>
+                    </span>
+                  </div>
+                </label>
+              </div>
             </div>
             
             <div style="
@@ -1038,6 +946,39 @@ export default async function handler(req, res) {
             });
             
             console.log('[FeatureSidebar] Feature sidebar initialized');
+          });
+
+          // --- Features Collapse ---
+          const featuresHeader = document.getElementById('features-toggle-header');
+          const featuresGroup = document.getElementById('features-toggle-group');
+          const chevron = document.getElementById('features-chevron');
+          let featuresOpen = true;
+          featuresHeader.addEventListener('click', () => {
+            featuresOpen = !featuresOpen;
+            featuresGroup.style.display = featuresOpen ? 'block' : 'none';
+            chevron.style.transform = featuresOpen ? 'rotate(0deg)' : 'rotate(-90deg)';
+          });
+
+          // --- Widget Placement ---
+          document.getElementById('widget-placement-group').addEventListener('change', (e) => {
+            if (e.target.name === 'widget-placement') {
+              window.dispatchEvent(new CustomEvent('widget-placement-change', { detail: { position: e.target.value } }));
+            }
+          });
+
+          // --- Dynamic Color Presets ---
+          window.addEventListener('gist-styling-extracted', (event) => {
+            const styling = event.detail;
+            const presets = document.querySelectorAll('.color-preset');
+            // Use up to 4 brand colors, fallback to defaults
+            const brandColors = styling.brandColors && styling.brandColors.length >= 2 ? styling.brandColors : ['#6366f1', '#ec4899', '#059669', '#f59e0b'];
+            presets.forEach((btn, i) => {
+              const primary = brandColors[i % brandColors.length] || '#6366f1';
+              const accent = brandColors[(i+1) % brandColors.length] || '#ec4899';
+              btn.setAttribute('data-primary', primary);
+              btn.setAttribute('data-accent', accent);
+              btn.style.background = `linear-gradient(135deg, ${primary} 50%, ${accent} 50%)`;
+            });
           });
         </script>
       `;
