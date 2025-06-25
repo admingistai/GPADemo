@@ -45,7 +45,7 @@ class HtmlModifier {
    * Inject widget.js script tag
    */
   injectWidget($) {
-    const widgetScript = '<script src="/widget.js" data-injected="true"></script>';
+    const widgetScript = '<script src="/api/proxy?url=' + encodeURIComponent('http://' + process.env.VERCEL_URL + '/widget.js') + '" data-injected="true"></script>';
     
     // Try to inject before closing body tag
     if ($('body').length > 0) {

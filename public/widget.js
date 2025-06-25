@@ -1,8 +1,21 @@
 (function() {
+    // Debug logging
+    console.log('Widget script loaded');
+    console.log('Script path:', document.currentScript.src);
+
     // Get the script's location to reference assets relatively
     const scriptElement = document.currentScript;
     const scriptPath = scriptElement.src;
-    const basePath = scriptPath.substring(0, scriptPath.lastIndexOf('/'));
+    
+    // Handle both direct and proxied paths
+    let basePath;
+    if (scriptPath.includes('/api/proxy')) {
+        // For proxied paths, use the proxy endpoint
+        basePath = '/api/proxy?url=' + encodeURIComponent('http://' + window.location.host + '/');
+    } else {
+        // For direct paths, use relative path
+        basePath = scriptPath.substring(0, scriptPath.lastIndexOf('/'));
+    }
 
     // Function to detect website name and font from common elements
     function detectWebsiteInfo() {
