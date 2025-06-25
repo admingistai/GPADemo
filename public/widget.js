@@ -1,26 +1,8 @@
 (function() {
-    // Debug logging
-    console.log('Widget script loaded');
-    console.log('Script path:', document.currentScript.src);
-    console.log('Current location:', window.location.href);
-
     // Get the script's location to reference assets relatively
     const scriptElement = document.currentScript;
     const scriptPath = scriptElement.src;
-    
-    // Handle both direct and proxied paths
-    let basePath;
-    if (scriptPath.includes('/api/proxy')) {
-        // For proxied paths, construct the proxy URL for assets
-        const currentHost = window.location.host;
-        const protocol = currentHost.includes('localhost') ? 'http://' : 'https://';
-        basePath = '/api/proxy?url=' + encodeURIComponent(protocol + currentHost);
-    } else {
-        // For direct paths, use relative path
-        basePath = scriptPath.substring(0, scriptPath.lastIndexOf('/'));
-    }
-
-    console.log('Base path for assets:', basePath);
+    const basePath = scriptPath.substring(0, scriptPath.lastIndexOf('/'));
 
     // Function to detect website name and font from common elements
     function detectWebsiteInfo() {
@@ -176,7 +158,7 @@
     // Create widget HTML using the correct path to sparkles.png
     const widgetHTML = `
         <div class="gist-widget-container">
-            <img src="${basePath}/public/sparkles.png" class="gist-search-icon" alt="sparkles icon">
+            <img src="${basePath}/sparkles.png" class="gist-search-icon" alt="sparkles icon">
             <input type="text" class="gist-search-input" placeholder="Ask ${websiteInfo.name} anything...">
             <button class="gist-arrow-button">
                 <svg class="gist-arrow-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
