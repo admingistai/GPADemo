@@ -11,16 +11,19 @@
             max-width: 90%;
             background: white;
             border-radius: 50px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             padding: 12px 24px;
             box-sizing: border-box;
             display: flex;
             align-items: center;
             transition: all 0.3s ease;
+            border: 2px solid transparent;
+            background-image: linear-gradient(white, white), 
+                            linear-gradient(60deg, #8860D0, #5AB9EA, #84CEEB, #8BC34A);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
         }
 
         .gist-widget-container:hover {
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
             transform: translateX(-50%) translateY(-2px);
         }
 
@@ -36,14 +39,31 @@
         }
 
         .gist-search-input::placeholder {
-            color: #999;
+            color: #666;
+            font-style: italic;
         }
 
         .gist-search-icon {
             width: 20px;
             height: 20px;
             margin-right: 10px;
-            opacity: 0.6;
+            opacity: 0.7;
+            color: #666;
+        }
+
+        .gist-arrow-icon {
+            width: 24px;
+            height: 24px;
+            padding: 4px;
+            background: #8BC34A;
+            border-radius: 50%;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .gist-arrow-icon:hover {
+            transform: scale(1.1);
         }
     `;
 
@@ -59,7 +79,10 @@
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <input type="text" class="gist-search-input" placeholder="Ask me anything...">
+            <input type="text" class="gist-search-input" placeholder="Ask anything...">
+            <svg class="gist-arrow-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" stroke="white">
+                <path d="M7 17l9.2-9.2M17 17V8h-9"/>
+            </svg>
         </div>
     `;
 
