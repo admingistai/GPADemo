@@ -156,72 +156,65 @@
                 transform: scale(1.1);
             }
 
-            .gist-answer-modal {
+            .gist-answer-container {
                 position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.5);
-                z-index: 1000000;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                backdrop-filter: blur(5px);
-            }
-
-            .gist-answer-box {
+                bottom: 90px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 999998;
+                width: 475px;
+                max-width: 90%;
                 background: white;
                 border-radius: 20px;
-                max-width: 700px;
-                width: 90%;
-                max-height: 80vh;
+                padding: 20px;
+                box-sizing: border-box;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+                display: none;
+                opacity: 0;
+                transition: all 0.3s ease;
+                max-height: 60vh;
                 overflow-y: auto;
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-                animation: slideInUp 0.3s ease-out;
-                position: relative;
+                border: 2px solid transparent;
+                background-image: linear-gradient(white, white), 
+                                linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0);
+                background-origin: border-box;
+                background-clip: padding-box, border-box;
             }
 
-            @keyframes slideInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(50px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
+            .gist-answer-container.visible {
+                display: block;
+                opacity: 1;
             }
 
             .gist-answer-header {
-                padding: 20px 20px 10px 20px;
-                border-bottom: 1px solid #e5e5e5;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #eee;
             }
 
             .gist-answer-title {
-                font-size: 18px;
+                font-size: 16px;
                 font-weight: 600;
                 color: #333;
                 margin: 0;
-                font-family: inherit;
             }
 
             .gist-close-button {
                 background: none;
                 border: none;
-                font-size: 24px;
+                font-size: 20px;
                 color: #666;
                 cursor: pointer;
-                padding: 0;
-                width: 30px;
-                height: 30px;
+                padding: 5px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 border-radius: 50%;
+                width: 30px;
+                height: 30px;
                 transition: background-color 0.2s ease;
             }
 
@@ -229,32 +222,30 @@
                 background-color: #f0f0f0;
             }
 
-            .gist-answer-content {
-                padding: 20px;
-            }
-
             .gist-question {
                 background: #f8f9fa;
                 padding: 15px;
                 border-radius: 10px;
-                margin-bottom: 20px;
-                font-weight: 600;
+                margin-bottom: 15px;
+                font-weight: 500;
                 color: #333;
                 border-left: 4px solid #4B9FE1;
             }
 
             .gist-answer {
                 line-height: 1.6;
-                color: #444;
-                font-size: 16px;
+                color: #333;
+                font-size: 15px;
+                white-space: pre-wrap;
             }
 
             .gist-loading {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                padding: 40px;
+                padding: 20px;
                 color: #666;
+                gap: 10px;
             }
 
             .gist-loading-spinner {
@@ -264,7 +255,6 @@
                 border-top: 2px solid #4B9FE1;
                 border-radius: 50%;
                 animation: spin 1s linear infinite;
-                margin-right: 10px;
             }
 
             @keyframes spin {
@@ -376,90 +366,108 @@
                     }
                 });
 
-                // Function to show answer modal
-                function showAnswerModal(question) {
-                    // Create modal HTML
-                    const modalHTML = `
-                        <div class="gist-answer-modal">
-                            <div class="gist-answer-box">
-                                <div class="gist-answer-header">
-                                    <h3 class="gist-answer-title">Ask Anything™</h3>
-                                    <button class="gist-close-button">×</button>
-                                </div>
-                                <div class="gist-answer-content">
-                                    <div class="gist-question">${question}</div>
-                                    <div class="gist-loading">
-                                        <div class="gist-loading-spinner"></div>
-                                        Thinking...
-                                    </div>
-                                </div>
+                // Function to gather page context
+                function getPageContext() {
+                    // Get main content
+                    const mainContent = document.querySelector('main, article, .main-content, #main-content');
+                    let content = '';
+
+                    if (mainContent) {
+                        content = mainContent.textContent;
+                    } else {
+                        // Fallback to body content
+                        const bodyText = document.body.textContent;
+                        // Remove script contents
+                        content = bodyText.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+                    }
+
+                    // Clean up the content
+                    content = content
+                        .replace(/\s+/g, ' ')  // Replace multiple spaces with single space
+                        .replace(/[\r\n]+/g, ' ')  // Remove newlines
+                        .trim();
+
+                    // Get meta description
+                    const metaDesc = document.querySelector('meta[name="description"]')?.content || '';
+                    
+                    // Get page title
+                    const title = document.title;
+
+                    // Combine context
+                    return `Page Title: ${title}\\n\\nMeta Description: ${metaDesc}\\n\\nPage Content: ${content.substring(0, 2000)}`;
+                }
+
+                // Function to show answer container
+                async function showAnswerContainer(question) {
+                    // Remove any existing answer container
+                    const existingContainer = document.querySelector('.gist-answer-container');
+                    if (existingContainer) {
+                        existingContainer.remove();
+                    }
+
+                    // Create answer container with loading state
+                    const answerContainerHTML = `
+                        <div class="gist-answer-container">
+                            <div class="gist-loading">
+                                <div class="gist-loading-spinner"></div>
+                                Getting answer...
                             </div>
                         </div>
                     `;
 
-                    // Add modal to page
-                    const modalContainer = document.createElement('div');
-                    modalContainer.innerHTML = modalHTML;
-                    document.body.appendChild(modalContainer.firstElementChild);
+                    // Add container to page
+                    const container = document.createElement('div');
+                    container.innerHTML = answerContainerHTML;
+                    document.body.appendChild(container.firstElementChild);
 
-                    // Add close functionality
-                    const modal = document.querySelector('.gist-answer-modal');
-                    const closeButton = modal.querySelector('.gist-close-button');
-                    
-                    closeButton.addEventListener('click', () => {
-                        modal.remove();
+                    // Show container
+                    const answerContainer = document.querySelector('.gist-answer-container');
+                    requestAnimationFrame(() => {
+                        answerContainer.classList.add('visible');
                     });
 
-                    // Close on backdrop click
-                    modal.addEventListener('click', (e) => {
-                        if (e.target === modal) {
-                            modal.remove();
-                        }
-                    });
+                    try {
+                        // Get page context
+                        const pageContext = getPageContext();
 
-                    // Close on Escape key
-                    document.addEventListener('keydown', function escHandler(e) {
-                        if (e.key === 'Escape') {
-                            modal.remove();
-                            document.removeEventListener('keydown', escHandler);
-                        }
-                    });
+                        // Make API call
+                        const response = await fetch('/api/chat', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                question,
+                                pageContext
+                            })
+                        });
 
-                    // Simulate getting an answer after a delay
-                    setTimeout(() => {
-                        const loadingDiv = modal.querySelector('.gist-loading');
-                        if (loadingDiv) {
-                            loadingDiv.innerHTML = `
-                                <div class="gist-answer">
-                                    <p>I'm a demo AI assistant! In a real implementation, I would search through ${websiteName}'s content and licensed publisher sources to provide you with an accurate, cited answer to: "${question}"</p>
-                                    
-                                    <p>Here's what would happen:</p>
-                                    <ul>
-                                        <li>🔍 Search through ${websiteName}'s published content</li>
-                                        <li>📚 Query our licensed publisher database</li>
-                                        <li>🎯 Find the most relevant, accurate information</li>
-                                        <li>📝 Provide a comprehensive answer with citations</li>
-                                        <li>🔒 All while maintaining your privacy (no tracking, no cookies)</li>
-                                    </ul>
-                                    
-                                    <p><strong>This is just a demo!</strong> The real Ask Anything™ widget would connect to our AI system to give you actual answers.</p>
-                                </div>
-                            `;
+                        if (!response.ok) {
+                            throw new Error('API call failed');
                         }
-                    }, 2000);
+
+                        const data = await response.json();
+
+                        // Update container with answer
+                        answerContainer.innerHTML = `
+                            <div class="gist-answer">${data.answer}</div>
+                        `;
+
+                    } catch (error) {
+                        console.error('Error getting answer:', error);
+                        answerContainer.innerHTML = `
+                            <div class="gist-answer" style="color: #e74c3c;">
+                                Sorry, I couldn't get an answer at this time. Please try again later.
+                            </div>
+                        `;
+                    }
                 }
 
                 // Function to handle search
                 function handleSearch() {
                     const query = searchInput.value.trim();
                     if (query) {
-                        showAnswerModal(query);
-                        searchInput.value = ''; // Clear input
-                        // Show placeholder again
-                        const placeholderSpan = searchInput.parentElement.querySelector('.placeholder-span');
-                        if (placeholderSpan) {
-                            placeholderSpan.style.display = 'block';
-                        }
+                        showAnswerContainer(query);
                     }
                 }
 
@@ -482,9 +490,35 @@
 
     // Wait for DOM to be ready
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initWidget);
+        document.addEventListener('DOMContentLoaded', () => {
+            initWidget();
+            initDemoBannerDismiss();
+        });
     } else {
         // DOM is already ready
         initWidget();
+        initDemoBannerDismiss();
+    }
+
+    // Function to handle demo banner dismissal
+    function initDemoBannerDismiss() {
+        const demoBanner = document.getElementById('demo-banner');
+        if (demoBanner) {
+            demoBanner.style.cursor = 'pointer';
+            demoBanner.addEventListener('click', function() {
+                demoBanner.style.transition = 'all 0.3s ease';
+                demoBanner.style.height = '0';
+                demoBanner.style.padding = '0';
+                demoBanner.style.opacity = '0';
+                
+                // Remove margin from body
+                document.body.style.marginTop = '0';
+                
+                // Remove banner after animation
+                setTimeout(() => {
+                    demoBanner.remove();
+                }, 300);
+            });
+        }
     }
 })();

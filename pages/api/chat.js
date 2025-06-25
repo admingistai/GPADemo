@@ -55,57 +55,48 @@ export default async function handler(req, res) {
     }
 
     // Extract request data
-    const { messages, model = 'gpt-3.5-turbo', temperature = 0.7, max_tokens = 1000 } = req.body;
+    const { question, pageContext } = req.body;
 
-    // Validate request
-    if (!messages || !Array.isArray(messages) || messages.length === 0) {
-      return res.status(400).json({ error: 'Invalid messages format' });
+    if (!question) {
+      return res.status(400).json({ error: 'Question is required' });
     }
 
-    // Validate messages format
-    for (const message of messages) {
-      if (!message.role || !message.content) {
-        return res.status(400).json({ error: 'Each message must have role and content' });
-      }
-      if (!['system', 'user', 'assistant'].includes(message.role)) {
-        return res.status(400).json({ error: 'Invalid message role' });
-      }
-    }
+    const prompt = `You are an AI assistant helping answer questions about the current webpage. 
+Here is the relevant content from the page that might help answer the question:
 
-    // Add system context if not provided
-    if (messages[0]?.role !== 'system') {
-      messages.unshift({
-        role: 'system',
-        content: 'You are a helpful AI assistant embedded in a website. Provide concise, accurate, and helpful responses.'
-      });
-    }
+${pageContext}
+
+Question: ${question}
+
+Please provide a clear, concise answer based on the page content. If the page content doesn't contain relevant information to answer the question, say so and provide a general response.`;
 
     // Make OpenAI API call
     const completion = await openai.chat.completions.create({
-      model: model,
-      messages: messages,
-      temperature: temperature,
-      max_tokens: max_tokens,
-      stream: false
+      model: "gpt-3.5-turbo",
+      messages: [
+        { "role": "system", "content": "You are a helpful AI assistant answering questions about webpage content." },
+        { "role": "user", "content": prompt }
+      ],
+      temperature: 0.7,
+      max_tokens: 500
     });
 
-    // Extract response
-    const response = completion.choices[0]?.message?.content;
+    const answer = completion.choices[0].message.content;
     
-    if (!response) {
+    if (!answer) {
       return res.status(500).json({ error: 'No response generated' });
     }
 
     // Return successful response
     return res.status(200).json({
       success: true,
-      response: response,
-      model: model,
+      answer: answer,
+      model: "gpt-3.5-turbo",
       usage: completion.usage
     });
 
   } catch (error) {
-    console.error('Chat API error:', error.message);
+    console.error('OpenAI API error:', error);
 
     // Handle OpenAI specific errors
     if (error.response) {
@@ -134,7 +125,7 @@ export default async function handler(req, res) {
 
     // Generic error
     return res.status(500).json({ 
-      error: 'An unexpected error occurred',
+      error: 'Error processing your request',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
