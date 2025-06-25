@@ -4,62 +4,8 @@
     const scriptPath = scriptElement.src;
     const basePath = scriptPath.substring(0, scriptPath.lastIndexOf('/'));
 
-    // Function to detect website name and font from common elements
-    function detectWebsiteInfo() {
-        // Common selectors where logos might be found
-        const logoSelectors = [
-            '.logo', '#logo', 'header .logo', 'header #logo',
-            '[class*="logo"]', '[id*="logo"]',
-            '.brand', '#brand', '.site-title', '#site-title',
-            'header h1'
-        ];
-
-        let websiteName = '';
-        let logoFont = '';
-        let logoElement = null;
-
-        // First try meta tags for name
-        const metaName = document.querySelector('meta[property="og:site_name"]');
-        if (metaName) {
-            websiteName = metaName.getAttribute('content');
-        }
-
-        // Try to find logo element and its font
-        for (const selector of logoSelectors) {
-            const element = document.querySelector(selector);
-            if (element) {
-                // Get computed styles
-                const styles = window.getComputedStyle(element);
-                
-                // If we haven't found a name yet, try to get it from text content
-                if (!websiteName) {
-                    const textContent = element.textContent.trim();
-                    if (textContent) {
-                        websiteName = textContent.split(/[-|]/)[0].trim();
-                    }
-                }
-
-                // Get font family
-                if (styles.fontFamily) {
-                    logoFont = styles.fontFamily;
-                    break;
-                }
-            }
-        }
-
-        // Fallback to domain name if no name found
-        if (!websiteName) {
-            const domain = window.location.hostname.replace('www.', '');
-            websiteName = domain.split('.')[0].charAt(0).toUpperCase() + domain.split('.')[0].slice(1);
-        }
-
-        // Fallback to inherited font if no font found
-        if (!logoFont) {
-            logoFont = 'inherit';
-        }
-
-        return { name: websiteName, font: logoFont };
-    }
+    // Get website name from data attribute or default to "The New York Times"
+    const websiteName = scriptElement.getAttribute('data-website-name') || 'The New York Times';
 
     // Create and inject styles
     const styles = `
@@ -102,41 +48,11 @@
 
         .gist-search-input::placeholder {
             color: #666;
-            font-weight: normal;
-        }
-
-        /* Style for the bold website name */
-        .gist-search-input.with-bold-placeholder::placeholder {
-            color: #666;
-            font-weight: normal;
-        }
-
-        /* Use ::part pseudo-element for styling parts of the placeholder */
-        @property --website-name {
-            syntax: "<string>";
-            initial-value: "";
-            inherits: false;
-        }
-
-        .gist-search-input.with-bold-placeholder {
-            &::placeholder {
-                font: inherit;
-                font-variation-settings: "wght" 400;
-            }
-            
-            &::placeholder {
-                font-variation-settings: "wght" var(--website-name-weight, 700);
-                font-weight: bold;
-            }
-        }
-
-        /* Add bold effect only to website name */
-        .website-name-bold {
-            font-weight: bold;
         }
 
         .gist-website-name {
-            font-family: var(--website-font);
+            font-weight: bold;
+            font-family: "Chomsky", Georgia, serif;
         }
 
         .gist-search-icon {
@@ -173,27 +89,6 @@
             stroke-width: 2;
             fill: none;
         }
-
-        /* Create separate elements for the placeholder parts */
-        .gist-widget-container {
-            position: relative;
-        }
-
-        .gist-placeholder-text {
-            position: absolute;
-            left: 40px;  /* Adjust based on your icon width */
-            top: 50%;
-            transform: translateY(-50%);
-            color: #666;
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .gist-placeholder-website-name {
-            font-weight: bold;
-        }
     `;
 
     // Create style element and append to head
@@ -201,35 +96,11 @@
     styleSheet.textContent = styles;
     document.head.appendChild(styleSheet);
 
-    // Get website info
-    const websiteInfo = detectWebsiteInfo();
-    
-    // Add the font as a CSS variable
-    document.documentElement.style.setProperty('--website-font', websiteInfo.font);
-
-    // Calculate the width for the website name gradient
-    const tempSpan = document.createElement('span');
-    tempSpan.style.font = getComputedStyle(document.body).font;
-    tempSpan.style.visibility = 'hidden';
-    tempSpan.style.position = 'absolute';
-    tempSpan.textContent = websiteInfo.name;
-    document.body.appendChild(tempSpan);
-    const nameWidth = tempSpan.offsetWidth;
-    document.body.removeChild(tempSpan);
-    
-    // Set the calculated width as a CSS variable (add some padding)
-    document.documentElement.style.setProperty('--website-name-width', `calc(4.5em + ${nameWidth + 10}px)`);
-
     // Create widget HTML using the correct path to sparkles.png
     const widgetHTML = `
         <div class="gist-widget-container">
             <img src="${basePath}/sparkles.png" class="gist-search-icon" alt="sparkles icon">
-            <input type="text" class="gist-search-input" placeholder="">
-            <div class="gist-placeholder-text">
-                <span>Ask</span>
-                <span class="gist-placeholder-website-name">${websiteInfo.name}</span>
-                <span>anything...</span>
-            </div>
+            <input type="text" class="gist-search-input" placeholder="Ask ${websiteName} anything...">
             <button class="gist-arrow-button">
                 <svg class="gist-arrow-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7 17L17 7M17 7H10M17 7V14" stroke-linecap="round" stroke-linejoin="round"/>
@@ -238,25 +109,14 @@
         </div>
     `;
 
-    // Add event listener to hide placeholder text when input is focused or has content
+    // Create container element
     const container = document.createElement('div');
     container.innerHTML = widgetHTML;
+
+    // Replace the website name text with styled span
     const input = container.querySelector('.gist-search-input');
-    const placeholderText = container.querySelector('.gist-placeholder-text');
-
-    input.addEventListener('input', () => {
-        placeholderText.style.display = input.value ? 'none' : 'flex';
-    });
-
-    input.addEventListener('focus', () => {
-        placeholderText.style.display = 'none';
-    });
-
-    input.addEventListener('blur', () => {
-        if (!input.value) {
-            placeholderText.style.display = 'flex';
-        }
-    });
+    const placeholder = input.getAttribute('placeholder');
+    input.setAttribute('placeholder', placeholder.replace(websiteName, `<span class="gist-website-name">${websiteName}</span>`));
 
     document.body.appendChild(container.firstElementChild);
 
