@@ -156,6 +156,10 @@ export default function Setup() {
       drupal: {
         title: 'Drupal Installation',
         message: 'To install on Drupal:\n\n1. Download the Gist module from Drupal.org\n2. Install using Composer or manual upload\n3. Enable the module in Extend\n4. Configure the module settings and add your API key'
+      },
+      wix: {
+        title: 'Wix Installation',
+        message: 'To add to your Wix site:\n\n1. Open your Wix Editor\n2. Click "+ Add" and select "More"\n3. Choose "HTML Code" from the menu\n4. Paste your widget code in the HTML Code element\n5. The widget will appear on your published site'
       }
     };
 
@@ -344,6 +348,18 @@ export default function Setup() {
                   <div className="platform-text">
                     <span className="platform-name">Drupal</span>
                     <span className="platform-desc">Install as Module</span>
+                  </div>
+                </button>
+                
+                <button className="integration-btn wix-btn" onClick={() => handlePlatformIntegration('wix')}>
+                  <div className="platform-logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12.946 8.084a.79.79 0 0 0-.792.787v6.263a.79.79 0 0 0 .792.787.79.79 0 0 0 .792-.787V8.871a.79.79 0 0 0-.792-.787zM8.527 10.84a.79.79 0 0 0-.792.787v3.507a.79.79 0 0 0 .792.787.79.79 0 0 0 .792-.787v-3.507a.79.79 0 0 0-.792-.787zM17.365 10.84a.79.79 0 0 0-.792.787v3.507a.79.79 0 0 0 .792.787.79.79 0 0 0 .792-.787v-3.507a.79.79 0 0 0-.792-.787zM4.108 12.219a.79.79 0 0 0-.792.787v2.128a.79.79 0 0 0 .792.787.79.79 0 0 0 .792-.787v-2.128a.79.79 0 0 0-.792-.787zM21.784 12.219a.79.79 0 0 0-.792.787v2.128a.79.79 0 0 0 .792.787.79.79 0 0 0 .792-.787v-2.128a.79.79 0 0 0-.792-.787z"/>
+                    </svg>
+                  </div>
+                  <div className="platform-text">
+                    <span className="platform-name">Wix</span>
+                    <span className="platform-desc">Add to Site</span>
                   </div>
                 </button>
               </div>
@@ -705,6 +721,24 @@ export default function Setup() {
 
         .drupal-btn:hover .platform-name {
           color: #0077C0;
+        }
+
+        /* Wix specific styling */
+        .wix-btn {
+          border-color: #0C6EFC;
+        }
+
+        .wix-btn:hover {
+          border-color: #0C6EFC;
+          background: #f8fafc;
+        }
+
+        .wix-btn .platform-logo {
+          background: #0C6EFC;
+        }
+
+        .wix-btn:hover .platform-name {
+          color: #0C6EFC;
         }
 
         @media (max-width: 640px) {
