@@ -48,14 +48,7 @@
             height: 20px;
             margin-right: 10px;
             opacity: 0.7;
-            color: #666;
-        }
-
-        .gist-sparkle-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
-            opacity: 0.8;
+            object-fit: contain;
         }
     `;
 
@@ -67,11 +60,7 @@
     // Create widget HTML
     const widgetHTML = `
         <div class="gist-widget-container">
-            <svg class="gist-sparkle-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 3L14.5 8.5L20 11L14.5 13.5L12 19L9.5 13.5L4 11L9.5 8.5L12 3Z" fill="#FF8C42"/>
-                <path d="M7 4L8 6L10 7L8 8L7 10L6 8L4 7L6 6L7 4Z" fill="#8860D0"/>
-                <path d="M17 15L18 17L20 18L18 19L17 21L16 19L14 18L16 17L17 15Z" fill="#4B9FE1"/>
-            </svg>
+            <img src="/sparkles.png" class="gist-search-icon" alt="sparkles icon">
             <input type="text" class="gist-search-input" placeholder="Ask anything...">
         </div>
     `;
