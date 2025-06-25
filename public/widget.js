@@ -4,36 +4,61 @@
     const scriptPath = scriptElement.src;
     const basePath = scriptPath.substring(0, scriptPath.lastIndexOf('/'));
 
-    // Function to detect website name from common elements
-    function detectWebsiteName() {
-        // Try to find website name from various sources
-        const possibleElements = [
-            // Check for og:site_name meta tag
-            document.querySelector('meta[property="og:site_name"]'),
-            // Check for common logo elements
-            document.querySelector('.logo img[alt]'),
-            document.querySelector('#logo img[alt]'),
-            document.querySelector('header img[alt]'),
-            // Check for title tag
-            document.querySelector('title')
+    // Function to detect website name and font from common elements
+    function detectWebsiteInfo() {
+        // Common selectors where logos might be found
+        const logoSelectors = [
+            '.logo', '#logo', 'header .logo', 'header #logo',
+            '[class*="logo"]', '[id*="logo"]',
+            '.brand', '#brand', '.site-title', '#site-title',
+            'header h1'
         ];
 
-        for (const element of possibleElements) {
+        let websiteName = '';
+        let logoFont = '';
+        let logoElement = null;
+
+        // First try meta tags for name
+        const metaName = document.querySelector('meta[property="og:site_name"]');
+        if (metaName) {
+            websiteName = metaName.getAttribute('content');
+        }
+
+        // Try to find logo element and its font
+        for (const selector of logoSelectors) {
+            const element = document.querySelector(selector);
             if (element) {
-                if (element.tagName === 'META') {
-                    return element.getAttribute('content');
-                } else if (element.tagName === 'IMG') {
-                    return element.alt;
-                } else if (element.tagName === 'TITLE') {
-                    // Clean up title text (remove " - Home" or similar suffixes)
-                    return element.textContent.split(/[-|]/)[0].trim();
+                // Get computed styles
+                const styles = window.getComputedStyle(element);
+                
+                // If we haven't found a name yet, try to get it from text content
+                if (!websiteName) {
+                    const textContent = element.textContent.trim();
+                    if (textContent) {
+                        websiteName = textContent.split(/[-|]/)[0].trim();
+                    }
+                }
+
+                // Get font family
+                if (styles.fontFamily) {
+                    logoFont = styles.fontFamily;
+                    break;
                 }
             }
         }
 
-        // Fallback to domain name if no other source found
-        const domain = window.location.hostname.replace('www.', '');
-        return domain.split('.')[0].charAt(0).toUpperCase() + domain.split('.')[0].slice(1);
+        // Fallback to domain name if no name found
+        if (!websiteName) {
+            const domain = window.location.hostname.replace('www.', '');
+            websiteName = domain.split('.')[0].charAt(0).toUpperCase() + domain.split('.')[0].slice(1);
+        }
+
+        // Fallback to inherited font if no font found
+        if (!logoFont) {
+            logoFont = 'inherit';
+        }
+
+        return { name: websiteName, font: logoFont };
     }
 
     // Create and inject styles
@@ -79,6 +104,10 @@
             color: #666;
         }
 
+        .gist-website-name {
+            font-family: var(--website-font);
+        }
+
         .gist-search-icon {
             width: 20px;
             height: 20px;
@@ -120,14 +149,17 @@
     styleSheet.textContent = styles;
     document.head.appendChild(styleSheet);
 
-    // Get website name
-    const websiteName = detectWebsiteName();
+    // Get website info
+    const websiteInfo = detectWebsiteInfo();
     
+    // Add the font as a CSS variable
+    document.documentElement.style.setProperty('--website-font', websiteInfo.font);
+
     // Create widget HTML using the correct path to sparkles.png
     const widgetHTML = `
         <div class="gist-widget-container">
             <img src="${basePath}/sparkles.png" class="gist-search-icon" alt="sparkles icon">
-            <input type="text" class="gist-search-input" placeholder="Ask ${websiteName} anything...">
+            <input type="text" class="gist-search-input" placeholder="Ask ${websiteInfo.name} anything...">
             <button class="gist-arrow-button">
                 <svg class="gist-arrow-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7 17L17 7M17 7H10M17 7V14" stroke-linecap="round" stroke-linejoin="round"/>
@@ -139,6 +171,11 @@
     // Create container element
     const container = document.createElement('div');
     container.innerHTML = widgetHTML;
+    
+    // Apply the website font to the input
+    const input = container.querySelector('.gist-search-input');
+    input.style.setProperty('--website-font', websiteInfo.font);
+    
     document.body.appendChild(container.firstElementChild);
 
     // Add input event listener
