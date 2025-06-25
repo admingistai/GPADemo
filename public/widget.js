@@ -1319,14 +1319,20 @@
             }
             
             .gist-widget {
-                position: fixed;
+        position: fixed;
                 bottom: 24px;
                 left: 50%;
-                transform: translateX(-50%) translateY(10px);
-                z-index: 999999;
+                transform: translateX(-50%);
+                z-index: 10000;
                 pointer-events: none;
                 opacity: 0;
-                transition: all 250ms cubic-bezier(0.4, 0.0, 0.2, 1);
+                transform: translateX(-50%) translateY(10px);
+                transition: opacity 250ms cubic-bezier(0.4, 0.0, 0.2, 1), 
+                            transform 250ms cubic-bezier(0.4, 0.0, 0.2, 1),
+                            filter 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                            left 300ms cubic-bezier(0.4, 0.0, 0.2, 1),
+                            right 300ms cubic-bezier(0.4, 0.0, 0.2, 1),
+                            width 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -1341,24 +1347,7 @@
                 --widget-primary-color-0: ${rgba0};
             }
             
-            .gist-widget.loaded {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-                pointer-events: auto;
-            }
-            
-            /* Active state with subtle blur effect */
-            .gist-widget.active {
-                filter: drop-shadow(0 8px 25px rgba(0, 0, 0, 0.15)) 
-                        drop-shadow(0 4px 10px rgba(0, 0, 0, 0.1));
-            }
-            
-            /* Enhanced blur when expanded and interacting */
-            .gist-widget.active:not(.minimized) {
-                filter: drop-shadow(0 12px 35px rgba(0, 0, 0, 0.18)) 
-                        drop-shadow(0 6px 15px rgba(0, 0, 0, 0.12))
-                        drop-shadow(0 2px 6px rgba(0, 0, 0, 0.08));
-            }
+
             
             .gist-pill {
                 background: ${styling.backgroundColor};
@@ -1629,14 +1618,20 @@
                     position: fixed;
                     bottom: 24px;
                     left: 50%;
-                    transform: translateX(-50%) translateY(10px);
-                    z-index: 999999;
+                    transform: translateX(-50%);
+                    z-index: 10000;
                     pointer-events: none;
                     opacity: 0;
-                    transition: all 250ms cubic-bezier(0.4, 0.0, 0.2, 1);
-                    display: flex;
+                    transform: translateX(-50%) translateY(10px);
+                    transition: opacity 250ms cubic-bezier(0.4, 0.0, 0.2, 1), 
+                                transform 2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                                filter 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                                left 2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                                right 2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                                width 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        display: flex;
                     flex-direction: column;
-                    align-items: center;
+        align-items: center;
                     gap: 6px;
                     filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0));
                 }
@@ -3193,84 +3188,144 @@
                 
                 /* Share Interface Styles */
                 .gist-share-interface {
-                    padding: 16px;
-                    width: 100%;
-                    max-width: 400px;
-                    margin: 0 auto;
+        padding: 0;
+                    opacity: 0;
+                    transform: translateY(10px);
+                    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
                 }
-
+                
+                .gist-share-interface.gist-content-entered {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+                
                 .gist-share-header {
                     text-align: center;
-                    margin-bottom: 16px;
+                    margin-bottom: 20px;
+                    padding-bottom: 15px;
+                    border-bottom: 1px solid #e5e7eb;
                 }
-
+                
+                .gist-share-header h3 {
+                    margin: 0 0 8px 0;
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #1f2937;
+                }
+                
                 .gist-share-title {
+                    margin: 0;
                     font-size: 14px;
-                    color: ${styling.textColor}80;
-                    margin: 8px 0;
+                    color: #6b7280;
+                    font-style: italic;
+                    max-width: 280px;
+                    margin: 0 auto;
+                    line-height: 1.4;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
-
+                
                 .gist-share-options {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                    display: flex;
+                    flex-direction: column;
                     gap: 8px;
-                    width: 100%;
                 }
-
+                
                 .gist-share-option {
                     display: flex;
                     align-items: center;
-                    gap: 8px;
-                    padding: 12px;
-                    border: 1px solid ${styling.primaryColor}20;
-                    border-radius: ${styling.borderRadius};
-                    background: transparent;
-                    color: ${styling.textColor};
+                    padding: 12px 16px;
+                    background: #f8fafc;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 8px;
                     cursor: pointer;
                     transition: all 0.2s ease;
-                    font-family: ${widgetFont};
+                    font-family: inherit;
+                    font-size: 14px;
+                    color: #374151;
+                    width: 100%;
+                    text-align: left;
                 }
-
+                
                 .gist-share-option:hover {
-                    background: ${styling.primaryColor}10;
-                    border-color: ${styling.primaryColor}40;
+                    background: #f1f5f9;
+                    border-color: #cbd5e1;
+                    transform: translateY(-1px);
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                 }
-
+                
+                .gist-share-option:hover svg {
+                    color: #1f2937;
+                }
+                
+                .gist-share-option[data-action="copy-link"]:hover svg {
+                    color: #059669;
+                }
+                
+                .gist-share-option[data-action="imessage"]:hover svg {
+                    color: #007aff;
+                }
+                
+                .gist-share-option[data-action="instagram"]:hover svg {
+                    color: #e4405f;
+                }
+                
+                .gist-share-option[data-action="x"]:hover svg {
+                    color: #000000;
+                }
+                
+                .gist-share-option[data-action="facebook"]:hover svg {
+                    color: #1877f2;
+                }
+                
+                .gist-share-option:active {
+                    transform: translateY(0);
+                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                }
+                
                 .gist-share-option-icon {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 24px;
-                    height: 24px;
+                    margin-right: 12px;
+                    width: 20px;
+                    height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+                    flex-shrink: 0;
                 }
-
+                
                 .gist-share-option-icon svg {
                     width: 20px;
                     height: 20px;
-                    color: ${styling.textColor};
+                    color: #374151;
+                    transition: color 0.2s ease;
                 }
-
+                
                 .gist-share-option-label {
-                    font-size: 14px;
-                    white-space: nowrap;
+                    font-weight: 500;
+                    flex: 1;
                 }
-
+                
                 .gist-share-feedback {
-                    text-align: center;
                     margin-top: 16px;
-                    padding: 8px;
-                    border-radius: ${styling.borderRadius};
-                    font-size: 14px;
+        padding: 8px 12px;
+                    border-radius: 6px;
+        font-size: 12px;
+                    text-align: center;
+                    font-weight: 500;
+                    transition: all 0.3s ease;
                 }
-
+                
                 .gist-share-feedback.success {
-                    background: #10B98120;
-                    color: #10B981;
+                    background: #dcfce7;
+                    color: #166534;
+                    border: 1px solid #bbf7d0;
                 }
-
+                
                 .gist-share-feedback.error {
-                    background: #EF444420;
-                    color: #EF4444;
+                    background: #fee2e2;
+                    color: #dc2626;
+                    border: 1px solid #fecaca;
                 }
                 
                 /* Suggested Questions Styles */
@@ -5382,43 +5437,31 @@ Instructions:
                 { 
                     id: 'copy-link', 
                     label: 'Copy Link', 
-                    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M8 5H6C4.89543 5 4 5.89543 4 7V19C4 20.1046 4.89543 21 6 21H16C17.1046 21 18 20.1046 18 19V17M8 5C8 6.10457 8.89543 7 10 7H12C13.1046 7 14 6.10457 14 5M8 5C8 3.89543 8.89543 3 10 3H12C13.1046 3 14 3.89543 14 5M14 5H16C17.1046 5 18 5.89543 18 7V10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                          </svg>`,
+                    icon: 'Copy',
                     action: copyPageLink
                 },
                 { 
                     id: 'imessage', 
                     label: 'iMessage', 
-                    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M21 11.5C21 16.1944 16.9706 20 12 20C11.1425 20 10.3178 19.8896 9.54009 19.6843C8.84054 19.4993 8.41392 19.4068 8.17451 19.3612C7.58025 19.2439 7.02335 19.2871 6.51408 19.4797C5.84696 19.7256 5.26015 19.0939 4.33654 20.8305C4.2055 20.9365 4.03837 20.9897 3.87669 20.9772C3.71501 20.9647 3.5592 20.8876 3.44386 20.7622C3.32852 20.6367 3.26221 20.4754 3.25739 20.3086C3.25257 20.1418 3.30953 19.9778 3.41847 19.8462C4.17928 18.9446 4.61138 18.3303 4.85869 17.6401C5.0596 17.0911 5.10471 16.5261 4.99353 15.9256C4.95011 15.6812 4.86278 15.2469 4.68813 14.5783C4.24138 12.9417 4 11.2468 4 9.5C4 4.80558 8.02944 1 13 1C17.9706 1 21 4.80558 21 9.5V11.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                          </svg>`,
+                    icon: 'iMessage',
                     action: shareViaIMessage
                 },
                 { 
                     id: 'instagram', 
                     label: 'Instagram', 
-                    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M3 16V8C3 5.23858 5.23858 3 8 3H16C18.7614 3 21 5.23858 21 8V16C21 18.7614 18.7614 21 16 21H8C5.23858 21 3 18.7614 3 16Z" stroke="currentColor" stroke-width="2"/>
-                            <path d="M17.5 6.51L17.51 6.49889" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                          </svg>`,
+                    icon: 'Instagram',
                     action: shareViaInstagram
                 },
                 { 
                     id: 'x', 
                     label: 'X (Twitter)', 
-                    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M4 4L20 20M4 20L20 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                          </svg>`,
+                    icon: 'X',
                     action: shareViaX
                 },
                 { 
                     id: 'facebook', 
                     label: 'Facebook', 
-                    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M17 2H14C12.6739 2 11.4021 2.52678 10.4645 3.46447C9.52678 4.40215 9 5.67392 9 7V10H6V14H9V22H13V14H16L17 10H13V7C13 6.73478 13.1054 6.48043 13.2929 6.29289C13.4804 6.10536 13.7348 6 14 6H17V2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                          </svg>`,
+                    icon: 'Facebook',
                     action: shareViaFacebook
                 }
             ];
