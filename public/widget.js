@@ -1319,11 +1319,11 @@
             }
             
             .gist-widget {
-        position: fixed;
+                position: fixed;
                 bottom: 24px;
                 left: 50%;
                 transform: translateX(-50%);
-                z-index: 10000;
+                z-index: 2147483647;  // Maximum z-index value
                 pointer-events: none;
                 opacity: 0;
                 transform: translateX(-50%) translateY(10px);
@@ -1345,9 +1345,9 @@
                 --widget-brand-color: ${styling.brandColors[0] || '#f59e0b'};
                 --widget-primary-color-40: ${rgba40};
                 --widget-primary-color-0: ${rgba0};
+                isolation: isolate;  // Create a new stacking context
+                will-change: transform;  // Optimize performance
             }
-            
-
             
             .gist-pill {
                 background: ${styling.backgroundColor};
@@ -1364,8 +1364,10 @@
                 overflow: hidden;
                 transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
                 order: 2;
-                z-index: 1;
+                z-index: 2147483646;  // One less than parent to maintain proper stacking
                 font-family: ${widgetFont};
+                pointer-events: auto;  // Enable interactions
+                transform: translateZ(0);  // Force GPU acceleration
             }
             
             .gist-pill-input {
@@ -1441,6 +1443,9 @@
                 pointer-events: none;
                 order: 3;
                 font-family: ${widgetFont};
+                z-index: 2147483645;  // One less than pill to maintain proper stacking
+                position: relative;  // Ensure proper stacking context
+                transform: translateZ(0);  // Force GPU acceleration
             }
             
             .gist-toolbox-tab {
@@ -1619,21 +1624,30 @@
                     bottom: 24px;
                     left: 50%;
                     transform: translateX(-50%);
-                    z-index: 10000;
+                    z-index: 2147483647;  // Maximum z-index value
                     pointer-events: none;
                     opacity: 0;
                     transform: translateX(-50%) translateY(10px);
                     transition: opacity 250ms cubic-bezier(0.4, 0.0, 0.2, 1), 
-                                transform 2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                                transform 250ms cubic-bezier(0.4, 0.0, 0.2, 1),
                                 filter 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                                left 2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                                right 2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                                width 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                                left 300ms cubic-bezier(0.4, 0.0, 0.2, 1),
+                                right 300ms cubic-bezier(0.4, 0.0, 0.2, 1),
+                                width 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
         display: flex;
                     flex-direction: column;
         align-items: center;
                     gap: 6px;
                     filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0));
+                    font-family: ${widgetFont};
+                    --widget-primary-color: ${styling.primaryColor || '#6366f1'};
+                    --widget-secondary-color: ${styling.secondaryColor || '#8b5cf6'};
+                    --widget-accent-color: ${styling.accentColor || '#ec4899'};
+                    --widget-brand-color: ${styling.brandColors[0] || '#f59e0b'};
+                    --widget-primary-color-40: ${rgba40};
+                    --widget-primary-color-0: ${rgba0};
+                    isolation: isolate;  // Create a new stacking context
+                    will-change: transform;  // Optimize performance
                 }
                 
                 .gist-widget.loaded {
