@@ -179,11 +179,14 @@
                                 linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0);
                 background-origin: border-box;
                 background-clip: padding-box, border-box;
+                transform-origin: bottom center;
+                transform: translateX(-50%) scale(0.95);
             }
 
             .gist-answer-container.visible {
                 display: block;
                 opacity: 1;
+                transform: translateX(-50%) scale(1);
             }
 
             .gist-answer-header {
@@ -237,6 +240,14 @@
                 color: #333;
                 font-size: 15px;
                 white-space: pre-wrap;
+                opacity: 0;
+                transform: translateY(10px);
+                transition: all 0.3s ease;
+            }
+
+            .gist-answer.visible {
+                opacity: 1;
+                transform: translateY(0);
             }
 
             .gist-loading {
@@ -246,6 +257,14 @@
                 padding: 20px;
                 color: #666;
                 gap: 10px;
+                opacity: 0;
+                transform: translateY(10px);
+                transition: all 0.3s ease;
+            }
+
+            .gist-loading.visible {
+                opacity: 1;
+                transform: translateY(0);
             }
 
             .gist-loading-spinner {
@@ -420,10 +439,14 @@
                     container.innerHTML = answerContainerHTML;
                     document.body.appendChild(container.firstElementChild);
 
-                    // Show container
+                    // Show container with animation
                     const answerContainer = document.querySelector('.gist-answer-container');
+                    const loadingElement = answerContainer.querySelector('.gist-loading');
+                    
+                    // Start animations
                     requestAnimationFrame(() => {
                         answerContainer.classList.add('visible');
+                        loadingElement.classList.add('visible');
                     });
 
                     try {
@@ -453,6 +476,12 @@
                             <div class="gist-answer">${data.answer}</div>
                         `;
 
+                        // Animate the answer in
+                        const answerElement = answerContainer.querySelector('.gist-answer');
+                        requestAnimationFrame(() => {
+                            answerElement.classList.add('visible');
+                        });
+
                     } catch (error) {
                         console.error('Error getting answer:', error);
                         answerContainer.innerHTML = `
@@ -460,7 +489,39 @@
                                 Sorry, I couldn't get an answer at this time. Please try again later.
                             </div>
                         `;
+                        
+                        // Animate the error message in
+                        const answerElement = answerContainer.querySelector('.gist-answer');
+                        requestAnimationFrame(() => {
+                            answerElement.classList.add('visible');
+                        });
                     }
+
+                    // Add click-away listener
+                    function handleClickAway(event) {
+                        const widgetContainer = document.querySelector('.gist-widget-container');
+                        const answerContainer = document.querySelector('.gist-answer-container');
+                        
+                        // Check if click is outside both widget and answer container
+                        if (answerContainer && widgetContainer && 
+                            !answerContainer.contains(event.target) && 
+                            !widgetContainer.contains(event.target)) {
+                            
+                            // Remove visible class first for animation
+                            answerContainer.classList.remove('visible');
+                            
+                            // Remove container after animation
+                            setTimeout(() => {
+                                answerContainer.remove();
+                                document.removeEventListener('click', handleClickAway);
+                            }, 300);
+                        }
+                    }
+
+                    // Add click-away listener after a short delay to prevent immediate triggering
+                    setTimeout(() => {
+                        document.addEventListener('click', handleClickAway);
+                    }, 100);
                 }
 
                 // Function to handle search
