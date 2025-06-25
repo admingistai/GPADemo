@@ -53,15 +53,15 @@
     
     // Widget position mapping (0-8 to actual CSS positions)
     const POSITION_MAPPING = {
-        0: { bottom: 'auto', top: '20px', left: '20px', right: 'auto' },     // Top-left
-        1: { bottom: 'auto', top: '20px', left: '50%', right: 'auto', transform: 'translateX(-50%)' }, // Top-center
-        2: { bottom: 'auto', top: '20px', left: 'auto', right: '20px' },     // Top-right
-        3: { bottom: '50%', top: 'auto', left: '20px', right: 'auto', transform: 'translateY(50%)' },  // Middle-left
+        0: { bottom: 'auto', top: '80px', left: '80px', right: 'auto' },     // Top-left
+        1: { bottom: 'auto', top: '80px', left: '50%', right: 'auto', transform: 'translateX(-50%)' }, // Top-center
+        2: { bottom: 'auto', top: '80px', left: 'auto', right: '80px' },     // Top-right
+        3: { bottom: '50%', top: 'auto', left: '80px', right: 'auto', transform: 'translateY(50%)' },  // Middle-left
         4: { bottom: '50%', top: 'auto', left: '50%', right: 'auto', transform: 'translate(-50%, 50%)' }, // Middle-center
-        5: { bottom: '50%', top: 'auto', left: 'auto', right: '20px', transform: 'translateY(50%)' },  // Middle-right
-        6: { bottom: '20px', top: 'auto', left: '20px', right: 'auto' },     // Bottom-left
-        7: { bottom: '20px', top: 'auto', left: '50%', right: 'auto', transform: 'translateX(-50%)' }, // Bottom-center
-        8: { bottom: '20px', top: 'auto', left: 'auto', right: '20px' }      // Bottom-right
+        5: { bottom: '50%', top: 'auto', left: 'auto', right: '80px', transform: 'translateY(50%)' },  // Middle-right
+        6: { bottom: '80px', top: 'auto', left: '80px', right: 'auto' },     // Bottom-left
+        7: { bottom: '80px', top: 'auto', left: '50%', right: 'auto', transform: 'translateX(-50%)' }, // Bottom-center
+        8: { bottom: '80px', top: 'auto', left: 'auto', right: '80px' }      // Bottom-right
     };
 
     // Function to update widget position
