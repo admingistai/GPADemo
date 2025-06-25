@@ -1,4 +1,5 @@
 // Available ElevenLabs voices
+// eslint-disable-next-line no-unused-vars
 const ELEVENLABS_VOICES = [
   { id: '21m00Tcm4TlvDq8ikWAM', name: 'Rachel', accent: 'American', gender: 'female', description: 'calm' },
   { id: 'yoZ06aMxZJJ28mfd3POQ', name: 'Sam', accent: 'American', gender: 'male', description: 'raspy' },

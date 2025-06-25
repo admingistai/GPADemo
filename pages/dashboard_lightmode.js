@@ -410,7 +410,7 @@ export default function Dashboard() {
                 <div className="activity-item">
                   <span className="activity-time">14:32:18</span>
                   <span className="activity-type">Question</span>
-                  <span className="activity-content">"How does this compare to competitors?"</span>
+                  <span className="activity-content">&quot;How does this compare to competitors?&quot;</span>
                   <span className="activity-article">AI in Healthcare</span>
                   <span className="activity-metrics">
                     <span className="metric">3 sources</span>
@@ -440,7 +440,7 @@ export default function Dashboard() {
                 <div className="activity-item">
                   <span className="activity-time">14:32:08</span>
                   <span className="activity-type">Question</span>
-                  <span className="activity-content">"What are the implementation costs?"</span>
+                  <span className="activity-content">&quot;What are the implementation costs?&quot;</span>
                   <span className="activity-article">Quantum Computing</span>
                   <span className="activity-metrics">
                     <span className="metric">5 sources</span>
@@ -527,7 +527,7 @@ export default function Dashboard() {
                   </div>
                   <div className="insight">
                     <span className="insight-icon">💡</span>
-                    <span className="insight-text">Create content on "AI Ethics" - 847 unanswered queries detected</span>
+                    <span className="insight-text">Create content on &quot;AI Ethics&quot; - 847 unanswered queries detected</span>
                   </div>
                   <div className="insight">
                     <span className="insight-icon">⚡</span>
