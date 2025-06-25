@@ -4,11 +4,9 @@ import { useRouter } from 'next/router';
 import URLInputForm from '../components/URLInputForm';
 import WebsiteDisplay from '../components/WebsiteDisplay';
 import ErrorDisplay from '../components/ErrorDisplay';
-import { useAmplitude } from '../context/AmplitudeContext';
 
 export default function Home() {
   const router = useRouter();
-  const { trackEvent } = useAmplitude();
   const [targetUrl, setTargetUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -77,10 +75,7 @@ export default function Home() {
           throw new Error(testResult.error || 'Unable to reach the specified website');
         }
 
-      // Track the event
-      trackEvent('Website Loaded', {
-        url: url
-      });
+      // Website loaded successfully
         
       // Wait for the minimum delay before proceeding
       await new Promise(resolve => setTimeout(resolve, delay));
@@ -180,30 +175,19 @@ export default function Home() {
   };
 
   const handleGetStartedClick = () => {
-    trackEvent('Get Started Clicked', {
-      location: 'hero_section',
-      page: 'home'
-    });
+    // Get Started clicked from hero section
     router.push('/setup');
   };
 
   const handleFinalGetStartedClick = () => {
-    trackEvent('Get Started Clicked', {
-      location: 'final_cta_section',
-      page: 'home'
-    });
+    // Get Started clicked from final CTA section
     router.push('/setup');
   };
 
-  const handleTryItClick = async (location) => {
+  const handleTryItClick = (location) => {
     if (!targetUrl.trim()) return;
 
-    // Track Try it button click
-    await trackEvent('try_it_clicked', {
-      location,
-      website_url: targetUrl
-    });
-
+    // Try It button clicked
     handleUrlSubmit(targetUrl);
   };
 

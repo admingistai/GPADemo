@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { useAmplitude } from '../context/AmplitudeContext';
 
 export default function Setup() {
   const router = useRouter();
-  const { trackEvent } = useAmplitude();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -26,13 +24,7 @@ export default function Setup() {
     e.preventDefault();
     setError(null);
     
-    // Track Generate Widget button click
-    await trackEvent('generate_widget_clicked', {
-      website_url: formData.websiteUrl,
-      enabled_tools: Object.entries(formData.tools)
-        .filter(([_, enabled]) => enabled)
-        .map(([tool]) => tool)
-    });
+    // Generate Widget button clicked
     
     // Start loading
     setIsGenerating(true);
@@ -84,23 +76,12 @@ export default function Setup() {
       setGeneratedCode(code);
       setShowCode(true);
 
-      // Track successful widget generation
-      await trackEvent('widget_generated_success', {
-        setup_id: setupId,
-        website_url: formattedUrl,
-        enabled_tools: Object.entries(formData.tools)
-          .filter(([_, enabled]) => enabled)
-          .map(([tool]) => tool)
-      });
+      // Widget generated successfully
     } catch (error) {
       console.error('Error:', error);
       setError('Failed to generate widget. Please try again.');
 
-      // Track widget generation failure
-      await trackEvent('widget_generated_error', {
-        error_message: error.message,
-        website_url: formattedUrl
-      });
+      // Widget generation failed
     } finally {
       setIsGenerating(false);
     }
@@ -126,23 +107,15 @@ export default function Setup() {
     }
   };
 
-  const handleDashboardClick = async () => {
-    // Track Dashboard button click
-    await trackEvent('dashboard_clicked', {
-      from_page: 'setup',
-      after_widget_generation: true
-    });
+  const handleDashboardClick = () => {
+    // Dashboard button clicked
     router.push('/dashboard');
   };
 
   const handlePlatformIntegration = (platform) => {
-    // Track platform integration button click
-    trackEvent('platform_integration_clicked', {
-      platform: platform,
-      website_url: formData.websiteUrl
-    });
+    // Platform integration button clicked
 
-    // For now, show an alert with platform-specific instructions
+    // Show platform-specific instructions
     // In the future, this could redirect to platform-specific installation pages
     const instructions = {
       wordpress: {
@@ -380,6 +353,7 @@ export default function Setup() {
           max-width: 800px;
           margin: 0 auto;
           padding: 2rem;
+          padding-bottom: 8rem;
         }
 
         .error-message {
@@ -587,6 +561,7 @@ export default function Setup() {
           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s;
+          margin-bottom: 4rem;
         }
 
         .dashboard-button:hover {
