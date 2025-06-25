@@ -243,25 +243,6 @@ export default async function handler(req, res) {
           </div>
           
           <div id="sidebar-content">
-            <!-- Widget Placement Tool -->
-            <div style="margin-bottom: 18px;">
-              <label style="font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; display: block;">Widget Placement</label>
-              <div id="widget-placement-group" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 13px;">
-                  <input type="radio" name="widget-placement" value="bottom-right" checked style="accent-color: #6366f1;">BR
-                </label>
-                <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 13px;">
-                  <input type="radio" name="widget-placement" value="bottom-left" style="accent-color: #6366f1;">BL
-                </label>
-                <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 13px;">
-                  <input type="radio" name="widget-placement" value="top-right" style="accent-color: #6366f1;">TR
-                </label>
-                <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 13px;">
-                  <input type="radio" name="widget-placement" value="top-left" style="accent-color: #6366f1;">TL
-                </label>
-              </div>
-            </div>
-
             <!-- Features Toggle Group -->
             <div style="margin-bottom: 16px; border-radius: 8px; border: 1px solid #f3f4f6; background: #fafbfc;">
               <div id="features-toggle-header" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; cursor: pointer; border-bottom: 1px solid #f3f4f6;">
@@ -269,16 +250,17 @@ export default async function handler(req, res) {
                 <span id="features-chevron" style="font-size: 18px; transition: transform 0.2s;">▼</span>
               </div>
               <div id="features-toggle-group" style="padding: 8px 12px 0 12px; display: block;">
-                <!-- All feature toggles (Ask/Explore, Summarize, Listen, Basic Share) go here -->
-                <label style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; cursor: pointer; color: #374151; font-weight: 500;">
+                <!-- All feature toggles (Ask/Explore always on, others below) -->
+                <label style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; cursor: not-allowed; color: #374151; font-weight: 500; opacity: 0.7;">
                   <span>Ask/Explore</span>
                   <div style="position: relative;">
-                    <input type="checkbox" id="toggle-ask" checked style="position: absolute; opacity: 0; cursor: pointer;">
+                    <input type="checkbox" id="toggle-ask" checked disabled style="position: absolute; opacity: 0; cursor: not-allowed;">
                     <span style="display: inline-block; width: 44px; height: 24px; background: #10b981; border-radius: 12px; position: relative; transition: background 0.2s;">
                       <span style="position: absolute; top: 2px; left: 20px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: left 0.2s;"></span>
                     </span>
                   </div>
                 </label>
+                <!-- Working toggles -->
                 <label style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; cursor: pointer; color: #374151; font-weight: 500;">
                   <span>Summarize</span>
                   <div style="position: relative;">
@@ -306,245 +288,65 @@ export default async function handler(req, res) {
                     </span>
                   </div>
                 </label>
+                <!-- Coming soon toggles -->
+                <label style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; cursor: not-allowed; color: #9ca3af; font-weight: 500;">
+                  <span>Dive Deeper*</span>
+                  <div style="position: relative;">
+                    <input type="checkbox" id="toggle-deeper" disabled style="position: absolute; opacity: 0; cursor: not-allowed;">
+                    <span style="display: inline-block; width: 44px; height: 24px; background: #e5e7eb; border-radius: 12px; position: relative;">
+                      <span style="position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: white; border-radius: 50%;"></span>
+                    </span>
+                  </div>
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; cursor: not-allowed; color: #9ca3af; font-weight: 500;">
+                  <span>Chat/Speak*</span>
+                  <div style="position: relative;">
+                    <input type="checkbox" id="toggle-chat" disabled style="position: absolute; opacity: 0; cursor: not-allowed;">
+                    <span style="display: inline-block; width: 44px; height: 24px; background: #e5e7eb; border-radius: 12px; position: relative;">
+                      <span style="position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: white; border-radius: 50%;"></span>
+                    </span>
+                  </div>
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; cursor: not-allowed; color: #9ca3af; font-weight: 500;">
+                  <span>Avatar*</span>
+                  <div style="position: relative;">
+                    <input type="checkbox" id="toggle-avatar" disabled style="position: absolute; opacity: 0; cursor: not-allowed;">
+                    <span style="display: inline-block; width: 44px; height: 24px; background: #e5e7eb; border-radius: 12px; position: relative;">
+                      <span style="position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: white; border-radius: 50%;"></span>
+                    </span>
+                  </div>
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; cursor: not-allowed; color: #9ca3af; font-weight: 500;">
+                  <span>Smart Alerts*</span>
+                  <div style="position: relative;">
+                    <input type="checkbox" id="toggle-alerts" disabled style="position: absolute; opacity: 0; cursor: not-allowed;">
+                    <span style="display: inline-block; width: 44px; height: 24px; background: #e5e7eb; border-radius: 12px; position: relative;">
+                      <span style="position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: white; border-radius: 50%;"></span>
+                    </span>
+                  </div>
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; cursor: not-allowed; color: #9ca3af; font-weight: 500;">
+                  <span>Multi-Format Sharing*</span>
+                  <div style="position: relative;">
+                    <input type="checkbox" id="toggle-multi-share" disabled style="position: absolute; opacity: 0; cursor: not-allowed;">
+                    <span style="display: inline-block; width: 44px; height: 24px; background: #e5e7eb; border-radius: 12px; position: relative;">
+                      <span style="position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: white; border-radius: 50%;"></span>
+                    </span>
+                  </div>
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; cursor: not-allowed; color: #9ca3af; font-weight: 500;">
+                  <span>Adaptive Social Sharing*</span>
+                  <div style="position: relative;">
+                    <input type="checkbox" id="toggle-adaptive-share" disabled style="position: absolute; opacity: 0; cursor: not-allowed;">
+                    <span style="display: inline-block; width: 44px; height: 24px; background: #e5e7eb; border-radius: 12px; position: relative;">
+                      <span style="position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: white; border-radius: 50%;"></span>
+                    </span>
+                  </div>
+                </label>
               </div>
             </div>
-            
-            <div style="
-              border-top: 1px solid #f3f4f6;
-              padding-top: 16px;
-              margin-top: 16px;
-            ">
-              <p style="
-                margin: 0 0 12px 0;
-                font-size: 12px;
-                color: #6b7280;
-                font-weight: 500;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-              ">Coming Soon</p>
-              
-              <label style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 8px 0;
-                cursor: not-allowed;
-                color: #9ca3af;
-                font-weight: 500;
-              ">
-                <span>Dive Deeper*</span>
-                <div style="position: relative;">
-                  <input type="checkbox" id="toggle-deeper" disabled style="
-                    position: absolute;
-                    opacity: 0;
-                    cursor: not-allowed;
-                  ">
-                  <span style="
-                    display: inline-block;
-                    width: 44px;
-                    height: 24px;
-                    background: #e5e7eb;
-                    border-radius: 12px;
-                    position: relative;
-                  ">
-                    <span style="
-                      position: absolute;
-                      top: 2px;
-                      left: 2px;
-                      width: 20px;
-                      height: 20px;
-                      background: white;
-                      border-radius: 50%;
-                    "></span>
-                  </span>
-                </div>
-              </label>
-              
-              <label style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 8px 0;
-                cursor: not-allowed;
-                color: #9ca3af;
-                font-weight: 500;
-              ">
-                <span>Chat/Speak*</span>
-                <div style="position: relative;">
-                  <input type="checkbox" id="toggle-chat" disabled style="
-                    position: absolute;
-                    opacity: 0;
-                    cursor: not-allowed;
-                  ">
-                  <span style="
-                    display: inline-block;
-                    width: 44px;
-                    height: 24px;
-                    background: #e5e7eb;
-                    border-radius: 12px;
-                    position: relative;
-                  ">
-                    <span style="
-                      position: absolute;
-                      top: 2px;
-                      left: 2px;
-                      width: 20px;
-                      height: 20px;
-                      background: white;
-                      border-radius: 50%;
-                    "></span>
-                  </span>
-                </div>
-              </label>
-              
-              <label style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 8px 0;
-                cursor: not-allowed;
-                color: #9ca3af;
-                font-weight: 500;
-              ">
-                <span>Avatar*</span>
-                <div style="position: relative;">
-                  <input type="checkbox" id="toggle-avatar" disabled style="
-                    position: absolute;
-                    opacity: 0;
-                    cursor: not-allowed;
-                  ">
-                  <span style="
-                    display: inline-block;
-                    width: 44px;
-                    height: 24px;
-                    background: #e5e7eb;
-                    border-radius: 12px;
-                    position: relative;
-                  ">
-                    <span style="
-                      position: absolute;
-                      top: 2px;
-                      left: 2px;
-                      width: 20px;
-                      height: 20px;
-                      background: white;
-                      border-radius: 50%;
-                    "></span>
-                  </span>
-                </div>
-              </label>
-              
-              <label style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 8px 0;
-                cursor: not-allowed;
-                color: #9ca3af;
-                font-weight: 500;
-              ">
-                <span>Smart Alerts*</span>
-                <div style="position: relative;">
-                  <input type="checkbox" id="toggle-alerts" disabled style="
-                    position: absolute;
-                    opacity: 0;
-                    cursor: not-allowed;
-                  ">
-                  <span style="
-                    display: inline-block;
-                    width: 44px;
-                    height: 24px;
-                    background: #e5e7eb;
-                    border-radius: 12px;
-                    position: relative;
-                  ">
-                    <span style="
-                      position: absolute;
-                      top: 2px;
-                      left: 2px;
-                      width: 20px;
-                      height: 20px;
-                      background: white;
-                      border-radius: 50%;
-                    "></span>
-                  </span>
-                </div>
-              </label>
-              
-              <label style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 8px 0;
-                cursor: not-allowed;
-                color: #9ca3af;
-                font-weight: 500;
-              ">
-                <span>Multi-Format Sharing*</span>
-                <div style="position: relative;">
-                  <input type="checkbox" id="toggle-multi-share" disabled style="
-                    position: absolute;
-                    opacity: 0;
-                    cursor: not-allowed;
-                  ">
-                  <span style="
-                    display: inline-block;
-                    width: 44px;
-                    height: 24px;
-                    background: #e5e7eb;
-                    border-radius: 12px;
-                    position: relative;
-                  ">
-                    <span style="
-                      position: absolute;
-                      top: 2px;
-                      left: 2px;
-                      width: 20px;
-                      height: 20px;
-                      background: white;
-                      border-radius: 50%;
-                    "></span>
-                  </span>
-                </div>
-              </label>
-              
-              <label style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 8px 0;
-                cursor: not-allowed;
-                color: #9ca3af;
-                font-weight: 500;
-              ">
-                <span>Adaptive Social Sharing*</span>
-                <div style="position: relative;">
-                  <input type="checkbox" id="toggle-adaptive-share" disabled style="
-                    position: absolute;
-                    opacity: 0;
-                    cursor: not-allowed;
-                  ">
-                  <span style="
-                    display: inline-block;
-                    width: 44px;
-                    height: 24px;
-                    background: #e5e7eb;
-                    border-radius: 12px;
-                    position: relative;
-                  ">
-                    <span style="
-                      position: absolute;
-                      top: 2px;
-                      left: 2px;
-                      width: 20px;
-                      height: 20px;
-                      background: white;
-                      border-radius: 50%;
-                    "></span>
-                  </span>
-                </div>
-              </label>
-            </div>
+            <!-- Move Widget Button -->
+            <button id="move-widget-btn" style="width: 100%; padding: 10px 0; margin-bottom: 18px; background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 8px; color: #374151; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s;">Move Widget</button>
             
             <div style="
               border-top: 1px solid #f3f4f6;
@@ -959,11 +761,13 @@ export default async function handler(req, res) {
             chevron.style.transform = featuresOpen ? 'rotate(0deg)' : 'rotate(-90deg)';
           });
 
-          // --- Widget Placement ---
-          document.getElementById('widget-placement-group').addEventListener('change', (e) => {
-            if (e.target.name === 'widget-placement') {
-              window.dispatchEvent(new CustomEvent('widget-placement-change', { detail: { position: e.target.value } }));
-            }
+          // --- Move Widget Button ---
+          let dragMode = false;
+          const moveBtn = document.getElementById('move-widget-btn');
+          moveBtn.addEventListener('click', () => {
+            dragMode = !dragMode;
+            moveBtn.textContent = dragMode ? 'Lock Widget' : 'Move Widget';
+            window.dispatchEvent(new CustomEvent('widget-drag-toggle', { detail: { dragMode } }));
           });
 
           // --- Dynamic Color Presets ---
