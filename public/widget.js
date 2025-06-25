@@ -1,4 +1,9 @@
 (function() {
+    // Get the script's location to reference assets relatively
+    const scriptElement = document.currentScript;
+    const scriptPath = scriptElement.src;
+    const basePath = scriptPath.substring(0, scriptPath.lastIndexOf('/'));
+
     // Function to get website name
     function getWebsiteName() {
         // Try to get from meta tags first
@@ -82,6 +87,11 @@
             color: #666;
         }
 
+        .gist-website-name {
+            font-weight: bold;
+            font-family: inherit;
+        }
+
         .gist-search-icon {
             width: 20px;
             height: 20px;
@@ -126,23 +136,10 @@
     // Get website name
     const websiteName = getWebsiteName();
 
-    // Determine the sparkles image URL
-    const scriptElement = document.currentScript;
-    let sparklesUrl;
-    
-    if (scriptElement && scriptElement.src) {
-        // Get the base URL of where this script is loaded from
-        const scriptUrl = new URL(scriptElement.src);
-        sparklesUrl = `${scriptUrl.protocol}//${scriptUrl.host}${scriptUrl.pathname.replace('widget.js', 'sparkles.png')}`;
-    } else {
-        // Fallback to current origin
-        sparklesUrl = `${window.location.origin}/sparkles.png`;
-    }
-
-    // Create widget HTML
+    // Create widget HTML using the correct path to sparkles.png
     const widgetHTML = `
         <div class="gist-widget-container">
-            <img src="${sparklesUrl}" class="gist-search-icon" alt="sparkles icon" onerror="this.style.display='none'">
+            <img src="${basePath}/sparkles.png" class="gist-search-icon" alt="sparkles icon">
             <input type="text" class="gist-search-input" data-placeholder-parts="Ask ,${websiteName}, anything...">
             <button class="gist-arrow-button">
                 <svg class="gist-arrow-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -165,7 +162,7 @@
         const parts = input.dataset.placeholderParts.split(',');
         const placeholderSpan = document.createElement('span');
         placeholderSpan.style.position = 'absolute';
-        placeholderSpan.style.left = '52px';
+        placeholderSpan.style.left = '52px'; // Adjust based on icon width + padding
         placeholderSpan.style.top = '50%';
         placeholderSpan.style.transform = 'translateY(-50%)';
         placeholderSpan.style.color = '#666';
@@ -173,11 +170,13 @@
         
         placeholderSpan.innerHTML = `${parts[0]}<strong>${parts[1]}</strong>${parts[2]}`;
         
+        // Remove any existing placeholder span
         const existingSpan = input.parentElement.querySelector('.placeholder-span');
         if (existingSpan) {
             existingSpan.remove();
         }
         
+        // Only show if input is empty
         placeholderSpan.className = 'placeholder-span';
         if (!input.value) {
             input.parentElement.appendChild(placeholderSpan);
