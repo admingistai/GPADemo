@@ -3404,13 +3404,10 @@
                     </div>
                 </div>
 
-                <div class="gist-answer-container" id="gist-answer-container">
+                <div class="gist-answer-container" id="gist-answer-container" style="display: none;">
                     <button class="gist-close-btn" id="gist-close-btn" title="Minimize">×</button>
                     <button class="gist-secret-settings-btn" id="gist-secret-settings-btn" title="Widget Settings">⚙️</button>
                     <div class="gist-answer-content">
-                        <div class="gist-answer-placeholder">
-                            Ask a question to see the answer here!
-                        </div>
                     </div>
                     <div class="gist-answer-footer">
                         <div class="gist-powered-section">
@@ -5071,27 +5068,21 @@ Instructions:
         // Function to toggle answer container and toolbox
         function showAnswerContainer() {
             // Always show the container and toolbox on hover/interaction
+            answerContainer.style.display = 'block';
             answerContainer.classList.add('visible');
             toolbox.classList.add('visible');
-            
-
             
             // Expand widget and mark as interacting when showing answers
             userIsInteracting = true;
             widget.classList.add('active');
             expandWidget();
-            
-            // If no answer yet, show placeholder
-            if (!hasAnswer) {
-                showPlaceholder();
-            }
         }
         
-        function hideAnswerContainer() {
+                function hideAnswerContainer() {
             if (!isActive) {
+                answerContainer.style.display = 'none';
                 answerContainer.classList.remove('visible');
                 toolbox.classList.remove('visible');
-
             }
         }
         
@@ -5191,7 +5182,11 @@ Instructions:
             isActive = true;
             userIsInteracting = true;
             expandWidget();
-            showAnswerContainer();
+            
+            // Only show answer container if we have content to show
+            if (hasAnswer || hasAskAnswer) {
+                showAnswerContainer();
+            }
             
             // Show Ask tool content if no answer exists
             if (currentTool === 'ask' && !hasAskAnswer) {
