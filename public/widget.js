@@ -55,6 +55,32 @@
             opacity: 0.7;
             object-fit: contain;
         }
+
+        .gist-arrow-button {
+            width: 32px;
+            height: 32px;
+            background: #8BC34A;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            margin-left: 8px;
+            border: none;
+            padding: 0;
+        }
+
+        .gist-arrow-button:hover {
+            transform: scale(1.1);
+        }
+
+        .gist-arrow-icon {
+            width: 18px;
+            height: 18px;
+            fill: white;
+            stroke: white;
+        }
     `;
 
     // Create style element and append to head
@@ -67,6 +93,11 @@
         <div class="gist-widget-container">
             <img src="${basePath}/sparkles.png" class="gist-search-icon" alt="sparkles icon">
             <input type="text" class="gist-search-input" placeholder="Ask anything...">
+            <button class="gist-arrow-button">
+                <svg class="gist-arrow-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 17l5-5-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="rotate(-45 12 12)"/>
+                </svg>
+            </button>
         </div>
     `;
 
