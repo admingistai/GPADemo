@@ -57,7 +57,7 @@
                 box-sizing: border-box;
                 display: flex;
                 align-items: center;
-                transition: all 0.3s ease;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 border: 2px solid transparent;
                 background-image: linear-gradient(white, white), 
                                 linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0);
@@ -160,7 +160,7 @@
                 position: fixed;
                 bottom: 90px;
                 left: 50%;
-                transform: translateX(-50%);
+                transform: translateX(-50%) translateY(20px);
                 z-index: 999998;
                 width: 475px;
                 max-width: 90%;
@@ -169,9 +169,9 @@
                 padding: 20px;
                 box-sizing: border-box;
                 box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-                display: none;
                 opacity: 0;
-                transition: all 0.3s ease;
+                pointer-events: none;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 max-height: 60vh;
                 overflow-y: auto;
                 border: 2px solid transparent;
@@ -179,14 +179,12 @@
                                 linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0);
                 background-origin: border-box;
                 background-clip: padding-box, border-box;
-                transform-origin: bottom center;
-                transform: translateX(-50%) scale(0.95);
             }
 
             .gist-answer-container.visible {
-                display: block;
                 opacity: 1;
-                transform: translateX(-50%) scale(1);
+                transform: translateX(-50%) translateY(0);
+                pointer-events: all;
             }
 
             .gist-answer-header {
@@ -242,7 +240,7 @@
                 white-space: pre-wrap;
                 opacity: 0;
                 transform: translateY(10px);
-                transition: all 0.3s ease;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
             .gist-answer.visible {
@@ -259,7 +257,7 @@
                 gap: 10px;
                 opacity: 0;
                 transform: translateY(10px);
-                transition: all 0.3s ease;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
             .gist-loading.visible {
@@ -416,6 +414,28 @@
                     return `Page Title: ${title}\\n\\nMeta Description: ${metaDesc}\\n\\nPage Content: ${content.substring(0, 2000)}`;
                 }
 
+                // Function to minimize widget
+                function minimizeWidget() {
+                    const widgetContainer = document.querySelector('.gist-widget-container');
+                    const answerContainer = document.querySelector('.gist-answer-container');
+                    const searchInput = document.querySelector('.gist-search-input');
+                    
+                    if (widgetContainer) {
+                        widgetContainer.classList.remove('expanded');
+                        // Update placeholder if needed
+                        if (searchInput && !searchInput.value) {
+                            updatePlaceholder(searchInput, false);
+                        }
+                    }
+                    
+                    if (answerContainer) {
+                        answerContainer.classList.remove('visible');
+                        setTimeout(() => {
+                            answerContainer.remove();
+                        }, 300);
+                    }
+                }
+
                 // Function to show answer container
                 async function showAnswerContainer(question) {
                     // Remove any existing answer container
@@ -443,7 +463,6 @@
                     const answerContainer = document.querySelector('.gist-answer-container');
                     const loadingElement = answerContainer.querySelector('.gist-loading');
                     
-                    // Start animations
                     requestAnimationFrame(() => {
                         answerContainer.classList.add('visible');
                         loadingElement.classList.add('visible');
@@ -477,9 +496,11 @@
                         `;
 
                         // Animate the answer in
-                        const answerElement = answerContainer.querySelector('.gist-answer');
                         requestAnimationFrame(() => {
-                            answerElement.classList.add('visible');
+                            const answerElement = answerContainer.querySelector('.gist-answer');
+                            if (answerElement) {
+                                answerElement.classList.add('visible');
+                            }
                         });
 
                     } catch (error) {
@@ -491,37 +512,13 @@
                         `;
                         
                         // Animate the error message in
-                        const answerElement = answerContainer.querySelector('.gist-answer');
                         requestAnimationFrame(() => {
-                            answerElement.classList.add('visible');
+                            const answerElement = answerContainer.querySelector('.gist-answer');
+                            if (answerElement) {
+                                answerElement.classList.add('visible');
+                            }
                         });
                     }
-
-                    // Add click-away listener
-                    function handleClickAway(event) {
-                        const widgetContainer = document.querySelector('.gist-widget-container');
-                        const answerContainer = document.querySelector('.gist-answer-container');
-                        
-                        // Check if click is outside both widget and answer container
-                        if (answerContainer && widgetContainer && 
-                            !answerContainer.contains(event.target) && 
-                            !widgetContainer.contains(event.target)) {
-                            
-                            // Remove visible class first for animation
-                            answerContainer.classList.remove('visible');
-                            
-                            // Remove container after animation
-                            setTimeout(() => {
-                                answerContainer.remove();
-                                document.removeEventListener('click', handleClickAway);
-                            }, 300);
-                        }
-                    }
-
-                    // Add click-away listener after a short delay to prevent immediate triggering
-                    setTimeout(() => {
-                        document.addEventListener('click', handleClickAway);
-                    }, 100);
                 }
 
                 // Function to handle search
@@ -544,6 +541,23 @@
                     arrowButton.addEventListener('click', handleSearch);
                 }
             }
+
+            // Add click-outside handler
+            document.addEventListener('click', function(e) {
+                const widgetContainer = document.querySelector('.gist-widget-container');
+                const answerContainer = document.querySelector('.gist-answer-container');
+                
+                // Check if click is outside both containers
+                if (widgetContainer && !widgetContainer.contains(e.target) && 
+                    (!answerContainer || !answerContainer.contains(e.target))) {
+                    minimizeWidget();
+                }
+            });
+
+            // Prevent clicks inside the widget from triggering the document click handler
+            document.querySelector('.gist-widget-container').addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
         } else {
             console.error('Widget: document.body not available');
         }
