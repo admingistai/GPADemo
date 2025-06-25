@@ -9,10 +9,74 @@ import YouTubeEmbed from '../components/YouTubeEmbed';
 export default function Home() {
   const [email, setEmail] = useState('');
   const [activeTab, setActiveTab] = useState('analytics');
+  const [demoLoading, setDemoLoading] = useState(false);
+  const [demoError, setDemoError] = useState('');
+  const [widgetPosition, setWidgetPosition] = useState('center');
 
   const handleGetStarted = () => {
     // Redirect to Ask Anything™ website
     window.location.href = 'https://www.getaskanything.com';
+  };
+
+  const handleTryDemoButton = async () => {
+    // Get URL from input field, default to The Atlantic
+    const urlToDemo = email.trim() || 'https://www.theatlantic.com';
+    
+    // Basic URL validation and formatting
+    let formattedUrl = urlToDemo;
+    if (!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://')) {
+      formattedUrl = 'https://' + formattedUrl;
+    }
+    
+    setDemoLoading(true);
+    setDemoError('');
+    
+    try {
+      // Test if the URL is accessible first
+      const testResponse = await fetch(`/api/proxy?url=${encodeURIComponent(formattedUrl)}&test=true`);
+      
+      if (!testResponse.ok) {
+        const errorData = await testResponse.json();
+        throw new Error(errorData.error || 'Failed to access website');
+      }
+      
+      // If test succeeds, open the cloned website in a new tab
+      const proxyUrl = `/api/proxy?url=${encodeURIComponent(formattedUrl)}&widget_position=${widgetPosition}`;
+      window.open(proxyUrl, '_blank');
+      
+    } catch (error) {
+      console.error('Demo error:', error);
+      setDemoError(error.message || 'Failed to load website. Please try a different URL.');
+    } finally {
+      setDemoLoading(false);
+    }
+  };
+
+  const handleDemoLink = (e, demoUrl) => {
+    e.preventDefault();
+    
+    // Update the input field with the demo URL
+    setEmail(demoUrl);
+    
+    // Set loading state
+    setDemoLoading(true);
+    setDemoError('');
+    
+    // Immediately launch the demo
+    try {
+      const proxyUrl = `/api/proxy?url=${encodeURIComponent(demoUrl)}&widget_position=${widgetPosition}`;
+      window.open(proxyUrl, '_blank');
+    } catch (error) {
+      console.error('Demo link error:', error);
+      setDemoError('Failed to open demo. Please try again.');
+    } finally {
+      // Reset loading state after a short delay
+      setTimeout(() => setDemoLoading(false), 1000);
+    }
+  };
+
+  const handlePositionChange = (position) => {
+    setWidgetPosition(position);
   };
 
   const handleTabClick = (tabName) => {
@@ -296,18 +360,125 @@ export default function Home() {
         <section className="feature-section section-highlight">
           <div className="feature-content">
             <span className="feature-label">Try on your website</span>
-            <h2>Experience what it would be like with our Ask Anything™ button simulation</h2>
+            <h2>See how Ask Anything™ works on any website with our live demo</h2>
             <div className="email-input-wrapper">
               <input
-                type="email"
-                placeholder="yourwebsite.com"
+                type="text"
+                placeholder="theatlantic.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="email-input"
+                disabled={demoLoading}
               />
-              <button className="analyze-btn" onClick={handleGetStarted}>
-                Try Demo
+              <button 
+                className={`analyze-btn ${demoLoading ? 'loading' : ''}`} 
+                onClick={handleTryDemoButton}
+                disabled={demoLoading}
+              >
+                {demoLoading ? 'Loading...' : 'Try Demo'}
               </button>
+            </div>
+            {demoError && (
+              <div className="demo-error">
+                <p>{demoError}</p>
+                <button onClick={() => setDemoError('')} className="dismiss-error">×</button>
+              </div>
+            )}
+            
+            {/* Widget Position Selector */}
+            <div className="widget-position-selector">
+              <p className="position-label">Widget Position:</p>
+              <div className="position-buttons">
+                <button 
+                  className={`position-btn ${widgetPosition === 'center' ? 'active' : ''}`}
+                  onClick={() => handlePositionChange('center')}
+                  title="Center position (default)"
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <rect x="6" y="12" width="4" height="2" rx="1"/>
+                    <rect x="2" y="2" width="12" height="8" rx="1" fill="none" stroke="currentColor" strokeWidth="1"/>
+                  </svg>
+                  Center (Default)
+                </button>
+                <button 
+                  className={`position-btn ${widgetPosition === 'right' ? 'active' : ''}`}
+                  onClick={() => handlePositionChange('right')}
+                  title="Right side position"
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <rect x="12" y="12" width="2" height="2" rx="1"/>
+                    <rect x="2" y="2" width="12" height="8" rx="1" fill="none" stroke="currentColor" strokeWidth="1"/>
+                  </svg>
+                  Right Side
+                </button>
+                <button 
+                  className={`position-btn ${widgetPosition === 'left' ? 'active' : ''}`}
+                  onClick={() => handlePositionChange('left')}
+                  title="Left side position"
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <rect x="2" y="12" width="2" height="2" rx="1"/>
+                    <rect x="2" y="2" width="12" height="8" rx="1" fill="none" stroke="currentColor" strokeWidth="1"/>
+                  </svg>
+                  Left Side
+                </button>
+              </div>
+              
+              {/* Position Preview */}
+              <div className="position-preview">
+                <div className="preview-browser">
+                  <div className="preview-header">
+                    <div className="preview-dots">
+                      <span></span><span></span><span></span>
+                    </div>
+                  </div>
+                  <div className="preview-content">
+                    <div 
+                      className="preview-widget"
+                      style={{
+                        position: 'absolute',
+                        bottom: '8px',
+                        ...(widgetPosition === 'center' ? { left: '50%', transform: 'translateX(-50%)' } : {}),
+                        ...(widgetPosition === 'right' ? { right: '8px' } : {}),
+                        ...(widgetPosition === 'left' ? { left: '8px' } : {})
+                      }}
+                    >
+                      <div className="mini-widget"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Demo Links Section */}
+            <div className="demo-links-section">
+              <p className="demo-links-title">Or try these examples:</p>
+              <div className="demo-links-container">
+                <a 
+                  href="#" 
+                  onClick={(e) => handleDemoLink(e, 'https://www.theatlantic.com')} 
+                  className="demo-link"
+                  title="See how the widget works on a major news website"
+                >
+                  📰 News Site (The Atlantic)
+                </a>
+                <a 
+                  href="#" 
+                  onClick={(e) => handleDemoLink(e, 'https://calistalee6.github.io/theharbor/')} 
+                  className="demo-link"
+                  title="Try the widget on a creative portfolio website"
+                >
+                  🎨 Portfolio Site
+                </a>
+                <a 
+                  href="#" 
+                  onClick={(e) => handleDemoLink(e, 'https://calistalee6.github.io')} 
+                  className="demo-link"
+                  title="Try the widget on a climate journalism platform"
+                >
+                  🌍 Climate News (CarbonTide)
+                </a>
+              </div>
             </div>
           </div>
           
@@ -1191,6 +1362,239 @@ export default function Home() {
             transform: translateY(-1px);
           }
 
+          /* Demo Links Styles */
+          .demo-links-section {
+            margin-top: 20px;
+            text-align: center;
+          }
+
+          .demo-links-title {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            margin-bottom: 12px;
+            margin-top: 0;
+          }
+
+          .demo-links-container {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+          }
+
+          .demo-link {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+          }
+
+          .demo-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+            color: white;
+            text-decoration: none;
+          }
+
+          .demo-link:active {
+            transform: translateY(0);
+          }
+
+          /* Responsive demo links */
+          @media (max-width: 768px) {
+            .demo-links-container {
+              flex-direction: column;
+              gap: 8px;
+              align-items: center;
+            }
+            
+            .demo-link {
+              width: 100%;
+              max-width: 250px;
+              justify-content: center;
+            }
+          }
+
+          /* Widget Position Selector Styles */
+          .widget-position-selector {
+            margin: 30px 0 20px 0;
+            text-align: center;
+          }
+
+          .position-label {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 16px;
+            font-size: 16px;
+            font-weight: 500;
+          }
+
+          .position-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+          }
+
+          .position-btn {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            min-width: 120px;
+            justify-content: center;
+          }
+
+          .position-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+            color: white;
+          }
+
+          .position-btn.active {
+            background: linear-gradient(90deg, #f59e0b, #ec4899, #8b5cf6);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+          }
+
+          .position-btn.active:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+          }
+
+          .position-btn svg {
+            opacity: 0.8;
+          }
+
+          .position-btn.active svg {
+            opacity: 1;
+          }
+
+          /* Position Preview Styles */
+          .position-preview {
+            width: 320px;
+            height: 180px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+          }
+
+          .preview-browser {
+            width: 100%;
+            height: 100%;
+            position: relative;
+          }
+
+          .preview-header {
+            height: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          }
+
+          .preview-dots {
+            display: flex;
+            gap: 4px;
+          }
+
+          .preview-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+          }
+
+          .preview-dots span:nth-child(1) {
+            background: #ff5f56;
+          }
+
+          .preview-dots span:nth-child(2) {
+            background: #ffbd2e;
+          }
+
+          .preview-dots span:nth-child(3) {
+            background: #27ca3f;
+          }
+
+          .preview-content {
+            position: relative;
+            height: calc(100% - 24px);
+            background: rgba(255, 255, 255, 0.02);
+          }
+
+          .preview-widget {
+            width: 60px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .mini-widget {
+            width: 50px;
+            height: 16px;
+            background: linear-gradient(90deg, #f59e0b, #ec4899, #8b5cf6);
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+          }
+
+          .mini-widget::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.9;
+          }
+
+          /* Responsive position selector */
+          @media (max-width: 768px) {
+            .position-buttons {
+              flex-direction: column;
+              gap: 8px;
+              align-items: center;
+            }
+            
+            .position-btn {
+              width: 100%;
+              max-width: 200px;
+            }
+
+            .position-preview {
+              width: 280px;
+              height: 160px;
+            }
+          }
+
           .learn-more-btn {
             background: transparent;
             color: #667eea;
@@ -1915,6 +2319,53 @@ export default function Home() {
             .waitlist-btn {
               padding: 0.875rem 2.5rem;
               font-size: 1rem;
+            }
+          }
+          
+          /* Demo Error Styles */
+          .demo-error {
+            background: #fee;
+            border: 1px solid #fcc;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.3s ease;
+          }
+          
+          .demo-error p {
+            color: #c33;
+            margin: 0;
+            font-size: 0.9rem;
+          }
+          
+          .dismiss-error {
+            background: none;
+            border: none;
+            color: #c33;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 1rem;
+          }
+          
+          .analyze-btn.loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+          }
+          
+
+          
+          @keyframes slideIn {
+            from {
+              opacity: 0;
+              transform: translateY(-10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
             }
           }
         `}</style>

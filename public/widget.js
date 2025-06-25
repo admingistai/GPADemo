@@ -29,6 +29,41 @@
 
     const BACKEND_BASE_URL = getBackendBaseUrl();
 
+    // Get widget position from URL parameters or data attributes
+    function getWidgetPosition() {
+        // Check URL parameters first
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlPosition = urlParams.get('widget_position');
+        console.log('[GIST] Checking URL position parameter:', urlPosition);
+        if (urlPosition && ['center', 'left', 'right'].includes(urlPosition)) {
+            console.log('[GIST] Using URL position:', urlPosition);
+            return urlPosition;
+        }
+        
+        // Check data attribute on script tag
+        const scripts = document.querySelectorAll('script[src*="widget.js"]');
+        for (const script of scripts) {
+            const dataPosition = script.getAttribute('data-position');
+            if (dataPosition && ['center', 'left', 'right'].includes(dataPosition)) {
+                console.log('[GIST] Using script data-position:', dataPosition);
+                return dataPosition;
+            }
+        }
+        
+        // Check current script if available
+        if (typeof document !== 'undefined' && document.currentScript) {
+            const dataPosition = document.currentScript.getAttribute('data-position');
+            if (dataPosition && ['center', 'left', 'right'].includes(dataPosition)) {
+                console.log('[GIST] Using currentScript data-position:', dataPosition);
+                return dataPosition;
+            }
+        }
+        
+        // Default to center
+        console.log('[GIST] Using default position: center');
+        return 'center';
+    }
+
     const WIDGET_CONFIG = {
         CHAT_API_URL: `${BACKEND_BASE_URL}/api/chat`,
         MODEL: 'gpt-3.5-turbo',
@@ -37,7 +72,9 @@
         // Loading phase durations
         SKELETON_DURATION: 1750,    // 1.75 seconds
         SOURCES_DURATION: 1250,     // 1.25 seconds
-        GENERATING_DURATION: 750    // 0.75 seconds
+        GENERATING_DURATION: 750,   // 0.75 seconds
+        // Widget positioning
+        POSITION: getWidgetPosition() // center, left, right
     };
     
     // ================================
@@ -45,35 +82,153 @@
     // ================================
     
     function detectDarkMode() {
-        // Check CSS media query
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            return true;
-        }
+        console.log('[GIST] Dark mode detection starting...');
         
-        // Check body background color
-        const bodyStyle = window.getComputedStyle(document.body);
-        const bgColor = bodyStyle.backgroundColor;
+        // First, check for explicit theme class names (most reliable)
+        const darkModeClasses = ['dark', 'dark-mode', 'dark-theme', 'theme-dark', 'night-mode'];
+        const lightModeClasses = ['light', 'light-mode', 'light-theme', 'theme-light'];
         
-        if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
-            // Convert to RGB values
-            const rgbMatch = bgColor.match(/\d+/g);
-            if (rgbMatch && rgbMatch.length >= 3) {
-                const [r, g, b] = rgbMatch.map(Number);
-                // Calculate luminance
-                const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-                return luminance < 0.5; // Dark if luminance is low
+        // Check for explicit light mode classes first
+        for (const className of lightModeClasses) {
+            if (document.body.classList.contains(className) || 
+                document.documentElement.classList.contains(className)) {
+                console.log('[GIST] Light mode class found:', className);
+                console.log('[GIST] Final dark mode result: false (explicit light class)');
+                return false;
             }
         }
         
-        // Check for common dark mode class names
-        const darkModeClasses = ['dark', 'dark-mode', 'dark-theme', 'theme-dark'];
+        // Check for explicit dark mode classes
+        let darkClassFound = false;
         for (const className of darkModeClasses) {
             if (document.body.classList.contains(className) || 
                 document.documentElement.classList.contains(className)) {
-                return true;
+                darkClassFound = true;
+                console.log('[GIST] Dark mode class found:', className);
+                break;
+            }
+        }
+        console.log('[GIST] Dark mode classes found:', darkClassFound);
+        if (darkClassFound) {
+            console.log('[GIST] Final dark mode result: true (explicit dark class)');
+            return true;
+        }
+        
+        // Second, analyze actual page colors using a scoring system
+        console.log('[GIST] Analyzing actual page colors with scoring system...');
+        const elementsToCheck = [
+            { element: document.querySelector('html'), name: 'html', weight: 2 },
+            { element: document.body, name: 'body', weight: 1 },
+            { element: document.querySelector('main'), name: 'main', weight: 3 },
+            { element: document.querySelector('article'), name: 'article', weight: 3 },
+            { element: document.querySelector('.content'), name: '.content', weight: 2 },
+            { element: document.querySelector('#content'), name: '#content', weight: 2 },
+            { element: document.querySelector('#root'), name: '#root', weight: 2 },
+            { element: document.querySelector('#app'), name: '#app', weight: 2 },
+            { element: document.querySelector('.main-content'), name: '.main-content', weight: 2 },
+            { element: document.querySelector('header'), name: 'header', weight: 1 },
+            { element: document.querySelector('.header'), name: '.header', weight: 1 }
+        ];
+        
+        let darkScore = 0;
+        let lightScore = 0;
+        let hasDefinitiveResult = false;
+        
+        for (const { element, name, weight } of elementsToCheck) {
+            if (!element) {
+                console.log(`[GIST] ${name} element not found`);
+                continue;
+            }
+            
+            const style = window.getComputedStyle(element);
+            const bgColor = style.backgroundColor;
+            const textColor = style.color;
+            
+            console.log(`[GIST] ${name} background:`, bgColor, 'text:', textColor);
+            
+            // Check background color
+            if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
+                const rgbMatch = bgColor.match(/\d+/g);
+                if (rgbMatch && rgbMatch.length >= 3) {
+                    const [r, g, b] = rgbMatch.map(Number);
+                    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                    console.log(`[GIST] ${name} background RGB:`, [r, g, b], 'Luminance:', luminance.toFixed(3), 'Weight:', weight);
+                    
+                    if (luminance < 0.2) {
+                        darkScore += weight;
+                        console.log(`[GIST] ${name} contributes ${weight} to dark score (very dark bg)`);
+                        // Main content areas with dark backgrounds are definitive
+                        if ((name === 'main' || name === 'article') && luminance < 0.15) {
+                            hasDefinitiveResult = true;
+                            console.log(`[GIST] Found very dark main content area (${name})`);
+                            console.log('[GIST] Final dark mode result: true (definitive dark main content)');
+                            return true;
+                        }
+                    } else if (luminance > 0.8) {
+                        lightScore += weight;
+                        console.log(`[GIST] ${name} contributes ${weight} to light score (very light bg)`);
+                        // Main content areas with light backgrounds are definitive
+                        if ((name === 'main' || name === 'article') && luminance > 0.85) {
+                            hasDefinitiveResult = true;
+                            console.log(`[GIST] Found very light main content area (${name})`);
+                            console.log('[GIST] Final dark mode result: false (definitive light main content)');
+                            return false;
+                        }
+                    } else if (luminance < 0.5) {
+                        darkScore += weight * 0.5;
+                        console.log(`[GIST] ${name} contributes ${weight * 0.5} to dark score (medium-dark bg)`);
+                    } else {
+                        lightScore += weight * 0.5;
+                        console.log(`[GIST] ${name} contributes ${weight * 0.5} to light score (medium-light bg)`);
+                    }
+                }
+            }
+            
+            // Also check text color - dark sites often have light text
+            if (textColor) {
+                const textMatch = textColor.match(/\d+/g);
+                if (textMatch && textMatch.length >= 3) {
+                    const [r, g, b] = textMatch.map(Number);
+                    const textLuminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                    console.log(`[GIST] ${name} text RGB:`, [r, g, b], 'Text Luminance:', textLuminance.toFixed(3));
+                    
+                    if (textLuminance > 0.8) {
+                        darkScore += weight * 0.3; // Light text suggests dark theme
+                        console.log(`[GIST] ${name} contributes ${weight * 0.3} to dark score (light text)`);
+                    } else if (textLuminance < 0.3) {
+                        lightScore += weight * 0.3; // Dark text suggests light theme
+                        console.log(`[GIST] ${name} contributes ${weight * 0.3} to light score (dark text)`);
+                    }
+                }
             }
         }
         
+        console.log(`[GIST] Final scores - Dark: ${darkScore.toFixed(1)}, Light: ${lightScore.toFixed(1)}`);
+        console.log(`[GIST] Threshold checks - Dark > Light*1.2: ${darkScore.toFixed(1)} > ${(lightScore * 1.2).toFixed(1)} = ${darkScore > lightScore * 1.2}`);
+        console.log(`[GIST] Threshold checks - Light > Dark*1.2: ${lightScore.toFixed(1)} > ${(darkScore * 1.2).toFixed(1)} = ${lightScore > darkScore * 1.2}`);
+        
+        // Use scores to determine theme with more reasonable thresholds
+        if (darkScore > lightScore * 1.2) {
+            console.log('[GIST] Final dark mode result: true (dark score wins by margin)');
+            return true;
+        } else if (lightScore > darkScore * 1.2) {
+            console.log('[GIST] Final dark mode result: false (light score wins by margin)');
+            return false;
+        } else if (darkScore > lightScore) {
+            console.log('[GIST] Final dark mode result: true (dark score higher)');
+            return true;
+        } else if (lightScore > darkScore) {
+            console.log('[GIST] Final dark mode result: false (light score higher)');
+            return false;
+        }
+        
+        // Last resort: check media query (but this should be last priority)
+        const mediaQueryDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        console.log('[GIST] Media query dark mode:', mediaQueryDark, '(using as fallback only)');
+        
+        // Default to light mode if we can't determine (most websites are light)
+        console.log('[GIST] No clear theme indicators found, defaulting to light mode');
+        console.log('[GIST] Final dark mode result: false (default)');
         return false;
     }
     
@@ -275,6 +430,7 @@
     async function analyzeWebsiteStyling() {
         try {
             const isDarkMode = detectDarkMode();
+            console.log('[GIST] Website styling detected - isDarkMode:', isDarkMode);
             const logos = await extractLogosAndIcons();
             const colorScheme = extractColorScheme();
             
@@ -302,6 +458,7 @@
                 isDarkMode: isDarkMode
             };
             
+            console.log('[GIST DEBUG] Final websiteStyling:', websiteStyling);
             return websiteStyling;
             } catch (error) {
             console.error('[GistWidget] Failed to analyze website styling:', error);
@@ -310,11 +467,87 @@
     }
     
     // ================================
+    // DEBUG FUNCTIONS
+    // ================================
+    
+    function debugThemeDetection() {
+        const elements = ['html', 'body', 'main', 'header', '.content', '#root', '#app'];
+        console.log('[GIST DEBUG] Theme detection for current page:');
+        console.log('[GIST DEBUG] Page URL:', window.location.href);
+        console.log('[GIST DEBUG] Page title:', document.title);
+        
+        elements.forEach(selector => {
+            const el = document.querySelector(selector);
+            if (el) {
+                const style = window.getComputedStyle(el);
+                const bgColor = style.backgroundColor;
+                const textColor = style.color;
+                
+                // Calculate luminance for background
+                let bgLuminance = 'N/A';
+                if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
+                    const rgbMatch = bgColor.match(/\d+/g);
+                    if (rgbMatch && rgbMatch.length >= 3) {
+                        const [r, g, b] = rgbMatch.map(Number);
+                        bgLuminance = ((0.299 * r + 0.587 * g + 0.114 * b) / 255).toFixed(3);
+                    }
+                }
+                
+                // Calculate luminance for text
+                let textLuminance = 'N/A';
+                if (textColor) {
+                    const textMatch = textColor.match(/\d+/g);
+                    if (textMatch && textMatch.length >= 3) {
+                        const [r, g, b] = textMatch.map(Number);
+                        textLuminance = ((0.299 * r + 0.587 * g + 0.114 * b) / 255).toFixed(3);
+                    }
+                }
+                
+                console.log(`[GIST DEBUG] ${selector}:`, {
+                    background: bgColor,
+                    backgroundLuminance: bgLuminance,
+                    color: textColor,
+                    textLuminance: textLuminance,
+                    className: el.className,
+                    tagName: el.tagName
+                });
+            } else {
+                console.log(`[GIST DEBUG] ${selector}: not found`);
+            }
+        });
+        
+        // Check for theme classes
+        const themeClasses = {
+            html: document.documentElement.className,
+            body: document.body.className
+        };
+        console.log('[GIST DEBUG] Theme classes:', themeClasses);
+        
+        // Check media query
+        const mediaQueryDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        console.log('[GIST DEBUG] Media query prefers dark:', mediaQueryDark);
+        
+        // Run detection and log result
+        const detectedMode = detectDarkMode();
+        console.log('[GIST DEBUG] Final detected mode:', detectedMode);
+        
+        return detectedMode;
+    }
+    
+    // ================================
     // DYNAMIC STYLES GENERATION
     // ================================
     
     function generateDynamicStyles(styling) {
         const isDark = styling.isDarkMode;
+        
+        console.log('[GIST DEBUG] generateDynamicStyles called with:', {
+            isDarkMode: styling.isDarkMode,
+            backgroundColor: styling.backgroundColor,
+            textColor: styling.textColor,
+            primaryColor: styling.primaryColor,
+            widgetPosition: WIDGET_CONFIG.POSITION
+        });
         
         return `
             :host {
@@ -329,14 +562,15 @@
             }
             
             .gist-widget {
-        position: fixed;
+                position: fixed;
                 bottom: 24px;
-                left: 50%;
-                transform: translateX(-50%);
+                ${WIDGET_CONFIG.POSITION === 'center' ? 'left: 50%; transform: translateX(-50%);' : ''}
+                ${WIDGET_CONFIG.POSITION === 'right' ? 'right: 24px; left: auto; transform: none;' : ''}
+                ${WIDGET_CONFIG.POSITION === 'left' ? 'left: 24px; right: auto; transform: none;' : ''}
                 z-index: 10000;
                 pointer-events: none;
                 opacity: 0;
-                transform: translateX(-50%) translateY(10px);
+                ${WIDGET_CONFIG.POSITION === 'center' ? 'transform: translateX(-50%) translateY(10px);' : 'transform: translateY(10px);'}
                 transition: opacity 250ms ease, transform 250ms ease;
                 display: flex;
                 flex-direction: column;
@@ -347,7 +581,7 @@
                 
                 .gist-widget.loaded {
                     opacity: 1;
-                    transform: translateX(-50%) translateY(0);
+                    ${WIDGET_CONFIG.POSITION === 'center' ? 'transform: translateX(-50%) translateY(0);' : 'transform: translateY(0);'}
                     pointer-events: auto;
                 }
                 
@@ -365,11 +599,11 @@
             }
             
             .gist-pill {
-                background: ${isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.95)'};
+                background: ${isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.98)'};
                 border: 2px solid transparent;
                 border-radius: 28px;
                 background-image: 
-                    linear-gradient(${isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.95)'}, ${isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.95)'}),
+                    linear-gradient(${isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.98)'}, ${isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.98)'}),
                     linear-gradient(90deg, #f59e0b 0%, #ec4899 50%, #8b5cf6 100%);
                 background-origin: border-box;
                 background-clip: padding-box, border-box;
@@ -388,7 +622,7 @@
             
             .gist-pill:hover {
                 transform: translateY(-2px);
-                box-shadow: ${isDark ? '0 8px 30px rgba(0, 0, 0, 0.4)' : '0 8px 30px rgba(0, 0, 0, 0.15)'};
+                box-shadow: ${isDark ? '0 8px 30px rgba(0, 0, 0, 0.4)' : '0 4px 20px rgba(0, 0, 0, 0.1)'};
                 }
                 
                 .gist-pill-logo {
@@ -433,16 +667,36 @@
                 transform: scale(1.05);
                 filter: brightness(1.1);
             }
+
+            .gist-submit-logo {
+                width: 16px;
+                height: 16px;
+                object-fit: contain;
+                filter: brightness(0) invert(1); /* Ensure it's white */
+                transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            }
+            
+            .gist-pill-submit.rotating .gist-submit-logo {
+                transform: rotate(360deg);
+            }
+
+            .gist-pill-submit:hover .gist-submit-logo {
+                transform: scale(1.1);
+            }
+            
+            .gist-pill-submit:active .gist-submit-logo {
+                transform: scale(0.95);
+            }
             
             .gist-chat-container {
                     width: 400px;
                 max-width: 90vw;
                 max-height: 500px;
-                background: var(--background-color);
+                background: ${isDark ? styling.backgroundColor : '#ffffff'};
                 border: 2px solid transparent;
                 border-radius: 24px;
                 background-image: 
-                    linear-gradient(var(--background-color), var(--background-color)),
+                    linear-gradient(${isDark ? styling.backgroundColor : '#ffffff'}, ${isDark ? styling.backgroundColor : '#ffffff'}),
                     linear-gradient(90deg, #f59e0b 0%, #ec4899 50%, #8b5cf6 100%);
                 background-origin: border-box;
                 background-clip: padding-box, border-box;
@@ -694,13 +948,13 @@
                 justify-content: flex-end;
                 margin-bottom: 12px;
                 animation: slideInRight 0.3s ease-out;
-            }
-
+                }
+                
             .gist-ai-message {
                     display: flex;
                 justify-content: flex-start;
                 align-items: flex-start;
-                gap: 12px;
+                    gap: 12px;
                 margin-bottom: 16px;
                 animation: slideInLeft 0.3s ease-out;
             }
@@ -739,7 +993,7 @@
             }
 
             .gist-message-text {
-                background: ${isDark ? '#374151' : '#f8fafc'};
+                background: ${isDark ? '#374151' : '#f3f4f6'};
                 color: var(--text-color);
                 padding: 12px 16px;
                 border-radius: 4px 18px 18px 18px;
@@ -750,23 +1004,23 @@
             }
 
             .gist-typing-indicator {
-        display: flex;
-        align-items: center;
+                    display: flex;
+                    align-items: center;
                 gap: 12px;
                 margin-bottom: 16px;
                 animation: slideInLeft 0.3s ease-out;
             }
 
             .gist-typing-dots {
-                background: ${isDark ? '#374151' : '#f8fafc'};
+                background: ${isDark ? '#374151' : '#f3f4f6'};
                 border: 1px solid var(--border-color);
                 padding: 12px 16px;
                 border-radius: 4px 18px 18px 18px;
-        display: flex;
-        align-items: center;
-                gap: 4px;
-            }
-
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                }
+                
             .gist-typing-dot {
                 width: 6px;
                 height: 6px;
@@ -837,6 +1091,60 @@
                 opacity: 0;
                 transform: translateY(10px);
                 animation: fadeInUp 0.6s ease-out 0.5s forwards;
+                transition: opacity 0.4s ease, transform 0.4s ease;
+            }
+
+            .gist-suggested-questions.hidden {
+                display: none;
+            }
+
+            .gist-suggested-questions.loading {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .gist-loading-text {
+                color: ${isDark ? '#9ca3af' : '#6b7280'};
+                font-size: 13px;
+                font-style: italic;
+                    text-align: center;
+                padding: 16px 0;
+                animation: pulse 2s ease-in-out infinite;
+            }
+
+            .gist-skeleton-questions {
+                    display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .gist-skeleton-question {
+                height: 40px;
+                background: ${isDark ? '#374151' : '#e5e7eb'};
+                border-radius: 8px;
+                    position: relative;
+                    overflow: hidden;
+                }
+                
+            .gist-skeleton-question::after {
+                    content: '';
+                    position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.6)'},
+                    transparent
+                );
+                animation: shimmer 2s infinite;
+            }
+
+            @keyframes pulse {
+                0%, 100% { opacity: 0.6; }
+                50% { opacity: 1; }
             }
             
             .gist-suggested-questions-title {
@@ -847,10 +1155,10 @@
                 }
                 
                 .gist-suggested-question {
-                    display: flex;
+        display: flex;
                     align-items: flex-start;
                 padding: 12px;
-                background: ${isDark ? '#374151' : '#f8fafc'};
+                background: ${isDark ? '#374151' : '#f3f4f6'};
                 border: 1px solid var(--border-color);
                     border-radius: 8px;
                 margin-bottom: 8px;
@@ -862,13 +1170,13 @@
                 }
                 
                 .gist-suggested-question:hover {
-                background: ${isDark ? '#4b5563' : '#f1f5f9'};
+                background: ${isDark ? '#4b5563' : '#e5e7eb'};
                     transform: translateY(-1px);
                 }
                 
                 .gist-suggested-question-icon {
-                width: 20px;
-                height: 20px;
+        width: 20px;
+        height: 20px;
                 background: var(--primary-color);
                     color: white;
                     border-radius: 50%;
@@ -902,17 +1210,17 @@
             .gist-chat-footer {
                 padding: 12px 20px;
                 border-top: 1px solid var(--border-color);
-                    display: flex;
+        display: flex;
                     justify-content: space-between;
-                align-items: center;
+        align-items: center;
                 font-size: 11px;
                 color: ${isDark ? '#9ca3af' : '#6b7280'};
                 background: ${isDark ? 'rgba(31, 41, 55, 0.5)' : 'rgba(248, 250, 252, 0.5)'};
             }
             
             .gist-powered-section {
-                    display: flex;
-                    align-items: center;
+        display: flex;
+        align-items: center;
                     gap: 6px;
             }
             
@@ -933,26 +1241,26 @@
                 text-decoration: underline;
             }
             
-            .gist-close-btn {
+                .gist-close-btn {
                     width: 24px;
                     height: 24px;
-                border-radius: 50%;
+                    border-radius: 50%;
                 background: ${isDark ? 'rgba(107, 114, 128, 0.2)' : 'rgba(107, 114, 128, 0.1)'};
-        border: none;
+                    border: none;
                 color: ${isDark ? '#d1d5db' : '#6b7280'};
-                font-size: 16px;
+                    font-size: 16px;
                     cursor: pointer;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                transition: all 0.2s ease;
-            }
-            
-            .gist-close-btn:hover {
+                    transition: all 0.2s ease;
+                }
+                
+                .gist-close-btn:hover {
                 background: ${isDark ? 'rgba(107, 114, 128, 0.3)' : 'rgba(107, 114, 128, 0.2)'};
-                transform: scale(1.1);
-            }
-            
+                    transform: scale(1.1);
+                }
+                
             .gist-pill.in-hover-radius {
                 box-shadow: 
                     0 0 20px rgba(245, 158, 11, 0.3),
@@ -1011,8 +1319,8 @@
             }
 
             .gist-share-btn svg {
-                width: 16px;
-                height: 16px;
+                    width: 16px;
+                    height: 16px;
             }
 
             /* Active states */
@@ -1024,97 +1332,126 @@
                 color: #ef4444;
             }
 
-            /* Follow-up questions */
+                        /* Follow-up questions */
             .gist-follow-up-questions {
                 margin-top: 24px;
                 padding-top: 20px;
                 border-top: 1px solid var(--border-color);
+                opacity: 0;
+                transform: translateY(20px);
+                visibility: hidden;
+            }
+
+            .gist-follow-up-questions.fade-in {
+                animation: smoothFadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            }
+
+            @keyframes smoothFadeInUp {
+                0% {
                     opacity: 0;
-                    transform: translateY(10px);
-                transition: all 0.4s ease;
+                    transform: translateY(20px);
+                    visibility: hidden;
+                }
+                100% {
+                    opacity: 1;
+                    transform: translateY(0);
+                    visibility: visible;
+                }
+            }
+
+            @keyframes fadeIn {
+                0% {
+                    opacity: 0;
+                }
+                100% {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes fadeInQuestion {
+                0% {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                100% {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
 
             .gist-follow-up-title {
-                font-size: 14px;
+                    font-size: 14px;
                     font-weight: 600;
                 color: var(--text-color);
-                margin-bottom: 12px;
+                    margin-bottom: 12px;
+                    opacity: 0;
+                animation: fadeIn 0.6s ease-out forwards;
             }
 
             .gist-follow-up-loading {
                 font-size: 13px;
                 color: ${isDark ? '#9ca3af' : '#6b7280'};
-                    font-style: italic;
+                font-style: italic;
                 padding: 12px;
-                text-align: center;
-            }
-
+                    text-align: center;
+                }
+                
             .gist-follow-up-list {
                     display: flex;
                     flex-direction: column;
-                    gap: 8px;
-                }
-                
+                gap: 8px;
+            }
+            
             .gist-follow-up-question {
                     display: flex;
                     align-items: center;
                 gap: 12px;
-                    padding: 12px 16px;
-                background: ${isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.03)'};
+                padding: 12px 16px;
+                background: ${isDark ? 'rgba(255, 255, 255, 0.03)' : '#f9fafb'};
                 border: 1px solid var(--border-color);
-                    border-radius: 8px;
+                border-radius: 8px;
                     cursor: pointer;
                     transition: all 0.2s ease;
-                    text-align: left;
+                text-align: left;
                 width: 100%;
                 font-family: inherit;
                 font-size: 13px;
-                animation: slideInUp 0.3s ease-out;
+                opacity: 0;
+                animation: fadeInQuestion 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
             }
-
-            @keyframes slideInUp {
-                0% {
-        opacity: 0;
-                    transform: translateY(15px);
-      }
-                100% {
-        opacity: 1;
-                    transform: translateY(0);
-                }
-                }
-                
-                .gist-follow-up-question:hover {
-                background: ${isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)'};
+            
+            .gist-follow-up-question:hover {
+                background: ${isDark ? 'rgba(255, 255, 255, 0.08)' : '#f3f4f6'};
                 border-color: var(--primary-color);
                     transform: translateY(-1px);
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    box-shadow: ${isDark ? '0 2px 8px rgba(0, 0, 0, 0.1)' : '0 2px 8px rgba(0, 0, 0, 0.05)'};
                 }
                 
-                .gist-follow-up-question:active {
-                    transform: translateY(0);
+            .gist-follow-up-question:active {
+                transform: translateY(0);
             }
-
+            
             .gist-follow-up-icon {
                 width: 20px;
                 height: 20px;
                 background: var(--primary-color);
-                    color: white;
+                color: white;
                 border-radius: 50%;
-                font-size: 11px;
-                    font-weight: 600;
+                    font-size: 11px;
+                font-weight: 600;
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     flex-shrink: 0;
-            }
-
+                }
+                
             .gist-follow-up-text {
                     flex: 1;
                 font-weight: 500;
                 color: var(--text-color);
-                    line-height: 1.4;
-                }
-                
+                line-height: 1.4;
+            }
+            
             /* Stagger animation for follow-up questions */
             .gist-follow-up-question:nth-child(1) {
                 animation-delay: 0.1s;
@@ -1132,15 +1469,15 @@
             .gist-remix-btn {
                 background: linear-gradient(135deg, #8b5cf6 0%, #667eea 100%);
                 color: white !important;
-                border: none;
+        border: none;
                 border-radius: 20px;
                 padding: 6px 16px;
-                transition: all 0.2s ease;
-            }
-
+                    transition: all 0.2s ease;
+                }
+                
             .gist-remix-btn:hover {
                 background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
-                transform: translateY(-1px);
+                    transform: translateY(-1px);
                 box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
             }
 
@@ -1150,7 +1487,7 @@
                 left: 0;
                 width: 100vw;
                 height: 100vh;
-                background: rgba(0, 0, 0, 0.7);
+                background: rgba(0, 0, 0, 0.8);
                 z-index: 10001;
                 display: flex;
                 align-items: center;
@@ -1165,46 +1502,48 @@
             }
 
             .gist-remix-content {
-                background: ${isDark ? '#1f2937' : '#ffffff'};
+                background: ${isDark ? '#1a1a1a' : '#ffffff'};
                 border-radius: 16px;
-                padding: 24px;
-                max-width: 500px;
-                width: 90vw;
-                max-height: 80vh;
-                overflow-y: auto;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-                transform: scale(0.9) translateY(20px);
+                width: 600px;
+                max-width: 90vw;
+                height: 80vh;
+                max-height: 700px;
+                display: flex;
+                flex-direction: column;
+                box-shadow: ${isDark ? '0 20px 60px rgba(0, 0, 0, 0.5)' : '0 20px 60px rgba(0, 0, 0, 0.15)'};
+                transform: scale(0.95);
                 transition: transform 0.3s ease;
+                color: ${isDark ? 'white' : '#111827'};
+                position: relative;
             }
 
             .gist-remix-modal.visible .gist-remix-content {
-                transform: scale(1) translateY(0);
+                transform: scale(1);
             }
 
             .gist-remix-header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 24px;
-                padding-bottom: 16px;
-                border-bottom: 1px solid var(--border-color);
+                padding: 20px 24px;
+                border-bottom: 1px solid ${isDark ? '#333' : '#e5e7eb'};
             }
 
             .gist-remix-title {
                 font-size: 20px;
                 font-weight: 700;
-                color: var(--text-color);
+                color: ${isDark ? 'white' : '#111827'};
                 margin: 0;
             }
 
             .gist-remix-close {
-                width: 32px;
-                height: 32px;
+                width: 36px;
+                height: 36px;
                 border-radius: 50%;
-                background: ${isDark ? 'rgba(107, 114, 128, 0.2)' : 'rgba(107, 114, 128, 0.1)'};
+                background: transparent;
                 border: none;
-                color: ${isDark ? '#d1d5db' : '#6b7280'};
-                font-size: 18px;
+                color: ${isDark ? '#9ca3af' : '#6b7280'};
+                font-size: 20px;
                 cursor: pointer;
                 display: flex;
                 align-items: center;
@@ -1213,25 +1552,23 @@
             }
 
             .gist-remix-close:hover {
-                background: ${isDark ? 'rgba(107, 114, 128, 0.3)' : 'rgba(107, 114, 128, 0.2)'};
+                background: ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'};
+                color: ${isDark ? 'white' : '#374151'};
                 transform: scale(1.1);
             }
 
             .gist-remix-tabs {
                 display: flex;
                 gap: 8px;
-                margin-bottom: 24px;
-                background: ${isDark ? 'rgba(55, 65, 81, 0.5)' : 'rgba(243, 244, 246, 0.8)'};
-                border-radius: 12px;
-                padding: 4px;
+                padding: 16px 24px;
+                background: transparent;
             }
 
             .gist-remix-tab {
-                flex: 1;
-                padding: 12px 16px;
+                padding: 8px 20px;
                 background: transparent;
                 border: none;
-                border-radius: 8px;
+                border-radius: 20px;
                 color: ${isDark ? '#9ca3af' : '#6b7280'};
                 font-size: 14px;
                 font-weight: 500;
@@ -1241,75 +1578,274 @@
             }
 
             .gist-remix-tab.active {
-                background: linear-gradient(135deg, #8b5cf6 0%, #667eea 100%);
-                color: white;
-                box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+                background: ${isDark ? 'white' : '#111827'};
+                color: ${isDark ? 'black' : 'white'};
             }
 
             .gist-remix-tab:hover:not(.active) {
-                background: ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
-                color: var(--text-color);
+                background: ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'};
+                color: ${isDark ? 'white' : '#374151'};
             }
 
-            .gist-remix-options {
+            .gist-remix-body {
+                flex: 1;
                 display: flex;
                 flex-direction: column;
+                overflow-y: auto;
+                padding: 0 24px 24px;
+            }
+
+            .gist-remix-preview {
+                width: 100%;
+                height: 300px;
+                margin: 20px 0;
+                background: ${isDark ? '#2a2a2a' : '#f9fafb'};
+                border-radius: 12px;
+                border: 2px solid ${isDark ? '#3a3a3a' : '#e5e7eb'};
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
                 gap: 16px;
+                color: ${isDark ? '#9ca3af' : '#6b7280'};
+                font-size: 16px;
+                text-align: center;
+            }
+
+            .gist-remix-preview svg {
+                opacity: 0.6;
+            }
+
+            /* New styles for options below preview */
+            .gist-remix-options {
+                display: flex;
+                gap: 12px;
                 margin-bottom: 24px;
+                justify-content: center;
             }
 
             .gist-remix-option-group {
+                position: relative;
+            }
+
+            .gist-remix-dropdown {
+                background: ${isDark ? '#2a2a2a' : '#ffffff'};
+                border: 1px solid ${isDark ? '#444' : '#d1d5db'};
+                border-radius: 20px;
+                padding: 10px 20px;
+                color: ${isDark ? 'white' : '#374151'};
+                font-size: 14px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.2s ease;
+                font-family: inherit;
+            }
+
+            .gist-remix-dropdown:hover {
+                background: ${isDark ? '#333' : '#f9fafb'};
+                border-color: ${isDark ? '#555' : '#9ca3af'};
+            }
+
+            .dropdown-arrow {
+                font-size: 12px;
+                transition: transform 0.2s ease;
+            }
+
+            .gist-remix-dropdown.open .dropdown-arrow {
+                transform: rotate(180deg);
+            }
+
+            .gist-remix-dropdown-content {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                margin-top: 4px;
+                background: ${isDark ? '#2a2a2a' : '#ffffff'};
+                border: 1px solid ${isDark ? '#444' : '#d1d5db'};
+                border-radius: 12px;
+                padding: 8px;
+                display: none;
+                z-index: 10;
+                min-width: 150px;
+            }
+
+            .gist-remix-dropdown-content.show {
+                display: block;
+            }
+
+            /* Updated suggestion cards */
+            .gist-remix-suggestions {
                 display: flex;
                 flex-direction: column;
-                gap: 8px;
+                gap: 12px;
+                margin-top: auto;
             }
 
-            .gist-remix-option-label {
-                font-size: 14px;
-                font-weight: 600;
-                color: var(--text-color);
-            }
-
-            .gist-remix-select {
-                padding: 12px 16px;
-                border: 1px solid var(--border-color);
-                border-radius: 8px;
-                background: var(--background-color);
-                color: var(--text-color);
-                font-size: 14px;
-                font-family: inherit;
-                cursor: pointer;
-                transition: border-color 0.2s ease;
-            }
-
-            .gist-remix-select:focus {
-                outline: none;
-                border-color: #8b5cf6;
-                box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
-            }
-
-            .gist-remix-create {
-                width: 100%;
-                padding: 16px 24px;
-                background: linear-gradient(135deg, #8b5cf6 0%, #667eea 100%);
-                color: white;
-                border: none;
+            .gist-remix-suggestion-card {
+                background: ${isDark ? '#2a2a2a' : '#f9fafb'};
                 border-radius: 12px;
+                padding: 16px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                border: 1px solid transparent;
+            }
+
+            .gist-remix-suggestion-card:hover {
+                background: ${isDark ? '#333' : '#f3f4f6'};
+                border-color: ${isDark ? '#555' : '#d1d5db'};
+            }
+
+            .gist-remix-plus-icon {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                background: ${isDark ? '#555' : '#e5e7eb'};
+                color: ${isDark ? 'white' : '#6b7280'};
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 font-size: 16px;
+                font-weight: bold;
+                flex-shrink: 0;
+                transition: background 0.2s ease;
+            }
+
+            .gist-remix-suggestion-card:hover .gist-remix-plus-icon {
+                background: ${isDark ? '#666' : '#d1d5db'};
+            }
+
+            .gist-remix-suggestion-text {
+                color: ${isDark ? 'white' : '#374151'};
+                font-size: 15px;
+                font-weight: 500;
+                line-height: 1.4;
+            }
+
+            /* Updated search bar styles */
+            .gist-remix-input-container {
+                padding: 20px 24px;
+                border-top: 1px solid ${isDark ? '#333' : '#e5e7eb'};
+                background: ${isDark ? '#1a1a1a' : '#ffffff'};
+            }
+
+            .gist-remix-search-wrapper {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                background: ${isDark ? '#2a2a2a' : '#ffffff'};
+                border: 2px solid transparent;
+                border-radius: 28px;
+                padding: 8px 8px 8px 20px;
+                background-image: 
+                    linear-gradient(${isDark ? '#2a2a2a' : '#ffffff'}, ${isDark ? '#2a2a2a' : '#ffffff'}),
+                    linear-gradient(90deg, #f59e0b 0%, #ec4899 50%, #8b5cf6 100%);
+                background-origin: border-box;
+                background-clip: padding-box, border-box;
+                transition: all 0.3s ease;
+            }
+
+            .gist-remix-search-wrapper:focus-within {
+                box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+            }
+
+            .gist-remix-input {
+                flex: 1;
+                background: transparent;
+                border: none;
+                color: ${isDark ? 'white' : '#111827'};
+                font-size: 14px;
+                outline: none;
+                font-family: inherit;
+                padding: 4px 0;
+            }
+
+            .gist-remix-input::placeholder {
+                color: ${isDark ? '#9ca3af' : '#6b7280'};
+            }
+
+            .gist-remix-voice-btn {
+                background: transparent;
+                border: none;
+                color: ${isDark ? '#9ca3af' : '#6b7280'};
+                padding: 8px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .gist-remix-voice-btn:hover {
+                background: ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'};
+                color: ${isDark ? 'white' : '#374151'};
+            }
+
+            .gist-remix-create-btn {
+                background: #f59e0b;
+                color: black;
+                border: none;
+                padding: 10px 24px;
+                border-radius: 20px;
+                font-size: 14px;
                 font-weight: 600;
                 cursor: pointer;
                 transition: all 0.2s ease;
                 font-family: inherit;
             }
 
-            .gist-remix-create:hover {
-                background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+            .gist-remix-create-btn:hover {
+                background: #f97316;
+                transform: scale(1.05);
             }
 
-            .gist-remix-create:active {
-                transform: translateY(0);
+            .gist-remix-create-btn.loading {
+                background: #6b7280;
+                cursor: not-allowed;
+            }
+
+            .gist-remix-select {
+                    width: 100%;
+                background: ${isDark ? '#2a2a2a' : '#ffffff'};
+                border: 1px solid ${isDark ? '#444' : '#d1d5db'};
+                border-radius: 8px;
+                padding: 14px 16px;
+                color: ${isDark ? 'white' : '#374151'};
+                font-size: 15px;
+                font-family: inherit;
+                cursor: pointer;
+                outline: none;
+                transition: all 0.2s ease;
+                min-height: 48px;
+            }
+
+            .gist-remix-select:hover {
+                border-color: ${isDark ? '#555' : '#9ca3af'};
+                background: ${isDark ? '#333' : '#f9fafb'};
+            }
+
+            .gist-remix-select:focus {
+                border-color: #8b5cf6;
+                box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+            }
+
+            .gist-remix-select option {
+                background: ${isDark ? '#2a2a2a' : '#ffffff'};
+                color: ${isDark ? 'white' : '#374151'};
+                padding: 8px;
+            }
+
+            @media (min-width: 768px) {
+                .gist-remix-select {
+                    padding: 16px 20px;
+                    font-size: 16px;
+                    min-height: 52px;
+                }
             }
             
             /* Engagement footer fade-in animation */
@@ -1332,6 +1868,380 @@
                     transform: translateY(0);
                 }
             }
+
+            /* Audio Player Styles */
+            .gist-audio-player {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: ${isDark ? '#000' : '#ffffff'};
+                z-index: 10002;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .gist-audio-player.visible {
+                opacity: 1;
+            }
+
+            .audio-player-container {
+                width: 100%;
+                height: 100%;
+                position: relative;
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* Visualizer Canvas */
+            .audio-visualizer {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 1;
+            }
+
+            .audio-gradient-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.8) 100%);
+                z-index: 2;
+            }
+
+            /* Header */
+            .audio-player-header {
+                position: relative;
+                z-index: 10;
+                display: flex;
+                justify-content: space-between;
+                padding: 20px;
+            }
+
+            .audio-back-btn, .audio-options-btn {
+                background: transparent;
+                border: none;
+                color: ${isDark ? 'white' : '#374151'};
+                padding: 12px;
+                cursor: pointer;
+                transition: opacity 0.2s;
+            }
+
+            .audio-back-btn:hover, .audio-options-btn:hover {
+                opacity: 0.7;
+            }
+
+            /* Content Area */
+            .audio-content-area {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                z-index: 10;
+                padding: 20px;
+            }
+
+            .time-label {
+                color: ${isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(107, 114, 128, 0.7)'};
+                font-size: 14px;
+                margin-bottom: 20px;
+            }
+
+            .mirror-btn {
+                background: ${isDark ? '#1a1a1a' : '#f3f4f6'};
+                color: ${isDark ? 'white' : '#374151'};
+                border: none;
+                padding: 12px 32px;
+                border-radius: 24px;
+                font-size: 16px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                margin-top: 20px;
+            }
+
+            .mirror-btn:hover {
+                background: ${isDark ? '#2a2a2a' : '#e5e7eb'};
+                transform: scale(1.02);
+            }
+
+            /* News Card */
+            .audio-news-card {
+                background: ${isDark ? 'rgba(26, 26, 26, 0.9)' : 'rgba(255, 255, 255, 0.95)'};
+                border-radius: 16px;
+                padding: 24px;
+                max-width: 400px;
+                width: 100%;
+                backdrop-filter: blur(10px);
+                border: 1px solid ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
+            }
+
+            .news-card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 16px;
+            }
+
+            .news-source {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .source-logo {
+                width: 24px;
+                height: 24px;
+                background: #8b5cf6;
+                color: white;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                font-size: 14px;
+            }
+
+            .source-name {
+                color: ${isDark ? 'white' : '#374151'};
+                font-weight: 500;
+            }
+
+            .news-attribution {
+                background: rgba(139, 92, 246, 0.2);
+                color: #8b5cf6;
+                padding: 4px 12px;
+                border-radius: 12px;
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            .news-title {
+                color: ${isDark ? 'white' : '#111827'};
+                font-size: 18px;
+                font-weight: 600;
+                margin-bottom: 8px;
+                line-height: 1.4;
+            }
+
+            .news-date {
+                color: ${isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(107, 114, 128, 0.7)'};
+                font-size: 14px;
+                margin-bottom: 16px;
+            }
+
+            .news-thumbnail {
+                width: 60px;
+                height: 60px;
+                border-radius: 8px;
+                object-fit: cover;
+                position: absolute;
+                right: 24px;
+                bottom: 24px;
+            }
+
+            /* Voice Selector */
+            .audio-voice-selector {
+                background: ${isDark ? 'rgba(26, 26, 26, 0.9)' : 'rgba(255, 255, 255, 0.95)'};
+                border-radius: 12px;
+                padding: 16px;
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                backdrop-filter: blur(10px);
+                border: 1px solid ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
+            }
+            
+            .voice-label {
+                color: ${isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(107, 114, 128, 0.8)'};
+                font-size: 14px;
+                font-weight: 500;
+                min-width: 50px;
+            }
+            
+            .audio-voice-select {
+                flex: 1;
+                background: ${isDark ? '#2a2a2a' : '#ffffff'};
+                border: 1px solid ${isDark ? '#444' : '#d1d5db'};
+                border-radius: 8px;
+                padding: 10px 16px;
+                color: ${isDark ? 'white' : '#374151'};
+                font-size: 14px;
+                cursor: pointer;
+                outline: none;
+                transition: all 0.2s ease;
+                font-family: inherit;
+            }
+            
+            .audio-voice-select:hover {
+                border-color: ${isDark ? '#555' : '#9ca3af'};
+                background: ${isDark ? '#333' : '#f9fafb'};
+            }
+            
+            .audio-voice-select:focus {
+                border-color: #8b5cf6;
+                box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+            }
+            
+            .audio-voice-select option {
+                background: ${isDark ? '#2a2a2a' : '#ffffff'};
+                color: ${isDark ? 'white' : '#374151'};
+                padding: 8px;
+            }
+
+            /* Player Controls */
+            .audio-player-controls {
+                position: relative;
+                z-index: 10;
+                background: rgba(0, 0, 0, 0.8);
+                backdrop-filter: blur(20px);
+                padding: 30px 20px;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .player-title {
+                color: white;
+                font-size: 18px;
+                font-weight: 600;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            /* Progress Bar */
+            .audio-progress-container {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 30px;
+            }
+
+            .time-current, .time-total {
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 14px;
+                min-width: 40px;
+            }
+
+            .audio-progress-bar {
+                flex: 1;
+                height: 4px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 2px;
+                position: relative;
+                cursor: pointer;
+            }
+
+            .audio-progress-track {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 2px;
+            }
+
+            .audio-progress-fill {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                background: white;
+                border-radius: 2px;
+                transition: width 0.1s ease;
+            }
+
+            .audio-progress-handle {
+                position: absolute;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                width: 12px;
+                height: 12px;
+                background: white;
+                border-radius: 50%;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                transition: left 0.1s ease;
+            }
+
+            /* Control Buttons */
+            .audio-control-buttons {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 24px;
+                margin-bottom: 20px;
+            }
+
+            .audio-control-buttons button {
+                background: transparent;
+                border: none;
+                color: white;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                padding: 8px;
+            }
+
+            .audio-control-buttons button:hover {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+
+            .audio-play-pause {
+                background: white !important;
+                color: black !important;
+                width: 64px;
+                height: 64px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0 !important;
+            }
+
+            .audio-play-pause:hover {
+                transform: scale(1.05);
+            }
+
+            .audio-download {
+                position: absolute;
+                bottom: 20px;
+                right: 20px;
+                background: transparent;
+                border: none;
+                color: rgba(255, 255, 255, 0.7);
+                padding: 12px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+
+            .audio-download:hover {
+                color: white;
+                transform: scale(1.1);
+            }
+
+            /* Mobile Responsive */
+            @media (max-width: 768px) {
+                .audio-news-card {
+                    max-width: 90vw;
+                    padding: 20px;
+                }
+                
+                .audio-control-buttons {
+                    gap: 16px;
+                }
+                
+                .audio-play-pause {
+                    width: 56px;
+                    height: 56px;
+                }
+            }
         `;
     }
 
@@ -1350,6 +2260,10 @@
         widgetContainer.id = 'gist-widget-container';
         
         const shadowRoot = widgetContainer.attachShadow({ mode: 'closed' });
+        
+        // Debug theme detection
+        console.log('[GIST DEBUG] Starting comprehensive theme analysis...');
+        debugThemeDetection();
         
         // Analyze website styling
         const extractedStyling = await analyzeWebsiteStyling();
@@ -1371,22 +2285,11 @@
                 </div>
                                 <div class="gist-message-content">
                                     <div class="gist-message-text">Hello! I'm here to help you understand this content. What would you like to know?</div>
-                                    <div class="gist-suggested-questions" id="gist-welcome-questions">
-                                        <div class="gist-suggested-questions-title">Try asking:</div>
-                                        <button class="gist-suggested-question" data-question="What is this article about?">
-                                            <span class="gist-suggested-question-text">What is this article about?</span>
-                                        </button>
-                                        <button class="gist-suggested-question" data-question="Can you summarize the main points?">
-                                            <span class="gist-suggested-question-text">Can you summarize the main points?</span>
-                                        </button>
-                                        <button class="gist-suggested-question" data-question="What are the key takeaways?">
-                                            <span class="gist-suggested-question-text">What are the key takeaways?</span>
-                                        </button>
+                                    <div id="gist-welcome-questions" class="gist-suggested-questions hidden"></div>
                     </div>
                 </div>
                 </div>
                         </div>
-                    </div>
                     <div class="gist-chat-footer">
                         <div class="gist-powered-section">
                             <img src="${BACKEND_BASE_URL}/gist-logo.png" alt="Gist Logo" class="gist-footer-logo">
@@ -1402,7 +2305,11 @@
                         `<img src="${BACKEND_BASE_URL}/gist-logo.png" class="gist-pill-logo" alt="Gist Logo">`
                     }
                     <input type="text" class="gist-pill-input" placeholder="Ask anything..." id="gist-input">
-                    <button class="gist-pill-submit" id="gist-submit">↗</button>
+                    <button class="gist-pill-submit" id="gist-submit">
+                        <img src="${BACKEND_BASE_URL}/Gist G white no background.png" 
+                             alt="Submit" 
+                             class="gist-submit-logo" />
+                    </button>
                 </div>
             </div>
         `;
@@ -1575,12 +2482,9 @@ Instructions:
         async function generateSuggestedQuestions() {
             const context = extractPageContext();
             
-            if (!context.content || context.content.length < 50) {
-                return [
-                    "What are the main themes of this page?",
-                    "Can you explain the key concepts?",
-                    "What should I know about this topic?"
-                ];
+            // Only proceed if we have substantial content to analyze
+            if (!context.content || context.content.length < 100) {
+                throw new Error('Insufficient content for question generation');
             }
             
             // Extract key entities and topics from content for more specific questions
@@ -1640,40 +2544,33 @@ Return exactly 3 questions, one per line, no numbering:`;
                     }
                 }
                 
-                // Return first 3 valid questions or create context-specific fallbacks
+                // Only return questions if we have at least 2 good ones
                 const validQuestions = questions.slice(0, 3);
-                if (validQuestions.length >= 3) {
+                if (validQuestions.length >= 2) {
+                    // If we have 2 good questions, try to add one context-specific fallback
+                    if (validQuestions.length === 2) {
+                        const contextFallbacks = createContextSpecificFallbacks(context, contentAnalysis);
+                        if (contextFallbacks.length > 0) {
+                            validQuestions.push(contextFallbacks[0]);
+                        }
+                    }
                     return validQuestions;
                 }
                 
-                // Create context-specific fallbacks based on content analysis
-                const contextFallbacks = createContextSpecificFallbacks(context, contentAnalysis);
-                
-                while (validQuestions.length < 3 && contextFallbacks.length > 0) {
-                    validQuestions.push(contextFallbacks.shift());
-                }
-                
-                // Final generic fallbacks if needed
-                const genericFallbacks = [
-                    "What are the main findings discussed here?",
-                    "How does this relate to current trends?",
-                    "What should I know about this topic?"
-                ];
-                
-                while (validQuestions.length < 3) {
-                    validQuestions.push(genericFallbacks[validQuestions.length]);
-                }
-                
-                return validQuestions;
+                // If we don't have enough good questions, throw error to hide section
+                throw new Error('Could not generate quality questions');
                     
                 } catch (error) {
-                // Return context-aware fallbacks even on error
+                // Try context-specific fallbacks only if they're truly relevant
                 const contextFallbacks = createContextSpecificFallbacks(context, analyzePageContent(context));
-                return contextFallbacks.length >= 3 ? contextFallbacks.slice(0, 3) : [
-                    "What is this article about?",
-                    "Can you summarize the main points?",
-                    "What are the key takeaways?"
-                ];
+                
+                // Only return fallbacks if we have good context-specific ones
+                if (contextFallbacks.length >= 2) {
+                    return contextFallbacks.slice(0, 3);
+                }
+                
+                // Otherwise, throw error to hide the section
+                throw new Error('Could not generate relevant questions for this content');
             }
         }
         
@@ -1814,7 +2711,7 @@ Return exactly 3 questions, one per line, no numbering:`;
                         <div class="gist-skeleton-box" style="width: 90%;"></div>
                         <div class="gist-skeleton-box" style="width: 60%;"></div>
                         <div class="gist-skeleton-box" style="width: 75%;"></div>
-                </div>
+                    </div>
                     </div>
             `;
             
@@ -1836,8 +2733,8 @@ Return exactly 3 questions, one per line, no numbering:`;
                             <div class="gist-loading-spinner-orange"></div>
                             <span>Obtaining sources</span>
                     </div>
-                </div>
-            `;
+                    </div>
+                `;
             }
         }
 
@@ -1849,7 +2746,7 @@ Return exactly 3 questions, one per line, no numbering:`;
                         <div class="gist-loading-header">
                             <div class="gist-loading-spinner-orange"></div>
                             <span>Generating answer</span>
-                        </div>
+                    </div>
                 </div>
             `;
             }
@@ -1929,12 +2826,12 @@ Return exactly 3 questions, one per line, no numbering:`;
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
                             </svg>
-                        </button>
+                            </button>
                         <button class="gist-engagement-btn gist-dislike-btn" title="Dislike">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path>
                             </svg>
-                        </button>
+                            </button>
                         <button class="gist-engagement-btn gist-share-btn">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
@@ -1942,15 +2839,15 @@ Return exactly 3 questions, one per line, no numbering:`;
                                 <line x1="12" y1="2" x2="12" y2="15"></line>
                             </svg>
                             <span>Share</span>
-                        </button>
+                            </button>
                         <button class="gist-engagement-btn gist-remix-btn">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M23 7l-7 5 7 5V7z"></path>
                                 <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
                             </svg>
                             <span>Remix</span>
-                        </button>
-                    </div>
+                            </button>
+                        </div>
                 `;
                 answerLayout.appendChild(engagementFooter);
                 
@@ -1977,14 +2874,15 @@ Return exactly 3 questions, one per line, no numbering:`;
                 
                 // Generate and add follow-up questions after typewriter completes
                 setTimeout(async () => {
-                    // Show the follow-up questions section
-                    suggestedQuestionsSection.classList.remove('hidden');
-                    suggestedQuestionsSection.classList.add('fade-in');
-                    await addFollowUpQuestions(suggestedQuestionsSection, question, answer);
+                    // Show the follow-up questions section with a subtle delay
+                    setTimeout(() => {
+                        suggestedQuestionsSection.classList.remove('hidden');
+                        addFollowUpQuestions(suggestedQuestionsSection, question, answer);
+                    }, 200); // 200ms delay for elegant timing
                 }, answer.length * 5 + 500); // Wait for typewriter to finish + buffer
                 
                 // Add event listeners for engagement buttons
-                setTimeout(() => {
+            setTimeout(() => {
                     const likeBtn = engagementFooter.querySelector('.gist-like-btn');
                     const dislikeBtn = engagementFooter.querySelector('.gist-dislike-btn');
                     const shareBtn = engagementFooter.querySelector('.gist-share-btn');
@@ -2024,7 +2922,7 @@ Return exactly 3 questions, one per line, no numbering:`;
                                 </svg>
                                 <span>Copied!</span>
                             `;
-                setTimeout(() => {
+            setTimeout(() => {
                                 shareBtn.innerHTML = `
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
@@ -2043,7 +2941,7 @@ Return exactly 3 questions, one per line, no numbering:`;
                 }, 100);
             
                 // Scroll to show the new answer
-                    setTimeout(() => {
+            setTimeout(() => {
                     answerLayout.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 100);
             }
@@ -2086,10 +2984,10 @@ Return exactly 3 questions, one per line, no numbering:`;
                                 <span class="gist-follow-up-text">${question}</span>
                             </button>
                         `).join('')}
-                    </div>
-                `;
-                
-                // Add click handlers for follow-up questions
+                </div>
+            `;
+            
+                                // Add click handlers for follow-up questions
                 const questionButtons = container.querySelectorAll('.gist-follow-up-question');
                 questionButtons.forEach(button => {
                     button.addEventListener('click', () => {
@@ -2099,11 +2997,8 @@ Return exactly 3 questions, one per line, no numbering:`;
                     });
                 });
             
-                // Animate in the questions
-            setTimeout(() => {
-                    container.style.opacity = '1';
-                    container.style.transform = 'translateY(0)';
-                }, 100);
+                // Trigger fade-in animation
+                container.classList.add('fade-in');
                 
             } catch (error) {
                 console.error('Failed to generate follow-up questions:', error);
@@ -2218,9 +3113,9 @@ Return exactly 3 questions, one per line, no numbering:`;
                     currentSession.innerHTML = `
                         <div class="gist-error">
                             <strong>Error:</strong> ${error.message}
-                            </div>
-                        `;
-                }
+                </div>
+            `;
+        }
             }
         }
 
@@ -2252,14 +3147,821 @@ Return exactly 3 questions, one per line, no numbering:`;
                 welcomeMessage.style.transform = 'translateY(-10px)';
                 
                 // Remove from DOM after animation
-            setTimeout(() => {
+                setTimeout(() => {
                     welcomeMessage.remove();
                 }, 300);
             }
         }
 
+        // Create audio player function
+        function createAudioPlayer(question, originalContent) {
+            // Remove existing player if any
+            const existingPlayer = shadowRoot.querySelector('.gist-audio-player');
+            if (existingPlayer) {
+                existingPlayer.remove();
+            }
+            
+            // Create audio player container
+            const audioPlayer = document.createElement('div');
+            audioPlayer.className = 'gist-audio-player';
+            
+            audioPlayer.innerHTML = `
+                <div class="audio-player-container">
+                    <!-- Dynamic background canvas -->
+                    <canvas id="audio-visualizer" class="audio-visualizer"></canvas>
+                    <div class="audio-gradient-overlay"></div>
+                    
+                    <!-- Header controls -->
+                    <div class="audio-player-header">
+                        <button class="audio-back-btn" id="audio-back">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </button>
+                        <button class="audio-options-btn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <circle cx="12" cy="5" r="1"></circle>
+                                <circle cx="12" cy="19" r="1"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- Main content area -->
+                    <div class="audio-content-area">
+                        <!-- News card -->
+                        <div class="audio-news-card">
+                            <div class="news-card-header">
+                                <div class="news-source">
+                                    <span class="source-logo">G</span>
+                                    <span class="source-name">Gist</span>
+                                </div>
+                                <span class="news-attribution">AI</span>
+                            </div>
+                            <h3 class="news-title">${question || 'Audio News Update'}</h3>
+                            <p class="news-date">${new Date().toLocaleDateString()} · Generated audio content</p>
+                            <img src="${extractedStyling.logoUrl || `${BACKEND_BASE_URL}/gist-logo.png`}" alt="Thumbnail" class="news-thumbnail">
+                        </div>
+                        
+                        <!-- Voice selector -->
+                        <div class="audio-voice-selector">
+                            <label class="voice-label">Voice:</label>
+                            <select class="audio-voice-select" id="audio-voice-select">
+                                <option value="21m00Tcm4TlvDq8ikWAM">Rachel - American (calm)</option>
+                                <option value="yoZ06aMxZJJ28mfd3POQ">Sam - American (raspy)</option>
+                                <option value="TxGEqnHWrfWFTfGW9XjX">Josh - American (deep)</option>
+                                <option value="piTKgcLEGmPE4e6mEKli">Nicole - American (soft)</option>
+                                <option value="SOYHLrjzK2X1ezoPC6cr">Harry - American (anxious)</option>
+                                <option value="oWAxZDx7w5VEj9dCyTzz">Grace - Southern American (pleasant)</option>
+                                <option value="bVMeCyTHy58xNoL34h3p">Jeremy - Irish (excited)</option>
+                                <option value="ZQe5CZNOzWyzPSCn5a3c">James - Australian (calm)</option>
+                                <option value="Zlb1dXrM653N07WRdFW3">Joseph - British (articulate)</option>
+                                <option value="GBv7mTt0atIp3Br8iCZE">Thomas - American (meditation)</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Time display above news card -->
+                        <div class="time-label">Live Audio</div>
+                        
+                        <!-- Black pill button -->
+                        <button class="mirror-btn">Mirror</button>
+                    </div>
+                    
+                    <!-- Audio player controls -->
+                    <div class="audio-player-controls">
+                        <h2 class="player-title">Gist News Snap: ${new Date().toLocaleDateString()}</h2>
+                        
+                        <!-- Progress bar -->
+                        <div class="audio-progress-container">
+                            <span class="time-current">0:00</span>
+                            <div class="audio-progress-bar">
+                                <div class="audio-progress-track"></div>
+                                <div class="audio-progress-fill" style="width: 0%;"></div>
+                                <div class="audio-progress-handle" style="left: 0%;"></div>
+                            </div>
+                            <span class="time-total">0:00</span>
+                        </div>
+                        
+                        <!-- Control buttons -->
+                        <div class="audio-control-buttons">
+                            <button class="audio-shuffle">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="16 3 21 3 21 8"></polyline>
+                                    <line x1="4" y1="20" x2="21" y2="3"></line>
+                                    <polyline points="21 16 21 21 16 21"></polyline>
+                                    <line x1="15" y1="15" x2="21" y2="21"></line>
+                                    <line x1="4" y1="4" x2="9" y2="9"></line>
+                                </svg>
+                            </button>
+                            
+                            <button class="audio-previous">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="19 20 9 12 19 4 19 20"></polygon>
+                                    <line x1="5" y1="19" x2="5" y2="5"></line>
+                                </svg>
+                            </button>
+                            
+                            <button class="audio-play-pause" id="audio-play-pause">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
+                            </button>
+                            
+                            <button class="audio-next">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                                    <line x1="19" y1="5" x2="19" y2="19"></line>
+                                </svg>
+                            </button>
+                            
+                            <button class="audio-repeat">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="17 1 21 5 17 9"></polyline>
+                                    <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                                    <polyline points="7 23 3 19 7 15"></polyline>
+                                    <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <!-- Download button -->
+                        <button class="audio-download">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Add to shadow root
+            shadowRoot.appendChild(audioPlayer);
+            
+            // Initialize visualizer
+            function initializeVisualizer() {
+                const canvas = shadowRoot.getElementById('audio-visualizer');
+                if (!canvas) return;
+                
+                const ctx = canvas.getContext('2d');
+                
+                // Set canvas size
+                function resizeCanvas() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                }
+                resizeCanvas();
+                window.addEventListener('resize', resizeCanvas);
+                
+                // Create animated wave effect
+                let animationId;
+                let time = 0;
+                
+                function drawWaves() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Create gradient
+                    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                    gradient.addColorStop(0, 'rgba(139, 92, 246, 0.3)');
+                    gradient.addColorStop(0.5, 'rgba(236, 72, 153, 0.3)');
+                    gradient.addColorStop(1, 'rgba(245, 158, 11, 0.3)');
+                    
+                    ctx.strokeStyle = gradient;
+                    ctx.lineWidth = 2;
+                    
+                    // Draw multiple wave layers
+                    for (let layer = 0; layer < 5; layer++) {
+                        ctx.beginPath();
+                        
+                        for (let x = 0; x < canvas.width; x += 5) {
+                            const y = canvas.height / 2 + 
+                                Math.sin((x + time) * 0.01 + layer) * 50 * Math.sin(time * 0.001) +
+                                Math.sin((x + time) * 0.02 + layer * 2) * 30 +
+                                Math.sin((x + time) * 0.005 + layer * 3) * 60;
+                            
+                            if (x === 0) {
+                                ctx.moveTo(x, y);
+                            } else {
+                                ctx.lineTo(x, y);
+                            }
+                        }
+                        
+                        ctx.stroke();
+                    }
+                    
+                    // Draw grid lines
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+                    ctx.lineWidth = 1;
+                    
+                    // Horizontal lines
+                    for (let y = 0; y < canvas.height; y += 40) {
+                        ctx.beginPath();
+                        ctx.moveTo(0, y);
+                        ctx.lineTo(canvas.width, y);
+                        ctx.stroke();
+                    }
+                    
+                    // Vertical lines with perspective
+                    for (let x = 0; x < canvas.width; x += 40) {
+                        ctx.beginPath();
+                        ctx.moveTo(x, canvas.height);
+                        
+                        // Create perspective effect
+                        const perspectiveX = x + (x - canvas.width / 2) * 0.5;
+                        ctx.lineTo(perspectiveX, 0);
+                        ctx.stroke();
+                    }
+                    
+                    time += 2;
+                    animationId = requestAnimationFrame(drawWaves);
+                }
+                
+                drawWaves();
+                
+                // Store animation ID for cleanup
+                canvas.dataset.animationId = animationId;
+            }
+            
+            initializeVisualizer();
+            
+            // Set up event listeners
+            function setupAudioPlayerEvents(audioPlayer, question, originalContent) {
+                // Shared state variables - store on audioPlayer for persistence
+                audioPlayer.isPlaying = false;
+                audioPlayer.isDragging = false;
+                
+                // Back button - return to remix modal
+                const backBtn = audioPlayer.querySelector('#audio-back');
+                backBtn.addEventListener('click', () => {
+                    // Stop visualizer animation
+                    const canvas = audioPlayer.querySelector('#audio-visualizer');
+                    if (canvas && canvas.dataset.animationId) {
+                        cancelAnimationFrame(canvas.dataset.animationId);
+                    }
+                    
+                    // Stop audio if playing
+                    if (audioPlayer.audio) {
+                        audioPlayer.audio.pause();
+                        audioPlayer.audio = null;
+                    }
+                    
+                    // Stop client-side TTS if active
+                    if (audioPlayer.speechUtterance) {
+                        speechSynthesis.cancel();
+                        audioPlayer.speechUtterance = null;
+                    }
+                    
+                    // Hide and remove player
+                    audioPlayer.classList.remove('visible');
+                    setTimeout(() => {
+                        audioPlayer.remove();
+                        // Recreate remix modal
+                        createRemixModal(originalContent);
+                    }, 300);
+                });
+                
+                // Play/pause button
+                const playPauseBtn = audioPlayer.querySelector('#audio-play-pause');
+                const progressFill = audioPlayer.querySelector('.audio-progress-fill');
+                const progressHandle = audioPlayer.querySelector('.audio-progress-handle');
+                const currentTimeSpan = audioPlayer.querySelector('.time-current');
+                const totalTimeSpan = audioPlayer.querySelector('.time-total');
+                
+                playPauseBtn.addEventListener('click', async () => {
+                    // Handle client-side TTS separately
+                    if (audioPlayer.isClientTTS) {
+                        if (audioPlayer.isPlaying) {
+                            // Stop TTS (can't pause, only stop)
+                            speechSynthesis.cancel();
+                            audioPlayer.isPlaying = false;
+                            audioPlayer.speechUtterance = null;
+                            playPauseBtn.innerHTML = `
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
+                            `;
+                        } else {
+                            // Regenerate and play TTS
+                            playPauseBtn.innerHTML = `
+                                <div class="gist-loading-spinner-orange" style="width: 30px; height: 30px;"></div>
+                            `;
+                            playPauseBtn.disabled = true;
+                            await generateAndStreamAudio(audioPlayer, question, originalContent);
+                            playPauseBtn.disabled = false;
+                        }
+                        return;
+                    }
+                    
+                    // If no audio exists yet, generate it first
+                    if (!audioPlayer.audio) {
+                        // Show loading state
+                        playPauseBtn.innerHTML = `
+                            <div class="gist-loading-spinner-orange" style="width: 30px; height: 30px;"></div>
+                        `;
+                        playPauseBtn.disabled = true;
+                        
+                        // Generate audio
+                        await generateAndStreamAudio(audioPlayer, question, originalContent);
+                        playPauseBtn.disabled = false;
+                        
+                        // After audio is loaded, start playing
+                        if (audioPlayer.audio) {
+                            audioPlayer.audio.play();
+                            audioPlayer.isPlaying = true;
+                            playPauseBtn.innerHTML = `
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="6" y="4" width="4" height="16"></rect>
+                                    <rect x="14" y="4" width="4" height="16"></rect>
+                                </svg>
+                            `;
+                        }
+                        return;
+                    }
+                    
+                    // Toggle play/pause for regular audio
+                    if (audioPlayer.isPlaying) {
+                        audioPlayer.audio.pause();
+                        audioPlayer.isPlaying = false;
+                        playPauseBtn.innerHTML = `
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                        `;
+                    } else {
+                        audioPlayer.audio.play();
+                        audioPlayer.isPlaying = true;
+                        playPauseBtn.innerHTML = `
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                <rect x="6" y="4" width="4" height="16"></rect>
+                                <rect x="14" y="4" width="4" height="16"></rect>
+                            </svg>
+                        `;
+                    }
+                });
+                
+                // Progress bar interaction
+                const progressBar = audioPlayer.querySelector('.audio-progress-bar');
+                
+                progressBar.addEventListener('mousedown', startDragging);
+                document.addEventListener('mousemove', handleDragging);
+                document.addEventListener('mouseup', stopDragging);
+                
+                function startDragging(e) {
+                    audioPlayer.isDragging = true;
+                    updateProgress(e);
+                }
+                
+                function handleDragging(e) {
+                    if (!audioPlayer.isDragging) return;
+                    updateProgress(e);
+                }
+                
+                function stopDragging() {
+                    audioPlayer.isDragging = false;
+                }
+                
+                function updateProgress(e) {
+                    const rect = progressBar.getBoundingClientRect();
+                    const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                    
+                    progressFill.style.width = `${percent * 100}%`;
+                    progressHandle.style.left = `${percent * 100}%`;
+                    
+                    // Update audio position if audio exists
+                    const audio = audioPlayer.audio;
+                    if (audio && audio.duration) {
+                        audio.currentTime = audio.duration * percent;
+                        
+                        const minutes = Math.floor(audio.currentTime / 60);
+                        const seconds = Math.floor(audio.currentTime % 60);
+                        currentTimeSpan.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    }
+                }
+                
+                // Mirror button
+                const mirrorBtn = audioPlayer.querySelector('.mirror-btn');
+                mirrorBtn.addEventListener('click', () => {
+                    // Animate button press
+                    mirrorBtn.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        mirrorBtn.style.transform = 'scale(1)';
+                    }, 100);
+                    
+                    // Show notification
+                    showSuccessNotification('Audio mirrored to your library');
+                });
+                
+                // Download button
+                const downloadBtn = audioPlayer.querySelector('.audio-download');
+                downloadBtn.addEventListener('click', () => {
+                    if (audioPlayer.audio && audioPlayer.audioUrl) {
+                        const a = document.createElement('a');
+                        a.href = audioPlayer.audioUrl;
+                        a.download = `gist-audio-${Date.now()}.mp3`;
+                        a.click();
+                        showSuccessNotification('Audio download started');
+                    } else {
+                        showErrorNotification('Audio not ready for download');
+                    }
+                });
+                
+                // Generate and stream audio content
+                async function generateAndStreamAudio(audioPlayer, question, content) {
+                    try {
+                        // Show loading state
+                        const newsTitle = audioPlayer.querySelector('.news-title');
+                        if (newsTitle) {
+                            newsTitle.textContent = 'Generating audio...';
+                        }
+                        
+                        // Get selected voice ID
+                        const voiceSelect = audioPlayer.querySelector('#audio-voice-select');
+                        const selectedVoiceId = voiceSelect ? voiceSelect.value : '21m00Tcm4TlvDq8ikWAM';
+                        
+                        // DEBUG: Log the selected voice
+                        console.log('[GIST DEBUG] Selected voice ID:', selectedVoiceId);
+                        console.log('[GIST DEBUG] Voice dropdown element:', voiceSelect);
+                        
+                        const requestPayload = {
+                            question: question,
+                            text: content?.substring(0, 500), // Limit content length
+                            voicePreset: 'news',
+                            voiceId: selectedVoiceId
+                        };
+                        
+                        // DEBUG: Log the request
+                        console.log('[GIST DEBUG] API request payload:', requestPayload);
+                        console.log('[GIST DEBUG] API URL:', `${BACKEND_BASE_URL}/api/generate-audio`);
+                        
+                        // Call the backend API for audio generation
+                        const response = await fetch(`${BACKEND_BASE_URL}/api/generate-audio`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(requestPayload)
+                        });
+                        
+                        // DEBUG: Log response details
+                        console.log('[GIST DEBUG] Response status:', response.status);
+                        console.log('[GIST DEBUG] Response headers:', Object.fromEntries(response.headers.entries()));
+                        console.log('[GIST DEBUG] Response content-type:', response.headers.get('content-type'));
+                        
+                        // Check content type FIRST before parsing
+                        const contentType = response.headers.get('content-type');
+                        
+                        if (response.ok && contentType?.includes('audio')) {
+                            // Handle audio stream from ElevenLabs
+                            console.log('[GIST DEBUG] Using ElevenLabs audio stream');
+                            const audioBlob = await response.blob();
+                            console.log('[GIST DEBUG] Audio blob size:', audioBlob.size, 'bytes');
+                            const audioUrl = URL.createObjectURL(audioBlob);
+                            
+                            // Create audio element
+                            const audio = new Audio(audioUrl);
+                            audio.id = 'generated-audio';
+                            audioPlayer.audio = audio;
+                            audioPlayer.audioUrl = audioUrl;
+                            
+                            // Set up audio event listeners
+                            setupAudioEventListeners(audioPlayer, audio, question);
+                            
+                            // Update UI to show audio is ready
+                            const newsTitle = audioPlayer.querySelector('.news-title');
+                            if (newsTitle) {
+                                newsTitle.textContent = question || 'Audio ready';
+                            }
+                            
+                        } else if (contentType?.includes('application/json')) {
+                            // Handle JSON response (TTS fallback)
+                            const data = await response.json();
+                            console.log('[GIST DEBUG] Response data:', data);
+                            
+                            if (data.useClientTTS) {
+                                // Use client-side TTS with the generated script
+                                console.log('[GIST DEBUG] Using client-side TTS fallback');
+                                console.log('[GIST DEBUG] TTS script:', data.script);
+                                await generateClientSideTTS(audioPlayer, data.script, question);
+                            } else {
+                                console.log('[GIST DEBUG] JSON response but no useClientTTS flag');
+                                throw new Error(data.error || 'Audio generation failed');
+                            }
+                            
+                        } else {
+                            console.log('[GIST DEBUG] Unexpected response type');
+                            console.log('[GIST DEBUG] Response OK:', response.ok);
+                            console.log('[GIST DEBUG] Content-type:', contentType);
+                            
+                            // Try to get error message if possible
+                            let errorMessage = 'Audio generation failed';
+                            try {
+                                const data = await response.json();
+                                errorMessage = data.error || errorMessage;
+                            } catch (parseError) {
+                                console.log('[GIST DEBUG] Could not parse error response as JSON');
+                            }
+                            
+                            throw new Error(errorMessage);
+                        }
+                        
+                    } catch (error) {
+                        console.error('Audio generation failed:', error);
+                        
+                        // Show error in UI
+                        const newsTitle = audioPlayer.querySelector('.news-title');
+                        if (newsTitle) {
+                            newsTitle.textContent = 'Audio generation failed';
+                        }
+                        
+                        showErrorNotification('Failed to generate audio. Please try again.');
+                    }
+                }
+
+                // Generate client-side TTS function
+                async function generateClientSideTTS(audioPlayer, script, question) {
+                    try {
+                        // Check if browser supports Speech Synthesis
+                        if (!('speechSynthesis' in window)) {
+                            throw new Error('Speech synthesis not supported');
+                        }
+                        
+                        // Update UI to show TTS generation
+                        const newsTitle = audioPlayer.querySelector('.news-title');
+                        if (newsTitle) {
+                            newsTitle.textContent = 'Generating speech...';
+                        }
+                        
+                        // Create speech synthesis utterance
+                        const utterance = new SpeechSynthesisUtterance(script);
+                        
+                        // Configure voice settings
+                        utterance.rate = 0.9; // Slightly slower for news reading
+                        utterance.pitch = 1.0;
+                        utterance.volume = 1.0;
+                        
+                        // Get selected voice from dropdown or use default
+                        const voiceSelect = audioPlayer.querySelector('#audio-voice-select');
+                        const voices = speechSynthesis.getVoices();
+                        
+                        let selectedVoice = null;
+                        if (voiceSelect && voiceSelect.value && voices.length > 0) {
+                            // For client-side TTS, map ElevenLabs voice IDs to browser voices
+                            const voiceMap = {
+                                '21m00Tcm4TlvDq8ikWAM': 'female', // Rachel
+                                'yoZ06aMxZJJ28mfd3POQ': 'male',   // Sam
+                                'TxGEqnHWrfWFTfGW9XjX': 'male',   // Josh
+                                'piTKgcLEGmPE4e6mEKli': 'female', // Nicole
+                                'SOYHLrjzK2X1ezoPC6cr': 'male',   // Harry
+                                'oWAxZDx7w5VEj9dCyTzz': 'female', // Grace
+                                'bVMeCyTHy58xNoL34h3p': 'male',   // Jeremy
+                                'ZQe5CZNOzWyzPSCn5a3c': 'male',   // James
+                                'Zlb1dXrM653N07WRdFW3': 'male',   // Joseph
+                                'GBv7mTt0atIp3Br8iCZE': 'male'    // Thomas
+                            };
+                            
+                            const preferredGender = voiceMap[voiceSelect.value] || 'female';
+                            
+                            // Try to find a voice matching the preferred gender
+                            selectedVoice = voices.find(voice => 
+                                voice.lang.startsWith('en') && 
+                                voice.name.toLowerCase().includes(preferredGender === 'female' ? 'female' : 'male')
+                            );
+                            
+                            // Fallback to any English voice
+                            if (!selectedVoice) {
+                                selectedVoice = voices.find(voice => 
+                                    voice.lang.startsWith('en') && 
+                                    (voice.name.includes('Google') || voice.name.includes('Microsoft'))
+                                ) || voices.find(voice => voice.lang.startsWith('en'));
+                            }
+                        } else {
+                            // Default professional voice selection
+                            selectedVoice = voices.find(voice => 
+                                voice.lang.startsWith('en') && 
+                                (voice.name.includes('Google') || voice.name.includes('Microsoft'))
+                            ) || voices.find(voice => voice.lang.startsWith('en'));
+                        }
+                        
+                        if (selectedVoice) {
+                            utterance.voice = selectedVoice;
+                        }
+                        
+                        // Create a promise to handle the speech synthesis
+                        const speakPromise = new Promise((resolve, reject) => {
+                            utterance.onend = () => resolve();
+                            utterance.onerror = (event) => reject(new Error('Speech synthesis failed: ' + event.error));
+                        });
+                        
+                        // Store the utterance for control
+                        audioPlayer.speechUtterance = utterance;
+                        audioPlayer.isClientTTS = true;
+                        audioPlayer.isPlaying = true;
+                        
+                        // Set up play/pause controls for TTS
+                        const playPauseBtn = audioPlayer.querySelector('#audio-play-pause');
+                        if (playPauseBtn) {
+                            playPauseBtn.innerHTML = `
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="6" y="4" width="4" height="16"></rect>
+                                    <rect x="14" y="4" width="4" height="16"></rect>
+                                </svg>
+                            `;
+                        }
+                        
+                        // Add event handlers for TTS completion
+                        utterance.onend = () => {
+                            audioPlayer.isPlaying = false;
+                            audioPlayer.speechUtterance = null;
+                            if (playPauseBtn) {
+                                playPauseBtn.innerHTML = `
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                    </svg>
+                                `;
+                            }
+                        };
+                        
+                        utterance.onerror = (event) => {
+                            console.error('Speech synthesis error:', event.error);
+                            audioPlayer.isPlaying = false;
+                            audioPlayer.speechUtterance = null;
+                            if (playPauseBtn) {
+                                playPauseBtn.innerHTML = `
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                    </svg>
+                                `;
+                            }
+                            showErrorNotification('Speech synthesis failed: ' + event.error);
+                        };
+                        
+                        // Start speaking
+                        speechSynthesis.speak(utterance);
+                        
+                        // Update UI to show it's ready
+                        if (newsTitle) {
+                            newsTitle.textContent = question || 'Audio News Update';
+                        }
+                        
+                    } catch (error) {
+                        console.error('Client-side TTS failed:', error);
+                        
+                        // Show error in UI
+                        const newsTitle = audioPlayer.querySelector('.news-title');
+                        if (newsTitle) {
+                            newsTitle.textContent = 'Speech generation failed';
+                        }
+                        
+                        showErrorNotification('Browser speech synthesis failed');
+                    }
+                }
+
+                // Setup audio event listeners for ElevenLabs audio
+                function setupAudioEventListeners(audioPlayer, audio, question) {
+                    const playPauseBtn = audioPlayer.querySelector('#audio-play-pause');
+                    const progressFill = audioPlayer.querySelector('.audio-progress-fill');
+                    const progressHandle = audioPlayer.querySelector('.audio-progress-handle');
+                    const currentTimeSpan = audioPlayer.querySelector('.time-current');
+                    const totalTimeSpan = audioPlayer.querySelector('.time-total');
+                    
+                    // Update total duration when metadata loads
+                    audio.addEventListener('loadedmetadata', () => {
+                        const duration = audio.duration;
+                        const minutes = Math.floor(duration / 60);
+                        const seconds = Math.floor(duration % 60);
+                        totalTimeSpan.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                        
+                        // Update news title
+                        const newsTitle = audioPlayer.querySelector('.news-title');
+                        if (newsTitle) {
+                            newsTitle.textContent = question || 'Audio ready';
+                        }
+                    });
+                    
+                    // Update progress bar as audio plays
+                    audio.addEventListener('timeupdate', () => {
+                        if (!audioPlayer.isDragging && audio.duration) {
+                            const percent = (audio.currentTime / audio.duration) * 100;
+                            progressFill.style.width = `${percent}%`;
+                            progressHandle.style.left = `${percent}%`;
+                            
+                            const minutes = Math.floor(audio.currentTime / 60);
+                            const seconds = Math.floor(audio.currentTime % 60);
+                            currentTimeSpan.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                        }
+                    });
+                    
+                    // Handle audio ended
+                    audio.addEventListener('ended', () => {
+                        audioPlayer.isPlaying = false;
+                        playPauseBtn.innerHTML = `
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                        `;
+                        // Reset progress
+                        progressFill.style.width = '0%';
+                        progressHandle.style.left = '0%';
+                        currentTimeSpan.textContent = '0:00';
+                    });
+                    
+                    // Handle play event (in case audio is played from elsewhere)
+                    audio.addEventListener('play', () => {
+                        audioPlayer.isPlaying = true;
+                        playPauseBtn.innerHTML = `
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                <rect x="6" y="4" width="4" height="16"></rect>
+                                <rect x="14" y="4" width="4" height="16"></rect>
+                            </svg>
+                        `;
+                    });
+                    
+                    // Handle pause event
+                    audio.addEventListener('pause', () => {
+                        audioPlayer.isPlaying = false;
+                        playPauseBtn.innerHTML = `
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                        `;
+                    });
+                    
+                    // Handle errors
+                    audio.addEventListener('error', (e) => {
+                        console.error('Audio playback error:', e);
+                        const newsTitle = audioPlayer.querySelector('.news-title');
+                        if (newsTitle) {
+                            newsTitle.textContent = 'Audio playback failed';
+                        }
+                        showErrorNotification('Audio playback failed');
+                    });
+                }
+
+                // Add voice change handler
+                const voiceSelect = audioPlayer.querySelector('#audio-voice-select');
+                if (voiceSelect) {
+                    voiceSelect.addEventListener('change', () => {
+                        // Stop current audio if playing
+                        if (audioPlayer.audio) {
+                            audioPlayer.audio.pause();
+                            audioPlayer.audio = null;
+                        }
+                        
+                        // Stop client-side TTS if active
+                        if (audioPlayer.speechUtterance) {
+                            speechSynthesis.cancel();
+                            audioPlayer.speechUtterance = null;
+                        }
+                        
+                        // Show loading state
+                        const newsTitle = audioPlayer.querySelector('.news-title');
+                        if (newsTitle) {
+                            newsTitle.textContent = 'Switching voice...';
+                        }
+                        
+                        // Reset play button
+                        const playPauseBtn = audioPlayer.querySelector('#audio-play-pause');
+                        if (playPauseBtn) {
+                            playPauseBtn.innerHTML = `
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
+                            `;
+                        }
+                        
+                        // Reset progress
+                        const progressFill = audioPlayer.querySelector('.audio-progress-fill');
+                        const progressHandle = audioPlayer.querySelector('.audio-progress-handle');
+                        const currentTime = audioPlayer.querySelector('.time-current');
+                        if (progressFill) progressFill.style.width = '0%';
+                        if (progressHandle) progressHandle.style.left = '0%';
+                        if (currentTime) currentTime.textContent = '0:00';
+                        
+                        // Regenerate with new voice
+                        setTimeout(() => {
+                            generateAndStreamAudio(audioPlayer, question, originalContent);
+                        }, 500); // Small delay for UX
+                    });
+                }
+
+                // Don't auto-generate audio - let user click play first
+                // generateAndStreamAudio(audioPlayer, question, originalContent);
+            }
+            
+            setupAudioPlayerEvents(audioPlayer, question, originalContent);
+            
+            // Show with animation
+            setTimeout(() => {
+                audioPlayer.classList.add('visible');
+            }, 10);
+        }
+
         // Create remix modal
         function createRemixModal(content) {
+            // Get the last user question, default to empty if none
+            const lastQuestion = window.lastUserQuestion || '';
+            
             // Remove existing modal if any
             const existingModal = shadowRoot.querySelector('.gist-remix-modal');
             if (existingModal) {
@@ -2284,43 +3986,198 @@ Return exactly 3 questions, one per line, no numbering:`;
                         <button class="gist-remix-tab" data-type="meme">Meme</button>
                     </div>
                     
-                    <div class="gist-remix-options">
-                        <div class="gist-remix-option-group">
-                            <label class="gist-remix-option-label">Style</label>
-                            <select class="gist-remix-select" id="remix-style">
-                                <option value="professional">Professional</option>
-                                <option value="casual">Casual</option>
-                                <option value="creative">Creative</option>
-                                <option value="minimalist">Minimalist</option>
-                            </select>
-                        </div>
-                        
-                        <div class="gist-remix-option-group">
-                            <label class="gist-remix-option-label">Format</label>
-                            <select class="gist-remix-select" id="remix-format">
-                                <option value="square">Square (1:1)</option>
-                                <option value="landscape">Landscape (16:9)</option>
-                                <option value="portrait">Portrait (9:16)</option>
-                                <option value="story">Story (9:16)</option>
-                            </select>
+                    <div class="gist-remix-body">
+                        <div class="gist-remix-tab-content" id="remix-tab-content">
+                            <div class="gist-remix-preview">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                                    <polyline points="21,15 16,10 5,21"/>
+                                </svg>
+                                <span>Your image remix preview will appear here</span>
+                            </div>
+                            
+                            <!-- Moved dropdowns here, below the preview -->
+                            <div class="gist-remix-options">
+                                <div class="gist-remix-option-group">
+                                    <button class="gist-remix-dropdown" data-dropdown="tone">
+                                        <span>Tone</span>
+                                        <span class="dropdown-arrow">◇</span>
+                                    </button>
+                                    <div class="gist-remix-dropdown-content" data-content="tone">
+                                        <select class="gist-remix-select" id="remix-tone">
+                                            <option value="professional">Professional</option>
+                                            <option value="casual">Casual</option>
+                                            <option value="humorous">Humorous</option>
+                                            <option value="serious">Serious</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="gist-remix-option-group">
+                                    <button class="gist-remix-dropdown" data-dropdown="style">
+                                        <span>Style</span>
+                                        <span class="dropdown-arrow">◇</span>
+                                    </button>
+                                    <div class="gist-remix-dropdown-content" data-content="style">
+                                        <select class="gist-remix-select" id="remix-style">
+                                            <option value="minimalist">Minimalist</option>
+                                            <option value="creative">Creative</option>
+                                            <option value="bold">Bold</option>
+                                            <option value="elegant">Elegant</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="gist-remix-option-group">
+                                    <button class="gist-remix-dropdown" data-dropdown="format">
+                                        <span>Format</span>
+                                        <span class="dropdown-arrow">◇</span>
+                                    </button>
+                                    <div class="gist-remix-dropdown-content" data-content="format">
+                                        <select class="gist-remix-select" id="remix-format">
+                                            <option value="square">Square (1:1)</option>
+                                            <option value="landscape">Landscape (16:9)</option>
+                                            <option value="portrait">Portrait (9:16)</option>
+                                            <option value="story">Story (9:16)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="gist-remix-suggestions">
+                                <div class="gist-remix-suggestion-card" data-suggestion="Make a meme about the Trump visa situation">
+                                    <div class="gist-remix-plus-icon">✨</div>
+                                    <div class="gist-remix-suggestion-text">Make a meme about the Trump visa situation</div>
+                                </div>
+                                <div class="gist-remix-suggestion-card" data-suggestion="A TikTok about the Taylor Swift drama">
+                                    <div class="gist-remix-plus-icon">✨</div>
+                                    <div class="gist-remix-suggestion-text">A TikTok about the Taylor Swift drama</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
-                    <button class="gist-remix-create">Create</button>
+                    <div class="gist-remix-input-container">
+                        <div class="gist-remix-search-wrapper">
+                            <input 
+                                type="text" 
+                                class="gist-remix-input" 
+                                placeholder="Remix..." 
+                                id="gist-remix-input"
+                                value="${lastQuestion.replace(/"/g, '&quot;')}"
+                            >
+                            <button class="gist-remix-voice-btn" title="Voice input">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                                    <line x1="8" y1="23" x2="16" y2="23"></line>
+                                </svg>
+                            </button>
+                            <button class="gist-remix-create-btn" id="gist-remix-submit">Create</button>
+                        </div>
+                    </div>
                 </div>
             `;
-
+            
             // Add to shadow root
             shadowRoot.appendChild(modal);
 
             // Get elements
             const closeBtn = modal.querySelector('.gist-remix-close');
             const tabs = modal.querySelectorAll('.gist-remix-tab');
-            const createBtn = modal.querySelector('.gist-remix-create');
-            const styleSelect = modal.querySelector('#remix-style');
-            const formatSelect = modal.querySelector('#remix-format');
+            const submitBtn = modal.querySelector('#gist-remix-submit');
+            const suggestionCards = modal.querySelectorAll('.gist-remix-suggestion-card');
+            const remixInput = modal.querySelector('#gist-remix-input');
+            const searchWrapper = modal.querySelector('.gist-remix-search-wrapper');
 
             let selectedType = 'image';
+
+            // Helper function to update suggestions
+            function updateSuggestions(type, question) {
+                const suggestionsContainer = modal.querySelector('.gist-remix-suggestions');
+                if (!suggestionsContainer) return;
+                
+                let suggestions = [];
+                
+                switch(type) {
+                    case 'image':
+                        suggestions = [
+                            `Create a ${question ? 'visual representation of ' + question : 'futuristic cityscape'}`,
+                            `Design an infographic about ${question || 'this topic'}`
+                        ];
+                        break;
+                    case 'video':
+                        suggestions = [
+                            `Make a TikTok explaining ${question || 'this concept'}`,
+                            `Create a short video tutorial about ${question || 'this'}`
+                        ];
+                        break;
+                    case 'audio':
+                        suggestions = [
+                            `Generate a podcast intro about ${question || 'this topic'}`,
+                            `Create background music for ${question || 'this content'}`
+                        ];
+                        break;
+                    case 'meme':
+                        suggestions = [
+                            `Make a meme about ${question || 'current events'}`,
+                            `Create a funny take on ${question || 'this situation'}`
+                        ];
+                        break;
+                }
+                
+                suggestionsContainer.innerHTML = suggestions.map(suggestion => `
+                    <div class="gist-remix-suggestion-card" data-suggestion="${suggestion}">
+                        <div class="gist-remix-plus-icon">✨</div>
+                        <div class="gist-remix-suggestion-text">${suggestion}</div>
+                    </div>
+                `).join('');
+                
+                // Re-attach click handlers
+                const newCards = suggestionsContainer.querySelectorAll('.gist-remix-suggestion-card');
+                newCards.forEach(card => {
+                    card.addEventListener('click', () => {
+                        remixInput.value = card.dataset.suggestion;
+                        remixInput.focus();
+                    });
+                });
+            }
+
+            // Add dropdown toggle functionality
+            const dropdownButtons = modal.querySelectorAll('.gist-remix-dropdown');
+            dropdownButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const dropdown = button.dataset.dropdown;
+                    const content = modal.querySelector(`[data-content="${dropdown}"]`);
+                    
+                    // Close other dropdowns
+                    modal.querySelectorAll('.gist-remix-dropdown-content').forEach(el => {
+                        if (el !== content) el.classList.remove('show');
+                    });
+                    modal.querySelectorAll('.gist-remix-dropdown').forEach(btn => {
+                        if (btn !== button) btn.classList.remove('open');
+                    });
+                    
+                    // Toggle current dropdown
+                    content.classList.toggle('show');
+                    button.classList.toggle('open');
+                });
+            });
+
+            // Close dropdowns when clicking outside
+            modal.addEventListener('click', (e) => {
+                if (!e.target.closest('.gist-remix-option-group')) {
+                    modal.querySelectorAll('.gist-remix-dropdown-content').forEach(el => {
+                        el.classList.remove('show');
+                    });
+                    modal.querySelectorAll('.gist-remix-dropdown').forEach(btn => {
+                        btn.classList.remove('open');
+                    });
+                }
+            });
 
             // Event listeners
             closeBtn.addEventListener('click', () => {
@@ -2342,30 +4199,291 @@ Return exactly 3 questions, one per line, no numbering:`;
                     tabs.forEach(t => t.classList.remove('active'));
                     tab.classList.add('active');
                     selectedType = tab.dataset.type;
+                    
+                    // Special handling for audio tab
+                    if (selectedType === 'audio') {
+                        // Hide the remix modal
+                        modal.classList.remove('visible');
+                        setTimeout(() => {
+                            modal.remove();
+                            // Create and show audio player
+                            createAudioPlayer(lastQuestion, content);
+                        }, 300);
+                        return;
+                    }
+                    
+                    // Update preview area based on selected type
+                    const previewArea = modal.querySelector('.gist-remix-preview');
+                    if (selectedType === 'video') {
+                        // Show video player for video tab
+                        previewArea.innerHTML = `
+                            <video 
+                                controls 
+                                style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px; background: #000;"
+                                poster=""
+                                preload="metadata"
+                            >
+                                <source src="${BACKEND_BASE_URL}/Avatar IV Video (4).mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        `;
+                    } else if (selectedType === 'image') {
+                        // Reset to image preview
+                        previewArea.innerHTML = `
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                <polyline points="21,15 16,10 5,21"/>
+                            </svg>
+                            <span>Your image remix preview will appear here</span>
+                        `;
+                    } else {
+                        // Default preview for other types
+                        const icons = {
+                            meme: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+                                <line x1="9" y1="9" x2="9.01" y2="9"/>
+                                <line x1="15" y1="9" x2="15.01" y2="9"/>
+                            </svg>`
+                        };
+                        
+                        previewArea.innerHTML = `
+                            ${icons[selectedType] || icons.meme}
+                            <span>Your ${selectedType} remix preview will appear here</span>
+                        `;
+                    }
+                    
+                    // Update placeholder based on type
+                    const placeholders = {
+                        image: `Create an image of ${lastQuestion || 'your idea'}...`,
+                        video: `Create a video about ${lastQuestion || 'your topic'}...`,
+                        audio: `Create audio for ${lastQuestion || 'your content'}...`,
+                        meme: `Make a meme about ${lastQuestion || 'this'}...`
+                    };
+                    remixInput.placeholder = placeholders[selectedType] || 'Describe your remix...';
+                    
+                    // Update suggestion cards based on type
+                    updateSuggestions(selectedType, lastQuestion);
                 });
             });
 
-            // Create button
-            createBtn.addEventListener('click', () => {
-                const style = styleSelect.value;
-                const format = formatSelect.value;
-                createRemixContent(selectedType, style, format, content);
-                modal.classList.remove('visible');
-                setTimeout(() => modal.remove(), 300);
+            // Suggestion cards
+            suggestionCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const suggestion = card.dataset.suggestion;
+                    remixInput.value = suggestion;
+                    remixInput.focus();
+                    // Add visual feedback
+                    card.style.background = '#333';
+                    setTimeout(() => {
+                        card.style.background = '#2a2a2a';
+                    }, 200);
+                });
+            });
+
+            // Submit function
+            const submitRemix = async () => {
+                const inputValue = remixInput.value.trim();
+                if (!inputValue) return;
+                
+                // Add loading state
+                submitBtn.classList.add('loading');
+                
+                // Disable input during generation
+                remixInput.disabled = true;
+                
+                // Get selected options
+                const tone = modal.querySelector('#remix-tone')?.value || 'professional';
+                const style = modal.querySelector('#remix-style')?.value || 'minimalist';
+                const format = modal.querySelector('#remix-format')?.value || 'square';
+                
+                // Update preview to show loading
+                const previewArea = modal.querySelector('.gist-remix-preview');
+                if (previewArea) {
+                    previewArea.innerHTML = `
+                        <div class="gist-loading-spinner-orange" style="width: 40px; height: 40px; border-width: 4px;"></div>
+                        <span>Generating your ${selectedType}...</span>
+                    `;
+                }
+                
+                try {
+                    // Call the API
+                    const response = await fetch(`${BACKEND_BASE_URL}/api/generate-image`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            prompt: inputValue,
+                            style: style,
+                            format: format
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success && data.imageUrl) {
+                        // Update preview with generated image
+                        if (previewArea) {
+                            previewArea.innerHTML = `
+                                <div style="position: relative; width: 100%; height: 100%;">
+                                    <img src="${data.imageUrl}" alt="Generated image" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">
+                                    <div style="position: absolute; bottom: 10px; right: 10px; display: flex; gap: 8px;">
+                                        <button onclick="window.open('${data.imageUrl}', '_blank')" style="background: rgba(0,0,0,0.7); color: white; border: none; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 14px;">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 4px;">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                <polyline points="7 10 12 15 17 10"></polyline>
+                                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                                            </svg>
+                                            Download
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        
+                        // Show success message
+                        showSuccessNotification('Image generated successfully!');
+                        
+                    } else {
+                        throw new Error(data.error || 'Failed to generate image');
+                    }
+                    
+                } catch (error) {
+                    console.error('Image generation error:', error);
+                    
+                    // Show error in preview
+                    if (previewArea) {
+                        previewArea.innerHTML = `
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <span style="color: #ef4444;">Failed to generate image</span>
+                            <span style="font-size: 14px; color: #9ca3af; margin-top: 8px;">${error.message}</span>
+                        `;
+                    }
+                    
+                    // Show error notification
+                    showErrorNotification(error.message || 'Failed to generate image');
+                    
+                } finally {
+                    // Reset button and input
+                    submitBtn.classList.remove('loading');
+                    remixInput.disabled = false;
+                    remixInput.value = '';
+                }
+            };
+
+            // Submit button click
+            submitBtn.addEventListener('click', submitRemix);
+
+            // Enter key submission
+            remixInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    submitRemix();
+                }
+            });
+
+            // Focus input when clicking search wrapper
+            searchWrapper.addEventListener('click', () => {
+                remixInput.focus();
+            });
+
+            // ESC key to close modal
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('visible')) {
+                    modal.classList.remove('visible');
+                    setTimeout(() => modal.remove(), 300);
+                }
             });
 
             // Show modal with animation
             setTimeout(() => {
                 modal.classList.add('visible');
+                // Auto-focus the input after modal animation
+                setTimeout(() => {
+                    remixInput.focus();
+                }, 300);
             }, 10);
         }
 
+        // Success notification function
+        function showSuccessNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 80px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #10b981;
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 500;
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+                z-index: 10003;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            shadowRoot.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '1';
+            }, 10);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Error notification function
+        function showErrorNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 80px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #ef4444;
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 500;
+                box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+                z-index: 10003;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            shadowRoot.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '1';
+            }, 10);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
         // Create remix content
-        function createRemixContent(selectedType, style, format, content) {
+        function createRemixContent(selectedType, style, format, content, tone = 'professional') {
             console.log('Creating remix content:', {
                 type: selectedType,
                 style: style,
                 format: format,
+                tone: tone,
                 content: content.substring(0, 200) + '...'
             });
 
@@ -2376,18 +4494,18 @@ Return exactly 3 questions, one per line, no numbering:`;
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
-                background: linear-gradient(135deg, #8b5cf6 0%, #667eea 100%);
+                background: linear-gradient(135deg, #f59e0b 0%, #fb923c 100%);
                 color: white;
                 padding: 16px 24px;
                 border-radius: 12px;
                 font-size: 14px;
                 font-weight: 500;
                 z-index: 10002;
-                box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+                box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
                 opacity: 0;
                 transition: opacity 0.3s ease;
             `;
-            successMessage.textContent = `Creating ${selectedType} with ${style} style in ${format} format...`;
+            successMessage.textContent = `Creating ${selectedType} with ${tone} tone in ${format} format...`;
             
             shadowRoot.appendChild(successMessage);
             
@@ -2409,6 +4527,18 @@ Return exactly 3 questions, one per line, no numbering:`;
         async function submitQuery() {
             const query = input.value.trim();
             if (!query) return;
+            
+            // Store the last user question for remix modal
+            window.lastUserQuestion = query;
+            
+            // Add rotation animation
+            const submitBtn = shadowRoot.getElementById('gist-submit');
+            submitBtn.classList.add('rotating');
+            
+            // Remove rotation class after animation
+            setTimeout(() => {
+                submitBtn.classList.remove('rotating');
+            }, 600);
             
             if (submitTimeout) {
                 clearTimeout(submitTimeout);
@@ -2458,6 +4588,12 @@ Return exactly 3 questions, one per line, no numbering:`;
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
+                // Trigger button animation even on Enter key
+                const submitBtn = shadowRoot.getElementById('gist-submit');
+                submitBtn.classList.add('rotating');
+                setTimeout(() => {
+                    submitBtn.classList.remove('rotating');
+                }, 600);
                 submitQuery();
             }
         });
@@ -2587,11 +4723,35 @@ Return exactly 3 questions, one per line, no numbering:`;
             }
         });
         
-        // Initialize welcome suggested questions
+        // Initialize welcome suggested questions with loading state
+        const welcomeQuestions = shadowRoot.getElementById('gist-welcome-questions');
+        
+        // Show loading state immediately
+        if (welcomeQuestions) {
+            welcomeQuestions.classList.add('loading');
+            welcomeQuestions.classList.remove('hidden');
+            welcomeQuestions.innerHTML = `
+                <div class="gist-loading-text">Analyzing page content...</div>
+                <div class="gist-skeleton-questions">
+                    <div class="gist-skeleton-question"></div>
+                    <div class="gist-skeleton-question"></div>
+                    <div class="gist-skeleton-question"></div>
+                </div>
+            `;
+        }
+        
+        // Generate questions with minimum delay
+        const startTime = Date.now();
         generateSuggestedQuestions().then(questions => {
-            if (questions.length > 0) {
-                const welcomeQuestions = shadowRoot.getElementById('gist-welcome-questions');
-                if (welcomeQuestions) {
+            const elapsedTime = Date.now() - startTime;
+            const minDelay = 2000; // Minimum 2 seconds total
+            const remainingDelay = Math.max(0, minDelay - elapsedTime);
+            
+            setTimeout(() => {
+                if (questions.length > 0 && welcomeQuestions) {
+                    // Remove loading state and show questions
+                    welcomeQuestions.classList.remove('loading');
+                    
                     let questionsHTML = `<div class="gist-suggested-questions-title">Try asking:</div>`;
                     
                     questions.forEach((question, i) => {
@@ -2603,6 +4763,12 @@ Return exactly 3 questions, one per line, no numbering:`;
                     });
                     
                     welcomeQuestions.innerHTML = questionsHTML;
+                    
+                    // Trigger fade-in animation
+                            setTimeout(() => {
+                        welcomeQuestions.style.opacity = '1';
+                        welcomeQuestions.style.transform = 'translateY(0)';
+                    }, 50);
                     
                     // Add event listeners to welcome questions
                     const questionButtons = welcomeQuestions.querySelectorAll('.gist-suggested-question');
@@ -2620,7 +4786,20 @@ Return exactly 3 questions, one per line, no numbering:`;
                             submitQuery();
                         });
                     });
+                } else {
+                    // Hide section if no valid questions generated
+                    if (welcomeQuestions) {
+                        welcomeQuestions.classList.add('hidden');
+                        welcomeQuestions.classList.remove('loading');
+                    }
                 }
+            }, remainingDelay);
+        }).catch(error => {
+            console.error('Failed to generate suggested questions:', error);
+            // Hide section on error
+            if (welcomeQuestions) {
+                welcomeQuestions.classList.add('hidden');
+                welcomeQuestions.classList.remove('loading');
             }
         });
         
@@ -2634,9 +4813,9 @@ Return exactly 3 questions, one per line, no numbering:`;
 
     // Initialize
     function initWidget() {
-  if (document.readyState === 'loading') {
+        if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', createWidget);
-  } else {
+        } else {
             createWidget();
         }
     }
