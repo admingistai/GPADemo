@@ -1,6 +1,8 @@
 (function() {
-    // Base64 encoded sparkles icon as fallback
-    const sparklesBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAAF0WlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4yLWMwMDAgNzkuMWI2NWE3OWI0LCAyMDIyLzA2LzEzLTIyOjAxOjAxICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgMjQuMCAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMjQtMDMtMTlUMTQ6NDc6MTgtMDc6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjQtMDMtMTlUMTQ6NDc6MTgtMDc6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDI0LTAzLTE5VDE0OjQ3OjE4LTA3OjAwIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjY5ODYzZWJlLTM4ZTAtNDU4Ny1hNmE1LTNiYWM4YzA5ZjFmZiIgeG1wTU06RG9jdW1lbnRJRD0iYWRvYmU6ZG9jaWQ6cGhvdG9zaG9wOjY5ODYzZWJlLTM4ZTAtNDU4Ny1hNmE1LTNiYWM4YzA5ZjFmZiIgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ4bXAuZGlkOjY5ODYzZWJlLTM4ZTAtNDU4Ny1hNmE1LTNiYWM4YzA5ZjFmZiIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJjcmVhdGVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjY5ODYzZWJlLTM4ZTAtNDU4Ny1hNmE1LTNiYWM4YzA5ZjFmZiIgc3RFdnQ6d2hlbj0iMjAyNC0wMy0xOVQxNDo0NzoxOC0wNzowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDI0LjAgKE1hY2ludG9zaCkiLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+wZXPWAAAAMNJREFUOI3t1D0KwkAQBeA3/kBEFBULQbS1t7HyHoKVYGHjYbyCnSfwBBaCYOMNxN7OG1gI/o1xJrCIcZNNFkR8MGR3mPftZGeXicgfaozneQ1jzNha2zHGzJVSS2PMSkRqWXVZgLquG4nISkQaWmtzY8xcKbVk5h4AiIgTkXae0WEY9rXWG2PMWCm1SJJkHwTBBQB8IvKyPHjvByLSJqJJkiT7MAyvzrkreW/0RN57PxCRDoCpiJycc1d6704P8JvzuQPwWYTZj8ZKYwAAAABJRU5ErkJggg==';
+    // Get the script's location to reference assets relatively
+    const scriptElement = document.currentScript;
+    const scriptPath = scriptElement.src;
+    const basePath = scriptPath.substring(0, scriptPath.lastIndexOf('/'));
 
     // Create and inject styles
     const styles = `
@@ -60,10 +62,10 @@
     styleSheet.textContent = styles;
     document.head.appendChild(styleSheet);
 
-    // Create widget HTML
+    // Create widget HTML using the correct path to sparkles.png
     const widgetHTML = `
         <div class="gist-widget-container">
-            <img src="https://www.getaskanything.com/sparkles.png" class="gist-search-icon" alt="sparkles icon" onerror="this.src='${sparklesBase64}'">
+            <img src="${basePath}/sparkles.png" class="gist-search-icon" alt="sparkles icon">
             <input type="text" class="gist-search-input" placeholder="Ask anything...">
         </div>
     `;
