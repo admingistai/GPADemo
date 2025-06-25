@@ -102,27 +102,37 @@
 
         .gist-search-input::placeholder {
             color: #666;
+            font-weight: normal;
         }
 
         /* Style for the bold website name */
         .gist-search-input.with-bold-placeholder::placeholder {
+            color: #666;
             font-weight: normal;
+        }
+
+        /* Use ::part pseudo-element for styling parts of the placeholder */
+        @property --website-name {
+            syntax: "<string>";
+            initial-value: "";
+            inherits: false;
         }
 
         .gist-search-input.with-bold-placeholder {
             &::placeholder {
-                background: linear-gradient(to right,
-                    #666 0%,
-                    #666 4.5em,  /* "Ask " */
-                    #000 4.5em,  /* Start of website name */
-                    #000 var(--website-name-width),
-                    #666 var(--website-name-width),
-                    #666 100%
-                );
-                -webkit-background-clip: text;
-                background-clip: text;
-                -webkit-text-fill-color: transparent;
+                font: inherit;
+                font-variation-settings: "wght" 400;
             }
+            
+            &::placeholder {
+                font-variation-settings: "wght" var(--website-name-weight, 700);
+                font-weight: bold;
+            }
+        }
+
+        /* Add bold effect only to website name */
+        .website-name-bold {
+            font-weight: bold;
         }
 
         .gist-website-name {
@@ -163,6 +173,27 @@
             stroke-width: 2;
             fill: none;
         }
+
+        /* Create separate elements for the placeholder parts */
+        .gist-widget-container {
+            position: relative;
+        }
+
+        .gist-placeholder-text {
+            position: absolute;
+            left: 40px;  /* Adjust based on your icon width */
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .gist-placeholder-website-name {
+            font-weight: bold;
+        }
     `;
 
     // Create style element and append to head
@@ -193,7 +224,12 @@
     const widgetHTML = `
         <div class="gist-widget-container">
             <img src="${basePath}/sparkles.png" class="gist-search-icon" alt="sparkles icon">
-            <input type="text" class="gist-search-input with-bold-placeholder" placeholder="Ask ${websiteInfo.name} anything...">
+            <input type="text" class="gist-search-input" placeholder="">
+            <div class="gist-placeholder-text">
+                <span>Ask</span>
+                <span class="gist-placeholder-website-name">${websiteInfo.name}</span>
+                <span>anything...</span>
+            </div>
             <button class="gist-arrow-button">
                 <svg class="gist-arrow-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7 17L17 7M17 7H10M17 7V14" stroke-linecap="round" stroke-linejoin="round"/>
@@ -202,14 +238,26 @@
         </div>
     `;
 
-    // Create container element
+    // Add event listener to hide placeholder text when input is focused or has content
     const container = document.createElement('div');
     container.innerHTML = widgetHTML;
-    
-    // Apply the website font to the input
     const input = container.querySelector('.gist-search-input');
-    input.style.setProperty('--website-font', websiteInfo.font);
-    
+    const placeholderText = container.querySelector('.gist-placeholder-text');
+
+    input.addEventListener('input', () => {
+        placeholderText.style.display = input.value ? 'none' : 'flex';
+    });
+
+    input.addEventListener('focus', () => {
+        placeholderText.style.display = 'none';
+    });
+
+    input.addEventListener('blur', () => {
+        if (!input.value) {
+            placeholderText.style.display = 'flex';
+        }
+    });
+
     document.body.appendChild(container.firstElementChild);
 
     // Add input event listener
