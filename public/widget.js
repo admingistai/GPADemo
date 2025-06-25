@@ -78,8 +78,9 @@
         .gist-arrow-icon {
             width: 18px;
             height: 18px;
-            fill: white;
             stroke: white;
+            stroke-width: 2;
+            fill: none;
         }
     `;
 
@@ -95,7 +96,7 @@
             <input type="text" class="gist-search-input" placeholder="Ask anything...">
             <button class="gist-arrow-button">
                 <svg class="gist-arrow-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M7 17l5-5-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="rotate(-45 12 12)"/>
+                    <path d="M7 17L17 7M17 7H10M17 7V14" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </button>
         </div>
