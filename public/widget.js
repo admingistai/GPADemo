@@ -47,8 +47,93 @@
         IMAGE_API_URL: `${BACKEND_BASE_URL}/api/image`,
         MODEL: 'gpt-3.5-turbo', // You can change this to gpt-4, gpt-4-turbo, etc.
         TIMEOUT_MS: 20000, // 20 second timeout as per PRD
-        DEBOUNCE_MS: 300   // 300ms debounce as per PRD
+        DEBOUNCE_MS: 300,   // 300ms debounce as per PRD
+        DEFAULT_POSITION: 7  // Bottom-middle position (0-8, where 7 is bottom-middle)
     };
+    
+    // Widget position mapping (0-8 to actual CSS positions)
+    const POSITION_MAPPING = {
+        0: { bottom: 'auto', top: '20px', left: '20px', right: 'auto' },     // Top-left
+        1: { bottom: 'auto', top: '20px', left: '50%', right: 'auto', transform: 'translateX(-50%)' }, // Top-center
+        2: { bottom: 'auto', top: '20px', left: 'auto', right: '20px' },     // Top-right
+        3: { bottom: '50%', top: 'auto', left: '20px', right: 'auto', transform: 'translateY(50%)' },  // Middle-left
+        4: { bottom: '50%', top: 'auto', left: '50%', right: 'auto', transform: 'translate(-50%, 50%)' }, // Middle-center
+        5: { bottom: '50%', top: 'auto', left: 'auto', right: '20px', transform: 'translateY(50%)' },  // Middle-right
+        6: { bottom: '20px', top: 'auto', left: '20px', right: 'auto' },     // Bottom-left
+        7: { bottom: '20px', top: 'auto', left: '50%', right: 'auto', transform: 'translateX(-50%)' }, // Bottom-center
+        8: { bottom: '20px', top: 'auto', left: 'auto', right: '20px' }      // Bottom-right
+    };
+
+    // Function to update widget position
+    function updateWidgetPosition(position) {
+        const widgetContainer = document.querySelector('#gist-widget-container');
+        if (!widgetContainer) return;
+        
+        // Get position styles
+        const positionStyles = POSITION_MAPPING[position] || POSITION_MAPPING[WIDGET_CONFIG.DEFAULT_POSITION];
+        
+        // Apply styles
+        Object.entries(positionStyles).forEach(([property, value]) => {
+            widgetContainer.style[property] = value;
+        });
+        
+        // Store position preference
+        localStorage.setItem('gistWidgetPosition', position);
+        
+        // Update grid UI
+        updatePositionGrid(position);
+    }
+
+    // Function to update position grid UI
+    function updatePositionGrid(selectedPosition) {
+        const gridCells = document.querySelectorAll('.grid-cell');
+        gridCells.forEach(cell => {
+            const position = parseInt(cell.dataset.position);
+            if (position === selectedPosition) {
+                cell.style.backgroundColor = websiteStyling.primaryColor || '#0066FF';
+                cell.style.borderColor = websiteStyling.primaryColor || '#0066FF';
+            } else {
+                cell.style.backgroundColor = 'transparent';
+                cell.style.borderColor = '#e5e7eb';
+            }
+        });
+    }
+
+    // Function to initialize position grid
+    function initializePositionGrid() {
+        // Get stored position or use default
+        const storedPosition = parseInt(localStorage.getItem('gistWidgetPosition')) || WIDGET_CONFIG.DEFAULT_POSITION;
+        
+        // Add click handlers to grid cells
+        const gridCells = document.querySelectorAll('.grid-cell');
+        gridCells.forEach(cell => {
+            cell.addEventListener('click', () => {
+                const position = parseInt(cell.dataset.position);
+                updateWidgetPosition(position);
+            });
+            
+            // Add hover effect
+            cell.addEventListener('mouseover', () => {
+                if (parseInt(cell.dataset.position) !== storedPosition) {
+                    cell.style.backgroundColor = '#f3f4f6';
+                }
+            });
+            
+            cell.addEventListener('mouseout', () => {
+                if (parseInt(cell.dataset.position) !== storedPosition) {
+                    cell.style.backgroundColor = 'transparent';
+                }
+            });
+        });
+        
+        // Initialize position
+        updateWidgetPosition(storedPosition);
+    }
+
+    // Initialize position grid when widget is created
+    window.addEventListener('widgetCreated', function() {
+        initializePositionGrid();
+    });
     
     // ================================
     // TOOLS CONFIGURATION
@@ -1471,53 +1556,6 @@
                 font-family: ${widgetFont} !important;
             }
             
-            .gist-position-grid {
-                display: flex;
-                flex-direction: column;
-                gap: 4px;
-                margin: 12px auto;
-                width: fit-content;
-            }
-            
-            .gist-position-row {
-                display: flex;
-                gap: 4px;
-            }
-            
-            .gist-position-cell {
-                width: 32px;
-                height: 32px;
-                border: 2px solid ${styling.primaryColor}40;
-                background: transparent;
-                border-radius: 4px;
-                cursor: pointer;
-                padding: 0;
-                position: relative;
-                transition: all 0.2s ease;
-            }
-            
-            .gist-position-cell:hover {
-                border-color: ${styling.primaryColor};
-                background: ${styling.primaryColor}10;
-            }
-            
-            .gist-position-cell.selected {
-                border-color: ${styling.primaryColor};
-                background: ${styling.primaryColor}20;
-            }
-            
-            .gist-position-cell.selected::after {
-                content: '';
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 12px;
-                height: 12px;
-                background: ${styling.primaryColor};
-                border-radius: 2px;
-            }
-            
             .gist-answer-container,
             .gist-answer-content,
             .gist-answer-text,
@@ -1637,14 +1675,29 @@
 
     // Create shadow DOM container to avoid style conflicts
     async function createWidget() {
+        // Create widget container with initial position
         const widgetContainer = document.createElement('div');
         widgetContainer.id = 'gist-widget-container';
+        widgetContainer.style.position = 'fixed';
+        widgetContainer.style.zIndex = '999997';
+        
+        // Get initial position
+        const storedPosition = parseInt(localStorage.getItem('gistWidgetPosition')) || WIDGET_CONFIG.DEFAULT_POSITION;
+        const initialPosition = POSITION_MAPPING[storedPosition] || POSITION_MAPPING[WIDGET_CONFIG.DEFAULT_POSITION];
+        
+        // Apply initial position styles
+        Object.entries(initialPosition).forEach(([property, value]) => {
+            widgetContainer.style[property] = value;
+        });
         
         // Create shadow root for style isolation
         const shadowRoot = widgetContainer.attachShadow({ mode: 'closed' });
         
         // Store shadow root globally for color theme updates
         window.gistShadowRoot = shadowRoot;
+        
+        // Dispatch widgetCreated event
+        window.dispatchEvent(new Event('widgetCreated'));
         
         // Analyze website styling first
         const extractedStyling = await analyzeWebsiteStyling();
@@ -5190,69 +5243,6 @@ Instructions:
         }
         
         // Settings functionality
-        function updateWidgetPosition(position) {
-            const widget = document.querySelector('.gist-widget');
-            if (!widget) return;
-            
-            // Reset all position-related styles
-            widget.style.left = '';
-            widget.style.right = '';
-            widget.style.top = '';
-            widget.style.bottom = '';
-            widget.style.transform = '';
-            
-            // Apply new position
-            switch (position) {
-                case 'top-left':
-                    widget.style.top = '24px';
-                    widget.style.left = '24px';
-                    widget.style.transform = 'none';
-                    break;
-                case 'top-center':
-                    widget.style.top = '24px';
-                    widget.style.left = '50%';
-                    widget.style.transform = 'translateX(-50%)';
-                    break;
-                case 'top-right':
-                    widget.style.top = '24px';
-                    widget.style.right = '24px';
-                    widget.style.transform = 'none';
-                    break;
-                case 'middle-left':
-                    widget.style.top = '50%';
-                    widget.style.left = '24px';
-                    widget.style.transform = 'translateY(-50%)';
-                    break;
-                case 'middle-center':
-                    widget.style.top = '50%';
-                    widget.style.left = '50%';
-                    widget.style.transform = 'translate(-50%, -50%)';
-                    break;
-                case 'middle-right':
-                    widget.style.top = '50%';
-                    widget.style.right = '24px';
-                    widget.style.transform = 'translateY(-50%)';
-                    break;
-                case 'bottom-left':
-                    widget.style.bottom = '24px';
-                    widget.style.left = '24px';
-                    widget.style.transform = 'none';
-                    break;
-                case 'bottom-middle':
-                    widget.style.bottom = '24px';
-                    widget.style.left = '50%';
-                    widget.style.transform = 'translateX(-50%)';
-                    break;
-                case 'bottom-right':
-                    widget.style.bottom = '24px';
-                    widget.style.right = '24px';
-                    widget.style.transform = 'none';
-                    break;
-            }
-            
-            console.log(`[GistWidget] Widget position updated to: ${position}`);
-        }
-
         function showSettingsMenu() {
             // Mock current settings state
             const mockSettings = {
@@ -5331,27 +5321,6 @@ Instructions:
                         </div>
                     </div>
                     
-                    <div class="gist-settings-section">
-                        <div class="gist-settings-section-title">Widget Position</div>
-                        <div class="gist-position-grid">
-                            <div class="gist-position-row">
-                                <button class="gist-position-cell" data-position="top-left"></button>
-                                <button class="gist-position-cell" data-position="top-center"></button>
-                                <button class="gist-position-cell" data-position="top-right"></button>
-                            </div>
-                            <div class="gist-position-row">
-                                <button class="gist-position-cell" data-position="middle-left"></button>
-                                <button class="gist-position-cell" data-position="middle-center"></button>
-                                <button class="gist-position-cell" data-position="middle-right"></button>
-                            </div>
-                            <div class="gist-position-row">
-                                <button class="gist-position-cell" data-position="bottom-left"></button>
-                                <button class="gist-position-cell bottom-middle selected" data-position="bottom-middle"></button>
-                                <button class="gist-position-cell" data-position="bottom-right"></button>
-                            </div>
-                        </div>
-                    </div>
-                    
                     <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #9ca3af; font-style: italic;">
                         🚧 Demo Mode - Changes won't be saved. <a href="https://getaskanything.com/setup" style="color: inherit; text-decoration: underline; font-weight: bold; margin-left: 10px;">GET A REAL ONE</a>
                     </div>
@@ -5365,7 +5334,6 @@ Instructions:
             const closeButton = answerContent.querySelector('#settings-close');
             const toggleButtons = answerContent.querySelectorAll('.gist-settings-toggle[data-tool]');
             const colorElements = answerContent.querySelectorAll('.gist-color-option');
-            const positionCells = answerContent.querySelectorAll('.gist-position-cell');
             
             // Close settings menu
             closeButton.addEventListener('click', () => {
@@ -5409,25 +5377,6 @@ Instructions:
                     setTimeout(() => {
                         colorElement.style.transform = '';
                     }, 200);
-                });
-            });
-            
-            // Position selection functionality
-            positionCells.forEach(cell => {
-                cell.addEventListener('click', () => {
-                    // Remove selected from all cells
-                    positionCells.forEach(c => c.classList.remove('selected'));
-                    // Add selected to clicked cell
-                    cell.classList.add('selected');
-                    
-                    const position = cell.dataset.position;
-                    updateWidgetPosition(position);
-                    
-                    // Add visual feedback
-                    cell.style.transform = 'scale(0.9)';
-                    setTimeout(() => {
-                        cell.style.transform = '';
-                    }, 150);
                 });
             });
             
