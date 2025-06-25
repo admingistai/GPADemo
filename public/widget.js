@@ -44,10 +44,10 @@
         }
 
         .gist-search-icon {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             margin-right: 10px;
-            opacity: 0.8;
+            opacity: 0.7;
             object-fit: contain;
         }
     `;
@@ -60,7 +60,7 @@
     // Create widget HTML
     const widgetHTML = `
         <div class="gist-widget-container">
-            <img src="/Gist G white no background.png" class="gist-search-icon" alt="search icon">
+            <img src="/sparkles.png" class="gist-search-icon" alt="sparkles icon">
             <input type="text" class="gist-search-input" placeholder="Ask anything...">
         </div>
     `;
