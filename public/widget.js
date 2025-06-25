@@ -3814,7 +3814,7 @@
         // Widget HTML structure
         const widgetHTML = `
             ${styles}
-                                <div class="gist-widget minimized" id="gist-widget">
+                                <div class="gist-widget" id="gist-widget">
                 <div class="gist-pill" id="gist-pill">
                     <div class="gist-pill-content">
                         ${enhancedStyling.logoUrl ? 
@@ -4050,7 +4050,7 @@
         let conversationHistory = []; // Store conversation history for Gist
         let pageContext = null; // Store extracted page content for context
         // currentTool already declared above
-        let isMinimized = true; // Track minimized state
+        let isMinimized = false; // Track minimized state - widget starts expanded
         let hoverTimeout = null; // Timeout for hover delay
         let userIsInteracting = false; // Track if user is actively interacting
         let isDesktopMode = false; // Track desktop mode state
@@ -4690,21 +4690,16 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
             log('debug', 'Desktop mode disabled - widget returned to normal position');
         }
         
-        // Widget hover handlers
+                // Widget hover handlers - removed auto-minimize behavior to keep widget always expanded
         widget.addEventListener('mouseenter', () => {
             clearTimeout(hoverTimeout);
             widget.classList.add('active');
             expandWidget();
         });
-        
+
         widget.addEventListener('mouseleave', () => {
             clearTimeout(hoverTimeout);
-            // Allow auto-minimize in both normal and desktop mode
-            hoverTimeout = setTimeout(() => {
-                if (!userIsInteracting && !isActive) {
-                    minimizeWidget();
-                }
-            }, 300); // 300ms delay before minimizing
+            // Widget stays expanded - no auto-minimize behavior
         });
         
         // Track user interaction
@@ -4715,14 +4710,11 @@ Return only the 3 questions, one per line, without numbers or bullets.`;
         });
         
         input.addEventListener('blur', () => {
-            // Delay to check if user clicked elsewhere
+            // Widget stays expanded - removed auto-minimize behavior when clicking away
             setTimeout(() => {
                 if (!input.value.trim()) {
                     userIsInteracting = false;
-                    // Try to minimize if not hovering (works in both normal and desktop mode)
-                    if (!widget.matches(':hover')) {
-                        minimizeWidget();
-                    }
+                    // Widget remains expanded
                 }
             }, 100);
         });
@@ -7346,17 +7338,16 @@ Make the ad relevant to the article topic but appealing and professional. Use em
         
 
         
-        // Handle clicking outside to minimize
+        // Handle clicking outside - removed auto-minimize behavior to keep widget always expanded
         document.addEventListener('click', (e) => {
             // Check if click is outside the widget container
             if (!widgetContainer.contains(e.target)) {
-                // Both normal and desktop mode: deactivate and minimize
-                isActive = false;
-                userIsInteracting = false;
+                // Widget stays expanded - only blur the input but don't minimize
                 input.blur();
                 
-                // Start minimization immediately, blur will fade with the animation
-                setTimeout(() => minimizeWidget(), 100);
+                // Mark as not actively interacting but keep expanded
+                userIsInteracting = false;
+                isActive = false;
             }
         });
         
@@ -7388,6 +7379,13 @@ Make the ad relevant to the article topic but appealing and professional. Use em
             const widget = shadowRoot.getElementById('gist-widget');
             if (widget) {
                 widget.classList.add('loaded');
+                
+                // Initialize widget in expanded state
+                widget.classList.add('active');
+                toolbox.classList.add('visible');
+                
+                // Show initial content for the default tool
+                showAnswerContainer();
             }
         }, 100);
         
