@@ -4,14 +4,23 @@
     const scriptPath = scriptElement.src;
     const basePath = scriptPath.substring(0, scriptPath.lastIndexOf('/'));
 
-    // Function to detect website name and font from common elements
+    // Function to detect website name and font from logo or header
     function detectWebsiteInfo() {
-        // Common selectors where logos might be found
+        // Common selectors where logos/headers might be found, in order of preference
         const logoSelectors = [
-            '.logo', '#logo', 'header .logo', 'header #logo',
+            '.brand-logo', '#brand-logo',
+            '.logo', '#logo',
+            '.site-logo', '#site-logo',
+            '.header-logo', '#header-logo',
+            '.brand', '#brand',
+            '.site-title', '#site-title',
+            'header h1',
+            // Add more specific selectors for common website structures
             '[class*="logo"]', '[id*="logo"]',
-            '.brand', '#brand', '.site-title', '#site-title',
-            'header h1'
+            '[class*="brand"]', '[id*="brand"]',
+            // The Atlantic specific selector (and similar publications)
+            '.site-header__logo', '.header__logo',
+            '.publication-logo', '#publication-logo'
         ];
 
         let websiteName = '';
@@ -28,21 +37,35 @@
         for (const selector of logoSelectors) {
             const element = document.querySelector(selector);
             if (element) {
-                // Get computed styles
+                // Get computed styles of the element and its children
                 const styles = window.getComputedStyle(element);
                 
                 // If we haven't found a name yet, try to get it from text content
                 if (!websiteName) {
+                    // Try to find text content in the element or its children
                     const textContent = element.textContent.trim();
                     if (textContent) {
                         websiteName = textContent.split(/[-|]/)[0].trim();
                     }
                 }
 
-                // Get font family
-                if (styles.fontFamily) {
+                // Get font family, checking both the element and its first text child
+                if (styles.fontFamily && styles.fontFamily !== 'inherit') {
                     logoFont = styles.fontFamily;
                     break;
+                }
+
+                // Check children for text nodes and their font
+                const textNodes = Array.from(element.childNodes)
+                    .filter(node => node.nodeType === 3 && node.textContent.trim());
+                
+                if (textNodes.length > 0) {
+                    const parentElement = textNodes[0].parentElement;
+                    const parentStyles = window.getComputedStyle(parentElement);
+                    if (parentStyles.fontFamily && parentStyles.fontFamily !== 'inherit') {
+                        logoFont = parentStyles.fontFamily;
+                        break;
+                    }
                 }
             }
         }
@@ -53,7 +76,7 @@
             websiteName = domain.split('.')[0].charAt(0).toUpperCase() + domain.split('.')[0].slice(1);
         }
 
-        // Fallback to inherited font if no font found
+        // Fallback to system font if no font found
         if (!logoFont) {
             logoFont = 'inherit';
         }
@@ -159,7 +182,7 @@
     const widgetHTML = `
         <div class="gist-widget-container">
             <img src="${basePath}/sparkles.png" class="gist-search-icon" alt="sparkles icon">
-            <input type="text" class="gist-search-input" placeholder="Ask ${websiteInfo.name} anything...">
+            <input type="text" class="gist-search-input" placeholder="Ask ">
             <button class="gist-arrow-button">
                 <svg class="gist-arrow-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7 17L17 7M17 7H10M17 7V14" stroke-linecap="round" stroke-linejoin="round"/>
@@ -172,9 +195,27 @@
     const container = document.createElement('div');
     container.innerHTML = widgetHTML;
     
-    // Apply the website font to the input
+    // Get the input element
     const input = container.querySelector('.gist-search-input');
-    input.style.setProperty('--website-font', websiteInfo.font);
+    
+    // Create a placeholder span with the website name in the correct font
+    const placeholderSpan = document.createElement('span');
+    placeholderSpan.style.fontFamily = websiteInfo.font;
+    placeholderSpan.textContent = websiteInfo.name;
+    
+    // Set the input's placeholder to include both parts
+    input.placeholder = 'Ask ';
+    input.addEventListener('input', function() {
+        if (!this.value) {
+            this.placeholder = 'Ask ';
+            placeholderSpan.textContent = websiteInfo.name + ' anything...';
+            this.parentNode.insertBefore(placeholderSpan, this.nextSibling);
+        }
+    });
+    
+    // Add the placeholder span after the input
+    container.querySelector('.gist-widget-container').insertBefore(placeholderSpan, input.nextSibling);
+    placeholderSpan.textContent = websiteInfo.name + ' anything...';
     
     document.body.appendChild(container.firstElementChild);
 
