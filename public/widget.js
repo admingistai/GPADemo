@@ -4,8 +4,45 @@
     const scriptPath = scriptElement.src;
     const basePath = scriptPath.substring(0, scriptPath.lastIndexOf('/'));
 
-    // Get website name from data attribute or default to "The New York Times"
-    const websiteName = scriptElement.getAttribute('data-website-name') || 'The New York Times';
+    // Function to get website name
+    function getWebsiteName() {
+        // Try to get from meta tags first
+        const metaTags = [
+            document.querySelector('meta[property="og:site_name"]'),
+            document.querySelector('meta[name="application-name"]'),
+            document.querySelector('meta[name="twitter:site"]')
+        ];
+        
+        for (const tag of metaTags) {
+            if (tag && tag.content) {
+                return tag.content.replace('@', '');
+            }
+        }
+
+        // Try to get from structured data
+        const structuredData = document.querySelector('script[type="application/ld+json"]');
+        if (structuredData) {
+            try {
+                const data = JSON.parse(structuredData.textContent);
+                if (data.publisher && data.publisher.name) {
+                    return data.publisher.name;
+                }
+                if (data.name) {
+                    return data.name;
+                }
+            } catch (e) {
+                console.error('Error parsing structured data:', e);
+            }
+        }
+
+        // Fallback to document title or domain
+        const titleParts = document.title.split(/[-|]/);
+        if (titleParts.length > 1) {
+            return titleParts[titleParts.length - 1].trim();
+        }
+        
+        return window.location.hostname.replace('www.', '').split('.')[0];
+    }
 
     // Create and inject styles
     const styles = `
@@ -50,23 +87,9 @@
             color: #666;
         }
 
-        .gist-search-label {
-            position: absolute;
-            left: 52px;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            color: #666;
-            transition: opacity 0.2s ease;
-        }
-
-        .gist-search-label .website-name {
+        .gist-website-name {
             font-weight: bold;
-            font-family: "Chomsky", Georgia, serif;
-        }
-
-        .gist-search-input:not(:placeholder-shown) + .gist-search-label {
-            opacity: 0;
+            font-family: inherit;
         }
 
         .gist-search-icon {
@@ -75,6 +98,14 @@
             margin-right: 10px;
             opacity: 0.7;
             object-fit: contain;
+        }
+
+        .gist-arrow-icon {
+            width: 18px;
+            height: 18px;
+            stroke: white;
+            stroke-width: 2;
+            fill: none;
         }
 
         .gist-arrow-button {
@@ -95,14 +126,6 @@
         .gist-arrow-button:hover {
             transform: scale(1.1);
         }
-
-        .gist-arrow-icon {
-            width: 18px;
-            height: 18px;
-            stroke: white;
-            stroke-width: 2;
-            fill: none;
-        }
     `;
 
     // Create style element and append to head
@@ -110,12 +133,14 @@
     styleSheet.textContent = styles;
     document.head.appendChild(styleSheet);
 
+    // Get website name
+    const websiteName = getWebsiteName();
+
     // Create widget HTML using the correct path to sparkles.png
     const widgetHTML = `
         <div class="gist-widget-container">
             <img src="${basePath}/sparkles.png" class="gist-search-icon" alt="sparkles icon">
-            <input type="text" class="gist-search-input" placeholder=" ">
-            <label class="gist-search-label">Ask <span class="website-name">${websiteName}</span> anything...</label>
+            <input type="text" class="gist-search-input" placeholder="Ask ${websiteName} anything...">
             <button class="gist-arrow-button">
                 <svg class="gist-arrow-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7 17L17 7M17 7H10M17 7V14" stroke-linecap="round" stroke-linejoin="round"/>
