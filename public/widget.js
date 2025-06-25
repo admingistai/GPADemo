@@ -219,15 +219,80 @@
         // Update the websiteStyling object
         websiteStyling.primaryColor = primaryColor;
         websiteStyling.accentColor = accentColor;
-        
-        // Generate color variations
         websiteStyling.secondaryColor = primaryColor;
         
-        // If widget is already created, update its styling
-        if (typeof updateWidgetStyling === 'function' && window.gistShadowRoot) {
-            updateWidgetStyling(window.gistShadowRoot);
+        // If widget is already created, update its styling safely
+        if (window.gistShadowRoot) {
+            updateWidgetColorsOnly(window.gistShadowRoot, primaryColor, accentColor);
         }
     };
+    
+    // Safe function to update only color properties without regenerating all styles
+    function updateWidgetColorsOnly(shadowRoot, primaryColor, accentColor) {
+        try {
+            const existingStyle = shadowRoot.querySelector('style');
+            if (!existingStyle) {
+                console.warn('[GistWidget] No style element found for color update');
+                return;
+            }
+            
+            // Get the current styles
+            let currentStyles = existingStyle.textContent;
+            
+            // Update CSS custom properties for colors if they exist
+            // This is a safer approach than regenerating all styles
+            const colorUpdates = [
+                // Primary color variations
+                ['--primary-color', primaryColor],
+                ['--primary-color-rgb', hexToRgb(primaryColor)],
+                ['--secondary-color', primaryColor],
+                ['--accent-color', accentColor],
+                ['--accent-color-rgb', hexToRgb(accentColor)]
+            ];
+            
+            // Apply color updates by replacing existing color values in the CSS
+            colorUpdates.forEach(([property, value]) => {
+                const regex = new RegExp(`${property}\\s*:\\s*[^;]+;`, 'g');
+                if (currentStyles.includes(property)) {
+                    currentStyles = currentStyles.replace(regex, `${property}: ${value};`);
+                }
+            });
+            
+            // Also update hardcoded color values in specific patterns
+            // Update background gradients and colors that use the old values
+            const oldPrimary = /#[0-9a-fA-F]{6}/g;
+            const matches = currentStyles.match(oldPrimary);
+            if (matches) {
+                // Be selective about which colors to replace to avoid breaking other colors
+                // Only replace colors that match common widget color patterns
+                const commonWidgetColors = ['#6366f1', '#8b5cf6', '#ec4899'];
+                commonWidgetColors.forEach(oldColor => {
+                    if (oldColor === '#6366f1' || oldColor === '#8b5cf6') {
+                        // Replace primary colors
+                        currentStyles = currentStyles.replaceAll(oldColor, primaryColor);
+                    } else if (oldColor === '#ec4899') {
+                        // Replace accent colors
+                        currentStyles = currentStyles.replaceAll(oldColor, accentColor);
+                    }
+                });
+            }
+            
+            // Update the style element
+            existingStyle.textContent = currentStyles;
+            
+            console.log(`[GistWidget] Successfully updated widget colors to Primary: ${primaryColor}, Accent: ${accentColor}`);
+        } catch (error) {
+            console.error('[GistWidget] Failed to update widget colors:', error);
+        }
+    }
+    
+    // Helper function to convert hex to RGB
+    function hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? 
+            `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : 
+            '0, 0, 0';
+    }
     
     // Listen for color theme change events from the sidebar
     window.addEventListener('colorThemeChange', function(event) {
