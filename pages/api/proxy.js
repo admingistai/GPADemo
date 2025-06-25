@@ -204,12 +204,18 @@ export default async function handler(req, res) {
           padding: 20px;
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
           font-size: 14px;
-          z-index: 999998;
+          z-index: 2147483646;
           box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
           max-height: calc(100vh - 100px);
           overflow-y: auto;
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           transform: translateX(0);
+          pointer-events: auto;
+          isolation: isolate;
+          backface-visibility: hidden;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          will-change: transform;
         ">
           <div style="
             display: flex;
@@ -490,9 +496,18 @@ export default async function handler(req, res) {
         </div>
         
         <style>
+          #feature-sidebar {
+            contain: layout style paint;
+          }
+          
           body { 
             margin-top: 50px !important; 
-            margin-right: 320px !important;
+          }
+          
+          @media (min-width: 1025px) {
+            body {
+              margin-right: 320px !important;
+            }
           }
           
           /* Custom toggle styles */
@@ -570,8 +585,14 @@ export default async function handler(req, res) {
           
           /* Ensure widgets don't overlap with sidebar */
           @media (min-width: 1025px) {
-            .gist-widget, [id*="widget"], [class*="widget"] {
+            .gist-widget, 
+            [id*="widget"], 
+            [class*="widget"],
+            #gist-widget,
+            .gist-container,
+            #gist-container {
               margin-right: 320px !important;
+              max-width: calc(100% - 320px) !important;
             }
           }
         </style>
