@@ -1019,11 +1019,18 @@ export default function Home() {
           }
         }
 
+        .hero-subheader {
+          font-size: 1.125rem;
+          font-weight: 600;
+          margin-bottom: 2rem;
+          color: #1a1a1a;
+          font-family: 'Inter', sans-serif;
+        }
+
         .hero-cta-text {
           color: #666;
           font-family: 'Inter', sans-serif;
           font-size: 1rem;
-          font-style: italic;
           font-weight: 400;
         }
 
