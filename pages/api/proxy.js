@@ -977,7 +977,7 @@ export default async function handler(req, res) {
               const accent = brandColors[(i+1) % brandColors.length] || '#ec4899';
               btn.setAttribute('data-primary', primary);
               btn.setAttribute('data-accent', accent);
-              btn.style.background = `linear-gradient(135deg, ${primary} 50%, ${accent} 50%)`;
+              btn.style.background = 'linear-gradient(135deg, ' + primary + ' 50%, ' + accent + ' 50%)';
             });
           });
         </script>
