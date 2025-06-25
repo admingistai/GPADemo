@@ -361,6 +361,9 @@ export default function Home() {
                 <p className="hero-description">
                   Replace your site's search with the Ask Anything™ button and drive AI engagement, grow traffic, and unlock new revenue.
                 </p>
+                <h3 className="hero-subheader">
+                  <strong>Preview it on your site.</strong>
+                </h3>
                 <div className="hero-cta">
                   <div className="hero-url-input-wrapper">
                     <input
