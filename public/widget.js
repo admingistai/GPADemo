@@ -219,6 +219,7 @@
                 flex-wrap: wrap;
                 gap: 12px;
                 margin-top: 8px;
+                margin-bottom: 15px;
                 font-size: 12px;
             }
 
@@ -233,6 +234,68 @@
                 width: 8px;
                 height: 8px;
                 border-radius: 50%;
+            }
+
+            .gist-source-cards {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+                margin-top: 15px;
+                opacity: 0;
+                transform: translateY(10px);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .gist-source-cards.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .gist-source-card {
+                background: #f8f9fa;
+                border-radius: 8px;
+                padding: 12px;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                border: 1px solid #eee;
+                transition: transform 0.2s ease;
+            }
+
+            .gist-source-card:hover {
+                transform: translateY(-2px);
+            }
+
+            .gist-source-card-header {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .gist-source-logo {
+                width: 20px;
+                height: 20px;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .gist-source-logo svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            .gist-source-name {
+                font-size: 13px;
+                font-weight: 600;
+                color: #333;
+            }
+
+            .gist-source-description {
+                font-size: 12px;
+                color: #666;
+                line-height: 1.4;
             }
 
             .gist-answer-container.visible {
@@ -544,11 +607,29 @@
 
                         const data = await response.json();
 
-                        // Generate mock attribution data (this would come from the API in a real implementation)
+                        // Generate mock attribution data
                         const sources = [
-                            { name: 'Current Page', percentage: 45, color: '#4B9FE1' },
-                            { name: 'Documentation', percentage: 30, color: '#8860D0' },
-                            { name: 'Knowledge Base', percentage: 25, color: '#FF8C42' }
+                            { 
+                                name: 'Current Page',
+                                percentage: 45,
+                                color: '#4B9FE1',
+                                description: 'Content extracted from the current webpage you\'re viewing',
+                                logo: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M9 8h6m-6 4h6m-6 4h6"/></svg>'
+                            },
+                            { 
+                                name: 'Documentation',
+                                percentage: 30,
+                                color: '#8860D0',
+                                description: 'Official documentation and technical references',
+                                logo: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 6v12m-6-6h12"/></svg>'
+                            },
+                            { 
+                                name: 'Knowledge Base',
+                                percentage: 25,
+                                color: '#FF8C42',
+                                description: 'Curated knowledge from verified sources',
+                                logo: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>'
+                            }
                         ];
 
                         // Create attribution bar HTML
@@ -568,6 +649,19 @@
                                         </div>
                                     `).join('')}
                                 </div>
+                                <div class="gist-source-cards">
+                                    ${sources.map(source => `
+                                        <div class="gist-source-card">
+                                            <div class="gist-source-card-header">
+                                                <div class="gist-source-logo" style="background: ${source.color}">
+                                                    ${source.logo}
+                                                </div>
+                                                <div class="gist-source-name">${source.name}</div>
+                                            </div>
+                                            <div class="gist-source-description">${source.description}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
                             </div>
                         `;
 
@@ -581,13 +675,19 @@
                         requestAnimationFrame(() => {
                             const answerElement = answerContainer.querySelector('.gist-answer');
                             const attributionElement = answerContainer.querySelector('.gist-attribution');
+                            const sourceCardsElement = answerContainer.querySelector('.gist-source-cards');
                             if (answerElement) {
                                 answerElement.classList.add('visible');
                             }
                             if (attributionElement) {
                                 setTimeout(() => {
                                     attributionElement.classList.add('visible');
-                                }, 300); // Delay attribution animation
+                                }, 300);
+                            }
+                            if (sourceCardsElement) {
+                                setTimeout(() => {
+                                    sourceCardsElement.classList.add('visible');
+                                }, 600);
                             }
                         });
 
