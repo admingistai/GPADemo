@@ -212,6 +212,33 @@
         }
     });
     
+    // Color theme change functionality
+    window.updateWidgetColors = function(primaryColor, accentColor) {
+        console.log(`[GistWidget] Updating widget colors - Primary: ${primaryColor}, Accent: ${accentColor}`);
+        
+        // Update the websiteStyling object
+        websiteStyling.primaryColor = primaryColor;
+        websiteStyling.accentColor = accentColor;
+        
+        // Generate color variations
+        websiteStyling.secondaryColor = primaryColor;
+        
+        // If widget is already created, update its styling
+        if (typeof updateWidgetStyling === 'function' && window.gistShadowRoot) {
+            updateWidgetStyling(window.gistShadowRoot);
+        }
+    };
+    
+    // Listen for color theme change events from the sidebar
+    window.addEventListener('colorThemeChange', function(event) {
+        const { primaryColor, accentColor } = event.detail;
+        console.log(`[GistWidget] Received color theme change event - Primary: ${primaryColor}, Accent: ${accentColor}`);
+        
+        if (typeof window.updateWidgetColors === 'function') {
+            window.updateWidgetColors(primaryColor, accentColor);
+        }
+    });
+    
     // ================================
     // WEBSITE STYLING SCRAPER SYSTEM
     // ================================
@@ -1487,6 +1514,9 @@
         
         // Create shadow root for style isolation
         const shadowRoot = widgetContainer.attachShadow({ mode: 'closed' });
+        
+        // Store shadow root globally for color theme updates
+        window.gistShadowRoot = shadowRoot;
         
         // Analyze website styling first
         const extractedStyling = await analyzeWebsiteStyling();

@@ -208,6 +208,8 @@ export default async function handler(req, res) {
           box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
           max-height: calc(100vh - 100px);
           overflow-y: auto;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transform: translateX(0);
         ">
           <div style="
             display: flex;
@@ -229,8 +231,15 @@ export default async function handler(req, res) {
               cursor: pointer;
               font-size: 18px;
               color: #6b7280;
-              padding: 4px;
-            ">−</button>
+              padding: 8px;
+              border-radius: 6px;
+              transition: all 0.2s ease;
+              width: 32px;
+              height: 32px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            " onmouseover="this.style.backgroundColor='#f3f4f6'" onmouseout="this.style.backgroundColor='transparent'">−</button>
           </div>
           
           <div id="sidebar-content">
@@ -628,6 +637,148 @@ export default async function handler(req, res) {
                 </div>
               </label>
             </div>
+            
+            <div style="
+              border-top: 1px solid #f3f4f6;
+              padding-top: 16px;
+              margin-top: 16px;
+            ">
+              <p style="
+                margin: 0 0 12px 0;
+                font-size: 12px;
+                color: #6b7280;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+              ">Widget Theme</p>
+              
+              <div style="margin-bottom: 16px;">
+                <label style="
+                  display: block;
+                  margin-bottom: 8px;
+                  color: #374151;
+                  font-weight: 500;
+                  font-size: 13px;
+                ">Primary Color</label>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <input type="color" id="color-picker-primary" value="#6366f1" style="
+                    width: 40px;
+                    height: 32px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    background: none;
+                  ">
+                  <span id="color-value-primary" style="
+                    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+                    font-size: 12px;
+                    color: #6b7280;
+                    background: #f9fafb;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    border: 1px solid #e5e7eb;
+                    min-width: 60px;
+                  ">#6366f1</span>
+                </div>
+              </div>
+              
+              <div style="margin-bottom: 16px;">
+                <label style="
+                  display: block;
+                  margin-bottom: 8px;
+                  color: #374151;
+                  font-weight: 500;
+                  font-size: 13px;
+                ">Accent Color</label>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <input type="color" id="color-picker-accent" value="#ec4899" style="
+                    width: 40px;
+                    height: 32px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    background: none;
+                  ">
+                  <span id="color-value-accent" style="
+                    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+                    font-size: 12px;
+                    color: #6b7280;
+                    background: #f9fafb;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    border: 1px solid #e5e7eb;
+                    min-width: 60px;
+                  ">#ec4899</span>
+                </div>
+              </div>
+              
+              <div style="margin-bottom: 12px;">
+                <h4 style="
+                  margin: 0 0 8px 0;
+                  font-size: 13px;
+                  color: #374151;
+                  font-weight: 500;
+                ">Quick Presets</h4>
+                <div style="
+                  display: grid;
+                  grid-template-columns: repeat(4, 1fr);
+                  gap: 6px;
+                ">
+                  <button class="color-preset" data-primary="#6366f1" data-accent="#ec4899" style="
+                    width: 100%;
+                    height: 32px;
+                    border: 2px solid #e5e7eb;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    background: linear-gradient(135deg, #6366f1 50%, #ec4899 50%);
+                    transition: border-color 0.2s ease;
+                  " title="Default (Indigo/Pink)"></button>
+                  
+                  <button class="color-preset" data-primary="#059669" data-accent="#f59e0b" style="
+                    width: 100%;
+                    height: 32px;
+                    border: 2px solid #e5e7eb;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    background: linear-gradient(135deg, #059669 50%, #f59e0b 50%);
+                    transition: border-color 0.2s ease;
+                  " title="Nature (Green/Amber)"></button>
+                  
+                  <button class="color-preset" data-primary="#dc2626" data-accent="#7c3aed" style="
+                    width: 100%;
+                    height: 32px;
+                    border: 2px solid #e5e7eb;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    background: linear-gradient(135deg, #dc2626 50%, #7c3aed 50%);
+                    transition: border-color 0.2s ease;
+                  " title="Bold (Red/Purple)"></button>
+                  
+                  <button class="color-preset" data-primary="#0891b2" data-accent="#f97316" style="
+                    width: 100%;
+                    height: 32px;
+                    border: 2px solid #e5e7eb;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    background: linear-gradient(135deg, #0891b2 50%, #f97316 50%);
+                    transition: border-color 0.2s ease;
+                  " title="Ocean (Cyan/Orange)"></button>
+                </div>
+              </div>
+              
+              <button id="reset-colors" style="
+                width: 100%;
+                padding: 8px 12px;
+                background: #f9fafb;
+                border: 1px solid #d1d5db;
+                border-radius: 6px;
+                color: #6b7280;
+                font-size: 12px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+              " onmouseover="this.style.backgroundColor='#f3f4f6'; this.style.borderColor='#9ca3af'" onmouseout="this.style.backgroundColor='#f9fafb'; this.style.borderColor='#d1d5db'">Reset to Default</button>
+            </div>
           </div>
         </div>
         
@@ -660,14 +811,43 @@ export default async function handler(req, res) {
             height: 60px;
             padding: 15px;
             overflow: hidden;
+            transform: translateX(0);
           }
           
           #feature-sidebar.collapsed #sidebar-content {
-            display: none;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none;
           }
           
           #feature-sidebar.collapsed h3 {
-            display: none;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+          }
+          
+          #feature-sidebar:not(.collapsed) #sidebar-content {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
+            pointer-events: auto;
+          }
+          
+          #feature-sidebar:not(.collapsed) h3 {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
+          }
+          
+          /* Color preset hover effects */
+          .color-preset:hover {
+            border-color: #6b7280 !important;
+            transform: scale(1.05);
+          }
+          
+          .color-preset:active {
+            transform: scale(0.95);
           }
           
           /* Responsive design */
@@ -692,13 +872,22 @@ export default async function handler(req, res) {
         <script>
           // Feature toggle functionality
           document.addEventListener('DOMContentLoaded', function() {
-            // Sidebar toggle
+            // Sidebar toggle with smooth animation
             const sidebar = document.getElementById('feature-sidebar');
             const toggleBtn = document.getElementById('sidebar-toggle');
             
             toggleBtn.addEventListener('click', function() {
-              sidebar.classList.toggle('collapsed');
-              toggleBtn.textContent = sidebar.classList.contains('collapsed') ? '+' : '−';
+              const isCollapsed = sidebar.classList.contains('collapsed');
+              
+              if (isCollapsed) {
+                // Expanding
+                sidebar.classList.remove('collapsed');
+                toggleBtn.textContent = '−';
+              } else {
+                // Collapsing
+                sidebar.classList.add('collapsed');
+                toggleBtn.textContent = '+';
+              }
             });
             
             // Feature toggles
@@ -755,6 +944,97 @@ export default async function handler(req, res) {
                   }
                 }));
               });
+            });
+            
+            // Color picker functionality
+            const primaryColorPicker = document.getElementById('color-picker-primary');
+            const accentColorPicker = document.getElementById('color-picker-accent');
+            const primaryColorValue = document.getElementById('color-value-primary');
+            const accentColorValue = document.getElementById('color-value-accent');
+            const resetColorsBtn = document.getElementById('reset-colors');
+            const colorPresets = document.querySelectorAll('.color-preset');
+            
+            // Update color value displays
+            function updateColorValue(picker, valueElement) {
+              valueElement.textContent = picker.value.toLowerCase();
+            }
+            
+            // Apply colors to widget
+            function applyWidgetColors(primaryColor, accentColor) {
+              console.log(\`[FeatureSidebar] Applying colors - Primary: \${primaryColor}, Accent: \${accentColor}\`);
+              
+              // Update widget styling if it exists
+              if (window.updateWidgetColors && typeof window.updateWidgetColors === 'function') {
+                window.updateWidgetColors(primaryColor, accentColor);
+              } else {
+                // Dispatch custom event for widget to listen to
+                window.dispatchEvent(new CustomEvent('colorThemeChange', {
+                  detail: {
+                    primaryColor: primaryColor,
+                    accentColor: accentColor
+                  }
+                }));
+              }
+            }
+            
+            // Primary color picker handler
+            primaryColorPicker.addEventListener('input', function() {
+              updateColorValue(this, primaryColorValue);
+              applyWidgetColors(this.value, accentColorPicker.value);
+            });
+            
+            // Accent color picker handler
+            accentColorPicker.addEventListener('input', function() {
+              updateColorValue(this, accentColorValue);
+              applyWidgetColors(primaryColorPicker.value, this.value);
+            });
+            
+            // Color preset handlers
+            colorPresets.forEach(preset => {
+              preset.addEventListener('click', function() {
+                const primaryColor = this.dataset.primary;
+                const accentColor = this.dataset.accent;
+                
+                // Update color pickers
+                primaryColorPicker.value = primaryColor;
+                accentColorPicker.value = accentColor;
+                
+                // Update value displays
+                updateColorValue(primaryColorPicker, primaryColorValue);
+                updateColorValue(accentColorPicker, accentColorValue);
+                
+                // Apply colors
+                applyWidgetColors(primaryColor, accentColor);
+                
+                // Visual feedback
+                this.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                  this.style.transform = '';
+                }, 150);
+              });
+            });
+            
+            // Reset colors handler
+            resetColorsBtn.addEventListener('click', function() {
+              const defaultPrimary = '#6366f1';
+              const defaultAccent = '#ec4899';
+              
+              // Update color pickers
+              primaryColorPicker.value = defaultPrimary;
+              accentColorPicker.value = defaultAccent;
+              
+              // Update value displays
+              updateColorValue(primaryColorPicker, primaryColorValue);
+              updateColorValue(accentColorPicker, accentColorValue);
+              
+              // Apply colors
+              applyWidgetColors(defaultPrimary, defaultAccent);
+              
+              // Visual feedback
+              this.style.transform = 'scale(0.95)';
+              setTimeout(() => {
+                this.style.transform = '';
+              }, 150);
             });
             
             console.log('[FeatureSidebar] Feature sidebar initialized');
