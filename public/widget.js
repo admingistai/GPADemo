@@ -1319,20 +1319,14 @@
             }
             
             .gist-widget {
-        position: fixed;
+                position: fixed;
                 bottom: 24px;
                 left: 50%;
-                transform: translateX(-50%);
-                z-index: 10000;
+                transform: translateX(-50%) translateY(10px);
+                z-index: 999999;
                 pointer-events: none;
                 opacity: 0;
-                transform: translateX(-50%) translateY(10px);
-                transition: opacity 250ms cubic-bezier(0.4, 0.0, 0.2, 1), 
-                            transform 250ms cubic-bezier(0.4, 0.0, 0.2, 1),
-                            filter 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                            left 300ms cubic-bezier(0.4, 0.0, 0.2, 1),
-                            right 300ms cubic-bezier(0.4, 0.0, 0.2, 1),
-                            width 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+                transition: all 250ms cubic-bezier(0.4, 0.0, 0.2, 1);
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -1347,7 +1341,24 @@
                 --widget-primary-color-0: ${rgba0};
             }
             
-
+            .gist-widget.loaded {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+                pointer-events: auto;
+            }
+            
+            /* Active state with subtle blur effect */
+            .gist-widget.active {
+                filter: drop-shadow(0 8px 25px rgba(0, 0, 0, 0.15)) 
+                        drop-shadow(0 4px 10px rgba(0, 0, 0, 0.1));
+            }
+            
+            /* Enhanced blur when expanded and interacting */
+            .gist-widget.active:not(.minimized) {
+                filter: drop-shadow(0 12px 35px rgba(0, 0, 0, 0.18)) 
+                        drop-shadow(0 6px 15px rgba(0, 0, 0, 0.12))
+                        drop-shadow(0 2px 6px rgba(0, 0, 0, 0.08));
+            }
             
             .gist-pill {
                 background: ${styling.backgroundColor};
@@ -1618,20 +1629,14 @@
                     position: fixed;
                     bottom: 24px;
                     left: 50%;
-                    transform: translateX(-50%);
-                    z-index: 10000;
+                    transform: translateX(-50%) translateY(10px);
+                    z-index: 999999;
                     pointer-events: none;
                     opacity: 0;
-                    transform: translateX(-50%) translateY(10px);
-                    transition: opacity 250ms cubic-bezier(0.4, 0.0, 0.2, 1), 
-                                transform 2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                                filter 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                                left 2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                                right 2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                                width 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        display: flex;
+                    transition: all 250ms cubic-bezier(0.4, 0.0, 0.2, 1);
+                    display: flex;
                     flex-direction: column;
-        align-items: center;
+                    align-items: center;
                     gap: 6px;
                     filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0));
                 }
