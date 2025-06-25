@@ -239,48 +239,64 @@
             // Get the current styles
             let currentStyles = existingStyle.textContent;
             
-            // Update CSS custom properties for colors if they exist
-            // This is a safer approach than regenerating all styles
+            // Calculate secondary color (slight variation of primary)
+            const secondaryColor = primaryColor;
+            
+            // Calculate RGB values for transparent versions
+            const primaryRgb = hexToRgb(primaryColor);
+            const rgba40 = `rgba(${primaryRgb}, 0.4)`;
+            const rgba0 = `rgba(${primaryRgb}, 0)`;
+            
+            // Update CSS custom properties (CSS variables) that the widget actually uses
             const colorUpdates = [
-                // Primary color variations
-                ['--primary-color', primaryColor],
-                ['--primary-color-rgb', hexToRgb(primaryColor)],
-                ['--secondary-color', primaryColor],
-                ['--accent-color', accentColor],
-                ['--accent-color-rgb', hexToRgb(accentColor)]
+                ['--widget-primary-color', primaryColor],
+                ['--widget-secondary-color', secondaryColor],
+                ['--widget-accent-color', accentColor],
+                ['--widget-brand-color', accentColor],
+                ['--widget-primary-color-40', rgba40],
+                ['--widget-primary-color-0', rgba0]
             ];
             
-            // Apply color updates by replacing existing color values in the CSS
+            // Apply color updates by replacing existing CSS variable values
             colorUpdates.forEach(([property, value]) => {
-                const regex = new RegExp(`${property}\\s*:\\s*[^;]+;`, 'g');
+                const regex = new RegExp(`${property.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\\s*:\\s*[^;]+;`, 'g');
                 if (currentStyles.includes(property)) {
                     currentStyles = currentStyles.replace(regex, `${property}: ${value};`);
+                    console.log(`[GistWidget] Updated ${property} to ${value}`);
                 }
             });
             
-            // Also update hardcoded color values in specific patterns
-            // Update background gradients and colors that use the old values
-            const oldPrimary = /#[0-9a-fA-F]{6}/g;
-            const matches = currentStyles.match(oldPrimary);
-            if (matches) {
-                // Be selective about which colors to replace to avoid breaking other colors
-                // Only replace colors that match common widget color patterns
-                const commonWidgetColors = ['#6366f1', '#8b5cf6', '#ec4899'];
-                commonWidgetColors.forEach(oldColor => {
-                    if (oldColor === '#6366f1' || oldColor === '#8b5cf6') {
-                        // Replace primary colors
-                        currentStyles = currentStyles.replaceAll(oldColor, primaryColor);
-                    } else if (oldColor === '#ec4899') {
-                        // Replace accent colors
-                        currentStyles = currentStyles.replaceAll(oldColor, accentColor);
-                    }
-                });
-            }
+            // Also update hardcoded color values in the CSS
+            const colorReplacements = [
+                // Primary color replacements
+                ['#6366f1', primaryColor],
+                ['#8b5cf6', secondaryColor],
+                ['#ec4899', accentColor],
+                ['#f59e0b', accentColor]
+            ];
             
-            // Update the style element
+            colorReplacements.forEach(([oldColor, newColor]) => {
+                // Use global replacement for all instances
+                const regex = new RegExp(oldColor.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g');
+                const beforeCount = (currentStyles.match(regex) || []).length;
+                currentStyles = currentStyles.replace(regex, newColor);
+                const afterCount = (currentStyles.match(new RegExp(newColor.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g')) || []).length;
+                
+                if (beforeCount > 0) {
+                    console.log(`[GistWidget] Replaced ${beforeCount} instances of ${oldColor} with ${newColor}`);
+                }
+            });
+            
+            // Update the style element with new colors
             existingStyle.textContent = currentStyles;
             
             console.log(`[GistWidget] Successfully updated widget colors to Primary: ${primaryColor}, Accent: ${accentColor}`);
+            
+            // Also update the websiteStyling object for consistency
+            websiteStyling.primaryColor = primaryColor;
+            websiteStyling.secondaryColor = secondaryColor;
+            websiteStyling.accentColor = accentColor;
+            
         } catch (error) {
             console.error('[GistWidget] Failed to update widget colors:', error);
         }
