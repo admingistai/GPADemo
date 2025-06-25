@@ -47,6 +47,26 @@ export default function Home() {
   const handleUrlSubmit = async (url) => {
     setLoading(true);
     setError(null);
+    setShowLoadingPage(true);
+    
+    // Show random loading messages
+    const loadingMessages = [
+      'Analyzing your website...',
+      'Configuring Ask Anything™...',
+      'Setting up smart responses...',
+      'Optimizing for your content...',
+      'Preparing preview...',
+      'Almost ready...'
+    ];
+
+    // Show random loading messages
+    const messageInterval = setInterval(() => {
+      const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+      setLoadingMessage(randomMessage);
+    }, 800);
+
+    // Random delay between 2-4 seconds
+    const delay = Math.random() * 2000 + 2000;
     
     try {
       // Test if the URL is accessible
@@ -62,9 +82,22 @@ export default function Home() {
         url: url
       });
 
-      // Directly navigate to the proxied URL
-      window.location.href = `/api/proxy?url=${encodeURIComponent(url)}`;
+      // Wait for the minimum delay before proceeding
+      await new Promise(resolve => setTimeout(resolve, delay));
+
+      // Clear the loading message interval
+      clearInterval(messageInterval);
+      
+      // Reset states
+      setShowLoadingPage(false);
+      setLoading(false);
+      setTargetUrl('');
+
+      // Open the proxied URL in a new tab
+      window.open(`/api/proxy?url=${encodeURIComponent(url)}`, '_blank');
     } catch (err) {
+      clearInterval(messageInterval);
+      setShowLoadingPage(false);
       setError(err.message);
       setLoading(false);
     }
@@ -199,10 +232,10 @@ export default function Home() {
             <div className="loading-page">
               <div className="loading-content">
                 <div className="loading-spinner">
-                  <img src="/Gist_Mark_000000.png" alt="Gist Logo" />
-                  </div>
-                <h2 className="loading-title">Creating your <em>Ask Anything™</em> Button Preview</h2>
-                <p className="loading-message">{loadingMessage}</p>
+                  <img src="/Gist_Mark_000000.png" alt="Gist Logo" className="spinning-logo" />
+                </div>
+                <h2 className="loading-title">Setting up <em>Ask Anything™</em> Preview</h2>
+                <p className="loading-message" dangerouslySetInnerHTML={{ __html: loadingMessage }}></p>
                 <div className="loading-progress">
                   <div className="progress-bar"></div>
                 </div>
@@ -569,75 +602,86 @@ export default function Home() {
 
         /* Loading Page */
         .loading-page {
-          min-height: 100vh;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(255, 255, 255, 0.98);
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #1a202c;
-          background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+          z-index: 1000;
         }
 
         .loading-content {
           text-align: center;
-          max-width: 500px;
+          max-width: 400px;
           padding: 2rem;
         }
 
         .loading-spinner {
+          margin-bottom: 2rem;
+        }
+
+        .spinning-logo {
           width: 80px;
           height: 80px;
-          margin: 0 auto 2rem;
           animation: spin 2s linear infinite;
-        }
-
-        .loading-spinner img {
-           width: 100%;
-          height: 100%;
-          object-fit: contain;
-         }
-
-        .loading-title {
-          font-size: 2.5rem;
-          font-weight: 700;
-          margin-bottom: 1rem;
-          font-family: 'Inter', sans-serif;
-          line-height: 0.95;
-          letter-spacing: -0.05em;
-        }
-
-        .loading-message {
-          font-size: 1.2rem;
-          margin-bottom: 2rem;
-          opacity: 0.8;
-          font-family: 'Inter', sans-serif;
-          min-height: 1.5rem;
-          line-height: 0.95;
-          letter-spacing: -0.02em;
-        }
-
-        .loading-progress {
-          width: 100%;
-          height: 8px;
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: 4px;
-          overflow: hidden;
-        }
-
-        .progress-bar {
-          height: 100%;
-          background: linear-gradient(135deg, #ff6b35, #f7931e, #ff6b6b, #a855f7);
-          animation: progress 8s ease-in-out infinite;
         }
 
         @keyframes spin {
           0% { transform: rotate(0deg); }
-          100% { transform: rotate(-360deg); }
+          100% { transform: rotate(360deg); }
+        }
+
+        .loading-title {
+          font-size: 1.5rem;
+          font-weight: 600;
+          margin-bottom: 1rem;
+          color: #1F2937;
+        }
+
+        .loading-title em {
+          font-style: italic;
+          color: #6366F1;
+        }
+
+        .loading-message {
+          font-size: 1rem;
+          color: #4B5563;
+          margin-bottom: 2rem;
+          min-height: 1.5rem;
+        }
+
+        .loading-message em {
+          font-style: italic;
+          color: #6366F1;
+        }
+
+        .loading-progress {
+          width: 100%;
+          height: 4px;
+          background: #E5E7EB;
+          border-radius: 2px;
+          overflow: hidden;
+        }
+
+        .progress-bar {
+          width: 30%;
+          height: 100%;
+          background: #6366F1;
+          border-radius: 2px;
+          animation: progress 2s ease-in-out infinite;
         }
 
         @keyframes progress {
-          0% { width: 0%; }
-          50% { width: 70%; }
-          100% { width: 100%; }
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(400%);
+          }
         }
 
         /* Fade-in animations */
