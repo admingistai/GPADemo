@@ -140,7 +140,7 @@
     const widgetHTML = `
         <div class="gist-widget-container">
             <img src="${basePath}/sparkles.png" class="gist-search-icon" alt="sparkles icon">
-            <input type="text" class="gist-search-input" placeholder="Ask ${websiteName} anything...">
+            <input type="text" class="gist-search-input" data-placeholder-parts="Ask ,${websiteName}, anything...">
             <button class="gist-arrow-button">
                 <svg class="gist-arrow-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7 17L17 7M17 7H10M17 7V14" stroke-linecap="round" stroke-linejoin="round"/>
@@ -154,8 +154,46 @@
     container.innerHTML = widgetHTML;
     document.body.appendChild(container.firstElementChild);
 
-    // Add input event listener
+    // Add input event listener and setup placeholder
     const searchInput = document.querySelector('.gist-search-input');
+    
+    // Function to update placeholder with bold website name
+    function updatePlaceholder(input) {
+        const parts = input.dataset.placeholderParts.split(',');
+        const placeholderSpan = document.createElement('span');
+        placeholderSpan.style.position = 'absolute';
+        placeholderSpan.style.left = '52px'; // Adjust based on icon width + padding
+        placeholderSpan.style.top = '50%';
+        placeholderSpan.style.transform = 'translateY(-50%)';
+        placeholderSpan.style.color = '#666';
+        placeholderSpan.style.pointerEvents = 'none';
+        
+        placeholderSpan.innerHTML = `${parts[0]}<strong>${parts[1]}</strong>${parts[2]}`;
+        
+        // Remove any existing placeholder span
+        const existingSpan = input.parentElement.querySelector('.placeholder-span');
+        if (existingSpan) {
+            existingSpan.remove();
+        }
+        
+        // Only show if input is empty
+        placeholderSpan.className = 'placeholder-span';
+        if (!input.value) {
+            input.parentElement.appendChild(placeholderSpan);
+        }
+    }
+
+    // Initial setup
+    updatePlaceholder(searchInput);
+
+    // Handle input changes
+    searchInput.addEventListener('input', function() {
+        const placeholderSpan = this.parentElement.querySelector('.placeholder-span');
+        if (placeholderSpan) {
+            placeholderSpan.style.display = this.value ? 'none' : 'block';
+        }
+    });
+
     searchInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             // TODO: Handle search query
