@@ -1,7 +1,16 @@
 import '../styles/globals.css';
 import Head from 'next/head';
+import { useEffect } from 'react';
+import * as amplitude from '@amplitude/analytics-browser';
 
 export default function App({ Component, pageProps }) {
+  useEffect(() => {
+    // Initialize Amplitude with your API key
+    amplitude.init('YOUR-API-KEY-HERE', {
+      defaultTracking: true,
+    });
+  }, []);
+
   return (
     <>
       <Head>
