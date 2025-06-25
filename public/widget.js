@@ -1,9 +1,4 @@
 (function() {
-    // Get the script's location to reference assets relatively
-    const scriptElement = document.currentScript;
-    const scriptPath = scriptElement.src;
-    const basePath = scriptPath.substring(0, scriptPath.lastIndexOf('/'));
-
     // Function to get website name
     function getWebsiteName() {
         // Try to get from meta tags first
@@ -136,10 +131,10 @@
     // Get website name
     const websiteName = getWebsiteName();
 
-    // Create widget HTML using the correct path to sparkles.png
+    // Create widget HTML using absolute path for sparkles.png
     const widgetHTML = `
         <div class="gist-widget-container">
-            <img src="${basePath}/sparkles.png" class="gist-search-icon" alt="sparkles icon">
+            <img src="/sparkles.png" class="gist-search-icon" alt="sparkles icon" onerror="this.style.display='none'">
             <input type="text" class="gist-search-input" data-placeholder-parts="Ask ,${websiteName}, anything...">
             <button class="gist-arrow-button">
                 <svg class="gist-arrow-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
