@@ -362,31 +362,37 @@ export default function Home() {
                   Replace your site's search with the Ask Anything™ button and drive AI engagement, grow traffic, and unlock new revenue.
                 </p>
                 <div className="hero-cta">
-                  <button
-                        onClick={handleGetStartedClick}
-                    className="get-started-btn"
-                  >
-                    Get Started
-                  </button>
-                  <span className="hero-cta-text">or, preview it on your site:</span>
                   <div className="hero-url-input-wrapper">
-                  <input
-                    type="text"
+                    <input
+                      type="text"
                       className="hero-url-input"
                       placeholder="Enter your website URL"
-                    value={targetUrl}
-                    onChange={(e) => setTargetUrl(e.target.value)}
-                          onKeyPress={(e) => e.key === 'Enter' && targetUrl.trim() && handleTryItClick('hero')}
-                  />
-                  <button
+                      value={targetUrl}
+                      onChange={(e) => setTargetUrl(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && targetUrl.trim() && handleTryItClick('hero')}
+                    />
+                    <button
                       className="hero-try-btn"
-                          onClick={() => handleTryItClick('hero')}
+                      onClick={() => handleTryItClick('hero')}
                       disabled={!targetUrl.trim()}
                     >
                       Try It
-                  </button>
-            </div>
-              </div>
+                    </button>
+                  </div>
+                  <span className="hero-cta-text">
+                    or{' '}
+                    <a 
+                      href="/setup"
+                      className="get-started-link"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleGetStartedClick();
+                      }}
+                    >
+                      Get Started
+                    </a>
+                  </span>
+                </div>
               </div>
                 </div>
           </section>
@@ -990,36 +996,13 @@ export default function Home() {
 
         .hero-cta {
           display: flex;
-          align-items: center;
-          justify-content: flex-start;
-          gap: 1.5rem;
-          flex-wrap: wrap;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
           width: 100%;
         }
 
-        .get-started-btn {
-          background: linear-gradient(270deg, #667eea, #764ba2, #f093fb, #f5576c, #667eea);
-          background-size: 400% 400%;
-          border: none;
-          color: white;
-          padding: 1rem 2rem;
-          border-radius: 12px;
-          font-family: 'Inter', sans-serif;
-          font-weight: 600;
-          font-size: 1.1rem;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-          animation: gradientFlow 5s ease infinite;
-          position: relative;
-          overflow: hidden;
-        }
 
-        .get-started-btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-          animation-duration: 3s;
-        }
 
         @keyframes gradientFlow {
           0% {
@@ -1039,6 +1022,18 @@ export default function Home() {
           font-size: 1rem;
           font-style: italic;
           font-weight: 400;
+        }
+
+        .get-started-link {
+          color: #0070f3;
+          text-decoration: none;
+          font-weight: 600;
+          transition: color 0.2s ease;
+        }
+
+        .get-started-link:hover {
+          color: #0051cc;
+          text-decoration: underline;
         }
 
         .hero-url-input-wrapper {
@@ -1196,14 +1191,12 @@ export default function Home() {
           }
 
           .hero-cta {
-            flex-direction: column;
+            align-items: center;
+            text-align: center;
             gap: 1.5rem;
           }
 
-          .get-started-btn {
-            padding: 0.875rem 1.75rem;
-            font-size: 1rem;
-          }
+
 
           .hero-url-input-wrapper {
             width: 100%;
