@@ -6,9 +6,10 @@ class HtmlModifier {
    * Modifies HTML to inject widget.js and fix relative URLs
    * @param {string} html - Original HTML content
    * @param {string} targetUrl - The URL being proxied
+   * @param {string} currentHost - The current host for widget injection
    * @returns {string} Modified HTML
    */
-  modifyHtml(html, targetUrl) {
+  modifyHtml(html, targetUrl, currentHost) {
     try {
       // Load HTML with cheerio
       const $ = cheerio.load(html, {
@@ -21,7 +22,7 @@ class HtmlModifier {
       const baseUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
 
       // Inject widget.js before closing body tag
-      this.injectWidget($);
+      this.injectWidget($, currentHost);
 
       // Fix all relative URLs to absolute
       this.fixUrls($, baseUrl, parsedUrl);
@@ -44,8 +45,9 @@ class HtmlModifier {
   /**
    * Inject widget.js script tag
    */
-  injectWidget($) {
-    const widgetScript = '<script src="/api/proxy?url=' + encodeURIComponent('http://' + process.env.VERCEL_URL + '/widget.js') + '" data-injected="true"></script>';
+  injectWidget($, currentHost) {
+    const protocol = currentHost.includes('localhost') ? 'http://' : 'https://';
+    const widgetScript = '<script src="/api/proxy?url=' + encodeURIComponent(protocol + currentHost + '/widget.js') + '" data-injected="true"></script>';
     
     // Try to inject before closing body tag
     if ($('body').length > 0) {

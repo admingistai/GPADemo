@@ -121,8 +121,11 @@ export default async function handler(req, res) {
       return res.send(response.data);
     }
 
+    // Get the current host for widget injection
+    const currentHost = req.headers.host || process.env.VERCEL_URL || 'localhost:3000';
+
     // Use HTML modifier to handle all HTML modifications
-    const modifiedHtml = htmlModifier.modifyHtml(response.data, normalizedUrl);
+    const modifiedHtml = htmlModifier.modifyHtml(response.data, normalizedUrl, currentHost);
 
     // Set response headers
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
