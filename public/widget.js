@@ -47,7 +47,7 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 999999;
-            width: 600px;
+            width: 475px;
             max-width: 90%;
             background: white;
             border-radius: 50px;
