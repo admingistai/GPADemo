@@ -50,9 +50,23 @@
             color: #666;
         }
 
-        .gist-website-name {
+        .gist-search-label {
+            position: absolute;
+            left: 52px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #666;
+            transition: opacity 0.2s ease;
+        }
+
+        .gist-search-label .website-name {
             font-weight: bold;
             font-family: "Chomsky", Georgia, serif;
+        }
+
+        .gist-search-input:not(:placeholder-shown) + .gist-search-label {
+            opacity: 0;
         }
 
         .gist-search-icon {
@@ -100,7 +114,8 @@
     const widgetHTML = `
         <div class="gist-widget-container">
             <img src="${basePath}/sparkles.png" class="gist-search-icon" alt="sparkles icon">
-            <input type="text" class="gist-search-input" placeholder="Ask ${websiteName} anything...">
+            <input type="text" class="gist-search-input" placeholder=" ">
+            <label class="gist-search-label">Ask <span class="website-name">${websiteName}</span> anything...</label>
             <button class="gist-arrow-button">
                 <svg class="gist-arrow-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7 17L17 7M17 7H10M17 7V14" stroke-linecap="round" stroke-linejoin="round"/>
@@ -112,12 +127,6 @@
     // Create container element
     const container = document.createElement('div');
     container.innerHTML = widgetHTML;
-
-    // Replace the website name text with styled span
-    const input = container.querySelector('.gist-search-input');
-    const placeholder = input.getAttribute('placeholder');
-    input.setAttribute('placeholder', placeholder.replace(websiteName, `<span class="gist-website-name">${websiteName}</span>`));
-
     document.body.appendChild(container.firstElementChild);
 
     // Add input event listener
