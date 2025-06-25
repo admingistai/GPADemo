@@ -250,17 +250,16 @@ export default async function handler(req, res) {
                 <span id="features-chevron" style="font-size: 18px; transition: transform 0.2s;">▼</span>
               </div>
               <div id="features-toggle-group" style="padding: 8px 12px 0 12px; display: block;">
-                <!-- All feature toggles (Ask/Explore always on, others below) -->
-                <label style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; cursor: not-allowed; color: #374151; font-weight: 500; opacity: 0.7;">
+                <!-- All feature toggles (Ask/Explore, Summarize, Listen, Basic Share, and Coming Soon) go here -->
+                <label style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; color: #374151; font-weight: 500; opacity: 0.7; cursor: not-allowed;">
                   <span>Ask/Explore</span>
                   <div style="position: relative;">
                     <input type="checkbox" id="toggle-ask" checked disabled style="position: absolute; opacity: 0; cursor: not-allowed;">
-                    <span style="display: inline-block; width: 44px; height: 24px; background: #10b981; border-radius: 12px; position: relative; transition: background 0.2s;">
+                    <span style="display: inline-block; width: 44px; height: 24px; background: #10b981; border-radius: 12px; position: relative; transition: background 0.2s; opacity: 0.7;">
                       <span style="position: absolute; top: 2px; left: 20px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: left 0.2s;"></span>
                     </span>
                   </div>
                 </label>
-                <!-- Working toggles -->
                 <label style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; cursor: pointer; color: #374151; font-weight: 500;">
                   <span>Summarize</span>
                   <div style="position: relative;">
@@ -288,7 +287,7 @@ export default async function handler(req, res) {
                     </span>
                   </div>
                 </label>
-                <!-- Coming soon toggles -->
+                <!-- Coming Soon Features (disabled) -->
                 <label style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; cursor: not-allowed; color: #9ca3af; font-weight: 500;">
                   <span>Dive Deeper*</span>
                   <div style="position: relative;">
@@ -345,8 +344,6 @@ export default async function handler(req, res) {
                 </label>
               </div>
             </div>
-            <!-- Move Widget Button -->
-            <button id="move-widget-btn" style="width: 100%; padding: 10px 0; margin-bottom: 18px; background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 8px; color: #374151; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s;">Move Widget</button>
             
             <div style="
               border-top: 1px solid #f3f4f6;
@@ -759,15 +756,6 @@ export default async function handler(req, res) {
             featuresOpen = !featuresOpen;
             featuresGroup.style.display = featuresOpen ? 'block' : 'none';
             chevron.style.transform = featuresOpen ? 'rotate(0deg)' : 'rotate(-90deg)';
-          });
-
-          // --- Move Widget Button ---
-          let dragMode = false;
-          const moveBtn = document.getElementById('move-widget-btn');
-          moveBtn.addEventListener('click', () => {
-            dragMode = !dragMode;
-            moveBtn.textContent = dragMode ? 'Lock Widget' : 'Move Widget';
-            window.dispatchEvent(new CustomEvent('widget-drag-toggle', { detail: { dragMode } }));
           });
 
           // --- Dynamic Color Presets ---
