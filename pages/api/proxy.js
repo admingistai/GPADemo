@@ -130,9 +130,9 @@ export default async function handler(req, res) {
       // Basic URL rewriting - convert relative URLs to absolute
       const baseUrl = new URL(normalizedUrl).origin;
       
-      // Fix relative links
-      html = html.replace(/href="\/([^"]*)"/, `href="${baseUrl}/$1"`);
-      html = html.replace(/src="\/([^"]*)"/, `src="${baseUrl}/$1"`);
+      // Fix relative links (use global replace)
+      html = html.replace(/href="\/([^"]*)"/g, `href="${baseUrl}/$1"`);
+      html = html.replace(/src="\/([^"]*)"/g, `src="${baseUrl}/$1"`);
       
       // Add base tag for better relative URL handling
       if (html.includes('<head>')) {
@@ -140,19 +140,36 @@ export default async function handler(req, res) {
       }
 
       // Inject widget.js script into the HTML
-      const protocol = req.headers['x-forwarded-proto'] || 'http';
+      const protocol = req.headers['x-forwarded-proto'] || (req.headers['x-forwarded-for'] ? 'https' : 'http');
       const host = req.headers.host || 'localhost:3000';
       const widgetScript = `<script src="${protocol}://${host}/widget.js"></script>`;
       
+      console.log(`Injecting widget script: ${widgetScript}`);
+      
+      // More robust injection logic
       if (html.includes('</head>')) {
         // Inject before closing head tag
         html = html.replace('</head>', `${widgetScript}</head>`);
+        console.log('Widget injected before </head>');
       } else if (html.includes('</body>')) {
         // Fallback: inject before closing body tag
         html = html.replace('</body>', `${widgetScript}</body>`);
+        console.log('Widget injected before </body>');
+      } else if (html.includes('<body')) {
+        // Another fallback: inject after opening body tag
+        html = html.replace(/(<body[^>]*>)/, `$1${widgetScript}`);
+        console.log('Widget injected after <body>');
       } else {
         // Last resort: append to the end
         html += widgetScript;
+        console.log('Widget appended to end of HTML');
+      }
+      
+      // Verify injection
+      if (html.includes('widget.js')) {
+        console.log('✓ Widget script successfully injected into HTML');
+      } else {
+        console.log('✗ Widget script NOT found in final HTML');
       }
     }
 
