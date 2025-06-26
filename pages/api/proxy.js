@@ -217,6 +217,10 @@ export default async function handler(req, res) {
             display: flex !important;
             flex-direction: column !important;
             transition: transform 0.3s ease, width 0.3s ease !important;
+            border: 2px solid transparent !important;
+            background-image: linear-gradient(#f7f7f8, #f7f7f8), linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0) !important;
+            background-origin: border-box !important;
+            background-clip: padding-box, border-box !important;
           }
           #admin-sidebar.minimized {
             transform: translateX(100%) !important;
@@ -239,6 +243,10 @@ export default async function handler(req, res) {
             justify-content: center !important;
             cursor: pointer !important;
             transition: background 0.2s, color 0.2s, left 0.3s !important;
+            border: 2px solid transparent !important;
+            background-image: linear-gradient(#e5e7eb, #e5e7eb), linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0) !important;
+            background-origin: border-box !important;
+            background-clip: padding-box, border-box !important;
           }
           #admin-sidebar.minimized .sidebar-toggle-btn {
             left: -18px !important;
@@ -269,7 +277,7 @@ export default async function handler(req, res) {
             font-size: 15px;
             font-weight: 500;
             color: #333;
-            margin-bottom: 0;
+            margin-bottom: 18px !important;
             margin-top: 8px;
             user-select: none;
           }
@@ -284,6 +292,7 @@ export default async function handler(req, res) {
           .collapsible-content {
             padding: 0 24px 12px 24px;
             display: none;
+            margin-top: 8px !important;
           }
           .collapsible-content.open {
             display: block;
@@ -379,6 +388,9 @@ export default async function handler(req, res) {
             #admin-sidebar {
               display: none !important;
             }
+          }
+          #admin-sidebar {
+            padding-top: 72px !important;
           }
         </style>
 
