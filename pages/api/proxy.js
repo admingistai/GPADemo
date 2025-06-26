@@ -266,9 +266,11 @@ const adminSidebar = `
       transition: background 0.2s, color 0.2s, box-shadow 0.2s;
     }
     .next-btn:hover {
-      background: linear-gradient(90deg, #4B9FE1, #FF8C42, #8860D0);
+      background: linear-gradient(90deg, #FF8C42, #4B9FE1, #8860D0);
       color: #fff;
-      box-shadow: 0 4px 16px rgba(75,159,225,0.10);
+      box-shadow: 0 8px 24px rgba(75,159,225,0.10);
+      transform: translateY(-2px) scale(1.03);
+      transition: box-shadow 0.2s, transform 0.2s;
     }
   </style>
 
