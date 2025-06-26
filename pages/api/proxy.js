@@ -417,6 +417,10 @@ const askAnythingBanner = `
       top: 64px !important;
       height: calc(100vh - 64px) !important;
     }
+    /* Hide the first <hr> or all <hr>s at the top of the page */
+    body > hr:first-of-type, body > hr {
+      display: none !important;
+    }
   </style>
   <div id="aa-banner">
     <div class="aa-title">Ask Anything<sup>TM</sup></div>
