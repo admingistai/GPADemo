@@ -390,7 +390,7 @@ const askAnythingBanner = `
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
       padding: 0 32px 0 24px;
       height: 72px;
       font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -398,9 +398,10 @@ const askAnythingBanner = `
       background-image: linear-gradient(#fff, #fff), linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0);
       background-origin: border-box;
       background-clip: padding-box, border-box;
+      position: relative;
     }
     #aa-banner .aa-title {
-      font-size: 32px;
+      font-size: 31px;
       font-weight: 700;
       color: #18181b;
       display: block;
@@ -408,14 +409,17 @@ const askAnythingBanner = `
       line-height: 1.02;
       margin-bottom: 0;
     }
-    #aa-banner .aa-title sup {
-      font-size: 0.5em;
-      vertical-align: super;
-      margin-left: 2px;
-      letter-spacing: 0;
-      position: relative;
-      top: -0.2em;
-      right: 0.2em;
+    #aa-banner .aa-preview-header {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 18px;
+      font-weight: 600;
+      color: #6366f1;
+      letter-spacing: 0.04em;
+      pointer-events: none;
+      user-select: none;
     }
     #aa-banner .aa-tagline {
       font-size: 1rem;
@@ -453,6 +457,7 @@ const askAnythingBanner = `
       <span class="aa-ask">Ask</span><br>
       <span class="aa-anything">Anything<sup>TM</sup></span>
     </div>
+    <div class="aa-preview-header">Preview</div>
   </div>
 `;
 
