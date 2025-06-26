@@ -12,10 +12,10 @@ const adminSidebar = `
   <style>
     #admin-sidebar {
       position: fixed !important;
-      top: 72px !important;
+      top: 64px !important;
       right: 0 !important;
       width: 320px !important;
-      height: calc(100vh - 72px) !important;
+      height: calc(100vh - 64px) !important;
       background: #f7f7f8 !important;
       border-left: 1px solid #e0e0e0 !important;
       box-shadow: none !important;
@@ -390,18 +390,17 @@ const askAnythingBanner = `
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: space-between;
       padding: 0 32px 0 24px;
-      height: 72px;
+      height: 64px;
       font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       border: 2px solid transparent;
       background-image: linear-gradient(#fff, #fff), linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0);
       background-origin: border-box;
       background-clip: padding-box, border-box;
-      position: relative;
     }
     #aa-banner .aa-title {
-      font-size: 31px;
+      font-size: 32px;
       font-weight: 700;
       color: #18181b;
       display: block;
@@ -409,17 +408,14 @@ const askAnythingBanner = `
       line-height: 1.02;
       margin-bottom: 0;
     }
-    #aa-banner .aa-preview-header {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 18px;
-      font-weight: 600;
-      color: #6366f1;
-      letter-spacing: 0.04em;
-      pointer-events: none;
-      user-select: none;
+    #aa-banner .aa-title sup {
+      font-size: 0.5em;
+      vertical-align: super;
+      margin-left: 2px;
+      letter-spacing: 0;
+      position: relative;
+      top: -0.2em;
+      right: 0.2em;
     }
     #aa-banner .aa-tagline {
       font-size: 1rem;
@@ -445,11 +441,11 @@ const askAnythingBanner = `
       }
     }
     body {
-      margin-top: 72px !important;
+      margin-top: 64px !important;
     }
     #admin-sidebar {
-      top: 72px !important;
-      height: calc(100vh - 72px) !important;
+      top: 64px !important;
+      height: calc(100vh - 64px) !important;
     }
   </style>
   <div id="aa-banner">
@@ -457,7 +453,6 @@ const askAnythingBanner = `
       <span class="aa-ask">Ask</span><br>
       <span class="aa-anything">Anything<sup>TM</sup></span>
     </div>
-    <div class="aa-preview-header">Preview</div>
   </div>
 `;
 
