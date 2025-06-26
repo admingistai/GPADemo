@@ -31,6 +31,7 @@ const adminSidebar = `
       background-image: linear-gradient(#f7f7f8, #f7f7f8), linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0) !important;
       background-origin: border-box !important;
       background-clip: padding-box, border-box !important;
+      overflow-y: auto !important;
     }
     #admin-sidebar.minimized {
       transform: translateX(100%) !important;
@@ -270,13 +271,18 @@ const adminSidebar = `
       color: #fff;
       box-shadow: 0 6px 18px rgba(75,159,225,0.13);
     }
+    .aa-title-link {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
   </style>
 
   <div id="admin-sidebar">
     <button class="sidebar-toggle-btn" title="Show/Hide Admin Panel">
       <svg id="sidebar-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
     </button>
-    <div class="admin-header">Configure your Ask Anything<sup>TM</sup> button.</div>
+    <div class="admin-header">Configure your Ask Anything button.</div>
     <div class="divider"></div>
     <div class="slider-section">
       <span class="slider-label">Widget Size</span>
@@ -290,7 +296,7 @@ const adminSidebar = `
     <div class="style-section">
       <span class="section-label">Style</span>
       <div class="style-toggle-group">
-        <button class="style-toggle selected" data-style="default">Ask Anything<sup>TM</sup> (Default)</button>
+        <button class="style-toggle selected" data-style="default">Ask Anything (Default)</button>
         <button class="style-toggle" data-style="match">Match My Site</button>
       </div>
     </div>
@@ -348,6 +354,12 @@ const adminSidebar = `
         toggleIcon.innerHTML = minimized
           ? '<polyline points="9 18 15 12 9 6"></polyline>'
           : '<polyline points="15 18 9 12 15 6"></polyline>';
+        // Lock body scroll when sidebar is open
+        if (!minimized) {
+          document.body.style.overflow = 'hidden';
+        } else {
+          document.body.style.overflow = '';
+        }
       }
 
       toggleBtn.addEventListener('click', function() {
@@ -488,10 +500,12 @@ const askAnythingBanner = `
   </style>
   <div id="aa-banner">
     <div class="aa-title-container">
-      <div class="aa-title">
-        <span class="aa-ask">Ask</span><br>
-        <span class="aa-anything">Anything<sup>TM</sup></span>
-      </div>
+      <a href="https://getaskanything.com" target="_blank" class="aa-title-link">
+        <div class="aa-title">
+          <span class="aa-ask">Ask</span><br>
+          <span class="aa-anything">Anything</span>
+        </div>
+      </a>
       <div class="aa-preview">Preview</div>
     </div>
   </div>
