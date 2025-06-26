@@ -218,11 +218,9 @@ export default async function handler(req, res) {
             flex-direction: column !important;
             transition: transform 0.3s ease, width 0.3s ease !important;
           }
-
           #admin-sidebar.minimized {
             transform: translateX(100%) !important;
           }
-
           #admin-sidebar .sidebar-toggle-btn {
             position: absolute !important;
             left: -18px !important;
@@ -254,6 +252,129 @@ export default async function handler(req, res) {
             height: 16px !important;
             display: block !important;
           }
+          .admin-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 0 18px 0;
+            padding: 24px 24px 0 24px;
+            color: #222;
+            letter-spacing: 0.01em;
+          }
+          .collapsible-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 0 24px 0 24px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0;
+            margin-top: 8px;
+            user-select: none;
+          }
+          .collapsible-header svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.2s;
+          }
+          .collapsible-header.open svg {
+            transform: rotate(90deg);
+          }
+          .collapsible-content {
+            padding: 0 24px 12px 24px;
+            display: none;
+          }
+          .collapsible-content.open {
+            display: block;
+          }
+          .source-toggle {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+            user-select: none;
+            font-size: 13px;
+            color: #333;
+          }
+          .toggle-switch {
+            position: relative;
+            width: 28px;
+            height: 16px;
+            background: #e4e4e4;
+            border-radius: 8px;
+            margin-right: 10px;
+            transition: background 0.2s;
+            flex-shrink: 0;
+          }
+          .toggle-switch::before {
+            content: "";
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #fff;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s;
+            box-shadow: none;
+          }
+          .source-toggle input:checked + .toggle-switch {
+            background: #6366f1;
+          }
+          .source-toggle input:checked + .toggle-switch::before {
+            transform: translateX(12px);
+          }
+          .source-toggle input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+          }
+          .source-toggle span {
+            margin-left: 0;
+            font-size: 13px;
+            color: #333;
+            font-weight: 400;
+          }
+          .size-section {
+            padding: 0 24px 18px 24px;
+            margin-bottom: 0;
+          }
+          .size-label {
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+            margin-top: 12px;
+            display: block;
+          }
+          .size-btn-group {
+            display: flex;
+            gap: 8px;
+          }
+          .size-btn {
+            flex: 1;
+            padding: 8px 0;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: #fff;
+            color: #333;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: background 0.2s, color 0.2s, border 0.2s;
+          }
+          .size-btn.selected, .size-btn:active {
+            background: #6366f1;
+            color: #fff;
+            border-color: #6366f1;
+          }
+          .size-btn:hover:not(.selected) {
+            background: #f1f1f9;
+            color: #333;
+          }
           @media (max-width: 768px) {
             #admin-sidebar {
               display: none !important;
@@ -265,10 +386,12 @@ export default async function handler(req, res) {
           <button class="sidebar-toggle-btn" title="Show/Hide Admin Panel">
             <svg id="sidebar-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </button>
-          <div class="header">
-            <h2>Widget Admin</h2>
+          <div class="admin-header">Widget Admin</div>
+          <div class="collapsible-header" id="sources-header">
+            Sources
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
-          <div class="admin-section">
+          <div class="collapsible-content open" id="sources-content">
             ${[
               { id: 'news', label: 'News' },
               { id: 'business', label: 'Business' },
@@ -284,6 +407,14 @@ export default async function handler(req, res) {
                 <span>${source.label}</span>
               </label>
             `).join('')}
+          </div>
+          <div class="size-section">
+            <span class="size-label">Widget Size</span>
+            <div class="size-btn-group">
+              <button class="size-btn selected" data-size="small">Small</button>
+              <button class="size-btn" data-size="medium">Medium</button>
+              <button class="size-btn" data-size="large">Large</button>
+            </div>
           </div>
         </div>
         <script>
@@ -306,11 +437,28 @@ export default async function handler(req, res) {
               setPanelState(!isMinimized);
             });
 
+            // Collapsible Sources section
+            const sourcesHeader = document.getElementById('sources-header');
+            const sourcesContent = document.getElementById('sources-content');
+            let sourcesOpen = true;
+            sourcesHeader.addEventListener('click', function() {
+              sourcesOpen = !sourcesOpen;
+              sourcesHeader.classList.toggle('open', sourcesOpen);
+              sourcesContent.classList.toggle('open', sourcesOpen);
+            });
+
+            // Size button group
+            const sizeBtns = sidebar.querySelectorAll('.size-btn');
+            sizeBtns.forEach(btn => {
+              btn.addEventListener('click', function() {
+                sizeBtns.forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                // (Future: trigger widget size change)
+              });
+            });
+
             // Initialize state
             setPanelState(false);
-
-            // (Keep the rest of the admin panel logic as before)
-            // ...
           });
         </script>
       `;
