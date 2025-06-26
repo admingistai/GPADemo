@@ -554,34 +554,58 @@
                 }
 
                 // Function to show answer container
-                async function showAnswerContainer(url) {
+                async function showAnswerContainer(question) {
+                    // Remove any existing answer container
+                    const existingContainer = document.querySelector('.gist-answer-container');
+                    if (existingContainer) {
+                        existingContainer.remove();
+                    }
+
+                    // Create answer container with loading state
+                    const answerContainerHTML = `
+                        <div class="gist-answer-container">
+                            <div class="gist-loading">
+                                <div class="gist-loading-spinner"></div>
+                                Getting answer...
+                            </div>
+                        </div>
+                    `;
+
+                    // Add container to page
+                    const container = document.createElement('div');
+                    container.innerHTML = answerContainerHTML;
+                    document.body.appendChild(container.firstElementChild);
+
+                    // Show container with animation
+                    const answerContainer = document.querySelector('.gist-answer-container');
+                    const loadingElement = answerContainer.querySelector('.gist-loading');
+                    
+                    requestAnimationFrame(() => {
+                        answerContainer.classList.add('visible');
+                        loadingElement.classList.add('visible');
+                    });
+
                     try {
-                        const proxyUrl = `${window.location.origin}/api/proxy`;
-                        const response = await fetch(`${proxyUrl}?url=${encodeURIComponent(url)}`, {
-                            method: 'GET',
-                            credentials: 'same-origin',
+                        const currentHost = window.location.protocol + '//' + window.location.host;
+                        const apiEndpoint = currentHost + '/api/chat';
+                        
+                        const response = await fetch(apiEndpoint, {
+                            method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
+                                'Origin': currentHost
                             },
+                            credentials: 'same-origin',
+                            body: JSON.stringify({
+                                question: question,
+                                context: getPageContext()
+                            })
                         });
 
                         if (!response.ok) {
                             throw new Error(`HTTP error! status: ${response.status}`);
                         }
 
-                        // Instead of using history.replaceState, use a custom state management approach
-                        try {
-                            const currentUrl = new URL(window.location.href);
-                            currentUrl.searchParams.set('gpa_url', url);
-                            // Only attempt history manipulation if we're on the same origin
-                            if (currentUrl.origin === window.location.origin) {
-                                window.history.replaceState({}, '', currentUrl.toString());
-                            }
-                        } catch (historyError) {
-                            console.warn('History state update skipped:', historyError);
-                        }
-
-                        // Process the response...
                         const data = await response.json();
 
                         // Generate mock attribution data
@@ -687,22 +711,18 @@
                 }
 
                 // Function to handle search
-                async function handleSearch(event) {
-                    event.preventDefault();
-                    const searchInput = document.querySelector('.gist-search-input');
-                    const url = searchInput.value.trim();
-                    
-                    if (!url) {
-                        return;
-                    }
-
-                    try {
-                        await showAnswerContainer(url);
-                    } catch (error) {
-                        console.error('Search error:', error);
-                        // Error is already handled in showAnswerContainer
+                function handleSearch() {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        showAnswerContainer(query);
                     }
                 }
+
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        handleSearch();
+                    }
+                });
 
                 // Add click handler to arrow button
                 const arrowButton = document.querySelector('.gist-arrow-button');
