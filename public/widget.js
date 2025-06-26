@@ -589,24 +589,62 @@
                         const currentHost = window.location.protocol + '//' + window.location.host;
                         const apiEndpoint = currentHost + '/api/chat';
                         
-                        const response = await fetch(apiEndpoint, {
+                        console.log('🚀 Gist Widget: Starting API request');
+                        console.log('📍 Current host:', currentHost);
+                        console.log('🎯 API endpoint:', apiEndpoint);
+                        console.log('❓ Question:', question);
+                        console.log('📄 Page context:', getPageContext());
+                        
+                        const requestBody = {
+                            question: question,
+                            context: getPageContext()
+                        };
+                        
+                        console.log('📦 Request body:', JSON.stringify(requestBody, null, 2));
+                        
+                        const requestOptions = {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Origin': currentHost
                             },
                             credentials: 'same-origin',
-                            body: JSON.stringify({
-                                question: question,
-                                context: getPageContext()
-                            })
+                            body: JSON.stringify(requestBody)
+                        };
+                        
+                        console.log('⚙️ Request options:', {
+                            ...requestOptions,
+                            body: '[JSON DATA]' // Don't log full body again
                         });
-
+                        
+                        const response = await fetch(apiEndpoint, requestOptions);
+                        
+                        console.log('📡 Response status:', response.status);
+                        console.log('📡 Response status text:', response.statusText);
+                        console.log('📡 Response headers:', Object.fromEntries(response.headers.entries()));
+                        
                         if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
+                            // Try to get error details from response
+                            let errorText = '';
+                            try {
+                                const errorData = await response.json();
+                                errorText = JSON.stringify(errorData, null, 2);
+                                console.error('❌ Error response data:', errorData);
+                            } catch (e) {
+                                try {
+                                    errorText = await response.text();
+                                    console.error('❌ Error response text:', errorText);
+                                } catch (e2) {
+                                    console.error('❌ Could not read error response:', e2);
+                                }
+                            }
+                            throw new Error(`HTTP error! status: ${response.status}, details: ${errorText}`);
                         }
 
                         const data = await response.json();
+                        
+                        console.log('✅ API response successful');
+                        console.log('📊 Response data:', data);
 
                         // Generate attribution data from API response
                         const sources = [];
@@ -702,10 +740,21 @@
                         });
 
                     } catch (error) {
-                        console.error('Error getting answer:', error);
+                        console.error('❌ Error getting answer:', error);
+                        console.error('❌ Error message:', error.message);
+                        console.error('❌ Error stack:', error.stack);
+                        
+                        // Log additional debugging info
+                        console.log('🔍 Debug info at error time:');
+                        console.log('   - Current URL:', window.location.href);
+                        console.log('   - User Agent:', navigator.userAgent);
+                        console.log('   - Referrer:', document.referrer);
+                        console.log('   - Cookie count:', document.cookie ? document.cookie.split(';').length : 0);
+                        
                         answerContainer.innerHTML = `
                             <div class="gist-answer" style="color: #e74c3c;">
                                 Sorry, I couldn't get an answer at this time. Please try again later.
+                                <br><small style="opacity: 0.7; font-size: 12px;">Error: ${error.message}</small>
                             </div>
                         `;
                         
