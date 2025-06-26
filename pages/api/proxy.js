@@ -276,15 +276,6 @@ const adminSidebar = `
       color: inherit;
       cursor: pointer;
     }
-    body.gpa-dimmed > *:not(#aa-banner):not(#admin-sidebar):not(.gist-widget-container):not(.gist-answer-container) {
-      opacity: 0.15 !important;
-      pointer-events: none !important;
-      transition: opacity 0.3s cubic-bezier(0.4,0,0.2,1);
-    }
-    body.gpa-dimmed .gist-widget-container {
-      bottom: 120px !important;
-      transition: bottom 0.3s cubic-bezier(0.4,0,0.2,1);
-    }
   </style>
 
   <div id="admin-sidebar">
@@ -383,12 +374,34 @@ const adminSidebar = `
         left: 12px !important;
       }
     }
+    #gpa-overlay {
+      position: fixed;
+      top: 64px;
+      left: 0;
+      width: 100vw;
+      height: calc(100vh - 64px);
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 999997;
+      transition: opacity 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    #gpa-overlay.active {
+      opacity: 0.15;
+      pointer-events: auto;
+    }
+    .gpa-widget-moveup {
+      bottom: 120px !important;
+      transition: bottom 0.3s cubic-bezier(0.4,0,0.2,1) !important;
+    }
   </style>
+  <div id="gpa-overlay"></div>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const sidebar = document.getElementById('admin-sidebar');
       const toggleBtn = document.getElementById('sidebar-toggle-btn-fixed');
       const toggleIcon = document.getElementById('sidebar-toggle-icon');
+      const overlay = document.getElementById('gpa-overlay');
       let isMinimized = false;
 
       function setPanelState(minimized) {
@@ -401,16 +414,22 @@ const adminSidebar = `
         // Lock body scroll when sidebar is open
         if (!minimized) {
           document.body.style.overflow = 'hidden';
-          document.body.classList.add('gpa-dimmed');
           toggleBtn.style.left = 'calc(100vw - 320px - 36px)';
           toggleBtn.style.right = 'auto';
           toggleBtn.style.transform = 'translateY(-50%) translateX(0)';
+          overlay.classList.add('active');
+          // Move widget up
+          const widget = document.querySelector('.gist-widget-container');
+          if (widget) widget.classList.add('gpa-widget-moveup');
         } else {
           document.body.style.overflow = '';
-          document.body.classList.remove('gpa-dimmed');
           toggleBtn.style.left = 'auto';
           toggleBtn.style.right = '0';
           toggleBtn.style.transform = 'translateY(-50%) translateX(0)';
+          overlay.classList.remove('active');
+          // Move widget back down
+          const widget = document.querySelector('.gist-widget-container');
+          if (widget) widget.classList.remove('gpa-widget-moveup');
         }
       }
 
