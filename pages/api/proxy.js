@@ -276,6 +276,15 @@ const adminSidebar = `
       color: inherit;
       cursor: pointer;
     }
+    body.gpa-dimmed > *:not(#aa-banner):not(#admin-sidebar):not(.gist-widget-container):not(.gist-answer-container) {
+      opacity: 0.15 !important;
+      pointer-events: none !important;
+      transition: opacity 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    body.gpa-dimmed .gist-widget-container {
+      bottom: 120px !important;
+      transition: bottom 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
   </style>
 
   <div id="admin-sidebar">
@@ -392,11 +401,13 @@ const adminSidebar = `
         // Lock body scroll when sidebar is open
         if (!minimized) {
           document.body.style.overflow = 'hidden';
+          document.body.classList.add('gpa-dimmed');
           toggleBtn.style.left = 'calc(100vw - 320px - 36px)';
           toggleBtn.style.right = 'auto';
           toggleBtn.style.transform = 'translateY(-50%) translateX(0)';
         } else {
           document.body.style.overflow = '';
+          document.body.classList.remove('gpa-dimmed');
           toggleBtn.style.left = 'auto';
           toggleBtn.style.right = '0';
           toggleBtn.style.transform = 'translateY(-50%) translateX(0)';
