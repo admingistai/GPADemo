@@ -710,11 +710,15 @@
                                     sourceCardsElement.classList.add('visible');
                                     const sourceCards = sourceCardsElement.querySelectorAll('.gist-source-card[data-url]');
                                     sourceCards.forEach(card => {
-                                        card.style.cursor = 'pointer';
                                         card.addEventListener('click', () => {
                                             const url = card.getAttribute('data-url');
                                             if (url) {
                                                 window.open(url, '_blank');
+                                            }
+                                        });
+                                        card.addEventListener('keydown', (e) => {
+                                            if ((e.key === 'Enter' || e.key === ' ') && card.getAttribute('data-url')) {
+                                                window.open(card.getAttribute('data-url'), '_blank');
                                             }
                                         });
                                     });
@@ -742,7 +746,7 @@
                     if (!citations || !Array.isArray(citations) || citations.length === 0) {
                         // Fallback to attribution-based cards
                         return sources.map(source => `
-                            <div class="gist-source-card gist-source-card-vertical">
+                            <div class="gist-source-card gist-source-card-vertical" role="button" tabindex="0" style="cursor:pointer;" data-url="${source.url || ''}">
                                 <div class="gist-source-card-header">
                                     <div class="gist-source-logo" style="background: ${source.color}">
                                         ${source.logo}
@@ -757,7 +761,7 @@
                         const sourceColor = sources.find(s => s.name === citation.domain)?.color || '#4B9FE1';
                         const favicon = citation.favicon || citation.favicon24 || citation.favicon40;
                         return `
-                            <div class="gist-source-card gist-source-card-vertical" data-url="${citation.url}">
+                            <div class="gist-source-card gist-source-card-vertical" role="button" tabindex="0" style="cursor:pointer;" data-url="${citation.url}">
                                 <div class="gist-source-card-header">
                                     <div class="gist-source-logo" style="background: ${sourceColor}">
                                         ${favicon ? 
