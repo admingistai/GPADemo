@@ -364,8 +364,12 @@ const adminSidebar = `
         // Add/remove panel-open class to body
         if (!minimized) {
           document.body.classList.add('panel-open');
+          document.body.style.overflow = 'hidden';
+          sidebar.style.overflowY = 'auto';
         } else {
           document.body.classList.remove('panel-open');
+          document.body.style.overflow = '';
+          sidebar.style.overflowY = '';
         }
       }
 
@@ -504,15 +508,21 @@ const askAnythingBanner = `
       top: 64px !important;
       height: calc(100vh - 64px) !important;
     }
+    #aa-banner .aa-title-link {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      display: block;
+    }
   </style>
   <div id="aa-banner">
     <div class="aa-title-container">
-      <div class="aa-title">
-        <a href="https://getaskanything.com" target="_blank" style="text-decoration:none;color:inherit;">
+      <a href="https://getaskanything.com" target="_blank" class="aa-title-link">
+        <div class="aa-title">
           <span class="aa-ask">Ask</span><br>
           <span class="aa-anything">Anything<sup>TM</sup></span>
-        </a>
-      </div>
+        </div>
+      </a>
       <div class="aa-preview">Preview</div>
     </div>
   </div>
