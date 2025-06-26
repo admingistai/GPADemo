@@ -259,8 +259,8 @@ const adminSidebar = `
     <div class="slider-section">
       <span class="slider-label">Widget Size</span>
       <div class="size-btn-group">
-        <button class="size-btn selected" data-size="small">Small</button>
-        <button class="size-btn" data-size="medium">Medium</button>
+        <button class="size-btn" data-size="small">Small</button>
+        <button class="size-btn selected" data-size="medium">Medium</button>
         <button class="size-btn" data-size="large">Large</button>
       </div>
     </div>
@@ -337,7 +337,7 @@ const adminSidebar = `
         btn.addEventListener('click', function() {
           sizeBtns.forEach(b => b.classList.remove('selected'));
           this.classList.add('selected');
-          // Send message to widget
+          // Send widget size to widget.js
           window.postMessage({ type: 'GIST_WIDGET_SIZE', size: this.dataset.size }, '*');
         });
       });
