@@ -248,6 +248,28 @@ const adminSidebar = `
         display: none !important;
       }
     }
+    .next-btn {
+      display: block;
+      width: calc(100% - 32px);
+      margin: 24px 16px 0 16px;
+      padding: 12px 0;
+      background: linear-gradient(90deg, #FF8C42, #4B9FE1, #8860D0);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 600;
+      text-align: center;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    }
+    .next-btn:hover {
+      background: linear-gradient(90deg, #4B9FE1, #FF8C42, #8860D0);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(75,159,225,0.10);
+    }
   </style>
 
   <div id="admin-sidebar">
@@ -310,6 +332,7 @@ const adminSidebar = `
         </label>
       `).join('')}
     </div>
+    <a href="https://getaskanything.com/setup" target="_blank" class="next-btn">Next -&gt;</a>
   </div>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
