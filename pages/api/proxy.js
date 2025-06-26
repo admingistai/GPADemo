@@ -12,10 +12,10 @@ const adminSidebar = `
   <style>
     #admin-sidebar {
       position: fixed !important;
-      top: 64px !important;
+      top: 72px !important;
       right: 0 !important;
       width: 320px !important;
-      height: calc(100vh - 64px) !important;
+      height: calc(100vh - 72px) !important;
       background: #f7f7f8 !important;
       border-left: 1px solid #e0e0e0 !important;
       box-shadow: none !important;
@@ -392,7 +392,7 @@ const askAnythingBanner = `
       align-items: center;
       justify-content: space-between;
       padding: 0 32px 0 24px;
-      height: 64px;
+      height: 72px;
       font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       border: 2px solid transparent;
       background-image: linear-gradient(#fff, #fff), linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0);
@@ -441,11 +441,11 @@ const askAnythingBanner = `
       }
     }
     body {
-      margin-top: 64px !important;
+      margin-top: 72px !important;
     }
     #admin-sidebar {
-      top: 64px !important;
-      height: calc(100vh - 64px) !important;
+      top: 72px !important;
+      height: calc(100vh - 72px) !important;
     }
   </style>
   <div id="aa-banner">
