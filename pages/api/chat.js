@@ -1,3 +1,10 @@
+// GPADemo Chat API - Updated to use Gist AI API
+// This endpoint handles chat requests and forwards them to the Gist AI API
+// instead of the previous Prorata API. The flow remains the same:
+// 1. Create a chat request
+// 2. Stream the response
+// 3. Fetch citations and attributions
+//
 // Rate limiting (simple in-memory for serverless)
 const requestCounts = new Map();
 const RATE_LIMIT = parseInt(process.env.CHAT_RATE_LIMIT || '20');
@@ -7,11 +14,11 @@ const RATE_WINDOW = 60 * 1000; // 1 minute
 console.log('🔧 Chat API module loaded');
 console.log('🔧 Environment check:');
 console.log('   - NODE_ENV:', process.env.NODE_ENV);
-console.log('   - PRORATA_API_KEY exists:', !!process.env.PRORATA_API_KEY);
-console.log('   - PRORATA_API_KEY length:', process.env.PRORATA_API_KEY?.length || 0);
+console.log('   - GIST_API_KEY exists:', !!process.env.GIST_API_KEY);
+console.log('   - GIST_API_KEY length:', process.env.GIST_API_KEY?.length || 0);
 console.log('   - CHAT_RATE_LIMIT:', process.env.CHAT_RATE_LIMIT || 'default(20)');
-if (process.env.PRORATA_API_KEY) {
-  console.log('   - API Key prefix:', process.env.PRORATA_API_KEY.substring(0, 12) + '...');
+if (process.env.GIST_API_KEY) {
+  console.log('   - API Key prefix:', process.env.GIST_API_KEY.substring(0, 12) + '...');
 }
 
 export default async function handler(req, res) {
@@ -19,8 +26,8 @@ export default async function handler(req, res) {
   console.log('📍 Method:', req.method);
   console.log('📍 URL:', req.url);
   console.log('📍 Headers:', JSON.stringify(req.headers, null, 2));
-  console.log('📍 Environment check - PRORATA_API_KEY exists:', !!process.env.PRORATA_API_KEY);
-  console.log('📍 Environment check - API Key prefix:', process.env.PRORATA_API_KEY ? process.env.PRORATA_API_KEY.substring(0, 8) + '...' : 'NOT SET');
+  console.log('📍 Environment check - GIST_API_KEY exists:', !!process.env.GIST_API_KEY);
+  console.log('📍 Environment check - API Key prefix:', process.env.GIST_API_KEY ? process.env.GIST_API_KEY.substring(0, 8) + '...' : 'NOT SET');
 
   // Set CORS headers to allow cross-origin requests
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -41,10 +48,10 @@ export default async function handler(req, res) {
     }
 
     // Check if API key is configured
-    if (!process.env.PRORATA_API_KEY) {
-      console.log('❌ PRORATA_API_KEY not configured in environment variables');
+    if (!process.env.GIST_API_KEY) {
+      console.log('❌ GIST_API_KEY not configured in environment variables');
       return res.status(500).json({ 
-        error: 'Prorata API key not configured. Please add PRORATA_API_KEY to your environment variables.' 
+        error: 'Gist API key not configured. Please add GIST_API_KEY to your environment variables.' 
       });
     }
     
@@ -85,67 +92,72 @@ export default async function handler(req, res) {
     const userId = req.headers['x-user-id'] || `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     console.log('👤 User ID:', userId);
 
-    // Create chat request to Prorata API
-    const prorataRequestBody = {
+    // Create chat request to Gist API
+    const gistRequestBody = {
       user_prompt: question,
       temperature: 0.7
     };
     
-    const prorataRequestHeaders = {
-      'Authorization': `Bearer ${process.env.PRORATA_API_KEY}`,
+    const gistRequestHeaders = {
+      'Authorization': `Bearer ${process.env.GIST_API_KEY}`,
       'Content-Type': 'application/json',
       'X-User-ID': userId
     };
     
-    console.log('🚀 Making request to Prorata API');
-    console.log('🎯 URL: https://api.development.prorata.ai/v1/chat');
-    console.log('📦 Request body:', JSON.stringify(prorataRequestBody, null, 2));
+    console.log('🚀 Making request to Gist API');
+    console.log('🎯 URL: https://api.gist.ai/v1/chat');
+    console.log('📦 Request body:', JSON.stringify(gistRequestBody, null, 2));
     console.log('📋 Request headers:', {
-      ...prorataRequestHeaders,
-      'Authorization': `Bearer ${process.env.PRORATA_API_KEY.substring(0, 8)}...` // Don't log full API key
+      ...gistRequestHeaders,
+      'Authorization': `Bearer ${process.env.GIST_API_KEY.substring(0, 8)}...` // Don't log full API key
     });
     
-    const chatResponse = await fetch('https://api.development.prorata.ai/v1/chat', {
+    const chatResponse = await fetch('https://api.gist.ai/v1/chat', {
       method: 'POST',
-      headers: prorataRequestHeaders,
-      body: JSON.stringify(prorataRequestBody)
+      headers: gistRequestHeaders,
+      body: JSON.stringify(gistRequestBody)
     });
 
-    console.log('📡 Prorata API response status:', chatResponse.status);
-    console.log('📡 Prorata API response headers:', Object.fromEntries(chatResponse.headers.entries()));
+    console.log('📡 Gist API response status:', chatResponse.status);
+    console.log('📡 Gist API response headers:', Object.fromEntries(chatResponse.headers.entries()));
 
     if (!chatResponse.ok) {
       const errorText = await chatResponse.text();
-      console.error('❌ Prorata API error - Status:', chatResponse.status);
-      console.error('❌ Prorata API error - Response:', errorText);
-      console.error('❌ Prorata API error - Headers:', Object.fromEntries(chatResponse.headers.entries()));
-      throw new Error(`Prorata API error: ${chatResponse.status} ${errorText}`);
+      console.error('❌ Gist API error - Status:', chatResponse.status);
+      console.error('❌ Gist API error - Response:', errorText);
+      console.error('❌ Gist API error - Headers:', Object.fromEntries(chatResponse.headers.entries()));
+      throw new Error(`Gist API error: ${chatResponse.status} ${errorText}`);
     }
 
     const chatData = await chatResponse.json();
-    console.log('✅ Prorata chat API response successful');
+    console.log('✅ Gist chat API response successful');
     console.log('📊 Chat response data:', JSON.stringify(chatData, null, 2));
     
     if (!chatData.thread_id || !chatData.turn_id) {
-      console.error('❌ Invalid response from Prorata API - missing thread_id or turn_id');
+      console.error('❌ Invalid response from Gist API - missing thread_id or turn_id');
       console.error('📊 Received data:', chatData);
-      throw new Error('Invalid response from Prorata API - missing thread_id or turn_id');
+      throw new Error('Invalid response from Gist API - missing thread_id or turn_id');
     }
     
     console.log('🆔 Thread ID:', chatData.thread_id);
     console.log('🆔 Turn ID:', chatData.turn_id);
 
     // Get the AI response using the streaming endpoint
-    const responseStream = await fetch(`https://api.development.prorata.ai/v1/chat/response/${chatData.thread_id}/${chatData.turn_id}`, {
+    console.log('🚀 Getting streaming response from Gist API');
+    const responseStream = await fetch(`https://api.gist.ai/v1/chat/response/${chatData.thread_id}/${chatData.turn_id}`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${process.env.PRORATA_API_KEY}`,
+        'Authorization': `Bearer ${process.env.GIST_API_KEY}`,
         'X-User-ID': userId
       }
     });
 
+    console.log('📡 Gist streaming response status:', responseStream.status);
+
     if (!responseStream.ok) {
-      throw new Error(`Failed to get response stream: ${responseStream.status}`);
+      const errorText = await responseStream.text();
+      console.error('❌ Failed to get response stream:', responseStream.status, errorText);
+      throw new Error(`Failed to get response stream: ${responseStream.status} ${errorText}`);
     }
 
     // Process the streaming response
@@ -154,9 +166,13 @@ export default async function handler(req, res) {
     let fullResponse = '';
     let responseComplete = false;
 
+    console.log('📖 Processing streaming response...');
     while (!responseComplete) {
       const { done, value } = await reader.read();
-      if (done) break;
+      if (done) {
+        console.log('📖 Stream reading completed');
+        break;
+      }
 
       const chunk = decoder.decode(value);
       const lines = chunk.split('\n');
@@ -170,27 +186,36 @@ export default async function handler(req, res) {
             }
           } catch (e) {
             // Skip malformed JSON
+            console.warn('Failed to parse streaming data:', line);
           }
         } else if (line.startsWith('event: complete')) {
           responseComplete = true;
+          console.log('📖 Received completion event');
           break;
         }
       }
     }
 
+    console.log('✅ Full response assembled, length:', fullResponse.length);
+
     // Get citations for the response
     let citations = [];
     try {
-      const citationsResponse = await fetch(`https://api.development.prorata.ai/v1/chat/citations/${chatData.thread_id}/${chatData.turn_id}`, {
+      console.log('🚀 Fetching citations...');
+      const citationsResponse = await fetch(`https://api.gist.ai/v1/chat/citations/${chatData.thread_id}/${chatData.turn_id}`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${process.env.PRORATA_API_KEY}`,
+          'Authorization': `Bearer ${process.env.GIST_API_KEY}`,
           'X-User-ID': userId
         }
       });
 
+      console.log('📡 Citations response status:', citationsResponse.status);
       if (citationsResponse.ok) {
         citations = await citationsResponse.json();
+        console.log('✅ Citations fetched:', citations.length, 'items');
+      } else {
+        console.warn('⚠️ Citations request failed:', citationsResponse.status);
       }
     } catch (error) {
       console.warn('Failed to fetch citations:', error);
@@ -199,25 +224,32 @@ export default async function handler(req, res) {
     // Get attributions for the response
     let attributions = {};
     try {
-      const attributionsResponse = await fetch(`https://api.development.prorata.ai/v1/chat/attributions/${chatData.thread_id}/${chatData.turn_id}`, {
+      console.log('🚀 Fetching attributions...');
+      const attributionsResponse = await fetch(`https://api.gist.ai/v1/chat/attributions/${chatData.thread_id}/${chatData.turn_id}`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${process.env.PRORATA_API_KEY}`,
+          'Authorization': `Bearer ${process.env.GIST_API_KEY}`,
           'X-User-ID': userId
         }
       });
 
+      console.log('📡 Attributions response status:', attributionsResponse.status);
       if (attributionsResponse.ok) {
         attributions = await attributionsResponse.json();
+        console.log('✅ Attributions fetched:', Object.keys(attributions).length, 'keys');
+      } else {
+        console.warn('⚠️ Attributions request failed:', attributionsResponse.status);
       }
     } catch (error) {
       console.warn('Failed to fetch attributions:', error);
     }
 
     if (!fullResponse) {
+      console.error('❌ No response content generated');
       return res.status(500).json({ error: 'No response generated' });
     }
 
+    console.log('✅ Returning successful response');
     // Return successful response with citations and attributions
     return res.status(200).json({
       success: true,
@@ -226,7 +258,7 @@ export default async function handler(req, res) {
       turnId: chatData.turn_id,
       citations: citations,
       attributions: attributions,
-      model: 'prorata-ai',
+      model: 'gist-ai',
       responseTime: chatData.response_time || 0
     });
 
@@ -240,8 +272,8 @@ export default async function handler(req, res) {
     // Log environment info for debugging
     console.log('🔍 Environment debugging info:');
     console.log('   - NODE_ENV:', process.env.NODE_ENV);
-    console.log('   - API Key exists:', !!process.env.PRORATA_API_KEY);
-    console.log('   - API Key length:', process.env.PRORATA_API_KEY?.length || 0);
+    console.log('   - API Key exists:', !!process.env.GIST_API_KEY);
+    console.log('   - API Key length:', process.env.GIST_API_KEY?.length || 0);
     console.log('   - Request method:', req.method);
     console.log('   - Request headers keys:', Object.keys(req.headers));
 
@@ -249,21 +281,21 @@ export default async function handler(req, res) {
     if (error.message.includes('401')) {
       console.error('🔑 Authentication error detected');
       return res.status(401).json({ 
-        error: 'Invalid Prorata API key',
+        error: 'Invalid Gist API key',
         debug: {
-          apiKeyExists: !!process.env.PRORATA_API_KEY,
-          apiKeyPrefix: process.env.PRORATA_API_KEY ? process.env.PRORATA_API_KEY.substring(0, 8) + '...' : 'NOT SET',
+          apiKeyExists: !!process.env.GIST_API_KEY,
+          apiKeyPrefix: process.env.GIST_API_KEY ? process.env.GIST_API_KEY.substring(0, 8) + '...' : 'NOT SET',
           originalError: error.message
         }
       });
     }
     if (error.message.includes('429')) {
       console.error('🚫 Rate limit error detected');
-      return res.status(429).json({ error: 'Prorata API rate limit exceeded. Please try again later.' });
+      return res.status(429).json({ error: 'Gist API rate limit exceeded. Please try again later.' });
     }
     if (error.message.includes('400')) {
       console.error('📝 Bad request error detected');
-      return res.status(400).json({ error: 'Invalid request to Prorata API' });
+      return res.status(400).json({ error: 'Invalid request to Gist API' });
     }
 
     if (error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT') {
