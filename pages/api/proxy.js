@@ -303,7 +303,7 @@ const adminSidebar = `
     <div class="style-section">
       <span class="section-label">Style</span>
       <div class="style-toggle-group">
-        <button class="style-toggle selected" data-style="default">Ask Anything (Default)</button>
+        <button class="style-toggle selected" data-style="default">Ask Anything<sup>TM</sup> (Default)</button>
         <button class="style-toggle" data-style="match">Match My Site</button>
       </div>
     </div>
@@ -364,12 +364,8 @@ const adminSidebar = `
         // Add/remove panel-open class to body
         if (!minimized) {
           document.body.classList.add('panel-open');
-          document.body.style.overflow = 'hidden';
-          sidebar.style.overflowY = 'auto';
         } else {
           document.body.classList.remove('panel-open');
-          document.body.style.overflow = '';
-          sidebar.style.overflowY = '';
         }
       }
 
@@ -513,6 +509,9 @@ const askAnythingBanner = `
       color: inherit;
       cursor: pointer;
       display: block;
+    }
+    #aa-banner .aa-title-link:active, #aa-banner .aa-title-link:visited {
+      color: inherit;
     }
   </style>
   <div id="aa-banner">
