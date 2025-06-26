@@ -568,7 +568,7 @@ export default function Home() {
                   🌍 Climate News (CarbonTide)
                 </a>
                 <button
-                  onClick={() => window.open('/api/carbontide/', '_blank')}
+                  onClick={() => window.open('/index-carbontide.html', '_blank')}
                   className="demo-link carbon-tide-clone"
                   title="View cloned CarbonTide website"
                   style={{

@@ -10,6 +10,16 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+
+  // Configure static file serving for carbontide
+  async rewrites() {
+    return [
+      {
+        source: '/carbontide/:path*',
+        destination: '/cloned-projects/carbontide/:path*'
+      }
+    ];
+  },
   
   // Security headers
   async headers() {

@@ -4474,18 +4474,18 @@ Return exactly 3 questions, one per line, no numbering:`;
                         }
                     });
                     
-                                        shareBtn.addEventListener('click', async () => {
+                    shareBtn.addEventListener('click', async () => {
                         if (navigator.share) {
                             try {
                                 await navigator.share({
                                     title: question,
                                     text: answer.substring(0, 200) + '...',
-                                    url: window.location.href
+                url: window.location.href
                                 });
                             } catch (err) {
                                 console.log('Share cancelled');
                             }
-                        } else {
+                } else {
                             // Fallback: copy to clipboard
                             navigator.clipboard.writeText(window.location.href);
                             shareBtn.innerHTML = `
@@ -4494,7 +4494,7 @@ Return exactly 3 questions, one per line, no numbering:`;
                                 </svg>
                                 <span>Copied!</span>
                             `;
-                            setTimeout(() => {
+            setTimeout(() => {
                                 shareBtn.innerHTML = `
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
