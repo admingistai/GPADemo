@@ -392,9 +392,11 @@ const adminSidebar = `
         if (!minimized) {
           document.body.style.overflow = 'hidden';
           toggleBtn.style.left = 'calc(100vw - 320px - 36px)';
+          toggleBtn.style.right = 'auto';
         } else {
           document.body.style.overflow = '';
-          toggleBtn.style.left = '0px';
+          toggleBtn.style.left = 'auto';
+          toggleBtn.style.right = '0px';
         }
       }
 
