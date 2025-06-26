@@ -1,125 +1,205 @@
-// GPADemo Chat API - Placeholder Implementation
-// External API functionality removed - ready for reimplementation
-
-// Rate limiting (simple in-memory for serverless)
+// Chat API using Gist API with full debugging
+const BASE_URL = 'https://api.gist.ai/v1';
 const requestCounts = new Map();
 const RATE_LIMIT = parseInt(process.env.CHAT_RATE_LIMIT || '20');
 const RATE_WINDOW = 60 * 1000; // 1 minute
 
 // Debug: Log basic info on module load
-console.log('🔧 Chat API module loaded - Placeholder mode');
+console.log('🔧 Chat API module loaded - Gist API mode');
 console.log('🔧 Environment check:');
 console.log('   - NODE_ENV:', process.env.NODE_ENV);
 console.log('   - CHAT_RATE_LIMIT:', process.env.CHAT_RATE_LIMIT || 'default(20)');
 
 export default async function handler(req, res) {
-  console.log('🟢 Chat API: Request received (Placeholder mode)');
-  console.log('📍 Method:', req.method);
-  console.log('📍 URL:', req.url);
+  const debug = { logs: [], timings: {} };
+  const startTime = Date.now();
+  function log(...args) {
+    debug.logs.push(args.map(String).join(' '));
+    console.log('[GIST-DEBUG]', ...args);
+  }
 
-  // Set CORS headers to allow cross-origin requests
+  log('Request received:', req.method, req.url);
+
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  
-  // Handle preflight requests
+
   if (req.method === 'OPTIONS') {
-    console.log('🔄 Handling OPTIONS preflight request');
+    log('OPTIONS preflight');
     return res.status(200).end();
   }
 
+  if (!process.env.GIST_API_KEY) {
+    log('❌ GIST_API_KEY missing in environment');
+    return res.status(500).json({ error: 'GIST_API_KEY not configured', debug });
+  }
+
+  // Rate limiting
+  const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown';
+  const now = Date.now();
+  const clientRequests = requestCounts.get(clientIP) || { count: 0, resetTime: now + RATE_WINDOW };
+  if (now > clientRequests.resetTime) {
+    clientRequests.count = 0;
+    clientRequests.resetTime = now + RATE_WINDOW;
+  }
+  clientRequests.count++;
+  requestCounts.set(clientIP, clientRequests);
+  if (clientRequests.count > RATE_LIMIT) {
+    log('429 Too many requests from', clientIP);
+    return res.status(429).json({ error: 'Too many requests. Please try again later.', retryAfter: Math.ceil((clientRequests.resetTime - now) / 1000), debug });
+  }
+
+  if (req.method !== 'POST') {
+    log('405 Method not allowed:', req.method);
+    return res.status(405).json({ error: 'Method not allowed', debug });
+  }
+
+  let question, context;
   try {
-    // Only allow POST requests
-    if (req.method !== 'POST') {
-      console.log('❌ Method not allowed:', req.method);
-      return res.status(405).json({ error: 'Method not allowed' });
-    }
+    ({ question, context } = req.body);
+    log('Request body:', JSON.stringify(req.body));
+  } catch (e) {
+    log('400 Invalid JSON body');
+    return res.status(400).json({ error: 'Invalid JSON body', debug });
+  }
+  if (!question) {
+    log('400 Missing question');
+    return res.status(400).json({ error: 'Question is required', debug });
+  }
 
-    // No external API key needed in placeholder mode
-    console.log('✅ Placeholder mode - no external API required')
+  // Generate a user ID for this session
+  const userId = req.headers['x-user-id'] || `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  log('User ID:', userId);
 
-    // Simple rate limiting
-    const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown';
-    const now = Date.now();
-    const clientRequests = requestCounts.get(clientIP) || { count: 0, resetTime: now + RATE_WINDOW };
+  // 1. Create chat
+  let thread_id, turn_id, chatDebug = {};
+  try {
+    const chatPayload = { user_prompt: question, temperature: 0.7 };
+    log('POST', BASE_URL + '/chat', chatPayload);
+    const chatRes = await fetch(BASE_URL + '/chat', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.GIST_API_KEY}`,
+        'Content-Type': 'application/json',
+        'X-User-ID': userId
+      },
+      body: JSON.stringify(chatPayload)
+    });
+    chatDebug.status = chatRes.status;
+    chatDebug.headers = Object.fromEntries(chatRes.headers.entries());
+    const chatData = await chatRes.json().catch(() => ({}));
+    chatDebug.body = chatData;
+    log('Chat response:', chatRes.status, chatData);
+    if (!chatRes.ok) throw new Error('Gist chat error: ' + chatRes.status);
+    thread_id = chatData.thread_id;
+    turn_id = chatData.turn_id;
+    if (!thread_id || !turn_id) throw new Error('Missing thread_id/turn_id');
+  } catch (err) {
+    log('❌ Error creating chat:', err.message, chatDebug);
+    return res.status(500).json({ error: 'Failed to create chat', debug: { ...debug, chatDebug } });
+  }
 
-    if (now > clientRequests.resetTime) {
-      clientRequests.count = 0;
-      clientRequests.resetTime = now + RATE_WINDOW;
-    }
-
-    clientRequests.count++;
-    requestCounts.set(clientIP, clientRequests);
-
-    if (clientRequests.count > RATE_LIMIT) {
-      return res.status(429).json({ 
-        error: 'Too many requests. Please try again later.',
-        retryAfter: Math.ceil((clientRequests.resetTime - now) / 1000)
+  // 2. Stream response
+  let answer = '', streamDebug = {};
+  try {
+    const url = `${BASE_URL}/chat/response/${thread_id}/${turn_id}`;
+    log('GET', url);
+    const streamRes = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${process.env.GIST_API_KEY}`,
+        'X-User-ID': userId
+      }
+    });
+    streamDebug.status = streamRes.status;
+    streamDebug.headers = Object.fromEntries(streamRes.headers.entries());
+    if (!streamRes.ok) throw new Error('Gist stream error: ' + streamRes.status);
+    const reader = streamRes.body.getReader();
+    const decoder = new TextDecoder();
+    let done = false;
+    while (!done) {
+      const { value, done: streamDone } = await reader.read();
+      if (streamDone) break;
+      const chunk = decoder.decode(value);
+      chunk.split('\n').forEach(line => {
+        if (line.startsWith('data: ')) {
+          try {
+            const data = JSON.parse(line.slice(6));
+            if (data.content) answer += data.content;
+          } catch (e) {
+            log('Stream JSON parse error:', line);
+          }
+        }
       });
     }
+    log('Streamed answer:', answer.length, 'chars');
+  } catch (err) {
+    log('❌ Error streaming response:', err.message, streamDebug);
+    return res.status(500).json({ error: 'Failed to stream answer', debug: { ...debug, streamDebug } });
+  }
 
-    // Extract request data
-    console.log('📦 Request body:', JSON.stringify(req.body, null, 2));
-    const { question, context } = req.body;
-
-    if (!question) {
-      console.log('❌ Question is required but not provided');
-      return res.status(400).json({ error: 'Question is required' });
+  // 3. Get citations
+  let citations = [], citationsDebug = {};
+  try {
+    const url = `${BASE_URL}/chat/citations/${thread_id}/${turn_id}`;
+    log('GET', url);
+    const citRes = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${process.env.GIST_API_KEY}`,
+        'X-User-ID': userId
+      }
+    });
+    citationsDebug.status = citRes.status;
+    citationsDebug.headers = Object.fromEntries(citRes.headers.entries());
+    if (citRes.ok) {
+      citations = await citRes.json();
+      log('Citations:', Array.isArray(citations) ? citations.length : citations);
+    } else {
+      log('Citations fetch error:', citRes.status);
     }
-    
-    console.log('❓ Question received:', question);
-    console.log('📄 Context received:', context ? 'Yes' : 'No');
-
-    // Generate a mock response
-    const mockResponse = generateMockResponse(question);
-    
-    console.log('✅ Generated mock response');
-
-    // Return mock response with placeholder data
-    return res.status(200).json({
-      success: true,
-      answer: mockResponse,
-      threadId: `mock_thread_${Date.now()}`,
-      turnId: 1,
-      citations: [],
-      attributions: {},
-      model: 'placeholder',
-      responseTime: Math.floor(Math.random() * 1000) + 500
-    });
-
-  } catch (error) {
-    console.error('❌ Chat API error:', error);
-    console.error('❌ Error message:', error.message);
-    console.error('❌ Error stack:', error.stack);
-
-    // Generic error
-    return res.status(500).json({ 
-      error: 'Error processing your request',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
+  } catch (err) {
+    log('❌ Error fetching citations:', err.message, citationsDebug);
   }
-}
 
-// Function to generate mock responses based on the question
-function generateMockResponse(question) {
-  const responses = [
-    "This is a placeholder response. The AI functionality has been temporarily disabled while we implement a new chat system.",
-    "I'm currently in maintenance mode. Please check back soon for full AI capabilities.",
-    "Thank you for your question. The chat system is being updated and will be available shortly.",
-    "The AI backend is currently being reconfigured. This is a temporary response while we work on improvements.",
-    "Your question has been received, but the AI system is temporarily offline for updates."
-  ];
-  
-  // Simple hash function to make responses somewhat consistent for the same question
-  let hash = 0;
-  for (let i = 0; i < question.length; i++) {
-    const char = question.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32-bit integer
+  // 4. Get attributions
+  let attributions = {}, attributionsDebug = {};
+  try {
+    const url = `${BASE_URL}/chat/attributions/${thread_id}/${turn_id}`;
+    log('GET', url);
+    const attrRes = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${process.env.GIST_API_KEY}`,
+        'X-User-ID': userId
+      }
+    });
+    attributionsDebug.status = attrRes.status;
+    attributionsDebug.headers = Object.fromEntries(attrRes.headers.entries());
+    if (attrRes.ok) {
+      attributions = await attrRes.json();
+      log('Attributions:', Object.keys(attributions));
+    } else {
+      log('Attributions fetch error:', attrRes.status);
+    }
+  } catch (err) {
+    log('❌ Error fetching attributions:', err.message, attributionsDebug);
   }
-  
-  const index = Math.abs(hash) % responses.length;
-  return responses[index];
+
+  debug.timings.total = Date.now() - startTime;
+  log('Total time:', debug.timings.total, 'ms');
+
+  return res.status(200).json({
+    success: true,
+    answer,
+    threadId: thread_id,
+    turnId: turn_id,
+    citations,
+    attributions,
+    model: 'gist-ai',
+    responseTime: debug.timings.total,
+    debug
+  });
 }
 
 // Export config for Next.js API routes
