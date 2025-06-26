@@ -400,19 +400,22 @@ const askAnythingBanner = `
       background-clip: padding-box, border-box;
     }
     #aa-banner .aa-title {
-      font-size: 44px;
+      font-size: 32px;
       font-weight: 700;
       color: #18181b;
       display: block;
       text-align: left;
-      line-height: 1.05;
+      line-height: 1.02;
+      margin-bottom: 0;
     }
     #aa-banner .aa-title sup {
-      font-size: 0.7em;
-      font-weight: 400;
-      margin-left: 0.25em;
+      font-size: 0.5em;
       vertical-align: super;
-      line-height: 1;
+      margin-left: 2px;
+      letter-spacing: 0;
+      position: relative;
+      top: -0.2em;
+      right: 0.2em;
     }
     #aa-banner .aa-tagline {
       font-size: 1rem;
