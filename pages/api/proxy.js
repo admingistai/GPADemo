@@ -368,6 +368,10 @@ const askAnythingBanner = `
       padding: 0 32px 0 24px;
       height: 64px;
       font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      border: 2px solid transparent;
+      background-image: linear-gradient(#fff, #fff), linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
     }
     #aa-banner .aa-title {
       font-size: 2rem;
