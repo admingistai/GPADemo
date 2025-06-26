@@ -60,7 +60,7 @@ curl "https://your-domain.vercel.app/api/proxy?url=https://example.com&test=true
 
 ### 2. Chat Endpoint
 
-Handles AI chat completions using Prorata API with citations and attributions.
+Handles AI chat completions using Gist AI API with citations and attributions.
 
 **Endpoint:** `POST /api/chat`
 
@@ -106,7 +106,7 @@ Handles AI chat completions using Prorata API with citations and attributions.
       "another-site.com": 0.25
     }
   },
-  "model": "prorata-ai",
+      "model": "gist-ai",
   "responseTime": 1234
 }
 ```

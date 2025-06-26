@@ -122,7 +122,7 @@ gpa/
 2. **Configure Environment**
    ```bash
    cp .env.example .env.local
-   # Add your Prorata API key to .env.local
+   # Add your Gist AI API key to .env.local
    ```
 
 3. **Run Development Server**
@@ -139,7 +139,7 @@ gpa/
 
 ### Environment Variables
 - `NODE_ENV` - Environment mode
-- `PRORATA_API_KEY` - Prorata API key for AI features
+- `GIST_API_KEY` - Gist AI API key for AI features
 - `RATE_LIMIT_REQUESTS` - Max requests per minute
 - `CHAT_RATE_LIMIT` - Max AI chat requests per minute
 - `MAX_REQUEST_SIZE` - Maximum request size

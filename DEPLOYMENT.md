@@ -69,7 +69,7 @@ This guide provides detailed instructions for deploying GPA to Vercel.
    - Add each variable:
      ```
      NODE_ENV = production
-     PRORATA_API_KEY = your_prorata_api_key_here
+     GIST_API_KEY = your_gist_api_key_here
      RATE_LIMIT_REQUESTS = 100
      CHAT_RATE_LIMIT = 20
      MAX_REQUEST_SIZE = 52428800
@@ -85,7 +85,7 @@ This guide provides detailed instructions for deploying GPA to Vercel.
 
 ```bash
 NODE_ENV=production
-PRORATA_API_KEY=your_prorata_api_key_here
+GIST_API_KEY=your_gist_api_key_here
 RATE_LIMIT_REQUESTS=100
 CHAT_RATE_LIMIT=20
 MAX_REQUEST_SIZE=52428800
