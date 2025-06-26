@@ -158,7 +158,7 @@ export default function Setup() {
           </div>
         ) : !showCode ? (
           <div className="setup-form-container">
-            <h1>Generate Your Ask Anythign Widget</h1>
+            <h1>Generate Your Ask Anything Widget</h1>
             <p className="setup-description">Configure your Ask Anything widget settings and get started in minutes</p>
             
             {error && (
