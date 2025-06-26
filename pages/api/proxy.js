@@ -204,14 +204,14 @@ export default async function handler(req, res) {
             position: fixed !important;
             top: 0 !important;
             right: 0 !important;
-            width: 240px !important;
+            width: 280px !important;
             height: 100vh !important;
             background: #f7f7f8 !important;
             border-right: none !important;
             border-left: 1px solid #e0e0e0 !important;
             border-radius: 0 !important;
             box-shadow: none !important;
-            padding: 0 !important;
+            padding: 36px !important;
             font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
             z-index: 999998 !important;
             display: flex !important;
@@ -231,8 +231,8 @@ export default async function handler(req, res) {
             top: 50% !important;
             transform: translateY(-50%);
             z-index: 1000001 !important;
-            width: 32px !important;
-            height: 32px !important;
+            width: 40px !important;
+            height: 40px !important;
             background: #e5e7eb !important;
             color: #666 !important;
             border: 1px solid #d1d5db !important;
@@ -256,15 +256,15 @@ export default async function handler(req, res) {
             color: #333 !important;
           }
           #admin-sidebar .sidebar-toggle-btn svg {
-            width: 16px !important;
-            height: 16px !important;
+            width: 22px !important;
+            height: 22px !important;
             display: block !important;
           }
           .admin-header {
-            font-size: 18px;
+            font-size: 22px;
             font-weight: 600;
             margin: 0 0 18px 0;
-            padding: 24px 24px 0 24px;
+            padding: 32px 32px 0 32px;
             color: #222;
             letter-spacing: 0.01em;
           }
@@ -273,8 +273,8 @@ export default async function handler(req, res) {
             align-items: center;
             justify-content: space-between;
             cursor: pointer;
-            padding: 0 24px 0 24px;
-            font-size: 15px;
+            padding: 0 32px 0 32px;
+            font-size: 18px;
             font-weight: 500;
             color: #333;
             margin-bottom: 18px !important;
@@ -282,15 +282,15 @@ export default async function handler(req, res) {
             user-select: none;
           }
           .collapsible-header svg {
-            width: 18px;
-            height: 18px;
+            width: 22px;
+            height: 22px;
             transition: transform 0.2s;
           }
           .collapsible-header.open svg {
             transform: rotate(90deg);
           }
           .collapsible-content {
-            padding: 0 24px 12px 24px;
+            padding: 0 32px 16px 32px;
             display: none;
             margin-top: 8px !important;
           }
@@ -300,16 +300,16 @@ export default async function handler(req, res) {
           .source-toggle {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 16px;
             cursor: pointer;
             user-select: none;
-            font-size: 13px;
+            font-size: 16px;
             color: #333;
           }
           .toggle-switch {
             position: relative;
-            width: 28px;
-            height: 16px;
+            width: 36px;
+            height: 22px;
             background: #e4e4e4;
             border-radius: 8px;
             margin-right: 10px;
@@ -319,8 +319,8 @@ export default async function handler(req, res) {
           .toggle-switch::before {
             content: "";
             position: absolute;
-            width: 12px;
-            height: 12px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: #fff;
             top: 2px;
@@ -348,11 +348,11 @@ export default async function handler(req, res) {
             font-weight: 400;
           }
           .size-section {
-            padding: 0 24px 18px 24px;
+            padding: 0 32px 24px 32px;
             margin-bottom: 0;
           }
           .size-label {
-            font-size: 15px;
+            font-size: 18px;
             font-weight: 500;
             color: #333;
             margin-bottom: 8px;
@@ -365,13 +365,13 @@ export default async function handler(req, res) {
           }
           .size-btn {
             flex: 1;
-            padding: 8px 0;
+            padding: 12px 0;
             border: 1px solid #d1d5db;
             border-radius: 6px;
             background: #fff;
             color: #333;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 16px;
             font-weight: 500;
             transition: background 0.2s, color 0.2s, border 0.2s;
           }
@@ -390,7 +390,7 @@ export default async function handler(req, res) {
             }
           }
           #admin-sidebar {
-            padding-top: 72px !important;
+            padding-top: 36px !important;
           }
         </style>
 
