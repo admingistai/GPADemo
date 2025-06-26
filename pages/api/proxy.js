@@ -410,16 +410,12 @@ const askAnythingBanner = `
         margin-left: 0;
       }
     }
-    body, #admin-sidebar {
+    body {
       margin-top: 64px !important;
     }
     #admin-sidebar {
       top: 64px !important;
       height: calc(100vh - 64px) !important;
-    }
-    /* Hide the first <hr> or all <hr>s at the top of the page */
-    body > hr:first-of-type, body > hr {
-      display: none !important;
     }
   </style>
   <div id="aa-banner">
