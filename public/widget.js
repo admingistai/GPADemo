@@ -590,7 +590,27 @@
                         const pageContext = getPageContext();
 
                         // Make API call
-                        const apiUrl = window.location.origin + '/api/proxy';
+                        // Get the script's source URL to determine the API endpoint
+                        const scriptElement = document.currentScript || (function() {
+                            const scripts = document.getElementsByTagName('script');
+                            for (let i = scripts.length - 1; i >= 0; i--) {
+                                const script = scripts[i];
+                                if (script.src && script.src.includes('widget.js')) {
+                                    return script;
+                                }
+                            }
+                            return scripts[scripts.length - 1];
+                        })();
+
+                        if (!scriptElement || !scriptElement.src) {
+                            throw new Error('Could not determine widget script location');
+                        }
+
+                        const scriptSrc = scriptElement.src;
+                        const scriptUrl = new URL(scriptSrc);
+                        const apiUrl = `${scriptUrl.protocol}//${scriptUrl.host}/api/proxy`;
+                        
+                        console.log('Widget script location:', scriptSrc);
                         console.log('Making API request to:', apiUrl);
                         
                         const response = await fetch(apiUrl, {
@@ -710,6 +730,8 @@
                             errorMessage = 'Sorry, the API endpoint could not be found. This might be a configuration issue.';
                         } else if (error.message.includes('Failed to fetch')) {
                             errorMessage = 'Sorry, there was a network error. Please check your internet connection and try again.';
+                        } else if (error.message.includes('Could not determine widget script location')) {
+                            errorMessage = 'Sorry, there was an error initializing the widget. Please check the installation instructions.';
                         }
                         
                         answerContainer.innerHTML = `
