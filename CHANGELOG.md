@@ -10,25 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2025-06-16
 
 ### Added
-- **OpenAI Integration**: Full GPT chat completion support
-- **DALL-E Image Generation**: AI-powered image creation
-- **AI-Powered Widget**: Enhanced widget.js with multiple AI tools
-  - Ask tool for intelligent Q&A
-  - Gist tool for website summaries
-  - Remix tool for content variations
-  - Image generation tool
-- **New API Endpoints**:
-  - `/api/chat` - OpenAI chat completion endpoint
-  - `/api/image` - DALL-E image generation endpoint
-- **Enhanced Rate Limiting**: Separate limits for AI endpoints
 - **Website Styling Extraction**: Automatic color and font detection
 - **Dynamic Widget Styling**: Adapts to target website's design
 
 ### Changed
 - **Widget Injection**: Improved reliability and cross-origin compatibility
-- **Environment Variables**: Added OpenAI API key configuration
-- **Documentation**: Updated all guides with AI integration details
-- **Dependencies**: Added OpenAI library integration
+- **Documentation**: Updated all guides
 
 ### Fixed
 - Widget script loading issues with defer attribute

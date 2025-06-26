@@ -586,27 +586,10 @@
                     });
 
                     try {
-                        const currentHost = window.location.protocol + '//' + window.location.host;
-                        const apiEndpoint = currentHost + '/api/chat';
-                        
-                        const response = await fetch(apiEndpoint, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Origin': currentHost
-                            },
-                            credentials: 'same-origin',
-                            body: JSON.stringify({
-                                question: question,
-                                context: getPageContext()
-                            })
-                        });
-
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-
-                        const data = await response.json();
+                        // Placeholder for future API integration
+                        const data = {
+                            answer: "AI functionality temporarily disabled. This will be replaced with a new API in the next update."
+                        };
 
                         // Generate mock attribution data
                         const sources = [

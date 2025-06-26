@@ -4,14 +4,12 @@ This guide provides detailed instructions for deploying GPA to Vercel.
 
 ## Pre-Deployment Checklist
 
-- [ ] All dependencies are listed in `package.json` (including `openai`)
+- [ ] All dependencies are listed in `package.json`
 - [ ] `vercel.json` configuration is present
 - [ ] `widget.js` is in the `public` directory
-- [ ] OpenAI API key is obtained and ready to configure
 - [ ] Environment variables are documented
 - [ ] All tests pass locally
 - [ ] No hardcoded sensitive information
-- [ ] AI features tested locally
 
 ## Deployment Methods
 
@@ -71,10 +69,7 @@ This guide provides detailed instructions for deploying GPA to Vercel.
    - Add each variable:
      ```
      NODE_ENV = production
-     OPENAI_API_KEY = your_openai_api_key_here
      RATE_LIMIT_REQUESTS = 100
-     CHAT_RATE_LIMIT = 20
-     IMAGE_RATE_LIMIT = 5
      MAX_REQUEST_SIZE = 52428800
      ```
 
@@ -88,10 +83,7 @@ This guide provides detailed instructions for deploying GPA to Vercel.
 
 ```bash
 NODE_ENV=production
-OPENAI_API_KEY=your_openai_api_key_here
 RATE_LIMIT_REQUESTS=100
-CHAT_RATE_LIMIT=20
-IMAGE_RATE_LIMIT=5
 MAX_REQUEST_SIZE=52428800
 ```
 

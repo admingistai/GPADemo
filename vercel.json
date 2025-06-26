@@ -4,15 +4,8 @@
     "pages/api/proxy.js": {
       "memory": 3008,
       "maxDuration": 30
-    },
-    "pages/api/chat.js": {
-      "memory": 1024,
-      "maxDuration": 30
-    },
-    "pages/api/image.js": {
-      "memory": 1024,
-      "maxDuration": 60
     }
+
   },
   "headers": [
     {

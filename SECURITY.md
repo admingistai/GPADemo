@@ -22,8 +22,8 @@ We will acknowledge receipt within 48 hours and provide updates on the fix.
 - **Protocol Restrictions:** Only HTTP/HTTPS allowed
 - **Length Limits:** Maximum URL length of 2048 characters
 - **Pattern Matching:** Blocks suspicious patterns and XSS attempts
-- **AI Input Validation:** Chat messages and image prompts are validated and sanitized
-- **Content Policy Compliance:** OpenAI's content policies are enforced
+
+
 
 ### Network Security
 
@@ -31,10 +31,7 @@ We will acknowledge receipt within 48 hours and provide updates on the fix.
 - **Port Restrictions:** Blocks common internal service ports
 - **Rate Limiting:** Prevents abuse through request throttling
   - Proxy endpoints: 100 requests/minute per IP
-  - AI chat endpoints: 20 requests/minute per IP
-  - AI image endpoints: 5 requests/minute per IP
 - **Timeout Protection:** 30-second maximum request duration
-- **API Key Security:** OpenAI API key stored server-side only
 
 ### Content Security
 
@@ -55,10 +52,9 @@ We will acknowledge receipt within 48 hours and provide updates on the fix.
 ### For Deployment
 
 1. **Environment Variables**
-   - Never commit sensitive data (especially OpenAI API keys)
+   - Never commit sensitive data (especially API keys)
    - Use Vercel's environment variable encryption
-   - Rotate secrets regularly, including OpenAI API keys
-   - Monitor OpenAI API usage and costs
+   - Rotate secrets regularly
 
 2. **Access Control**
    - Implement IP allowlisting if needed

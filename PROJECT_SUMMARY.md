@@ -15,8 +15,7 @@ gpa/
 │   ├── 500.js                   ✓ Custom error page
 │   └── api/
 │       ├── proxy.js             ✓ Main proxy endpoint
-│       ├── chat.js              ✓ OpenAI chat completion endpoint
-│       ├── image.js             ✓ OpenAI image generation endpoint
+
 │       └── health.js            ✓ Health check endpoint
 ├── components/
 │   ├── URLInputForm.jsx         ✓ URL input component
@@ -66,8 +65,7 @@ gpa/
 ### 1. **Core Functionality**
 - ✅ Complete website replication with 1:1 fidelity
 - ✅ Automatic widget.js injection into all HTML pages
-- ✅ AI-powered chat functionality with OpenAI GPT
-- ✅ DALL-E image generation capabilities
+
 - ✅ Comprehensive URL rewriting (relative to absolute)
 - ✅ Support for all content types (HTML, CSS, JS, images, etc.)
 
@@ -103,7 +101,7 @@ gpa/
 
 - **Frontend**: Next.js 14.1.0, React 18.2.0
 - **Backend**: Node.js serverless functions
-- **AI Integration**: OpenAI GPT & DALL-E
+
 - **HTTP Client**: Axios
 - **HTML Parsing**: Cheerio
 - **Validation**: validator.js
@@ -123,7 +121,7 @@ gpa/
 2. **Configure Environment**
    ```bash
    cp .env.example .env.local
-   # Add your OpenAI API key to .env.local
+
    ```
 
 3. **Run Development Server**
@@ -140,10 +138,7 @@ gpa/
 
 ### Environment Variables
 - `NODE_ENV` - Environment mode
-- `OPENAI_API_KEY` - OpenAI API key for AI features
 - `RATE_LIMIT_REQUESTS` - Max requests per minute
-- `CHAT_RATE_LIMIT` - Max AI chat requests per minute
-- `IMAGE_RATE_LIMIT` - Max AI image requests per minute
 - `MAX_REQUEST_SIZE` - Maximum request size
 - `BLOCKED_DOMAINS` - Comma-separated blocked domains
 
