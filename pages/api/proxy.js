@@ -239,9 +239,8 @@ const adminSidebar = `
     <div class="admin-header">Configure your Ask Anything<sup>TM</sup> button.</div>
     <div class="divider"></div>
     <div class="slider-section">
-      <span class="slider-label">Widget Size</span>
-      <input type="range" min="1" max="3" value="2" class="widget-size-slider" id="widget-size-slider">
-      <span class="slider-value" id="widget-size-value">Medium</span>
+      <span class="slider-label">Widget Size: <span class="slider-value" id="widget-size-value">50</span></span>
+      <input type="range" min="1" max="100" value="50" step="1" class="widget-size-slider" id="widget-size-slider">
     </div>
     <div class="divider"></div>
     <div class="style-section">
@@ -313,9 +312,8 @@ const adminSidebar = `
       // Widget size slider
       const sizeSlider = document.getElementById('widget-size-slider');
       const sizeValue = document.getElementById('widget-size-value');
-      const sizeLabels = ['Small', 'Medium', 'Large'];
       sizeSlider.addEventListener('input', function() {
-        sizeValue.textContent = sizeLabels[this.value - 1];
+        sizeValue.textContent = this.value;
       });
 
       // Style toggle group
