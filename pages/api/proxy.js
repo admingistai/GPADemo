@@ -272,16 +272,13 @@ const adminSidebar = `
       transform: translateY(-2px) scale(1.03);
       transition: box-shadow 0.2s, transform 0.2s;
     }
-    body.panel-open #main-content, body.panel-open main, body.panel-open .site-content {
+    body.admin-panel-open > :not(#admin-sidebar):not(#aa-banner) {
       opacity: 0.2 !important;
-      transition: opacity 0.3s cubic-bezier(0.4,0,0.2,1);
+      transition: opacity 0.3s;
     }
-    body.panel-open .gist-widget-container {
+    body.admin-panel-open .gist-widget-container {
       transform: translateX(-50%) translateY(-60px) !important;
-      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
-    }
-    .gist-widget-container {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      transition: transform 0.3s;
     }
   </style>
 
@@ -361,11 +358,11 @@ const adminSidebar = `
         toggleIcon.innerHTML = minimized
           ? '<polyline points="9 18 15 12 9 6"></polyline>'
           : '<polyline points="15 18 9 12 15 6"></polyline>';
-        // Add/remove panel-open class to body
+        // Opacity and widget rise effect
         if (!minimized) {
-          document.body.classList.add('panel-open');
+          document.body.classList.add('admin-panel-open');
         } else {
-          document.body.classList.remove('panel-open');
+          document.body.classList.remove('admin-panel-open');
         }
       }
 
@@ -504,24 +501,13 @@ const askAnythingBanner = `
       top: 64px !important;
       height: calc(100vh - 64px) !important;
     }
-    #aa-banner .aa-title-link {
-      text-decoration: none;
-      color: inherit;
-      cursor: pointer;
-      display: block;
-    }
-    #aa-banner .aa-title-link:active, #aa-banner .aa-title-link:visited {
-      color: inherit;
-    }
   </style>
   <div id="aa-banner">
     <div class="aa-title-container">
-      <a href="https://getaskanything.com" target="_blank" class="aa-title-link">
-        <div class="aa-title">
-          <span class="aa-ask">Ask</span><br>
-          <span class="aa-anything">Anything<sup>TM</sup></span>
-        </div>
-      </a>
+      <div class="aa-title">
+        <span class="aa-ask">Ask</span><br>
+        <span class="aa-anything">Anything<sup>TM</sup></span>
+      </div>
       <div class="aa-preview">Preview</div>
     </div>
   </div>
@@ -663,123 +649,12 @@ export default async function handler(req, res) {
       
       // Fix relative links (use global replace)
       html = html.replace(/href="\/([^"]*)"/g, `href="${baseUrl}/$1"`);
-      html = html.replace(/src="\/([^"]*)"/g, `src="${baseUrl}/$1"`);
-      
-      // Add base tag for better relative URL handling
-      if (html.includes('<head>')) {
-        html = html.replace('<head>', `<head><base href="${normalizedUrl}">`);
-      }
-
-      // Inject widget.js script into the HTML
-      const protocol = req.headers['x-forwarded-proto'] || (req.headers['x-forwarded-for'] ? 'https' : 'http');
-      const host = req.headers.host || 'localhost:3000';
-      const widgetScript = `<script src="${protocol}://${host}/widget.js"></script>`;
-      
-      // More robust injection logic
-      if (html.includes('</head>')) {
-        // Inject before closing head tag
-        html = html.replace('</head>', `${widgetScript}</head>`);
-        console.log('Widget injected before </head>');
-      } else if (html.includes('</body>')) {
-        // Fallback: inject before closing body tag
-        html = html.replace('</body>', `${widgetScript}</body>`);
-        console.log('Widget injected before </body>');
-      } else if (html.includes('<body')) {
-        // Another fallback: inject after opening body tag
-        html = html.replace(/(<body[^>]*>)/, `$1${widgetScript}`);
-        console.log('Widget injected after <body>');
-      } else {
-        // Last resort: append to the end
-        html += widgetScript;
-        console.log('Widget appended to end of HTML');
-      }
-      
-      // Inject Ask Anything banner at the very top
-      if (html.includes('<body')) {
-        html = html.replace(/(<body[^>]*>)/, `$1${askAnythingBanner}`);
-        console.log('Ask Anything banner injected after <body>');
-      } else {
-        html = askAnythingBanner + html;
-        console.log('Ask Anything banner added at beginning of HTML');
-      }
-      
-      // Inject admin sidebar right after opening body tag
-      if (html.includes('<body')) {
-        html = html.replace(/(<body[^>]*>)/, `$1${adminSidebar}`);
-        console.log('Admin sidebar injected after <body>');
-      } else {
-        // Fallback: add at the beginning of the HTML
-        html = adminSidebar + html;
-        console.log('Admin sidebar added at beginning of HTML');
-      }
-      
-      // Verify injection
-      if (html.includes('widget.js')) {
-        console.log('✓ Widget script successfully injected into HTML');
-      } else {
-        console.log('✗ Widget script NOT found in final HTML');
-      }
-      
-      if (html.includes('admin-sidebar')) {
-        console.log('✓ Admin sidebar successfully injected into HTML');
-      } else {
-        console.log('✗ Admin sidebar NOT found in final HTML');
-      }
     }
 
-    // Set appropriate headers
-    res.setHeader('Content-Type', contentType);
-    res.setHeader('X-Proxied-URL', normalizedUrl);
-    
-    // Remove headers that might prevent embedding
-    res.removeHeader('X-Frame-Options');
-    res.removeHeader('Content-Security-Policy');
-    
-    // Send the content
-    return res.status(200).send(html);
-
+    // Return the modified HTML
+    res.status(200).json({ html });
   } catch (error) {
-    console.error('Proxy error:', error.message);
-
-    // Determine appropriate error response
-    if (error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT') {
-      return res.status(408).json({ 
-        error: 'Request timed out. The website may be slow or unavailable.' 
-      });
-    }
-
-    if (error.response) {
-      if (error.response.status === 404) {
-        return res.status(404).json({ error: 'Website not found' });
-      }
-      if (error.response.status === 403) {
-        return res.status(403).json({ error: 'Access forbidden by the target website' });
-      }
-      if (error.response.status >= 500) {
-        return res.status(502).json({ error: 'Target website server error' });
-      }
-    }
-
-    if (error.request) {
-      return res.status(502).json({ 
-        error: 'Unable to reach the website. Please check the URL.' 
-      });
-    }
-
-    // Something else happened
-    return res.status(500).json({ 
-      error: 'An unexpected error occurred while processing your request',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
+    console.error('Error processing request:', error.message);
+    res.status(500).json({ error: 'An error occurred while processing the request' });
   }
 }
-
-// Export config for Next.js API routes
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '50mb'
-    },
-    responseLimit: false
-  }
-};
