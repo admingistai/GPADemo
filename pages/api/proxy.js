@@ -103,16 +103,34 @@ const adminSidebar = `
       color: #333;
       margin-bottom: 6px;
     }
-    .widget-size-slider {
+    .size-btn-group {
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
       width: 100%;
-      margin: 0;
-      accent-color: #6366f1;
     }
-    .slider-value {
-      font-size: 14px;
-      color: #6366f1;
-      margin-left: 8px;
+    .size-btn {
+      flex: 1;
+      min-width: 60px;
+      padding: 10px 0;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      background: #fff;
+      color: #333;
+      cursor: pointer;
+      font-size: 15px;
       font-weight: 500;
+      transition: background 0.2s, color 0.2s, border 0.2s;
+      text-align: center;
+    }
+    .size-btn.selected, .size-btn:active {
+      background: #6366f1;
+      color: #fff;
+      border-color: #6366f1;
+    }
+    .size-btn:not(.selected):hover {
+      background: #f1f1f9;
+      color: #333;
     }
     .style-section {
       padding: 0 16px 0 16px;
@@ -239,8 +257,12 @@ const adminSidebar = `
     <div class="admin-header">Configure your Ask Anything<sup>TM</sup> button.</div>
     <div class="divider"></div>
     <div class="slider-section">
-      <span class="slider-label">Widget Size: <span class="slider-value" id="widget-size-value">50</span></span>
-      <input type="range" min="1" max="100" value="50" step="1" class="widget-size-slider" id="widget-size-slider">
+      <span class="slider-label">Widget Size</span>
+      <div class="size-btn-group">
+        <button class="size-btn selected" data-size="small">Small</button>
+        <button class="size-btn" data-size="medium">Medium</button>
+        <button class="size-btn" data-size="large">Large</button>
+      </div>
     </div>
     <div class="divider"></div>
     <div class="style-section">
@@ -309,35 +331,13 @@ const adminSidebar = `
         setPanelState(!isMinimized);
       });
 
-      // Widget size slider
-      const sizeSlider = document.getElementById('widget-size-slider');
-      const sizeValue = document.getElementById('widget-size-value');
-      sizeSlider.addEventListener('input', function() {
-        sizeValue.textContent = this.value;
-        const val = parseInt(this.value, 10);
-        const scale = 0.65 + ((val - 1) / 99) * 0.7; // 0.65 at 1, 1.35 at 100
-
-        // Create or update dynamic scale stylesheet so future elements inherit scale
-        let scaleStyle = document.getElementById('gist-dynamic-scale');
-        if (!scaleStyle) {
-          scaleStyle = document.createElement('style');
-          scaleStyle.id = 'gist-dynamic-scale';
-          document.head.appendChild(scaleStyle);
-        }
-        const scaleVal = scale.toFixed(2);
-        const baseHeight = widgetContainer ? widgetContainer.offsetHeight : 60;
-        const gap = 20;
-        const newBottom = Math.round(baseHeight * scale + gap);
-
-        scaleStyle.textContent = '.gist-widget-container { transform: translateX(-50%) scale(' + scaleVal + ') !important; }' +
-          '.gist-answer-container { transform: translateX(-50%) translateY(20px) scale(' + scaleVal + ') !important; bottom: ' + newBottom + 'px !important; }' +
-          '.gist-answer-container.visible { transform: translateX(-50%) translateY(0) scale(' + scaleVal + ') !important; bottom: ' + newBottom + 'px !important; }';
-
-        const pillRect = widgetContainer ? widgetContainer.getBoundingClientRect() : null;
-        if (pillRect && answerContainerEl) {
-          const gap = 20; // pixels gap between pill and answer container
-          answerContainerEl.style.bottom = (pillRect.height + gap) + 'px';
-        }
+      // Widget size button group
+      const sizeBtns = sidebar.querySelectorAll('.size-btn');
+      sizeBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          sizeBtns.forEach(b => b.classList.remove('selected'));
+          this.classList.add('selected');
+        });
       });
 
       // Style toggle group
