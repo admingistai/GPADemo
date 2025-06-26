@@ -874,17 +874,21 @@
             width: 220px !important;
             padding: 8px 16px !important;
         }
+        .gist-widget-container.medium {
+            width: 280px !important;
+            padding: 8px 16px !important;
+        }
         .gist-widget-container.large, .gist-widget-container.expanded.force-expanded {
-            width: 475px !important;
-            padding: 12px 24px !important;
+            width: 600px !important;
+            padding: 16px 32px !important;
         }
         .gist-answer-container.small {
             width: 320px !important;
             padding: 12px !important;
         }
         .gist-answer-container.large {
-            width: 600px !important;
-            padding: 28px !important;
+            width: 750px !important;
+            padding: 36px !important;
         }
     `;
     if (document.head) {
