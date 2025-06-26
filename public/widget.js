@@ -445,23 +445,36 @@
                     const parts = input.dataset.placeholderParts.split(',');
                     const placeholderSpan = document.createElement('span');
                     placeholderSpan.style.position = 'absolute';
-                    placeholderSpan.style.left = '57px'; // Adjust based on icon width + padding
+                    // Move right in large mode
+                    if (widgetSizeMode === 'large') {
+                        placeholderSpan.style.left = '70px';
+                    } else {
+                        placeholderSpan.style.left = '57px';
+                    }
                     placeholderSpan.style.top = '50%';
                     placeholderSpan.style.transform = 'translateY(-50%)';
                     placeholderSpan.style.color = '#666';
                     placeholderSpan.style.pointerEvents = 'none';
                     placeholderSpan.style.transition = 'all 0.3s ease';
-                    
-                    placeholderSpan.innerHTML = isExpanded ? 
-                        `${parts[0]}<strong>${parts[1]}</strong>${parts[2]}` :
-                        'Ask anything...';
-                    
+
+                    // Placeholder logic for publisher name
+                    let showPublisher = false;
+                    if (widgetSizeMode === 'large') showPublisher = true;
+                    if (widgetSizeMode === 'small') showPublisher = false;
+                    if (showPublisher) {
+                        placeholderSpan.innerHTML = isExpanded ? 
+                            `${parts[0]}<strong>${parts[1]}</strong>${parts[2]}` :
+                            'Ask anything...';
+                    } else {
+                        placeholderSpan.innerHTML = 'Ask anything...';
+                    }
+
                     // Remove any existing placeholder span
                     const existingSpan = input.parentElement.querySelector('.placeholder-span');
                     if (existingSpan) {
                         existingSpan.remove();
                     }
-                    
+
                     // Only show if input is empty
                     placeholderSpan.className = 'placeholder-span';
                     if (!input.value) {

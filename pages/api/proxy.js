@@ -31,6 +31,7 @@ const adminSidebar = `
       background-image: linear-gradient(#f7f7f8, #f7f7f8), linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0) !important;
       background-origin: border-box !important;
       background-clip: padding-box, border-box !important;
+      overflow-y: auto !important;
     }
     #admin-sidebar.minimized {
       transform: translateX(100%) !important;
@@ -303,7 +304,7 @@ const adminSidebar = `
     <div class="style-section">
       <span class="section-label">Style</span>
       <div class="style-toggle-group">
-        <button class="style-toggle selected" data-style="default">Ask Anything<sup>TM</sup> (Default)</button>
+        <button class="style-toggle selected" data-style="default">Ask Anything (Default)</button>
         <button class="style-toggle" data-style="match">Match My Site</button>
       </div>
     </div>
@@ -364,8 +365,10 @@ const adminSidebar = `
         // Add/remove panel-open class to body
         if (!minimized) {
           document.body.classList.add('panel-open');
+          document.body.style.overflow = 'hidden';
         } else {
           document.body.classList.remove('panel-open');
+          document.body.style.overflow = '';
         }
       }
 
@@ -508,8 +511,10 @@ const askAnythingBanner = `
   <div id="aa-banner">
     <div class="aa-title-container">
       <div class="aa-title">
-        <span class="aa-ask">Ask</span><br>
-        <span class="aa-anything">Anything<sup>TM</sup></span>
+        <a href="https://getaskanything.com" target="_blank" style="color:inherit;text-decoration:none;cursor:pointer;">
+          <span class="aa-ask">Ask</span><br>
+          <span class="aa-anything">Anything<sup>TM</sup></span>
+        </a>
       </div>
       <div class="aa-preview">Preview</div>
     </div>
