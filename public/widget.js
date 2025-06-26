@@ -680,7 +680,7 @@
                                     ${sources.map(source => `
                                         <div class="gist-attribution-source">
                                             <div class="gist-attribution-dot" style="background: ${source.color};"></div>
-                                            ${source.name} (${(source.percentage).toFixed(4)}%)
+                                            ${source.name} (${(source.percentage * 100).toFixed(1)}%)
                                         </div>
                                     `).join('')}
                                 </div>
@@ -708,20 +708,30 @@
                             if (sourceCardsElement) {
                                 setTimeout(() => {
                                     sourceCardsElement.classList.add('visible');
-                                    const sourceCards = sourceCardsElement.querySelectorAll('.gist-source-card[data-url]');
-                                    sourceCards.forEach(card => {
-                                        card.addEventListener('click', () => {
+                                    // Use event delegation for click and keydown
+                                    sourceCardsElement.addEventListener('click', function(e) {
+                                        let card = e.target;
+                                        while (card && !card.classList.contains('gist-source-card')) {
+                                            card = card.parentElement;
+                                        }
+                                        if (card && card.hasAttribute('data-url')) {
                                             const url = card.getAttribute('data-url');
                                             if (url && url.startsWith('http')) {
                                                 window.open(url, '_blank', 'noopener');
                                             }
-                                        });
-                                        card.addEventListener('keydown', (e) => {
+                                        }
+                                    });
+                                    sourceCardsElement.addEventListener('keydown', function(e) {
+                                        let card = e.target;
+                                        while (card && !card.classList.contains('gist-source-card')) {
+                                            card = card.parentElement;
+                                        }
+                                        if ((e.key === 'Enter' || e.key === ' ') && card && card.hasAttribute('data-url')) {
                                             const url = card.getAttribute('data-url');
-                                            if ((e.key === 'Enter' || e.key === ' ') && url && url.startsWith('http')) {
+                                            if (url && url.startsWith('http')) {
                                                 window.open(url, '_blank', 'noopener');
                                             }
-                                        });
+                                        }
                                     });
                                 }, 600);
                             }
