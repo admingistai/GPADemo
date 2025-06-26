@@ -484,12 +484,15 @@
                     if (mode === 'small') {
                         widgetContainer.classList.add('small', 'force-noexpand');
                         if (answerContainer) answerContainer.classList.add('small');
+                        updatePlaceholder(searchInput, false);
                     } else if (mode === 'large') {
                         widgetContainer.classList.add('large', 'expanded', 'force-expanded');
                         if (answerContainer) answerContainer.classList.add('large');
+                        updatePlaceholder(searchInput, true);
                     } else {
                         widgetContainer.classList.add('medium');
                         if (answerContainer) answerContainer.classList.add('medium');
+                        updatePlaceholder(searchInput, false);
                     }
                 }
                 window.addEventListener('message', function(event) {
