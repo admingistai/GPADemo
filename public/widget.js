@@ -680,7 +680,7 @@
                                     ${sources.map(source => `
                                         <div class="gist-attribution-source">
                                             <div class="gist-attribution-dot" style="background: ${source.color};"></div>
-                                            ${source.name} (${(source.percentage * 100).toFixed(1)}%)
+                                            ${source.name} (${(source.percentage).toFixed(1)}%)
                                         </div>
                                     `).join('')}
                                 </div>
