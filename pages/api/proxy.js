@@ -391,8 +391,10 @@ const adminSidebar = `
         // Lock body scroll when sidebar is open
         if (!minimized) {
           document.body.style.overflow = 'hidden';
+          toggleBtn.style.left = 'calc(100vw - 320px - 36px)';
         } else {
           document.body.style.overflow = '';
+          toggleBtn.style.left = '0px';
         }
       }
 
