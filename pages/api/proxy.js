@@ -312,18 +312,39 @@ const adminSidebar = `
       // Widget size slider
       const sizeSlider = document.getElementById('widget-size-slider');
       const sizeValue = document.getElementById('widget-size-value');
+      let currentScale = 1;
+      function applyScale() {
+        const widgetEl = document.querySelector('.gist-widget-container');
+        const answerEl = document.querySelector('.gist-answer-container');
+        if (widgetEl) {
+          widgetEl.style.transform = 'translateX(-50%) scale(' + currentScale.toFixed(2) + ')';
+        }
+        if (answerEl) {
+          // Preserve translateY if present (when visible)
+          const yMatch = answerEl.style.transform.match(/translateY\((-?\d+px)\)/);
+          const translateY = yMatch ? yMatch[0] : 'translateY(20px)';
+          answerEl.style.transform = 'translateX(-50%) ' + translateY + ' scale(' + currentScale.toFixed(2) + ')';
+        }
+      }
+
+      // Initial apply in case slider default value isn't 50
+      applyScale();
+
+      // Observe answer container for transform resets
+      const answerContainerEl = document.querySelector('.gist-answer-container');
+      if (answerContainerEl && window.MutationObserver) {
+        const observer = new MutationObserver(() => {
+          // Reapply scale whenever attributes (like style) change
+          applyScale();
+        });
+        observer.observe(answerContainerEl, { attributes: true, attributeFilter: ['style', 'class'] });
+      }
+
       sizeSlider.addEventListener('input', function() {
         sizeValue.textContent = this.value;
         const val = parseInt(this.value, 10);
-        const scale = 0.65 + ((val - 1) / 99) * 0.7; // 0.65 at 1, 1.35 at 100
-        const widgetContainer = document.querySelector('.gist-widget-container');
-        if (widgetContainer) {
-          widgetContainer.style.transform = 'translateX(-50%) scale(' + scale.toFixed(2) + ')';
-        }
-        const answerContainerEl = document.querySelector('.gist-answer-container');
-        if (answerContainerEl) {
-          answerContainerEl.style.transform = 'translateX(-50%) scale(' + scale.toFixed(2) + ')';
-        }
+        currentScale = 0.65 + ((val - 1) / 99) * 0.7; // 0.65 at 1, 1.35 at 100
+        applyScale();
       });
 
       // Style toggle group
