@@ -498,10 +498,12 @@
                 const widgetContainer = searchInput.closest('.gist-widget-container');
                 widgetContainer.addEventListener('mouseenter', function() {
                     if (widgetSizeMode === 'small') return; // No expand on hover
+                    if (widgetSizeMode === 'medium') widgetContainer.classList.add('expanded');
                     updatePlaceholder(searchInput, true);
                 });
                 widgetContainer.addEventListener('mouseleave', function() {
                     if (widgetSizeMode === 'small') return; // No minimize on leave
+                    if (widgetSizeMode === 'medium' && document.activeElement !== searchInput) widgetContainer.classList.remove('expanded');
                     if (!widgetContainer.classList.contains('expanded')) {
                         updatePlaceholder(searchInput, false);
                     }
