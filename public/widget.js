@@ -527,18 +527,19 @@
                     
                     if (answerContainer) {
                         answerContainer.classList.remove('visible');
-                        setTimeout(() => {
-                            answerContainer.remove();
-                        }, 300);
+                        // Do NOT remove the answer container, just hide it
                     }
                 }
 
                 // Function to show answer container
                 async function showAnswerContainer(question) {
-                    // Remove any existing answer container
-                    const existingContainer = document.querySelector('.gist-answer-container');
-                    if (existingContainer) {
-                        existingContainer.remove();
+                    let answerContainer = document.querySelector('.gist-answer-container');
+                    if (answerContainer) {
+                        // If it exists, just show it
+                        answerContainer.classList.add('visible');
+                        // If a new question is provided, update the answer (optional: could trigger new fetch)
+                        // For now, if question is provided, you may want to clear or update the answer
+                        return;
                     }
 
                     // Create answer container with loading state
@@ -556,8 +557,7 @@
                     container.innerHTML = answerContainerHTML;
                     document.body.appendChild(container.firstElementChild);
 
-                    // Show container with animation
-                    const answerContainer = document.querySelector('.gist-answer-container');
+                    answerContainer = document.querySelector('.gist-answer-container');
                     const loadingElement = answerContainer.querySelector('.gist-loading');
                     requestAnimationFrame(() => {
                         answerContainer.classList.add('visible');
