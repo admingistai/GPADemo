@@ -361,10 +361,12 @@ export default async function handler(req, res) {
           }
           .size-btn-group {
             display: flex;
-            gap: 8px;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
           }
           .size-btn {
-            flex: 1;
+            width: 100%;
             min-width: 100px;
             padding: 12px 0;
             border: 1px solid #d1d5db;
