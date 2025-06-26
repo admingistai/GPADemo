@@ -272,6 +272,17 @@ const adminSidebar = `
       transform: translateY(-2px) scale(1.03);
       transition: box-shadow 0.2s, transform 0.2s;
     }
+    body.panel-open #main-content, body.panel-open main, body.panel-open .site-content {
+      opacity: 0.2 !important;
+      transition: opacity 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    body.panel-open .gist-widget-container {
+      transform: translateX(-50%) translateY(-60px) !important;
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    .gist-widget-container {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
   </style>
 
   <div id="admin-sidebar">
@@ -350,6 +361,12 @@ const adminSidebar = `
         toggleIcon.innerHTML = minimized
           ? '<polyline points="9 18 15 12 9 6"></polyline>'
           : '<polyline points="15 18 9 12 15 6"></polyline>';
+        // Add/remove panel-open class to body
+        if (!minimized) {
+          document.body.classList.add('panel-open');
+        } else {
+          document.body.classList.remove('panel-open');
+        }
       }
 
       toggleBtn.addEventListener('click', function() {
