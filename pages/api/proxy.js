@@ -399,8 +399,16 @@ const askAnythingBanner = `
       background-origin: border-box;
       background-clip: padding-box, border-box;
     }
+    #aa-banner .aa-title-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      height: 100%;
+    }
     #aa-banner .aa-title {
-      font-size: 32px;
+      font-size: 22px;
       font-weight: 700;
       color: #18181b;
       display: block;
@@ -417,13 +425,14 @@ const askAnythingBanner = `
       top: -0.2em;
       right: 0.2em;
     }
-    #aa-banner .aa-tagline {
-      font-size: 1rem;
-      color: #7b7b8b;
-      font-style: italic;
-      font-weight: 500;
-      margin-left: 16px;
-      white-space: nowrap;
+    #aa-banner .aa-preview {
+      flex: 1;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 700;
+      color: #111;
+      letter-spacing: 0.02em;
+      margin-right: 32px;
     }
     @media (max-width: 600px) {
       #aa-banner {
@@ -435,9 +444,9 @@ const askAnythingBanner = `
       #aa-banner .aa-title {
         font-size: 1.2rem;
       }
-      #aa-banner .aa-tagline {
+      #aa-banner .aa-preview {
         font-size: 0.9rem;
-        margin-left: 0;
+        margin-right: 0;
       }
     }
     body {
@@ -449,9 +458,12 @@ const askAnythingBanner = `
     }
   </style>
   <div id="aa-banner">
-    <div class="aa-title">
-      <span class="aa-ask">Ask</span><br>
-      <span class="aa-anything">Anything<sup>TM</sup></span>
+    <div class="aa-title-container">
+      <div class="aa-title">
+        <span class="aa-ask">Ask</span><br>
+        <span class="aa-anything">Anything<sup>TM</sup></span>
+      </div>
+      <div class="aa-preview">Preview</div>
     </div>
   </div>
 `;
