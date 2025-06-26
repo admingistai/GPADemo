@@ -620,6 +620,21 @@
                         }
                         const data = await response.json();
                         console.log('[Widget] API response:', data);
+                        // 1. Remove markdown formatting from the answer
+                        function stripMarkdown(text) {
+                            // Remove bold, italics, headings, inline code, links, etc.
+                            return text
+                                .replace(/\*\*([^*]+)\*\*/g, '$1') // bold
+                                .replace(/\*([^*]+)\*/g, '$1') // italics
+                                .replace(/__([^_]+)__/g, '$1') // bold
+                                .replace(/_([^_]+)_/g, '$1') // italics
+                                .replace(/`([^`]+)`/g, '$1') // inline code
+                                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1') // links
+                                .replace(/^#+\s*(.*)$/gm, '$1') // headings
+                                .replace(/\n{2,}/g, '\n') // extra newlines
+                                .replace(/\n/g, '<br>') // preserve line breaks
+                                .trim();
+                        }
                         // Attribution bar and sources
                         const sources = [];
                         const colors = ['#4B9FE1', '#8860D0', '#FF8C42', '#10B981', '#F59E0B', '#EF4444'];
@@ -629,7 +644,8 @@
                                 if (percentage > 0) {
                                     sources.push({
                                         name: domain,
-                                        percentage: Math.round((percentage * 100) / 100),
+                                        // 2. Use the raw percentage (e.g., 0.42 -> 42%)
+                                        percentage: Math.round(percentage * 100),
                                         color: colors[colorIndex % colors.length],
                                         description: `Content from ${domain}`,
                                         logo: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>'
@@ -669,17 +685,16 @@
                             </div>
                         `;
                         answerContainer.innerHTML = `
-                            <div class="gist-answer"></div>
+                            <div class="gist-answer">${stripMarkdown(data.answer)}</div>
                             ${attributionHTML}
                         `;
-                        const answerElement = answerContainer.querySelector('.gist-answer');
-                        if (answerElement) {
-                            answerElement.innerHTML = sanitizeHtml(markdownToHtml(data.answer));
-                            answerElement.classList.add('visible');
-                        }
                         requestAnimationFrame(() => {
+                            const answerElement = answerContainer.querySelector('.gist-answer');
                             const attributionElement = answerContainer.querySelector('.gist-attribution');
                             const sourceCardsElement = answerContainer.querySelector('.gist-source-cards');
+                            if (answerElement) {
+                                answerElement.classList.add('visible');
+                            }
                             if (attributionElement) {
                                 setTimeout(() => {
                                     attributionElement.classList.add('visible');
@@ -717,42 +732,92 @@
                     }
                 }
 
-                // Function to generate source cards from citations
+                // 3. Show only one source card at a time, vertically, with navigation
                 function generateSourceCards(citations, sources) {
+                    let cards = [];
                     if (!citations || !Array.isArray(citations) || citations.length === 0) {
                         // Fallback to attribution-based cards
-                        return sources.map(source => `
-                            <div class="gist-source-card">
-                                <div class="gist-source-card-header">
-                                    <div class="gist-source-logo" style="background: ${source.color}">
-                                        ${source.logo}
+                        cards = sources.map(source => ({
+                            html: `
+                                <div class="gist-source-card" data-url="">
+                                    <div class="gist-source-card-header">
+                                        <div class="gist-source-logo" style="background: ${source.color}">
+                                            ${source.logo}
+                                        </div>
+                                        <div class="gist-source-name">${source.name}</div>
                                     </div>
-                                    <div class="gist-source-name">${source.name}</div>
+                                    <div class="gist-source-description">${source.description}</div>
                                 </div>
-                                <div class="gist-source-description">${source.description}</div>
-                            </div>
-                        `).join('');
+                            `,
+                            url: ''
+                        }));
+                    } else {
+                        cards = citations.slice(0, 6).map((citation, index) => {
+                            const sourceColor = sources.find(s => s.name === citation.domain)?.color || '#4B9FE1';
+                            const favicon = citation.favicon || citation.favicon24 || citation.favicon40;
+                            return {
+                                html: `
+                                    <div class="gist-source-card" data-url="${citation.url}">
+                                        <div class="gist-source-card-header">
+                                            <div class="gist-source-logo" style="background: ${sourceColor}">
+                                                ${favicon ? 
+                                                    `<img src="${favicon}" alt="${citation.source}" style="width: 16px; height: 16px; border-radius: 2px;">` : 
+                                                    `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="width: 16px; height: 16px;"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>`
+                                                }
+                                            </div>
+                                            <div class="gist-source-name">${citation.source || citation.domain}</div>
+                                            ${citation.date ? `<div class="gist-source-date">${formatDate(citation.date)}</div>` : ''}
+                                        </div>
+                                        <div class="gist-source-title">${citation.title || 'Untitled'}</div>
+                                        <div class="gist-source-description">${citation.first_words ? citation.first_words.substring(0, 120) + '...' : 'No description available'}</div>
+                                    </div>
+                                `,
+                                url: citation.url
+                            };
+                        });
                     }
-                    return citations.slice(0, 6).map((citation, index) => {
-                        const sourceColor = sources.find(s => s.name === citation.domain)?.color || '#4B9FE1';
-                        const favicon = citation.favicon || citation.favicon24 || citation.favicon40;
+                    // Only show one card at a time, with navigation
+                    if (cards.length === 0) return '';
+                    let currentIndex = 0;
+                    function renderCard() {
+                        const card = cards[currentIndex];
                         return `
-                            <div class="gist-source-card" data-url="${citation.url}">
-                                <div class="gist-source-card-header">
-                                    <div class="gist-source-logo" style="background: ${sourceColor}">
-                                        ${favicon ? 
-                                            `<img src="${favicon}" alt="${citation.source}" style="width: 16px; height: 16px; border-radius: 2px;">` : 
-                                            `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="width: 16px; height: 16px;"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>`
-                                        }
-                                    </div>
-                                    <div class="gist-source-name">${citation.source || citation.domain}</div>
-                                    ${citation.date ? `<div class="gist-source-date">${formatDate(citation.date)}</div>` : ''}
+                            <div class="gist-source-card-vertical">
+                                ${card.html}
+                                <div class="gist-source-card-nav">
+                                    <button class="gist-source-card-prev" ${currentIndex === 0 ? 'disabled' : ''}>&lt; Prev</button>
+                                    <span class="gist-source-card-index">${currentIndex + 1} / ${cards.length}</span>
+                                    <button class="gist-source-card-next" ${currentIndex === cards.length - 1 ? 'disabled' : ''}>Next &gt;</button>
                                 </div>
-                                <div class="gist-source-title">${citation.title || 'Untitled'}</div>
-                                <div class="gist-source-description">${citation.first_words ? citation.first_words.substring(0, 120) + '...' : 'No description available'}</div>
                             </div>
                         `;
-                    }).join('');
+                    }
+                    // Attach navigation and click handler after rendering
+                    setTimeout(() => {
+                        const container = document.querySelector('.gist-source-cards');
+                        if (!container) return;
+                        container.innerHTML = renderCard();
+                        function updateCard() {
+                            container.innerHTML = renderCard();
+                            attachHandlers();
+                        }
+                        function attachHandlers() {
+                            const cardElem = container.querySelector('.gist-source-card');
+                            if (cardElem && cards[currentIndex].url) {
+                                cardElem.style.cursor = 'pointer';
+                                cardElem.addEventListener('click', () => {
+                                    window.open(cards[currentIndex].url, '_blank');
+                                });
+                            }
+                            const prevBtn = container.querySelector('.gist-source-card-prev');
+                            const nextBtn = container.querySelector('.gist-source-card-next');
+                            if (prevBtn) prevBtn.onclick = () => { if (currentIndex > 0) { currentIndex--; updateCard(); } };
+                            if (nextBtn) nextBtn.onclick = () => { if (currentIndex < cards.length - 1) { currentIndex++; updateCard(); } };
+                        }
+                        attachHandlers();
+                    }, 0);
+                    // Initial render placeholder
+                    return `<div class="gist-source-card-vertical"></div>`;
                 }
 
                 // Function to handle search
@@ -829,29 +894,5 @@
                 }, 300);
             });
         }
-    }
-
-    // Simple markdown-to-HTML converter using marked (if available) or fallback
-    function markdownToHtml(md) {
-        if (window.marked) {
-            return window.marked.parse(md);
-        }
-        // Fallback: very basic replacements
-        return md
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/\n/g, '<br>')
-            .replace(/\#\# (.*?)(?=\n|$)/g, '<h2>$1</h2>')
-            .replace(/\# (.*?)(?=\n|$)/g, '<h1>$1</h1>')
-            .replace(/\n\s*\n/g, '<br><br>');
-    }
-
-    // Add a simple sanitizeHtml function (or use DOMPurify if available)
-    function sanitizeHtml(html) {
-        if (window.DOMPurify) {
-            return window.DOMPurify.sanitize(html);
-        }
-        // Fallback: allow only basic tags (strong, em, h1, h2, h3, ul, ol, li, br, p)
-        return html.replace(/<(?!\/?(strong|em|h1|h2|h3|ul|ol|li|br|p)\b)[^>]*>/gi, '');
     }
 })();
