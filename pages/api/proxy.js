@@ -426,8 +426,8 @@ export default async function handler(req, res) {
           <div class="size-section">
             <span class="size-label">Widget Size</span>
             <div class="size-btn-group">
-              <button class="size-btn" data-size="small">Small</button>
-              <button class="size-btn selected" data-size="medium">Medium</button>
+              <button class="size-btn selected" data-size="small">Small</button>
+              <button class="size-btn" data-size="medium">Medium</button>
               <button class="size-btn" data-size="large">Large</button>
             </div>
           </div>
@@ -468,13 +468,9 @@ export default async function handler(req, res) {
               btn.addEventListener('click', function() {
                 sizeBtns.forEach(b => b.classList.remove('selected'));
                 this.classList.add('selected');
-                // Send size change to widget
-                window.postMessage({ type: 'GIST_WIDGET_SIZE', size: this.dataset.size }, '*');
+                // (Future: trigger widget size change)
               });
             });
-
-            // On load, send default size (medium)
-            window.postMessage({ type: 'GIST_WIDGET_SIZE', size: 'medium' }, '*');
 
             // Initialize state
             setPanelState(false);
