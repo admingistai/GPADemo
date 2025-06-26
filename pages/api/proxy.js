@@ -202,122 +202,108 @@ export default async function handler(req, res) {
         <style>
           #admin-sidebar {
             position: fixed !important;
-            top: 60px !important;
-            right: 20px !important;
-            width: 300px !important;
-            background: #ffffff !important;
-            border-radius: 12px !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-            padding: 20px !important;
-            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+            top: 0 !important;
+            right: 0 !important;
+            width: 240px !important;
+            height: 100vh !important;
+            background: #f7f7f8 !important;
+            border-right: none !important;
+            border-left: 1px solid #e0e0e0 !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
             z-index: 999998 !important;
+            display: flex !important;
+            flex-direction: column !important;
             transition: transform 0.3s ease, width 0.3s ease !important;
           }
 
           #admin-sidebar.minimized {
-            transform: translateX(calc(100% + 20px)) !important;
+            transform: translateX(100%) !important;
           }
 
           #admin-sidebar .header {
             display: flex !important;
-            justify-content: space-between !important;
             align-items: center !important;
-            margin-bottom: 20px !important;
+            justify-content: space-between !important;
+            padding: 18px 18px 12px 18px !important;
+            border-bottom: 1px solid #ececec !important;
+            background: transparent !important;
           }
 
           #admin-sidebar .minimize-btn {
             background: none !important;
             border: none !important;
-            color: #666 !important;
+            color: #bbb !important;
             cursor: pointer !important;
-            padding: 4px 8px !important;
-            font-size: 20px !important;
+            padding: 2px 6px !important;
+            font-size: 18px !important;
             line-height: 1 !important;
-            border-radius: 4px !important;
-            transition: all 0.2s !important;
-            position: absolute !important;
-            left: -40px !important;
-            top: 50% !important;
-            transform: translateY(-50%) !important;
-            background: white !important;
-            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1) !important;
-            width: 30px !important;
-            height: 30px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-          }
-
-          #admin-sidebar.minimized .minimize-btn {
-            left: -50px !important;
-            transform: translateY(-50%) rotate(180deg) !important;
+            border-radius: 3px !important;
+            transition: background 0.2s, color 0.2s !important;
+            margin-left: 8px !important;
           }
 
           #admin-sidebar .minimize-btn:hover {
-            background: #f5f5f5 !important;
-            color: #333 !important;
+            background: #ececec !important;
+            color: #888 !important;
           }
 
           #admin-sidebar h2 {
             margin: 0 !important;
-            font-size: 18px !important;
-            color: #1a1a1a !important;
-            font-weight: 600 !important;
+            font-size: 15px !important;
+            color: #222 !important;
+            font-weight: 500 !important;
+            letter-spacing: 0.01em !important;
           }
 
           .admin-section {
-            margin-bottom: 24px !important;
-          }
-
-          .admin-section h3 {
-            font-size: 14px !important;
-            color: #666 !important;
-            margin: 0 0 12px 0 !important;
-            font-weight: 500 !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.5px !important;
+            padding: 18px !important;
+            border-bottom: 1px solid #ececec !important;
+            margin: 0 !important;
           }
 
           .source-toggle {
-            position: relative !important;
             display: flex !important;
             align-items: center !important;
-            margin-bottom: 12px !important;
+            margin-bottom: 10px !important;
             cursor: pointer !important;
             user-select: none !important;
+            font-size: 13px !important;
+            color: #333 !important;
           }
 
           .toggle-switch {
             position: relative !important;
-            width: 36px !important;
-            height: 20px !important;
+            width: 28px !important;
+            height: 16px !important;
             background: #e4e4e4 !important;
-            border-radius: 10px !important;
-            padding: 2px !important;
-            transition: all 0.3s ease !important;
-            cursor: pointer !important;
+            border-radius: 8px !important;
+            margin-right: 10px !important;
+            transition: background 0.2s !important;
             flex-shrink: 0 !important;
           }
 
           .toggle-switch::before {
             content: "" !important;
             position: absolute !important;
-            width: 16px !important;
-            height: 16px !important;
+            width: 12px !important;
+            height: 12px !important;
             border-radius: 50% !important;
-            background: white !important;
+            background: #fff !important;
             top: 2px !important;
             left: 2px !important;
-            transition: all 0.3s ease !important;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+            transition: transform 0.2s !important;
+            box-shadow: none !important;
           }
 
           .source-toggle input:checked + .toggle-switch {
-            background: #4CAF50 !important;
+            background: #6366f1 !important;
           }
 
           .source-toggle input:checked + .toggle-switch::before {
-            transform: translateX(16px) !important;
+            transform: translateX(12px) !important;
           }
 
           .source-toggle input {
@@ -329,233 +315,42 @@ export default async function handler(req, res) {
           }
 
           .source-toggle span {
-            margin-left: 16px !important;
-            font-size: 14px !important;
-            color: #333 !important;
-          }
-
-          .size-selector {
-            display: flex !important;
-            gap: 8px !important;
-          }
-
-          .size-btn {
-            flex: 1 !important;
-            padding: 8px !important;
-            border: 1px solid #e4e4e4 !important;
-            border-radius: 6px !important;
-            background: white !important;
-            color: #666 !important;
-            cursor: pointer !important;
-            transition: all 0.2s !important;
+            margin-left: 0 !important;
             font-size: 13px !important;
-          }
-
-          .size-btn.active {
-            background: #4CAF50 !important;
-            color: white !important;
-            border-color: #4CAF50 !important;
-          }
-
-          .size-btn:hover:not(.active) {
-            background: #f5f5f5 !important;
-          }
-
-          body {
-            margin-right: 340px !important;
+            color: #333 !important;
+            font-weight: 400 !important;
           }
 
           @media (max-width: 768px) {
             #admin-sidebar {
               display: none !important;
             }
-            body {
-              margin-right: 0 !important;
-            }
           }
         </style>
 
         <div id="admin-sidebar">
           <div class="header">
-            <h2>Widget Admin Panel</h2>
+            <h2>Widget Admin</h2>
             <button class="minimize-btn" title="Minimize panel">←</button>
           </div>
-          
           <div class="admin-section">
-            <h3>Source Selection</h3>
-            <label class="source-toggle">
-              <input type="checkbox" id="source-news">
-              <div class="toggle-switch"></div>
-              <span>News</span>
-            </label>
-            <label class="source-toggle">
-              <input type="checkbox" id="source-business">
-              <div class="toggle-switch"></div>
-              <span>Business</span>
-            </label>
-            <label class="source-toggle">
-              <input type="checkbox" id="source-lifestyle">
-              <div class="toggle-switch"></div>
-              <span>Lifestyle</span>
-            </label>
-            <label class="source-toggle">
-              <input type="checkbox" id="source-sports">
-              <div class="toggle-switch"></div>
-              <span>Sports</span>
-            </label>
-            <label class="source-toggle">
-              <input type="checkbox" id="source-books">
-              <div class="toggle-switch"></div>
-              <span>Books</span>
-            </label>
-            <label class="source-toggle">
-              <input type="checkbox" id="source-academic">
-              <div class="toggle-switch"></div>
-              <span>Academic</span>
-            </label>
-            <label class="source-toggle">
-              <input type="checkbox" id="source-reference">
-              <div class="toggle-switch"></div>
-              <span>Reference</span>
-            </label>
-          </div>
-
-          <div class="admin-section">
-            <h3>Widget Size</h3>
-            <div class="size-selector">
-              <button class="size-btn" data-size="small">Small</button>
-              <button class="size-btn active" data-size="medium">Medium</button>
-              <button class="size-btn" data-size="large">Large</button>
-            </div>
+            ${[
+              { id: 'news', label: 'News' },
+              { id: 'business', label: 'Business' },
+              { id: 'lifestyle', label: 'Lifestyle' },
+              { id: 'sports', label: 'Sports' },
+              { id: 'books', label: 'Books' },
+              { id: 'academic', label: 'Academic' },
+              { id: 'reference', label: 'Reference' }
+            ].map(source => `
+              <label class="source-toggle">
+                <input type="checkbox" id="source-${source.id}">
+                <div class="toggle-switch"></div>
+                <span>${source.label}</span>
+              </label>
+            `).join('')}
           </div>
         </div>
-
-        <script>
-          document.addEventListener('DOMContentLoaded', function() {
-            // Initialize admin panel state
-            const adminPanel = {
-              sources: {
-                news: true,
-                business: true,
-                lifestyle: false,
-                sports: false,
-                books: false,
-                academic: true,
-                reference: true
-              },
-              widgetSize: 'medium',
-              isMinimized: false
-            };
-
-            // Handle source toggles
-            document.querySelectorAll('.source-toggle input[type="checkbox"]').forEach(toggle => {
-              const sourceType = toggle.id.replace('source-', '');
-              
-              // Set initial state
-              toggle.checked = adminPanel.sources[sourceType];
-              
-              // Add click handler to both the input and its parent label
-              toggle.addEventListener('change', function(e) {
-                e.stopPropagation(); // Prevent event bubbling
-                adminPanel.sources[sourceType] = this.checked;
-                console.log('Source updated:', sourceType, this.checked);
-                
-                // Dispatch custom event for widget to handle
-                window.dispatchEvent(new CustomEvent('sourceToggle', {
-                  detail: {
-                    source: sourceType,
-                    enabled: this.checked
-                  }
-                }));
-
-                // Save state
-                savePanelState();
-              });
-            });
-
-            // Handle size buttons
-            document.querySelectorAll('.size-btn').forEach(btn => {
-              btn.addEventListener('click', function() {
-                document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                
-                const newSize = this.dataset.size;
-                adminPanel.widgetSize = newSize;
-                console.log('Widget size updated:', newSize);
-                
-                window.dispatchEvent(new CustomEvent('widgetSizeChange', {
-                  detail: { size: newSize }
-                }));
-              });
-            });
-
-            // Handle panel minimization
-            const sidebar = document.getElementById('admin-sidebar');
-            const minimizeBtn = document.querySelector('.minimize-btn');
-            
-            minimizeBtn.addEventListener('click', function() {
-              adminPanel.isMinimized = !adminPanel.isMinimized;
-              sidebar.classList.toggle('minimized');
-              
-              // Update minimize button text
-              this.textContent = adminPanel.isMinimized ? '→' : '←';
-              this.title = adminPanel.isMinimized ? 'Expand panel' : 'Minimize panel';
-              
-              // Update body margin
-              if (window.innerWidth > 768) {
-                document.body.style.marginRight = adminPanel.isMinimized ? '0' : '340px';
-              }
-            });
-
-            // Handle window resize
-            window.addEventListener('resize', function() {
-              if (window.innerWidth <= 768) {
-                document.body.style.marginRight = '0';
-              } else {
-                document.body.style.marginRight = adminPanel.isMinimized ? '0' : '340px';
-              }
-            });
-
-            // Store panel state in localStorage
-            function savePanelState() {
-              localStorage.setItem('adminPanelState', JSON.stringify(adminPanel));
-            }
-
-            // Load panel state from localStorage
-            function loadPanelState() {
-              const savedState = localStorage.getItem('adminPanelState');
-              if (savedState) {
-                const state = JSON.parse(savedState);
-                
-                // Restore sources
-                Object.entries(state.sources).forEach(([source, enabled]) => {
-                  const toggle = document.getElementById('source-' + source);
-                  if (toggle) {
-                    toggle.checked = enabled;
-                    toggle.dispatchEvent(new Event('change'));
-                  }
-                });
-                
-                // Restore size
-                const sizeBtn = document.querySelector('.size-btn[data-size="' + state.widgetSize + '"]');
-                if (sizeBtn) sizeBtn.click();
-                
-                // Restore minimized state
-                if (state.isMinimized) {
-                  minimizeBtn.click();
-                }
-              }
-            }
-
-            // Save state when changes occur
-            window.addEventListener('sourceToggle', savePanelState);
-            window.addEventListener('widgetSizeChange', savePanelState);
-            minimizeBtn.addEventListener('click', savePanelState);
-
-            // Load saved state
-            loadPanelState();
-          });
-        </script>
       `;
       
       console.log(`Injecting widget script: ${widgetScript}`);
