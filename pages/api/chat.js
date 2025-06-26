@@ -23,8 +23,12 @@ export default async function handler(req, res) {
     log('User ID:', userId);
 
     // Compose messages for Gist API
+    let userPrompt = question;
+    if (context && typeof context === 'string' && context.trim().length > 0) {
+      userPrompt = `If the question is relating to the context of the website, use this URL: ${context} If not, just answer the question normally.\n\n${question}`;
+    }
     const messages = [
-      { role: 'user', content: question }
+      { role: 'user', content: userPrompt }
     ];
     log('Messages:', JSON.stringify(messages));
 
