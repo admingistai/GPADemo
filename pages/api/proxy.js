@@ -327,6 +327,12 @@ const adminSidebar = `
         const scaleVal = scale.toFixed(2);
         scaleStyle.textContent = '.gist-widget-container { transform: translateX(-50%) scale(' + scaleVal + ') !important; }' +
           '.gist-answer-container { transform: translateX(-50%) scale(' + scaleVal + ') !important; }';
+
+        const pillRect = widgetContainer ? widgetContainer.getBoundingClientRect() : null;
+        if (pillRect && answerContainerEl) {
+          const gap = 20; // pixels gap between pill and answer container
+          answerContainerEl.style.bottom = (pillRect.height + gap) + 'px';
+        }
       });
 
       // Style toggle group
