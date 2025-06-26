@@ -680,7 +680,7 @@
                                     ${sources.map(source => `
                                         <div class="gist-attribution-source">
                                             <div class="gist-attribution-dot" style="background: ${source.color};"></div>
-                                            ${source.name} (${Math.round(source.percentage * 100)}%)
+                                            ${source.name} (${(source.percentage).toFixed(4)}%)
                                         </div>
                                     `).join('')}
                                 </div>
@@ -712,13 +712,14 @@
                                     sourceCards.forEach(card => {
                                         card.addEventListener('click', () => {
                                             const url = card.getAttribute('data-url');
-                                            if (url) {
-                                                window.open(url, '_blank');
+                                            if (url && url.startsWith('http')) {
+                                                window.open(url, '_blank', 'noopener');
                                             }
                                         });
                                         card.addEventListener('keydown', (e) => {
-                                            if ((e.key === 'Enter' || e.key === ' ') && card.getAttribute('data-url')) {
-                                                window.open(card.getAttribute('data-url'), '_blank');
+                                            const url = card.getAttribute('data-url');
+                                            if ((e.key === 'Enter' || e.key === ' ') && url && url.startsWith('http')) {
+                                                window.open(url, '_blank', 'noopener');
                                             }
                                         });
                                     });
