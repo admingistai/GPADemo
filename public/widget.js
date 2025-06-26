@@ -620,20 +620,24 @@
                         }
                         const data = await response.json();
                         console.log('[Widget] API response:', data);
-                        // 1. Remove markdown formatting from the answer
-                        function stripMarkdown(text) {
-                            // Remove bold, italics, headings, inline code, links, etc.
-                            return text
-                                .replace(/\*\*([^*]+)\*\*/g, '$1') // bold
-                                .replace(/\*([^*]+)\*/g, '$1') // italics
-                                .replace(/__([^_]+)__/g, '$1') // bold
-                                .replace(/_([^_]+)_/g, '$1') // italics
-                                .replace(/`([^`]+)`/g, '$1') // inline code
-                                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1') // links
-                                .replace(/^#+\s*(.*)$/gm, '$1') // headings
-                                .replace(/\n{2,}/g, '\n') // extra newlines
-                                .replace(/\n/g, '<br>') // preserve line breaks
-                                .trim();
+                        // Render answer as HTML from markdown
+                        function renderMarkdown(md) {
+                            // Basic markdown to HTML conversion (bold, italics, headings, lists)
+                            let html = md
+                                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                                .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                                .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+                                .replace(/\*(.*?)\*/gim, '<em>$1</em>')
+                                .replace(/\n\n/g, '<br><br>')
+                                .replace(/\n/g, '<br>')
+                                .replace(/\[(.*?)\]\((.*?)\)/gim, '<a href="$2" target="_blank">$1</a>')
+                                .replace(/^\s*\* (.*)$/gim, '<li>$1</li>');
+                            // Wrap <li> in <ul> if any
+                            if (/<li>/.test(html)) {
+                                html = html.replace(/(<li>.*<\/li>)/gims, '<ul>$1</ul>');
+                            }
+                            return html;
                         }
                         // Attribution bar and sources
                         const sources = [];
@@ -644,8 +648,7 @@
                                 if (percentage > 0) {
                                     sources.push({
                                         name: domain,
-                                        // 2. Use the raw percentage (e.g., 0.42 -> 42%)
-                                        percentage: Math.round(percentage * 100),
+                                        percentage: percentage, // Use raw percentage (0.42 for 42%)
                                         color: colors[colorIndex % colors.length],
                                         description: `Content from ${domain}`,
                                         logo: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>'
@@ -657,7 +660,7 @@
                         if (sources.length === 0) {
                             sources.push({
                                 name: 'Current Page',
-                                percentage: 100,
+                                percentage: 1,
                                 color: '#4B9FE1',
                                 description: 'Content extracted from the current webpage you\'re viewing',
                                 logo: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M9 8h6m-6 4h6m-6 4h6"/></svg>'
@@ -668,14 +671,14 @@
                                 <div class="gist-attribution-title">Answer sources:</div>
                                 <div class="gist-attribution-bar">
                                     ${sources.map(source => 
-                                        `<div class="gist-attribution-segment" style="width: ${source.percentage}%; background: ${source.color};"></div>`
+                                        `<div class="gist-attribution-segment" style="width: ${source.percentage * 100}%; background: ${source.color};"></div>`
                                     ).join('')}
                                 </div>
                                 <div class="gist-attribution-legend">
                                     ${sources.map(source => `
                                         <div class="gist-attribution-source">
                                             <div class="gist-attribution-dot" style="background: ${source.color};"></div>
-                                            ${source.name} (${source.percentage}%)
+                                            ${source.name} (${Math.round(source.percentage * 100)}%)
                                         </div>
                                     `).join('')}
                                 </div>
@@ -685,7 +688,7 @@
                             </div>
                         `;
                         answerContainer.innerHTML = `
-                            <div class="gist-answer">${stripMarkdown(data.answer)}</div>
+                            <div class="gist-answer">${renderMarkdown(data.answer)}</div>
                             ${attributionHTML}
                         `;
                         requestAnimationFrame(() => {
@@ -732,92 +735,42 @@
                     }
                 }
 
-                // 3. Show only one source card at a time, vertically, with navigation
+                // Function to generate source cards from citations
                 function generateSourceCards(citations, sources) {
-                    let cards = [];
                     if (!citations || !Array.isArray(citations) || citations.length === 0) {
                         // Fallback to attribution-based cards
-                        cards = sources.map(source => ({
-                            html: `
-                                <div class="gist-source-card" data-url="">
-                                    <div class="gist-source-card-header">
-                                        <div class="gist-source-logo" style="background: ${source.color}">
-                                            ${source.logo}
-                                        </div>
-                                        <div class="gist-source-name">${source.name}</div>
+                        return sources.map(source => `
+                            <div class="gist-source-card">
+                                <div class="gist-source-card-header">
+                                    <div class="gist-source-logo" style="background: ${source.color}">
+                                        ${source.logo}
                                     </div>
-                                    <div class="gist-source-description">${source.description}</div>
+                                    <div class="gist-source-name">${source.name}</div>
                                 </div>
-                            `,
-                            url: ''
-                        }));
-                    } else {
-                        cards = citations.slice(0, 6).map((citation, index) => {
-                            const sourceColor = sources.find(s => s.name === citation.domain)?.color || '#4B9FE1';
-                            const favicon = citation.favicon || citation.favicon24 || citation.favicon40;
-                            return {
-                                html: `
-                                    <div class="gist-source-card" data-url="${citation.url}">
-                                        <div class="gist-source-card-header">
-                                            <div class="gist-source-logo" style="background: ${sourceColor}">
-                                                ${favicon ? 
-                                                    `<img src="${favicon}" alt="${citation.source}" style="width: 16px; height: 16px; border-radius: 2px;">` : 
-                                                    `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="width: 16px; height: 16px;"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>`
-                                                }
-                                            </div>
-                                            <div class="gist-source-name">${citation.source || citation.domain}</div>
-                                            ${citation.date ? `<div class="gist-source-date">${formatDate(citation.date)}</div>` : ''}
-                                        </div>
-                                        <div class="gist-source-title">${citation.title || 'Untitled'}</div>
-                                        <div class="gist-source-description">${citation.first_words ? citation.first_words.substring(0, 120) + '...' : 'No description available'}</div>
-                                    </div>
-                                `,
-                                url: citation.url
-                            };
-                        });
+                                <div class="gist-source-description">${source.description}</div>
+                            </div>
+                        `).join('');
                     }
-                    // Only show one card at a time, with navigation
-                    if (cards.length === 0) return '';
-                    let currentIndex = 0;
-                    function renderCard() {
-                        const card = cards[currentIndex];
+                    return citations.slice(0, 6).map((citation, index) => {
+                        const sourceColor = sources.find(s => s.name === citation.domain)?.color || '#4B9FE1';
+                        const favicon = citation.favicon || citation.favicon24 || citation.favicon40;
                         return `
-                            <div class="gist-source-card-vertical">
-                                ${card.html}
-                                <div class="gist-source-card-nav">
-                                    <button class="gist-source-card-prev" ${currentIndex === 0 ? 'disabled' : ''}>&lt; Prev</button>
-                                    <span class="gist-source-card-index">${currentIndex + 1} / ${cards.length}</span>
-                                    <button class="gist-source-card-next" ${currentIndex === cards.length - 1 ? 'disabled' : ''}>Next &gt;</button>
+                            <div class="gist-source-card" data-url="${citation.url}">
+                                <div class="gist-source-card-header">
+                                    <div class="gist-source-logo" style="background: ${sourceColor}">
+                                        ${favicon ? 
+                                            `<img src="${favicon}" alt="${citation.source}" style="width: 16px; height: 16px; border-radius: 2px;">` : 
+                                            `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="width: 16px; height: 16px;"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>`
+                                        }
+                                    </div>
+                                    <div class="gist-source-name">${citation.source || citation.domain}</div>
+                                    ${citation.date ? `<div class="gist-source-date">${formatDate(citation.date)}</div>` : ''}
                                 </div>
+                                <div class="gist-source-title">${citation.title || 'Untitled'}</div>
+                                <div class="gist-source-description">${citation.first_words ? citation.first_words.substring(0, 120) + '...' : 'No description available'}</div>
                             </div>
                         `;
-                    }
-                    // Attach navigation and click handler after rendering
-                    setTimeout(() => {
-                        const container = document.querySelector('.gist-source-cards');
-                        if (!container) return;
-                        container.innerHTML = renderCard();
-                        function updateCard() {
-                            container.innerHTML = renderCard();
-                            attachHandlers();
-                        }
-                        function attachHandlers() {
-                            const cardElem = container.querySelector('.gist-source-card');
-                            if (cardElem && cards[currentIndex].url) {
-                                cardElem.style.cursor = 'pointer';
-                                cardElem.addEventListener('click', () => {
-                                    window.open(cards[currentIndex].url, '_blank');
-                                });
-                            }
-                            const prevBtn = container.querySelector('.gist-source-card-prev');
-                            const nextBtn = container.querySelector('.gist-source-card-next');
-                            if (prevBtn) prevBtn.onclick = () => { if (currentIndex > 0) { currentIndex--; updateCard(); } };
-                            if (nextBtn) nextBtn.onclick = () => { if (currentIndex < cards.length - 1) { currentIndex++; updateCard(); } };
-                        }
-                        attachHandlers();
-                    }, 0);
-                    // Initial render placeholder
-                    return `<div class="gist-source-card-vertical"></div>`;
+                    }).join('');
                 }
 
                 // Function to handle search
