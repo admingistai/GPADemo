@@ -642,7 +642,7 @@
                             return html;
                         }
                         // Remove bracketed numbers like [1], [23] from the answer before rendering
-                        const cleanedAnswer = data.answer.replace(/\[\d+\]/g, '');
+                        const cleanedAnswer = data.answer.replace(/\s*\[\d+\]/g, '');
                         // Attribution bar and sources
                         const sources = [];
                         const colors = ['#4B9FE1', '#8860D0', '#FF8C42', '#10B981', '#F59E0B', '#EF4444'];
