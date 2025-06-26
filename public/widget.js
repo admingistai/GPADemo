@@ -878,6 +878,10 @@
             width: 280px !important;
             padding: 8px 16px !important;
         }
+        .gist-widget-container.medium.expanded {
+            width: 475px !important;
+            padding: 12px 24px !important;
+        }
         .gist-widget-container.large, .gist-widget-container.expanded.force-expanded {
             width: 600px !important;
             padding: 16px 32px !important;
@@ -887,8 +891,9 @@
             padding: 12px !important;
         }
         .gist-answer-container.large {
-            width: 750px !important;
+            width: 600px !important;
             padding: 36px !important;
+            bottom: 110px !important;
         }
     `;
     if (document.head) {
