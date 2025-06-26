@@ -223,150 +223,50 @@ export default async function handler(req, res) {
             transform: translateX(100%) !important;
           }
 
-          #admin-sidebar .header {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: space-between !important;
-            padding: 18px 18px 12px 18px !important;
-            border-bottom: 1px solid #ececec !important;
-            background: transparent !important;
-          }
-
-          #admin-sidebar .minimize-btn {
-            background: none !important;
-            border: none !important;
-            color: #bbb !important;
-            cursor: pointer !important;
-            padding: 2px 6px !important;
-            font-size: 18px !important;
-            line-height: 1 !important;
-            border-radius: 3px !important;
-            transition: background 0.2s, color 0.2s !important;
-            margin-left: 8px !important;
-          }
-
-          #admin-sidebar .minimize-btn:hover {
-            background: #ececec !important;
-            color: #888 !important;
-          }
-
-          #admin-sidebar h2 {
-            margin: 0 !important;
-            font-size: 15px !important;
-            color: #222 !important;
-            font-weight: 500 !important;
-            letter-spacing: 0.01em !important;
-          }
-
-          .admin-section {
-            padding: 18px !important;
-            border-bottom: 1px solid #ececec !important;
-            margin: 0 !important;
-          }
-
-          .source-toggle {
-            display: flex !important;
-            align-items: center !important;
-            margin-bottom: 10px !important;
-            cursor: pointer !important;
-            user-select: none !important;
-            font-size: 13px !important;
-            color: #333 !important;
-          }
-
-          .toggle-switch {
-            position: relative !important;
-            width: 28px !important;
-            height: 16px !important;
-            background: #e4e4e4 !important;
-            border-radius: 8px !important;
-            margin-right: 10px !important;
-            transition: background 0.2s !important;
-            flex-shrink: 0 !important;
-          }
-
-          .toggle-switch::before {
-            content: "" !important;
+          #admin-sidebar .sidebar-toggle-btn {
             position: absolute !important;
-            width: 12px !important;
-            height: 12px !important;
-            border-radius: 50% !important;
-            background: #fff !important;
-            top: 2px !important;
-            left: 2px !important;
-            transition: transform 0.2s !important;
-            box-shadow: none !important;
-          }
-
-          .source-toggle input:checked + .toggle-switch {
-            background: #6366f1 !important;
-          }
-
-          .source-toggle input:checked + .toggle-switch::before {
-            transform: translateX(12px) !important;
-          }
-
-          .source-toggle input {
-            position: absolute !important;
-            opacity: 0 !important;
-            cursor: pointer !important;
-            height: 0 !important;
-            width: 0 !important;
-          }
-
-          .source-toggle span {
-            margin-left: 0 !important;
-            font-size: 13px !important;
-            color: #333 !important;
-            font-weight: 400 !important;
-          }
-
-          /* Floating toggle button styles */
-          #admin-toggle-btn {
-            position: fixed !important;
-            left: 0 !important;
+            left: -18px !important;
             top: 50% !important;
             transform: translateY(-50%);
-            z-index: 1000000 !important;
-            width: 36px !important;
-            height: 36px !important;
-            background: #6366f1 !important;
-            color: #fff !important;
-            border: none !important;
+            z-index: 1000001 !important;
+            width: 32px !important;
+            height: 32px !important;
+            background: #e5e7eb !important;
+            color: #666 !important;
+            border: 1px solid #d1d5db !important;
             border-radius: 50% !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
             cursor: pointer !important;
-            transition: background 0.2s, color 0.2s !important;
+            transition: background 0.2s, color 0.2s, left 0.3s !important;
           }
-          #admin-toggle-btn:hover {
-            background: #4f46e5 !important;
+          #admin-sidebar.minimized .sidebar-toggle-btn {
+            left: -18px !important;
           }
-          #admin-toggle-btn svg {
-            width: 18px !important;
-            height: 18px !important;
+          #admin-sidebar .sidebar-toggle-btn:hover {
+            background: #d1d5db !important;
+            color: #333 !important;
+          }
+          #admin-sidebar .sidebar-toggle-btn svg {
+            width: 16px !important;
+            height: 16px !important;
             display: block !important;
           }
           @media (max-width: 768px) {
             #admin-sidebar {
               display: none !important;
             }
-            #admin-toggle-btn {
-              display: none !important;
-            }
           }
         </style>
 
-        <button id="admin-toggle-btn" title="Show/Hide Admin Panel">
-          <svg id="admin-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        </button>
-
         <div id="admin-sidebar">
+          <button class="sidebar-toggle-btn" title="Show/Hide Admin Panel">
+            <svg id="sidebar-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
           <div class="header">
             <h2>Widget Admin</h2>
-            <button class="minimize-btn" title="Minimize panel">←</button>
           </div>
           <div class="admin-section">
             ${[
@@ -389,9 +289,8 @@ export default async function handler(req, res) {
         <script>
           document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.getElementById('admin-sidebar');
-            const minimizeBtn = document.querySelector('.minimize-btn');
-            const toggleBtn = document.getElementById('admin-toggle-btn');
-            const toggleIcon = document.getElementById('admin-toggle-icon');
+            const toggleBtn = sidebar.querySelector('.sidebar-toggle-btn');
+            const toggleIcon = document.getElementById('sidebar-toggle-icon');
             let isMinimized = false;
 
             function setPanelState(minimized) {
@@ -403,9 +302,6 @@ export default async function handler(req, res) {
                 : '<polyline points="15 18 9 12 15 6"></polyline>';
             }
 
-            minimizeBtn.addEventListener('click', function() {
-              setPanelState(!isMinimized);
-            });
             toggleBtn.addEventListener('click', function() {
               setPanelState(!isMinimized);
             });
