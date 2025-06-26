@@ -449,7 +449,7 @@
                     let leftOffset = '57px';
                     const widgetContainer = input.closest('.gist-widget-container');
                     if (widgetContainer && widgetContainer.classList.contains('large')) {
-                        leftOffset = '72px';
+                        leftOffset = '65px';
                     }
                     placeholderSpan.style.left = leftOffset; // Adjust based on icon width + padding
                     placeholderSpan.style.top = '50%';
