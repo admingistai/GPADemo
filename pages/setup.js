@@ -158,8 +158,8 @@ export default function Setup() {
           </div>
         ) : !showCode ? (
           <div className="setup-form-container">
-            <h1>Generate Your Ask Anything Widget</h1>
-            <p className="setup-description">Configure your Ask Anything widget settings and get started in minutes</p>
+            <h1>Generate Your Ask Anything Button</h1>
+            <p className="setup-description">Configure your Ask Anything button settings and get started in minutes</p>
             
             {error && (
               <div className="error-message">
@@ -266,8 +266,8 @@ export default function Setup() {
           </div>
         ) : (
           <div className="code-result">
-            <h1>Your Widget is Ready!</h1>
-            <p>Copy the code below and paste it into your website's HTML where you want the widget to appear.</p>
+            <h1>Your Button is Ready!</h1>
+            <p>Copy the code below and paste it into your website's HTML where you want the button to appear.</p>
             
             <div className="code-container">
               <pre>
