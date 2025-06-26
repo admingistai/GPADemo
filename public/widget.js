@@ -590,7 +590,10 @@
                         const pageContext = getPageContext();
 
                         // Make API call
-                        const response = await fetch('/api/proxy', {
+                        const apiUrl = window.location.origin + '/api/proxy';
+                        console.log('Making API request to:', apiUrl);
+                        
+                        const response = await fetch(apiUrl, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -603,10 +606,17 @@
                         });
 
                         if (!response.ok) {
-                            throw new Error('API call failed');
+                            const errorText = await response.text();
+                            console.error('API response not ok:', {
+                                status: response.status,
+                                statusText: response.statusText,
+                                errorText
+                            });
+                            throw new Error(`API call failed: ${response.status} ${response.statusText}`);
                         }
 
                         const data = await response.json();
+                        console.log('API response received:', data);
 
                         // Generate mock attribution data
                         const sources = [
@@ -694,9 +704,17 @@
 
                     } catch (error) {
                         console.error('Error getting answer:', error);
+                        let errorMessage = 'Sorry, I couldn\'t get an answer at this time. Please try again later.';
+                        
+                        if (error.message.includes('404')) {
+                            errorMessage = 'Sorry, the API endpoint could not be found. This might be a configuration issue.';
+                        } else if (error.message.includes('Failed to fetch')) {
+                            errorMessage = 'Sorry, there was a network error. Please check your internet connection and try again.';
+                        }
+                        
                         answerContainer.innerHTML = `
                             <div class="gist-answer" style="color: #e74c3c;">
-                                Sorry, I couldn't get an answer at this time. Please try again later.
+                                ${errorMessage}
                             </div>
                         `;
                         
