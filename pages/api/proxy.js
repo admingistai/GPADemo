@@ -12,20 +12,22 @@ const adminSidebar = `
   <style>
     #admin-sidebar {
       position: fixed !important;
-      top: 0 !important;
+      top: 64px !important;
       right: 0 !important;
       width: 320px !important;
-      height: 100vh !important;
+      height: calc(100vh - 64px) !important;
       background: #f7f7f8 !important;
       border-left: 1px solid #e0e0e0 !important;
       box-shadow: none !important;
-      padding: 36px 16px 36px 16px !important;
+      padding: 20px 16px 36px 16px !important;
       font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
       z-index: 999998 !important;
       display: flex !important;
       flex-direction: column !important;
       transition: transform 0.3s ease, width 0.3s ease !important;
-      border: 2px solid transparent !important;
+      border-width: 0 2px 2px 2px !important;
+      border-style: solid !important;
+      border-color: transparent !important;
       background-image: linear-gradient(#f7f7f8, #f7f7f8), linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0) !important;
       background-origin: border-box !important;
       background-clip: padding-box, border-box !important;
