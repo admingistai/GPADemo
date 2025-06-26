@@ -12,7 +12,8 @@
             
             for (const tag of metaTags) {
                 if (tag && tag.content) {
-                    return tag.content.replace('@', '');
+                    const name = tag.content.replace('@', '');
+                    return name === 'Powered Website Search' ? 'Gist' : name;
                 }
             }
 
@@ -22,10 +23,10 @@
                 try {
                     const data = JSON.parse(structuredData.textContent);
                     if (data.publisher && data.publisher.name) {
-                        return data.publisher.name;
+                        return data.publisher.name === 'Powered Website Search' ? 'Gist' : data.publisher.name;
                     }
                     if (data.name) {
-                        return data.name;
+                        return data.name === 'Powered Website Search' ? 'Gist' : data.name;
                     }
                 } catch (e) {
                     console.error('Error parsing structured data:', e);
@@ -35,10 +36,12 @@
             // Fallback to document title or domain
             const titleParts = document.title.split(/[-|]/);
             if (titleParts.length > 1) {
-                return titleParts[titleParts.length - 1].trim();
+                const name = titleParts[titleParts.length - 1].trim();
+                return name === 'Powered Website Search' ? 'Gist' : name;
             }
             
-            return window.location.hostname.replace('www.', '').split('.')[0];
+            const fallback = window.location.hostname.replace('www.', '').split('.')[0];
+            return fallback === 'Powered Website Search' ? 'Gist' : fallback;
         }
 
         // Create and inject styles
