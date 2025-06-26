@@ -319,6 +319,13 @@ const adminSidebar = `
         const widgetContainer = document.querySelector('.gist-widget-container');
         if (widgetContainer) {
           widgetContainer.style.transform = 'translateX(-50%) scale(' + scale.toFixed(2) + ')';
+          const answerContainerEl = document.querySelector('.gist-answer-container');
+          if (answerContainerEl) {
+            // Preserve original translate values (assumed translateX(-50%)) but strip any existing scale
+            const baseTransform = answerContainerEl.dataset.baseTransform || 'translateX(-50%)';
+            answerContainerEl.dataset.baseTransform = baseTransform;
+            answerContainerEl.style.transform = baseTransform + ' scale(' + scale.toFixed(2) + ')';
+          }
         }
       });
 
