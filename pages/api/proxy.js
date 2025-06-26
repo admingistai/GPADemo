@@ -337,6 +337,8 @@ const adminSidebar = `
         btn.addEventListener('click', function() {
           sizeBtns.forEach(b => b.classList.remove('selected'));
           this.classList.add('selected');
+          // Send message to widget
+          window.postMessage({ type: 'GIST_WIDGET_SIZE', size: this.dataset.size }, '*');
         });
       });
 

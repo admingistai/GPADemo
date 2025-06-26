@@ -400,6 +400,36 @@
                 0% { transform: rotate(0deg); }
                 100% { transform: rotate(-360deg); }
             }
+
+            .widget-size-small.gist-widget-container {
+                width: 220px !important;
+                padding: 8px 16px !important;
+                max-width: 90%;
+            }
+            .widget-size-small.gist-widget-container:hover,
+            .widget-size-small.gist-widget-container.expanded {
+                width: 220px !important;
+                padding: 8px 16px !important;
+                transform: translateX(-50%);
+            }
+            .widget-size-small + .gist-answer-container {
+                width: 300px !important;
+                padding: 10px !important;
+            }
+            .widget-size-large.gist-widget-container,
+            .widget-size-large.gist-widget-container:hover,
+            .widget-size-large.gist-widget-container.expanded {
+                width: 475px !important;
+                padding: 12px 24px !important;
+                transform: translateX(-50%) translateY(-2px);
+            }
+            .widget-size-large + .gist-answer-container {
+                width: 600px !important;
+                padding: 28px !important;
+            }
+            .widget-size-medium.gist-widget-container {
+                /* Default styles, no override needed */
+            }
         `;
 
         // Create style element and append to head (with safety check)
@@ -430,6 +460,32 @@
             const container = document.createElement('div');
             container.innerHTML = widgetHTML;
             document.body.appendChild(container.firstElementChild);
+
+            // Widget size state
+            let widgetSize = 'medium'; // default
+            const widgetContainer = document.querySelector('.gist-widget-container');
+            let answerContainer = null;
+
+            // Helper to update widget size class
+            function updateWidgetSize(size) {
+                widgetContainer.classList.remove('widget-size-small', 'widget-size-medium', 'widget-size-large');
+                widgetContainer.classList.add(`widget-size-${size}`);
+                widgetSize = size;
+                // If answer container exists, update its class as well
+                answerContainer = document.querySelector('.gist-answer-container');
+                if (answerContainer) {
+                    answerContainer.classList.remove('widget-size-small', 'widget-size-medium', 'widget-size-large');
+                    answerContainer.classList.add(`widget-size-${size}`);
+                }
+            }
+            updateWidgetSize('medium'); // Set default
+
+            // Listen for postMessage from admin sidebar
+            window.addEventListener('message', function(event) {
+                if (event.data && event.data.type === 'GIST_WIDGET_SIZE') {
+                    updateWidgetSize(event.data.size);
+                }
+            });
 
             // Add input event listener and setup placeholder
             const searchInput = document.querySelector('.gist-search-input');
@@ -468,13 +524,13 @@
                 updatePlaceholder(searchInput, false);
 
                 // Handle hover state
-                const widgetContainer = searchInput.closest('.gist-widget-container');
-                
                 widgetContainer.addEventListener('mouseenter', function() {
+                    if (widgetSize === 'small') return; // Disable expansion for small
                     updatePlaceholder(searchInput, true);
                 });
 
                 widgetContainer.addEventListener('mouseleave', function() {
+                    if (widgetSize === 'small') return; // Disable minimization for small
                     if (!widgetContainer.classList.contains('expanded')) {
                         updatePlaceholder(searchInput, false);
                     }
@@ -489,6 +545,7 @@
                 });
 
                 searchInput.addEventListener('focus', function() {
+                    if (widgetSize === 'small') return; // No expansion for small
                     widgetContainer.classList.add('expanded');
                     updatePlaceholder(searchInput, true);
                     if (!this.value) {
@@ -499,6 +556,7 @@
                 });
 
                 searchInput.addEventListener('blur', function() {
+                    if (widgetSize === 'small') return; // No minimization for small
                     if (!this.value) {
                         widgetContainer.classList.remove('expanded');
                         updatePlaceholder(searchInput, false);
@@ -800,6 +858,22 @@
             // Prevent clicks inside the widget from triggering the document click handler
             document.querySelector('.gist-widget-container').addEventListener('click', function(e) {
                 e.stopPropagation();
+            });
+
+            // Always expanded for large
+            function enforceLargeMode() {
+                if (widgetSize === 'large') {
+                    widgetContainer.classList.add('expanded');
+                }
+            }
+            // Observe for changes and enforce large mode
+            const observer = new MutationObserver(enforceLargeMode);
+            observer.observe(widgetContainer, { attributes: true, attributeFilter: ['class'] });
+            // Also enforce on size change
+            window.addEventListener('message', function(event) {
+                if (event.data && event.data.type === 'GIST_WIDGET_SIZE' && event.data.size === 'large') {
+                    enforceLargeMode();
+                }
             });
         } else {
             console.error('Widget: document.body not available');
