@@ -424,7 +424,6 @@ const askAnythingBanner = `
   </style>
   <div id="aa-banner">
     <div class="aa-title">Ask Anything<sup>TM</sup></div>
-    <span class="aa-tagline">100% ethical, uses fully licensed sources</span>
   </div>
 `;
 
