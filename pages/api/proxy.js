@@ -155,48 +155,6 @@ export default async function handler(req, res) {
       const host = req.headers.host || 'localhost:3000';
       const widgetScript = `<script src="${protocol}://${host}/widget.js"></script>`;
       
-      // Create demo banner
-      const demoBanner = `
-        <style>
-          @keyframes demoScrollText {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-          }
-          #demo-banner {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            width: 100% !important;
-            background: #FFD700 !important;
-            color: #000 !important;
-            font-family: Arial, sans-serif !important;
-            font-weight: bold !important;
-            font-size: 16px !important;
-            text-align: center !important;
-            padding: 12px !important;
-            z-index: 9999999 !important;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
-            overflow: hidden !important;
-            white-space: nowrap !important;
-          }
-          #demo-banner .scrolling-container {
-            animation: demoScrollText 15s linear infinite !important;
-            display: inline-block !important;
-            white-space: nowrap !important;
-          }
-            body {
-            margin-top: 48px !important; 
-            padding-top: 0 !important; 
-          }
-        </style>
-        <div id="demo-banner">
-          <div class="scrolling-container">
-            THIS IS A DEMO, NOT A LIVE VERSION OF YOUR WEBSITE. THIS IS A DEMO, NOT A LIVE VERSION OF YOUR WEBSITE. THIS IS A DEMO, NOT A LIVE VERSION OF YOUR WEBSITE. THIS IS A DEMO, NOT A LIVE VERSION OF YOUR WEBSITE. THIS IS A DEMO, NOT A LIVE VERSION OF YOUR WEBSITE. THIS IS A DEMO, NOT A LIVE VERSION OF YOUR WEBSITE.
-          </div>
-        </div>
-      `;
-      
       // Create admin sidebar
       const adminSidebar = `
         <style>
@@ -204,12 +162,10 @@ export default async function handler(req, res) {
             position: fixed !important;
             top: 0 !important;
             right: 0 !important;
-            width: 280px !important;
+            width: 320px !important;
             height: 100vh !important;
             background: #f7f7f8 !important;
-            border-right: none !important;
             border-left: 1px solid #e0e0e0 !important;
-            border-radius: 0 !important;
             box-shadow: none !important;
             padding: 36px 16px 36px 16px !important;
             font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
@@ -268,6 +224,74 @@ export default async function handler(req, res) {
             color: #222;
             letter-spacing: 0.01em;
           }
+          .divider {
+            border-bottom: 1px solid #e0e0e0;
+            margin: 24px 0 18px 0;
+            width: 100%;
+          }
+          .section-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 10px;
+            margin-top: 0;
+            display: block;
+          }
+          .slider-section {
+            padding: 0 16px 0 16px;
+            margin-bottom: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+          }
+          .slider-label {
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 6px;
+          }
+          .widget-size-slider {
+            width: 100%;
+            margin: 0;
+            accent-color: #6366f1;
+          }
+          .slider-value {
+            font-size: 14px;
+            color: #6366f1;
+            margin-left: 8px;
+            font-weight: 500;
+          }
+          .style-section {
+            padding: 0 16px 0 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+          }
+          .style-toggle-group {
+            display: flex;
+            gap: 12px;
+          }
+          .style-toggle {
+            flex: 1;
+            padding: 10px 0;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: #fff;
+            color: #333;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background 0.2s, color 0.2s, border 0.2s;
+            text-align: center;
+          }
+          .style-toggle.selected, .style-toggle:active {
+            background: #6366f1;
+            color: #fff;
+            border-color: #6366f1;
+          }
+          .style-toggle:not(.selected):hover {
+            background: #f1f1f9;
+            color: #333;
+          }
           .collapsible-header {
             display: flex;
             align-items: center;
@@ -277,7 +301,7 @@ export default async function handler(req, res) {
             font-size: 18px;
             font-weight: 500;
             color: #333;
-            margin-bottom: 18px !important;
+            margin-bottom: 8px !important;
             margin-top: 8px;
             user-select: none;
           }
@@ -347,53 +371,10 @@ export default async function handler(req, res) {
             color: #333;
             font-weight: 400;
           }
-          .size-section {
-            padding: 0 16px 24px 16px;
-            margin-bottom: 0;
-          }
-          .size-label {
-            font-size: 18px;
-            font-weight: 500;
-            color: #333;
-            margin-bottom: 8px;
-            margin-top: 12px;
-            display: block;
-          }
-          .size-btn-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            width: 100%;
-          }
-          .size-btn {
-            width: 100%;
-            min-width: 100px;
-            padding: 12px 0;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            background: #fff;
-            color: #333;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 500;
-            transition: background 0.2s, color 0.2s, border 0.2s;
-          }
-          .size-btn.selected, .size-btn:active {
-            background: #6366f1;
-            color: #fff;
-            border-color: #6366f1;
-          }
-          .size-btn:hover:not(.selected) {
-            background: #f1f1f9;
-            color: #333;
-          }
           @media (max-width: 768px) {
             #admin-sidebar {
               display: none !important;
             }
-          }
-          #admin-sidebar {
-            padding: 36px 16px 36px 16px !important;
           }
         </style>
 
@@ -401,12 +382,34 @@ export default async function handler(req, res) {
           <button class="sidebar-toggle-btn" title="Show/Hide Admin Panel">
             <svg id="sidebar-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </button>
-          <div class="admin-header">Widget Admin</div>
-          <div class="collapsible-header" id="sources-header">
-            Sources
+          <div class="admin-header">Configure your Ask Anything<sup>TM</sup> button.</div>
+          <div class="divider"></div>
+          <div class="slider-section">
+            <span class="slider-label">Widget Size</span>
+            <input type="range" min="1" max="3" value="2" class="widget-size-slider" id="widget-size-slider">
+            <span class="slider-value" id="widget-size-value">Medium</span>
+          </div>
+          <div class="divider"></div>
+          <div class="style-section">
+            <span class="section-label">Style</span>
+            <div class="style-toggle-group">
+              <button class="style-toggle selected" data-style="default">Ask Anything<sup>TM</sup> (Default)</button>
+              <button class="style-toggle" data-style="match">Match My Site</button>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="collapsible-header" id="my-content-header">
+            My Content
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
-          <div class="collapsible-content open" id="sources-content">
+          <div class="collapsible-content open" id="my-content-content">
+            <!-- No toggles yet -->
+          </div>
+          <div class="collapsible-header" id="network-partners-header">
+            Network Partners
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+          <div class="collapsible-content open" id="network-partners-content">
             ${[
               { id: 'news', label: 'News' },
               { id: 'business', label: 'Business' },
@@ -422,14 +425,6 @@ export default async function handler(req, res) {
                 <span>${source.label}</span>
               </label>
             `).join('')}
-          </div>
-          <div class="size-section">
-            <span class="size-label">Widget Size</span>
-            <div class="size-btn-group">
-              <button class="size-btn selected" data-size="small">Small</button>
-              <button class="size-btn" data-size="medium">Medium</button>
-              <button class="size-btn" data-size="large">Large</button>
-            </div>
           </div>
         </div>
         <script>
@@ -452,24 +447,41 @@ export default async function handler(req, res) {
               setPanelState(!isMinimized);
             });
 
-            // Collapsible Sources section
-            const sourcesHeader = document.getElementById('sources-header');
-            const sourcesContent = document.getElementById('sources-content');
-            let sourcesOpen = true;
-            sourcesHeader.addEventListener('click', function() {
-              sourcesOpen = !sourcesOpen;
-              sourcesHeader.classList.toggle('open', sourcesOpen);
-              sourcesContent.classList.toggle('open', sourcesOpen);
+            // Widget size slider
+            const sizeSlider = document.getElementById('widget-size-slider');
+            const sizeValue = document.getElementById('widget-size-value');
+            const sizeLabels = ['Small', 'Medium', 'Large'];
+            sizeSlider.addEventListener('input', function() {
+              sizeValue.textContent = sizeLabels[this.value - 1];
             });
 
-            // Size button group
-            const sizeBtns = sidebar.querySelectorAll('.size-btn');
-            sizeBtns.forEach(btn => {
+            // Style toggle group
+            const styleToggles = sidebar.querySelectorAll('.style-toggle');
+            styleToggles.forEach(btn => {
               btn.addEventListener('click', function() {
-                sizeBtns.forEach(b => b.classList.remove('selected'));
+                styleToggles.forEach(b => b.classList.remove('selected'));
                 this.classList.add('selected');
-                // (Future: trigger widget size change)
               });
+            });
+
+            // Collapsible My Content section
+            const myContentHeader = document.getElementById('my-content-header');
+            const myContentContent = document.getElementById('my-content-content');
+            let myContentOpen = true;
+            myContentHeader.addEventListener('click', function() {
+              myContentOpen = !myContentOpen;
+              myContentHeader.classList.toggle('open', myContentOpen);
+              myContentContent.classList.toggle('open', myContentOpen);
+            });
+
+            // Collapsible Network Partners section
+            const networkPartnersHeader = document.getElementById('network-partners-header');
+            const networkPartnersContent = document.getElementById('network-partners-content');
+            let networkPartnersOpen = true;
+            networkPartnersHeader.addEventListener('click', function() {
+              networkPartnersOpen = !networkPartnersOpen;
+              networkPartnersHeader.classList.toggle('open', networkPartnersOpen);
+              networkPartnersContent.classList.toggle('open', networkPartnersOpen);
             });
 
             // Initialize state
