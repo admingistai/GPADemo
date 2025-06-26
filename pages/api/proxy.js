@@ -7,6 +7,341 @@ const requestCounts = new Map();
 const RATE_LIMIT = parseInt(process.env.RATE_LIMIT_REQUESTS || '100');
 const RATE_WINDOW = 60 * 1000; // 1 minute
 
+// Restore admin sidebar definition (no demo banner)
+const adminSidebar = `
+  <style>
+    #admin-sidebar {
+      position: fixed !important;
+      top: 0 !important;
+      right: 0 !important;
+      width: 320px !important;
+      height: 100vh !important;
+      background: #f7f7f8 !important;
+      border-left: 1px solid #e0e0e0 !important;
+      box-shadow: none !important;
+      padding: 36px 16px 36px 16px !important;
+      font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+      z-index: 999998 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      transition: transform 0.3s ease, width 0.3s ease !important;
+      border: 2px solid transparent !important;
+      background-image: linear-gradient(#f7f7f8, #f7f7f8), linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0) !important;
+      background-origin: border-box !important;
+      background-clip: padding-box, border-box !important;
+    }
+    #admin-sidebar.minimized {
+      transform: translateX(100%) !important;
+    }
+    #admin-sidebar .sidebar-toggle-btn {
+      position: absolute !important;
+      left: -18px !important;
+      top: 50% !important;
+      transform: translateY(-50%);
+      z-index: 1000001 !important;
+      width: 40px !important;
+      height: 40px !important;
+      background: #e5e7eb !important;
+      color: #666 !important;
+      border: 1px solid #d1d5db !important;
+      border-radius: 50% !important;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      cursor: pointer !important;
+      transition: background 0.2s, color 0.2s, left 0.3s !important;
+      border: 2px solid transparent !important;
+      background-image: linear-gradient(#e5e7eb, #e5e7eb), linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0) !important;
+      background-origin: border-box !important;
+      background-clip: padding-box, border-box !important;
+    }
+    #admin-sidebar.minimized .sidebar-toggle-btn {
+      left: -18px !important;
+    }
+    #admin-sidebar .sidebar-toggle-btn:hover {
+      background: #d1d5db !important;
+      color: #333 !important;
+    }
+    #admin-sidebar .sidebar-toggle-btn svg {
+      width: 22px !important;
+      height: 22px !important;
+      display: block !important;
+    }
+    .admin-header {
+      font-size: 22px;
+      font-weight: 600;
+      margin: 0 0 18px 0;
+      padding: 32px 16px 0 16px;
+      color: #222;
+      letter-spacing: 0.01em;
+    }
+    .divider {
+      border-bottom: 1px solid #e0e0e0;
+      margin: 24px 0 18px 0;
+      width: 100%;
+    }
+    .section-label {
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 10px;
+      margin-top: 0;
+      display: block;
+    }
+    .slider-section {
+      padding: 0 16px 0 16px;
+      margin-bottom: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .slider-label {
+      font-size: 15px;
+      color: #333;
+      margin-bottom: 6px;
+    }
+    .widget-size-slider {
+      width: 100%;
+      margin: 0;
+      accent-color: #6366f1;
+    }
+    .slider-value {
+      font-size: 14px;
+      color: #6366f1;
+      margin-left: 8px;
+      font-weight: 500;
+    }
+    .style-section {
+      padding: 0 16px 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .style-toggle-group {
+      display: flex;
+      gap: 12px;
+    }
+    .style-toggle {
+      flex: 1;
+      padding: 10px 0;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      background: #fff;
+      color: #333;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 500;
+      transition: background 0.2s, color 0.2s, border 0.2s;
+      text-align: center;
+    }
+    .style-toggle.selected, .style-toggle:active {
+      background: #6366f1;
+      color: #fff;
+      border-color: #6366f1;
+    }
+    .style-toggle:not(.selected):hover {
+      background: #f1f1f9;
+      color: #333;
+    }
+    .collapsible-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      padding: 0 16px 0 16px;
+      font-size: 18px;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 8px !important;
+      margin-top: 8px;
+      user-select: none;
+    }
+    .collapsible-header svg {
+      width: 22px;
+      height: 22px;
+      transition: transform 0.2s;
+    }
+    .collapsible-header.open svg {
+      transform: rotate(90deg);
+    }
+    .collapsible-content, .collapsible-content.open {
+      padding: 0 16px 16px 16px;
+      display: none;
+      margin-top: 8px !important;
+    }
+    .collapsible-content.open {
+      display: block;
+    }
+    .source-toggle {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 16px;
+      color: #333;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 36px;
+      height: 22px;
+      background: #e4e4e4;
+      border-radius: 8px;
+      margin-right: 10px;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .toggle-switch::before {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s;
+      box-shadow: none;
+    }
+    .source-toggle input:checked + .toggle-switch {
+      background: #6366f1;
+    }
+    .source-toggle input:checked + .toggle-switch::before {
+      transform: translateX(12px);
+    }
+    .source-toggle input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+    .source-toggle span {
+      margin-left: 0;
+      font-size: 13px;
+      color: #333;
+      font-weight: 400;
+    }
+    @media (max-width: 768px) {
+      #admin-sidebar {
+        display: none !important;
+      }
+    }
+  </style>
+
+  <div id="admin-sidebar">
+    <button class="sidebar-toggle-btn" title="Show/Hide Admin Panel">
+      <svg id="sidebar-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <div class="admin-header">Configure your Ask Anything<sup>TM</sup> button.</div>
+    <div class="divider"></div>
+    <div class="slider-section">
+      <span class="slider-label">Widget Size</span>
+      <input type="range" min="1" max="3" value="2" class="widget-size-slider" id="widget-size-slider">
+      <span class="slider-value" id="widget-size-value">Medium</span>
+    </div>
+    <div class="divider"></div>
+    <div class="style-section">
+      <span class="section-label">Style</span>
+      <div class="style-toggle-group">
+        <button class="style-toggle selected" data-style="default">Ask Anything<sup>TM</sup> (Default)</button>
+        <button class="style-toggle" data-style="match">Match My Site</button>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="collapsible-header" id="my-content-header">
+      My Content
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+    <div class="collapsible-content open" id="my-content-content">
+      <!-- No toggles yet -->
+    </div>
+    <div class="collapsible-header" id="network-partners-header">
+      Network Partners
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+    <div class="collapsible-content open" id="network-partners-content">
+      ${[
+        { id: 'news', label: 'News' },
+        { id: 'business', label: 'Business' },
+        { id: 'lifestyle', label: 'Lifestyle' },
+        { id: 'sports', label: 'Sports' },
+        { id: 'books', label: 'Books' },
+        { id: 'academic', label: 'Academic' },
+        { id: 'reference', label: 'Reference' }
+      ].map(source => `
+        <label class="source-toggle">
+          <input type="checkbox" id="source-${source.id}">
+          <div class="toggle-switch"></div>
+          <span>${source.label}</span>
+        </label>
+      `).join('')}
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.getElementById('admin-sidebar');
+      const toggleBtn = sidebar.querySelector('.sidebar-toggle-btn');
+      const toggleIcon = document.getElementById('sidebar-toggle-icon');
+      let isMinimized = false;
+
+      function setPanelState(minimized) {
+        isMinimized = minimized;
+        sidebar.classList.toggle('minimized', minimized);
+        // Chevron direction: right if minimized, left if expanded
+        toggleIcon.innerHTML = minimized
+          ? '<polyline points="9 18 15 12 9 6"></polyline>'
+          : '<polyline points="15 18 9 12 15 6"></polyline>';
+      }
+
+      toggleBtn.addEventListener('click', function() {
+        setPanelState(!isMinimized);
+      });
+
+      // Widget size slider
+      const sizeSlider = document.getElementById('widget-size-slider');
+      const sizeValue = document.getElementById('widget-size-value');
+      const sizeLabels = ['Small', 'Medium', 'Large'];
+      sizeSlider.addEventListener('input', function() {
+        sizeValue.textContent = sizeLabels[this.value - 1];
+      });
+
+      // Style toggle group
+      const styleToggles = sidebar.querySelectorAll('.style-toggle');
+      styleToggles.forEach(btn => {
+        btn.addEventListener('click', function() {
+          styleToggles.forEach(b => b.classList.remove('selected'));
+          this.classList.add('selected');
+        });
+      });
+
+      // Collapsible My Content section
+      const myContentHeader = document.getElementById('my-content-header');
+      const myContentContent = document.getElementById('my-content-content');
+      let myContentOpen = true;
+      myContentHeader.addEventListener('click', function() {
+        myContentOpen = !myContentOpen;
+        myContentHeader.classList.toggle('open', myContentOpen);
+        myContentContent.classList.toggle('open', myContentOpen);
+      });
+
+      // Collapsible Network Partners section
+      const networkPartnersHeader = document.getElementById('network-partners-header');
+      const networkPartnersContent = document.getElementById('network-partners-content');
+      let networkPartnersOpen = true;
+      networkPartnersHeader.addEventListener('click', function() {
+        networkPartnersOpen = !networkPartnersOpen;
+        networkPartnersHeader.classList.toggle('open', networkPartnersOpen);
+        networkPartnersContent.classList.toggle('open', networkPartnersOpen);
+      });
+
+      // Initialize state
+      setPanelState(false);
+    });
+  </script>
+`;
+
 export default async function handler(req, res) {
   try {
     // Set CORS headers
