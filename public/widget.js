@@ -741,17 +741,26 @@
                 function generateSourceCards(citations, sources) {
                     if (!citations || !Array.isArray(citations) || citations.length === 0) {
                         // Fallback to attribution-based cards
-                        return sources.map(source => `
-                            <div class="gist-source-card gist-source-card-vertical" data-url="${source.name.startsWith('http') ? source.name : ''}">
-                                <div class="gist-source-card-header">
-                                    <div class="gist-source-logo" style="background: ${source.color}">
-                                        ${source.logo}
+                        return sources.map(source => {
+                            // Try to construct a valid URL from the domain name if not already a URL
+                            let url = '';
+                            if (source.name.startsWith('http')) {
+                                url = source.name;
+                            } else if (source.name.includes('.')) {
+                                url = 'https://' + source.name.replace(/^https?:\/\//, '');
+                            }
+                            return `
+                                <div class="gist-source-card gist-source-card-vertical" data-url="${url}">
+                                    <div class="gist-source-card-header">
+                                        <div class="gist-source-logo" style="background: ${source.color}">
+                                            ${source.logo}
+                                        </div>
+                                        <div class="gist-source-name">${source.name}</div>
                                     </div>
-                                    <div class="gist-source-name">${source.name}</div>
+                                    <div class="gist-source-description">${source.description}</div>
                                 </div>
-                                <div class="gist-source-description">${source.description}</div>
-                            </div>
-                        `).join('');
+                            `;
+                        }).join('');
                     }
                     return citations.slice(0, 6).map((citation, index) => {
                         const sourceColor = sources.find(s => s.name === citation.domain)?.color || '#4B9FE1';
