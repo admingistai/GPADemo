@@ -161,7 +161,7 @@ class ArticleWidget extends HTMLElement {
 
         .gist-brand {
           font-weight: 600;
-          color: #8b5cf6;
+          color: #4a5568;
         }
 
         .ad-content {
@@ -222,7 +222,7 @@ class ArticleWidget extends HTMLElement {
           width: 14px;
           height: 14px;
           border: 2px solid #e5e7eb;
-          border-top: 2px solid #8b5cf6;
+          border-top: 2px solid #4a5568;
           border-radius: 50%;
           animation: spin 1s linear infinite;
         }
@@ -258,11 +258,11 @@ class ArticleWidget extends HTMLElement {
           padding: 8px 12px;
           background: #f9fafb;
           border-radius: 6px;
-          border-left: 3px solid #8b5cf6;
+          border-left: 3px solid #4a5568;
         }
 
         .source-link {
-          color: #8b5cf6;
+          color: #4a5568;
           text-decoration: none;
           font-size: 0.75rem;
           font-weight: 600;
@@ -310,7 +310,7 @@ class ArticleWidget extends HTMLElement {
         </div>
 
         <div class="powered-by">
-          Powered by <span class="gist-brand">Gist RAG</span>
+          Powered by <span class="gist-brand">Gist</span>
         </div>
 
         <div class="ad-content">
@@ -440,12 +440,12 @@ class ArticleWidget extends HTMLElement {
     const askSubmitBtn = this.shadowRoot.querySelector('#ask-submit-btn');
     
     // Open side panel with loading state
-    this.openSidePanel(this.question, 'Loading...');
+    this.openSidePanel(this.question, this.getLoadingHTML());
     
     try {
       // Call the new RAG backend
       const requestBody = {
-        question: this.question
+        question: this.formatQuestionWithPageTitle(this.question)
       };
       
       const response = await fetch(`${this.backendUrl}/api/chat`, {
@@ -472,14 +472,14 @@ class ArticleWidget extends HTMLElement {
         this.conversationHistory[0].sources = [];
       }
       
-      this.updateConversationDisplay();
+      await this.updateConversationDisplay();
       this.updateFollowupSuggestions();
       
     } catch (error) {
       console.error('Error asking question:', error);
       this.conversationHistory[0].answer = 'There was an error processing your question. Please try again.';
       this.conversationHistory[0].sources = [];
-      this.updateConversationDisplay();
+      await this.updateConversationDisplay();
     }
   }
 
@@ -633,11 +633,11 @@ class ArticleWidget extends HTMLElement {
           padding: 10px 12px;
           background: #f8fafc;
           border-radius: 6px;
-          border-left: 3px solid #8b5cf6;
+          border-left: 3px solid #4a5568;
         }
 
         .harbor-source-link {
-          color: #8b5cf6;
+          color: #4a5568;
           text-decoration: none;
           font-size: 0.8rem;
           font-weight: 600;
@@ -660,6 +660,33 @@ class ArticleWidget extends HTMLElement {
           color: #9ca3af;
           float: right;
           margin-top: -20px;
+        }
+
+        .harbor-loading-container {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          color: #6b7280;
+          font-size: 0.9rem;
+          margin: 16px 0;
+        }
+
+        .harbor-loading-spinner {
+          width: 16px;
+          height: 16px;
+          border: 2px solid #e5e7eb;
+          border-top: 2px solid #4a5568;
+          border-radius: 50%;
+          animation: harbor-spin 1s linear infinite;
+        }
+
+        .harbor-loading-text {
+          font-weight: 500;
+        }
+
+        @keyframes harbor-spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
         }
 
         .harbor-followup-section {
@@ -841,14 +868,31 @@ class ArticleWidget extends HTMLElement {
     
     overlay.classList.add('show');
     panel.classList.add('show');
+    this.scrollToLatestQuestion();
   }
 
-  updateConversationDisplay() {
+  async updateConversationDisplay() {
     const content = document.getElementById('harbor-panel-content');
     if (!content) return;
     
-    content.innerHTML = this.conversationHistory.map((item, index) => `
-      <div class="conversation-item">
+    // Extract titles for all sources asynchronously
+    const conversationWithTitles = await Promise.all(
+      this.conversationHistory.map(async (item) => {
+        if (item.sources && item.sources.length > 0) {
+          const sourcesWithTitles = await Promise.all(
+            item.sources.map(async (source) => ({
+              ...source,
+              title: await this.extractPageTitle(source.url)
+            }))
+          );
+          return { ...item, sources: sourcesWithTitles };
+        }
+        return item;
+      })
+    );
+    
+    content.innerHTML = conversationWithTitles.map((item, index) => `
+      <div class="conversation-item" id="conversation-item-${index}">
         <div class="harbor-question-display">
           <div class="harbor-question-label">Your Question</div>
           <div class="harbor-question-text-display">${item.question}</div>
@@ -861,7 +905,7 @@ class ArticleWidget extends HTMLElement {
               ${item.sources.map(source => `
                 <div class="harbor-source-item">
                   <a href="${source.url}" target="_blank" class="harbor-source-link">
-                    ${this.extractDomainFromUrl(source.url)}
+                    ${source.title || source.url}
                   </a>
                   <div class="harbor-source-snippet">${source.text_snippet}</div>
                   ${source.score ? `<div class="harbor-source-score">Score: ${source.score.toFixed(2)}</div>` : ''}
@@ -872,14 +916,96 @@ class ArticleWidget extends HTMLElement {
         </div>
       </div>
     `).join('');
+
+    // Remove any existing spacer
+    const oldSpacer = document.getElementById('harbor-scroll-spacer');
+    if (oldSpacer && oldSpacer.parentNode) {
+      oldSpacer.parentNode.removeChild(oldSpacer);
+    }
+
+    // If the latest item is loading, add a spacer after it
+    const items = content.querySelectorAll('.conversation-item');
+    if (items.length > 0) {
+      const latestItem = items[items.length - 1];
+      const isLoading = conversationWithTitles[conversationWithTitles.length - 1]?.answer?.includes('harbor-loading-container');
+      if (isLoading) {
+        // Calculate spacer height
+        const panel = document.getElementById('harbor-panel-content');
+        const panelHeight = panel ? panel.clientHeight : 400;
+        const latestRect = latestItem.getBoundingClientRect();
+        const panelRect = panel ? panel.getBoundingClientRect() : { height: 400 };
+        let spacerHeight = panelHeight - latestItem.offsetHeight;
+        if (spacerHeight < 40) spacerHeight = 40;
+        const spacer = document.createElement('div');
+        spacer.id = 'harbor-scroll-spacer';
+        spacer.style.height = spacerHeight + 'px';
+        spacer.style.width = '100%';
+        spacer.style.pointerEvents = 'none';
+        spacer.style.background = 'transparent';
+        latestItem.insertAdjacentElement('afterend', spacer);
+      }
+    }
   }
 
-  extractDomainFromUrl(url) {
+  scrollToLatestQuestion() {
+    const content = document.getElementById('harbor-panel-content');
+    if (!content) return;
+    const items = content.querySelectorAll('.conversation-item');
+    if (items.length > 0) {
+      const latestItem = items[items.length - 1];
+      latestItem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  getCurrentPageTitle() {
+    // Get the current page title
+    return document.title || document.querySelector('h1')?.textContent || 'Unknown Page';
+  }
+
+  formatQuestionWithPageTitle(question) {
+    // Format question with page title appended
+    const pageTitle = this.getCurrentPageTitle();
+    return `${question}\n${pageTitle}`;
+  }
+
+  getLoadingHTML() {
+    // Return HTML for loading state with spinner
+    return `
+      <div class="harbor-loading-container">
+        <div class="harbor-loading-spinner"></div>
+        <span class="harbor-loading-text">Getting answer...</span>
+      </div>
+    `;
+  }
+
+  async extractPageTitle(url) {
     try {
-      const urlObj = new URL(url);
-      return urlObj.pathname || urlObj.hostname;
-    } catch {
-      return url;
+      // If it's a relative URL, make it absolute
+      const fullUrl = url.startsWith('/') ? window.location.origin + url : url;
+      
+      const response = await fetch(fullUrl);
+      if (!response.ok) {
+        throw new Error('Failed to fetch page');
+      }
+      
+      const html = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const title = doc.querySelector('title')?.textContent || 
+                   doc.querySelector('h1')?.textContent || 
+                   url;
+      
+      // Truncate title if too long
+      return title.length > 60 ? title.substring(0, 60) + '...' : title;
+    } catch (error) {
+      console.error('Error extracting page title:', error);
+      // Fallback to URL path or domain
+      try {
+        const urlObj = new URL(url.startsWith('/') ? window.location.origin + url : url);
+        return urlObj.pathname || urlObj.hostname;
+      } catch {
+        return url;
+      }
     }
   }
 
@@ -937,12 +1063,13 @@ class ArticleWidget extends HTMLElement {
 
   async askFollowupQuestion(question) {
     // Add loading state to conversation
-    this.conversationHistory.push({ question, answer: 'Loading...', sources: [] });
-    this.updateConversationDisplay();
+    this.conversationHistory.push({ question, answer: this.getLoadingHTML(), sources: [] });
+    await this.updateConversationDisplay();
+    this.scrollToLatestQuestion();
     
     try {
       const requestBody = {
-        question: question
+        question: this.formatQuestionWithPageTitle(question)
       };
       
       const response = await fetch(`${this.backendUrl}/api/chat`, {
@@ -969,13 +1096,13 @@ class ArticleWidget extends HTMLElement {
         this.conversationHistory[this.conversationHistory.length - 1].sources = [];
       }
       
-      this.updateConversationDisplay();
+      await this.updateConversationDisplay();
       
     } catch (error) {
       console.error('Error asking followup question:', error);
       this.conversationHistory[this.conversationHistory.length - 1].answer = 'There was an error processing your question. Please try again.';
       this.conversationHistory[this.conversationHistory.length - 1].sources = [];
-      this.updateConversationDisplay();
+      await this.updateConversationDisplay();
     }
   }
 
