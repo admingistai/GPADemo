@@ -669,16 +669,17 @@
                             </div>
                         `;
                         answerContainer.innerHTML = `
-                            <div class="gist-answer">${sanitizeHtml(markdownToHtml(data.answer))}</div>
+                            <div class="gist-answer"></div>
                             ${attributionHTML}
                         `;
+                        const answerElement = answerContainer.querySelector('.gist-answer');
+                        if (answerElement) {
+                            answerElement.innerHTML = sanitizeHtml(markdownToHtml(data.answer));
+                            answerElement.classList.add('visible');
+                        }
                         requestAnimationFrame(() => {
-                            const answerElement = answerContainer.querySelector('.gist-answer');
                             const attributionElement = answerContainer.querySelector('.gist-attribution');
                             const sourceCardsElement = answerContainer.querySelector('.gist-source-cards');
-                            if (answerElement) {
-                                answerElement.classList.add('visible');
-                            }
                             if (attributionElement) {
                                 setTimeout(() => {
                                     attributionElement.classList.add('visible');
@@ -847,8 +848,10 @@
 
     // Add a simple sanitizeHtml function (or use DOMPurify if available)
     function sanitizeHtml(html) {
-        var temp = document.createElement('div');
-        temp.textContent = html;
-        return temp.innerHTML;
+        if (window.DOMPurify) {
+            return window.DOMPurify.sanitize(html);
+        }
+        // Fallback: allow only basic tags (strong, em, h1, h2, h3, ul, ol, li, br, p)
+        return html.replace(/<(?!\/?(strong|em|h1|h2|h3|ul|ol|li|br|p)\b)[^>]*>/gi, '');
     }
 })();
