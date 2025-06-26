@@ -321,12 +321,47 @@ export default async function handler(req, res) {
             font-weight: 400 !important;
           }
 
+          /* Floating toggle button styles */
+          #admin-toggle-btn {
+            position: fixed !important;
+            left: 0 !important;
+            top: 50% !important;
+            transform: translateY(-50%);
+            z-index: 1000000 !important;
+            width: 36px !important;
+            height: 36px !important;
+            background: #6366f1 !important;
+            color: #fff !important;
+            border: none !important;
+            border-radius: 50% !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            transition: background 0.2s, color 0.2s !important;
+          }
+          #admin-toggle-btn:hover {
+            background: #4f46e5 !important;
+          }
+          #admin-toggle-btn svg {
+            width: 18px !important;
+            height: 18px !important;
+            display: block !important;
+          }
           @media (max-width: 768px) {
             #admin-sidebar {
               display: none !important;
             }
+            #admin-toggle-btn {
+              display: none !important;
+            }
           }
         </style>
+
+        <button id="admin-toggle-btn" title="Show/Hide Admin Panel">
+          <svg id="admin-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
 
         <div id="admin-sidebar">
           <div class="header">
@@ -351,6 +386,37 @@ export default async function handler(req, res) {
             `).join('')}
           </div>
         </div>
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('admin-sidebar');
+            const minimizeBtn = document.querySelector('.minimize-btn');
+            const toggleBtn = document.getElementById('admin-toggle-btn');
+            const toggleIcon = document.getElementById('admin-toggle-icon');
+            let isMinimized = false;
+
+            function setPanelState(minimized) {
+              isMinimized = minimized;
+              sidebar.classList.toggle('minimized', minimized);
+              // Chevron direction: right if minimized, left if expanded
+              toggleIcon.innerHTML = minimized
+                ? '<polyline points="9 18 15 12 9 6"></polyline>'
+                : '<polyline points="15 18 9 12 15 6"></polyline>';
+            }
+
+            minimizeBtn.addEventListener('click', function() {
+              setPanelState(!isMinimized);
+            });
+            toggleBtn.addEventListener('click', function() {
+              setPanelState(!isMinimized);
+            });
+
+            // Initialize state
+            setPanelState(false);
+
+            // (Keep the rest of the admin panel logic as before)
+            // ...
+          });
+        </script>
       `;
       
       console.log(`Injecting widget script: ${widgetScript}`);
