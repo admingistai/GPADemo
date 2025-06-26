@@ -30,24 +30,6 @@ const nextConfig = {
           }
         ]
       },
-      // Proxy endpoint headers
-      {
-        source: '/api/proxy',
-        headers: [
-          {
-            key: 'Access-Control-Allow-Origin',
-            value: '*'
-          },
-          {
-            key: 'Access-Control-Allow-Methods',
-            value: 'GET, POST, OPTIONS'
-          },
-          {
-            key: 'Access-Control-Allow-Headers',
-            value: 'Content-Type'
-          }
-        ]
-      },
       // Widget.js specific headers for cross-origin access
       {
         source: '/widget.js',

@@ -590,53 +590,22 @@
                         const pageContext = getPageContext();
 
                         // Make API call
-                        // Get the script's source URL to determine the API endpoint
-                        const scriptElement = document.currentScript || (function() {
-                            const scripts = document.getElementsByTagName('script');
-                            for (let i = scripts.length - 1; i >= 0; i--) {
-                                const script = scripts[i];
-                                if (script.src && script.src.includes('widget.js')) {
-                                    return script;
-                                }
-                            }
-                            return scripts[scripts.length - 1];
-                        })();
-
-                        if (!scriptElement || !scriptElement.src) {
-                            throw new Error('Could not determine widget script location');
-                        }
-
-                        const scriptSrc = scriptElement.src;
-                        const scriptUrl = new URL(scriptSrc);
-                        const apiUrl = `${scriptUrl.protocol}//${scriptUrl.host}/api/proxy`;
-                        
-                        console.log('Widget script location:', scriptSrc);
-                        console.log('Making API request to:', apiUrl);
-                        
-                        const response = await fetch(apiUrl, {
+                        const response = await fetch('/api/chat', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                url: 'https://theatlantic.com/api/chat',
                                 question,
                                 pageContext
                             })
                         });
 
                         if (!response.ok) {
-                            const errorText = await response.text();
-                            console.error('API response not ok:', {
-                                status: response.status,
-                                statusText: response.statusText,
-                                errorText
-                            });
-                            throw new Error(`API call failed: ${response.status} ${response.statusText}`);
+                            throw new Error('API call failed');
                         }
 
                         const data = await response.json();
-                        console.log('API response received:', data);
 
                         // Generate mock attribution data
                         const sources = [
@@ -724,19 +693,9 @@
 
                     } catch (error) {
                         console.error('Error getting answer:', error);
-                        let errorMessage = 'Sorry, I couldn\'t get an answer at this time. Please try again later.';
-                        
-                        if (error.message.includes('404')) {
-                            errorMessage = 'Sorry, the API endpoint could not be found. This might be a configuration issue.';
-                        } else if (error.message.includes('Failed to fetch')) {
-                            errorMessage = 'Sorry, there was a network error. Please check your internet connection and try again.';
-                        } else if (error.message.includes('Could not determine widget script location')) {
-                            errorMessage = 'Sorry, there was an error initializing the widget. Please check the installation instructions.';
-                        }
-                        
                         answerContainer.innerHTML = `
                             <div class="gist-answer" style="color: #e74c3c;">
-                                ${errorMessage}
+                                Sorry, I couldn't get an answer at this time. Please try again later.
                             </div>
                         `;
                         
