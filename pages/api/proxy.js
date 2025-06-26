@@ -255,7 +255,16 @@ const adminSidebar = `
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
     </div>
     <div class="collapsible-content open" id="my-content-content">
-      <!-- No toggles yet -->
+      <label class="source-toggle">
+        <input type="checkbox" id="mycontent-archive">
+        <div class="toggle-switch"></div>
+        <span>Archive</span>
+      </label>
+      <label class="source-toggle">
+        <input type="checkbox" id="mycontent-active">
+        <div class="toggle-switch"></div>
+        <span>Active</span>
+      </label>
     </div>
     <div class="collapsible-header" id="network-partners-header">
       Network Partners
