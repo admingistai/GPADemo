@@ -511,68 +511,59 @@
                     return window.location.href;
                 }
 
-                // Persistent state for answer generation
-                let currentAnswerState = {
-                    question: null,
-                    fetchPromise: null,
-                    answerHTML: null,
-                    isLoading: false
-                };
-
-                // Modified minimizeWidget to only hide, not remove, the answer container
+                // Function to minimize widget
                 function minimizeWidget() {
                     const widgetContainer = document.querySelector('.gist-widget-container');
                     const answerContainer = document.querySelector('.gist-answer-container');
                     const searchInput = document.querySelector('.gist-search-input');
+                    
                     if (widgetContainer) {
                         widgetContainer.classList.remove('expanded');
+                        // Update placeholder if needed
                         if (searchInput && !searchInput.value) {
                             updatePlaceholder(searchInput, false);
                         }
                     }
+                    
                     if (answerContainer) {
                         answerContainer.classList.remove('visible');
-                        answerContainer.style.display = 'none';
+                        setTimeout(() => {
+                            answerContainer.remove();
+                        }, 300);
                     }
                 }
 
-                // Helper to show or re-show the answer container
-                function showOrRestoreAnswerContainer() {
-                    let answerContainer = document.querySelector('.gist-answer-container');
-                    if (!answerContainer) {
-                        // If not present, create it
-                        answerContainer = document.createElement('div');
-                        answerContainer.className = 'gist-answer-container';
-                        document.body.appendChild(answerContainer);
+                // Function to show answer container
+                async function showAnswerContainer(question) {
+                    // Remove any existing answer container
+                    const existingContainer = document.querySelector('.gist-answer-container');
+                    if (existingContainer) {
+                        existingContainer.remove();
                     }
-                    answerContainer.style.display = '';
-                    answerContainer.classList.add('visible');
-                    if (currentAnswerState.isLoading) {
-                        answerContainer.innerHTML = `
+
+                    // Create answer container with loading state
+                    const answerContainerHTML = `
+                        <div class="gist-answer-container">
                             <div class="gist-loading">
                                 <div class="gist-loading-spinner"></div>
                                 Getting answer...
                             </div>
-                        `;
-                    } else if (currentAnswerState.answerHTML) {
-                        answerContainer.innerHTML = currentAnswerState.answerHTML;
-                    }
-                }
+                        </div>
+                    `;
 
-                // Modified showAnswerContainer to persist state and allow restoration
-                async function showAnswerContainer(question) {
-                    // If the same question is being fetched, just re-show
-                    if (currentAnswerState.isLoading && currentAnswerState.question === question) {
-                        showOrRestoreAnswerContainer();
-                        return;
-                    }
-                    currentAnswerState = {
-                        question,
-                        fetchPromise: null,
-                        answerHTML: null,
-                        isLoading: true
-                    };
-                    showOrRestoreAnswerContainer();
+                    // Add container to page
+                    const container = document.createElement('div');
+                    container.innerHTML = answerContainerHTML;
+                    document.body.appendChild(container.firstElementChild);
+
+                    // Show container with animation
+                    const answerContainer = document.querySelector('.gist-answer-container');
+                    const loadingElement = answerContainer.querySelector('.gist-loading');
+                    requestAnimationFrame(() => {
+                        answerContainer.classList.add('visible');
+                        loadingElement.classList.add('visible');
+                    });
+
                     try {
                         const currentHost = window.location.protocol + '//' + window.location.host;
                         const apiEndpoint = currentHost + '/api/chat';
@@ -580,7 +571,8 @@
                             question: question,
                             context: getPageContext()
                         };
-                        const fetchPromise = fetch(apiEndpoint, {
+                        console.log('[Widget] POST', apiEndpoint, requestBody);
+                        const response = await fetch(apiEndpoint, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -589,22 +581,28 @@
                             credentials: 'same-origin',
                             body: JSON.stringify(requestBody)
                         });
-                        currentAnswerState.fetchPromise = fetchPromise;
-                        const response = await fetchPromise;
+                        console.log('[Widget] Response status:', response.status);
                         if (!response.ok) {
                             let errorText = '';
                             try {
                                 const errorData = await response.json();
                                 errorText = JSON.stringify(errorData, null, 2);
+                                console.error('[Widget] Error response data:', errorData);
                             } catch (e) {
                                 try {
                                     errorText = await response.text();
-                                } catch (e2) {}
+                                    console.error('[Widget] Error response text:', errorText);
+                                } catch (e2) {
+                                    console.error('[Widget] Could not read error response:', e2);
+                                }
                             }
                             throw new Error(`HTTP error! status: ${response.status}, details: ${errorText}`);
                         }
                         const data = await response.json();
+                        console.log('[Widget] API response:', data);
+                        // Render answer as HTML from markdown
                         function renderMarkdown(md) {
+                            // Basic markdown to HTML conversion (bold, italics, headings, lists)
                             let html = md
                                 .replace(/^### (.*$)/gim, '<h3>$1</h3>')
                                 .replace(/^## (.*$)/gim, '<h2>$1</h2>')
@@ -615,12 +613,15 @@
                                 .replace(/\n/g, '<br>')
                                 .replace(/\[(.*?)\]\((.*?)\)/gim, '<a href="$2" target="_blank">$1</a>')
                                 .replace(/^\s*\* (.*)$/gim, '<li>$1</li>');
+                            // Wrap <li> in <ul> if any
                             if (/<li>/.test(html)) {
                                 html = html.replace(/(<li>.*<\/li>)/gims, '<ul>$1</ul>');
                             }
                             return html;
                         }
+                        // Remove bracketed numbers like [1], [23] from the answer before rendering
                         const cleanedAnswer = data.answer.replace(/\s*\[\d+\]\s*/g, '');
+                        // Attribution bar and sources
                         const sources = [];
                         const colors = ['#4B9FE1', '#8860D0', '#FF8C42', '#10B981', '#F59E0B', '#EF4444'];
                         if (data.attributions && data.attributions.domain_credit_dist) {
@@ -629,7 +630,7 @@
                                 if (percentage > 0) {
                                     sources.push({
                                         name: domain,
-                                        percentage: percentage,
+                                        percentage: percentage, // Use raw percentage (0.42 for 42%)
                                         color: colors[colorIndex % colors.length],
                                         description: `Content from ${domain}`,
                                         logo: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>'
@@ -652,13 +653,13 @@
                                 <div class="gist-attribution-title">Answer sources:</div>
                                 <div class="gist-attribution-bar">
                                     ${sources.map(source => 
-                                        `<div class=\"gist-attribution-segment\" style=\"width: ${(source.percentage * 100).toFixed(1)}%; background: ${source.color};\"></div>`
+                                        `<div class="gist-attribution-segment" style="width: ${(source.percentage * 100).toFixed(1)}%; background: ${source.color};"></div>`
                                     ).join('')}
                                 </div>
                                 <div class="gist-attribution-legend">
                                     ${sources.map(source => `
-                                        <div class=\"gist-attribution-source\">
-                                            <div class=\"gist-attribution-dot\" style=\"background: ${source.color};\"></div>
+                                        <div class="gist-attribution-source">
+                                            <div class="gist-attribution-dot" style="background: ${source.color};"></div>
                                             ${source.name} (${(source.percentage).toFixed(1)}%)
                                         </div>
                                     `).join('')}
@@ -668,16 +669,51 @@
                                 </div>
                             </div>
                         `;
-                        currentAnswerState.answerHTML = `
+                        answerContainer.innerHTML = `
                             <div class="gist-answer">${renderMarkdown(cleanedAnswer)}</div>
                             ${attributionHTML}
                         `;
-                        currentAnswerState.isLoading = false;
-                        showOrRestoreAnswerContainer();
+                        requestAnimationFrame(() => {
+                            const answerElement = answerContainer.querySelector('.gist-answer');
+                            const attributionElement = answerContainer.querySelector('.gist-attribution');
+                            const sourceCardsElement = answerContainer.querySelector('.gist-source-cards');
+                            if (answerElement) {
+                                answerElement.classList.add('visible');
+                            }
+                            if (attributionElement) {
+                                setTimeout(() => {
+                                    attributionElement.classList.add('visible');
+                                }, 300);
+                            }
+                            if (sourceCardsElement) {
+                                setTimeout(() => {
+                                    sourceCardsElement.classList.add('visible');
+                                    const sourceCards = sourceCardsElement.querySelectorAll('.gist-source-card[data-url]');
+                                    sourceCards.forEach(card => {
+                                        card.style.cursor = 'pointer';
+                                        card.addEventListener('click', () => {
+                                            const url = card.getAttribute('data-url');
+                                            if (url) {
+                                                window.open(url, '_blank');
+                                            }
+                                        });
+                                    });
+                                }, 600);
+                            }
+                        });
                     } catch (error) {
-                        currentAnswerState.answerHTML = `<div class=\"gist-answer\" style=\"color: #e74c3c;\">Sorry, I couldn't get an answer at this time. Please try again later.<br><small style=\"opacity: 0.7; font-size: 12px;\">Error: ${error.message}</small></div>`;
-                        currentAnswerState.isLoading = false;
-                        showOrRestoreAnswerContainer();
+                        console.error('[Widget] Error getting answer:', error);
+                        answerContainer.innerHTML = `
+                            <div class="gist-answer" style="color: #e74c3c;">
+                                Sorry, I couldn't get an answer at this time. Please try again later.<br><small style="opacity: 0.7; font-size: 12px;">Error: ${error.message}</small>
+                            </div>
+                        `;
+                        requestAnimationFrame(() => {
+                            const answerElement = answerContainer.querySelector('.gist-answer');
+                            if (answerElement) {
+                                answerElement.classList.add('visible');
+                            }
+                        });
                     }
                 }
 
@@ -753,24 +789,17 @@
             document.addEventListener('click', function(e) {
                 const widgetContainer = document.querySelector('.gist-widget-container');
                 const answerContainer = document.querySelector('.gist-answer-container');
+                
                 // Check if click is outside both containers
                 if (widgetContainer && !widgetContainer.contains(e.target) && 
                     (!answerContainer || !answerContainer.contains(e.target))) {
-                    minimizeWidget(); // Only hide, not remove
+                    minimizeWidget();
                 }
             });
 
             // Prevent clicks inside the widget from triggering the document click handler
             document.querySelector('.gist-widget-container').addEventListener('click', function(e) {
                 e.stopPropagation();
-            });
-
-            // On widget hover, restore answer if in progress or completed
-            const widgetContainer = document.querySelector('.gist-widget-container');
-            widgetContainer.addEventListener('mouseenter', function() {
-                if (currentAnswerState.question) {
-                    showOrRestoreAnswerContainer();
-                }
             });
         } else {
             console.error('Widget: document.body not available');
