@@ -440,41 +440,30 @@
             const searchInput = document.querySelector('.gist-search-input');
             
             if (searchInput) {
+                // --- Widget Size Control ---
+                let widgetSizeMode = 'medium'; // default
                 // Function to update placeholder with bold website name
                 function updatePlaceholder(input, isExpanded = false) {
                     const parts = input.dataset.placeholderParts.split(',');
                     const placeholderSpan = document.createElement('span');
                     placeholderSpan.style.position = 'absolute';
-                    // Move right in large mode
-                    if (widgetSizeMode === 'large') {
-                        placeholderSpan.style.left = '70px';
-                    } else {
-                        placeholderSpan.style.left = '57px';
-                    }
+                    placeholderSpan.style.left = '57px'; // Adjust based on icon width + padding
                     placeholderSpan.style.top = '50%';
                     placeholderSpan.style.transform = 'translateY(-50%)';
                     placeholderSpan.style.color = '#666';
                     placeholderSpan.style.pointerEvents = 'none';
                     placeholderSpan.style.transition = 'all 0.3s ease';
-
-                    // Placeholder logic for publisher name
-                    let showPublisher = false;
-                    if (widgetSizeMode === 'large') showPublisher = true;
-                    if (widgetSizeMode === 'small') showPublisher = false;
-                    if (showPublisher) {
-                        placeholderSpan.innerHTML = isExpanded ? 
-                            `${parts[0]}<strong>${parts[1]}</strong>${parts[2]}` :
-                            'Ask anything...';
-                    } else {
-                        placeholderSpan.innerHTML = 'Ask anything...';
-                    }
-
+                    
+                    placeholderSpan.innerHTML = isExpanded ? 
+                        `${parts[0]}<strong>${parts[1]}</strong>${parts[2]}` :
+                        'Ask anything...';
+                    
                     // Remove any existing placeholder span
                     const existingSpan = input.parentElement.querySelector('.placeholder-span');
                     if (existingSpan) {
                         existingSpan.remove();
                     }
-
+                    
                     // Only show if input is empty
                     placeholderSpan.className = 'placeholder-span';
                     if (!input.value) {
@@ -486,7 +475,6 @@
                 updatePlaceholder(searchInput, false);
 
                 // --- Widget Size Control ---
-                let widgetSizeMode = 'medium'; // default
                 function applyWidgetSizeMode(mode) {
                     widgetSizeMode = mode;
                     const widgetContainer = document.querySelector('.gist-widget-container');
