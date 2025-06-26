@@ -305,7 +305,9 @@ class ArticleWidget extends HTMLElement {
               placeholder="✦ Ask The Harbor..."
               id="ask-input"
             />
-            <button class="ask-submit-btn" id="ask-submit-btn">🡩</button>
+            <button class="ask-submit-btn" id="ask-submit-btn">
+              <img src="arrow.svg" alt="Send" width="14" height="14" style="filter: brightness(0) invert(1);">
+            </button>
           </div>
         </div>
 
@@ -814,7 +816,9 @@ class ArticleWidget extends HTMLElement {
               placeholder="Ask anything..."
               id="harbor-followup-input"
             />
-            <button class="harbor-followup-submit" id="harbor-followup-submit">🡩</button>
+            <button class="harbor-followup-submit" id="harbor-followup-submit">
+              <img src="arrow.svg" alt="Send" width="14" height="14" style="filter: brightness(0) invert(1);">
+            </button>
           </div>
         </div>
       </div>
