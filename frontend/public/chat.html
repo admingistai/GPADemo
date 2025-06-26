@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - The Harbor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Times+New+Roman:ital,wght@0,400;0,700;1,400&family=Georgia:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .chat-page {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            background: #fafafa;
+        }
+        
+        .return-banner {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .return-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #000;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s;
+        }
+        
+        .return-link:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+        
+        .return-arrow {
+            font-size: 16px;
+        }
+        
+        .article-context {
+            font-size: 12px;
+            color: #6b7280;
+            font-style: italic;
+        }
+        
+        .chat-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            padding: 20px 24px;
+            text-align: center;
+        }
+        
+        .chat-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .chat-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin: 4px 0 0 0;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            min-height: 400px;
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+        }
+        
+        .message.user {
+            justify-content: flex-end;
+        }
+        
+        .message.assistant {
+            justify-content: flex-start;
+        }
+        
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .message.user .message-avatar {
+            background: #e5e7eb;
+            color: #374151;
+            order: 2;
+        }
+        
+        .message.assistant .message-avatar {
+            background: #8b5cf6;
+            color: white;
+        }
+        
+        .message-content {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 16px 20px;
+            max-width: 70%;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .message.user .message-content {
+            background: #8b5cf6;
+            color: white;
+            border-color: #8b5cf6;
+        }
+        
+        .message.assistant .message-content {
+            background: white;
+            border-color: #e5e7eb;
+        }
+        
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .typing-indicator.show {
+            display: flex;
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 16px 20px;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #9ca3af;
+            animation: typingDot 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typingDot {
+            0%, 60%, 100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            30% {
+                transform: scale(1.3);
+                opacity: 1;
+            }
+        }
+        
+        .chat-input-container {
+            border-top: 1px solid #e5e7eb;
+            padding: 20px 24px;
+            background: white;
+        }
+        
+        .chat-input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+        
+        .chat-input {
+            flex: 1;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 14px;
+            resize: none;
+            min-height: 20px;
+            max-height: 120px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .chat-input:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+        
+        .chat-send-btn {
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .chat-send-btn:hover:not(:disabled) {
+            background: #7c3aed;
+        }
+        
+        .chat-send-btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+        
+        .powered-by {
+            text-align: center;
+            padding: 16px;
+            font-size: 12px;
+            color: #9ca3af;
+            background: #f9fafb;
+        }
+        
+        .powered-by a {
+            color: #8b5cf6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .powered-by a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .chat-page {
+                padding: 15px;
+            }
+            
+            .return-banner {
+                padding: 12px 16px;
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+            
+            .message-content {
+                max-width: 85%;
+            }
+            
+            .chat-input-container {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-top">
+            <div class="date">Monday, June 16, 2025</div>
+            <div class="harbor-title">The Harbor</div>
+            <button class="subscribe-btn">Subscribe</button>
+        </div>
+        
+        <nav class="main-nav">
+            <ul>
+                <li><a href="index.html">Today</a></li>
+                <li><a href="#">World</a></li>
+                <li><a href="#">U.S.</a></li>
+                <li><a href="#" class="active">Business</a></li>
+                <li><a href="#">Politics</a></li>
+                <li><a href="#">Lifestyle</a></li>
+                <li><a href="#">Culture</a></li>
+                <li><a href="#">Opinion</a></li>
+                <li><a href="#">Health</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="chat-page">
+        <div class="return-banner">
+            <a href="retail-sales-article.html" class="return-link" id="return-link">
+                <span class="return-arrow">←</span>
+                Return to Article
+            </a>
+            <div class="article-context">
+                Discussing: "Retail Sales Show Signs of Stabilizing After Tariff Shock"
+            </div>
+        </div>
+        
+        <div class="chat-container">
+            <div class="chat-header">
+                <h1 class="chat-title">Ask The Harbor</h1>
+                <p class="chat-subtitle">Get insights about this article and related topics</p>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <!-- Initial user question will be inserted here -->
+            </div>
+            
+            <div class="typing-indicator" id="typing-indicator">
+                <div class="message-avatar" style="background: #8b5cf6; color: white;">H</div>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <div class="chat-input-wrapper">
+                    <textarea 
+                        class="chat-input" 
+                        id="chat-input"
+                        placeholder="Ask a follow-up question..."
+                        rows="1"
+                    ></textarea>
+                    <button class="chat-send-btn" id="chat-send-btn">Send</button>
+                </div>
+            </div>
+            
+            <div class="powered-by">
+                Powered by <a href="#">Gist RAG</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html> 

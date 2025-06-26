@@ -173,4 +173,97 @@ document.addEventListener('DOMContentLoaded', function() {
         item.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
         fadeInObserver.observe(item);
     });
+
+    // Floating search bar functionality
+    const floatingSearchInput = document.getElementById('floating-search-input');
+    const floatingSearchSubmit = document.getElementById('floating-search-submit');
+    const floatingSuggestions = document.getElementById('floating-suggestions');
+    
+    if (floatingSearchInput && floatingSearchSubmit && floatingSuggestions) {
+        let suggestionsVisible = false;
+        
+        // Handle search submission
+        function handleFloatingSearch(query = null) {
+            const searchQuery = query || floatingSearchInput.value.trim();
+            if (searchQuery) {
+                // Floating search bar only appears on narrow screens, so always navigate to chat page
+                const currentPage = window.location.pathname.split('/').pop();
+                const chatUrl = `chat.html?q=${encodeURIComponent(searchQuery)}&return=${encodeURIComponent(currentPage)}`;
+                window.location.href = chatUrl;
+            }
+        }
+        
+        // Show suggestions
+        function showSuggestions() {
+            if (!suggestionsVisible) {
+                floatingSuggestions.classList.add('show');
+                suggestionsVisible = true;
+            }
+        }
+        
+        // Hide suggestions
+        function hideSuggestions() {
+            if (suggestionsVisible) {
+                floatingSuggestions.classList.remove('show');
+                suggestionsVisible = false;
+            }
+        }
+        
+        // Click handler for submit button
+        floatingSearchSubmit.addEventListener('click', handleFloatingSearch);
+        
+        // Enter key handler for input
+        floatingSearchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleFloatingSearch();
+            }
+            if (e.key === 'Escape') {
+                hideSuggestions();
+                this.blur();
+            }
+        });
+        
+        // Show suggestions on focus and input
+        floatingSearchInput.addEventListener('focus', function() {
+            this.parentElement.style.boxShadow = '0 6px 25px rgba(0, 0, 0, 0.2)';
+            showSuggestions();
+        });
+        
+        floatingSearchInput.addEventListener('input', function() {
+            if (this.value.trim() === '') {
+                showSuggestions();
+            }
+        });
+        
+        // Hide suggestions on blur (with small delay to allow clicking suggestions)
+        floatingSearchInput.addEventListener('blur', function() {
+            this.parentElement.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
+            setTimeout(() => {
+                hideSuggestions();
+            }, 150);
+        });
+        
+        // Handle suggestion clicks
+        const suggestionItems = floatingSuggestions.querySelectorAll('.suggestion-item');
+        suggestionItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const query = this.getAttribute('data-query');
+                handleFloatingSearch(query);
+            });
+            
+            // Prevent blur when clicking suggestions
+            item.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+            });
+        });
+        
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!floatingSearchInput.contains(e.target) && 
+                !floatingSuggestions.contains(e.target)) {
+                hideSuggestions();
+            }
+        });
+    }
 }); 

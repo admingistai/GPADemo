@@ -427,6 +427,16 @@ class ArticleWidget extends HTMLElement {
   async handleAsk() {
     if (!this.question.trim()) return;
     
+    // Check if we're on mobile/narrow screen (same breakpoint as CSS)
+    if (window.innerWidth <= 1200) {
+      // Navigate to chat page on mobile/narrow screens
+      const currentPage = window.location.pathname.split('/').pop();
+      const chatUrl = `chat.html?q=${encodeURIComponent(this.question)}&return=${encodeURIComponent(currentPage)}`;
+      window.location.href = chatUrl;
+      return;
+    }
+    
+    // Desktop behavior: use side panel
     const askSubmitBtn = this.shadowRoot.querySelector('#ask-submit-btn');
     
     // Open side panel with loading state
