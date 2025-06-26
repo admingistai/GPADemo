@@ -629,7 +629,7 @@
                                 if (percentage > 0) {
                                     sources.push({
                                         name: domain,
-                                        percentage: Math.round(percentage * 100),
+                                        percentage: Math.round((percentage * 100) / 100),
                                         color: colors[colorIndex % colors.length],
                                         description: `Content from ${domain}`,
                                         logo: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>'
@@ -669,7 +669,7 @@
                             </div>
                         `;
                         answerContainer.innerHTML = `
-                            <div class="gist-answer">${data.answer}</div>
+                            <div class="gist-answer">${sanitizeHtml(markdownToHtml(data.answer))}</div>
                             ${attributionHTML}
                         `;
                         requestAnimationFrame(() => {
@@ -828,5 +828,27 @@
                 }, 300);
             });
         }
+    }
+
+    // Simple markdown-to-HTML converter using marked (if available) or fallback
+    function markdownToHtml(md) {
+        if (window.marked) {
+            return window.marked.parse(md);
+        }
+        // Fallback: very basic replacements
+        return md
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/\n/g, '<br>')
+            .replace(/\#\# (.*?)(?=\n|$)/g, '<h2>$1</h2>')
+            .replace(/\# (.*?)(?=\n|$)/g, '<h1>$1</h1>')
+            .replace(/\n\s*\n/g, '<br><br>');
+    }
+
+    // Add a simple sanitizeHtml function (or use DOMPurify if available)
+    function sanitizeHtml(html) {
+        var temp = document.createElement('div');
+        temp.textContent = html;
+        return temp.innerHTML;
     }
 })();
