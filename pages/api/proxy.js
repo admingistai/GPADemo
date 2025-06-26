@@ -369,17 +369,6 @@ const askAnythingBanner = `
       height: 64px;
       font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     }
-    #aa-banner .aa-logo-section {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    #aa-banner .aa-logo-img {
-      width: 48px;
-      height: 48px;
-      object-fit: contain;
-      margin-right: 4px;
-    }
     #aa-banner .aa-title {
       font-size: 2rem;
       font-weight: 700;
@@ -388,12 +377,15 @@ const askAnythingBanner = `
       margin: 0;
       letter-spacing: -0.01em;
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      gap: 0.25em;
     }
     #aa-banner .aa-title sup {
       font-size: 0.7em;
       font-weight: 400;
-      margin-left: 2px;
+      margin-left: 0.25em;
+      vertical-align: super;
+      line-height: 1;
     }
     #aa-banner .aa-tagline {
       font-size: 1rem;
@@ -427,10 +419,7 @@ const askAnythingBanner = `
     }
   </style>
   <div id="aa-banner">
-    <div class="aa-logo-section">
-      <img src="/Gist_Mark_000000.png" alt="Gist Logo" class="aa-logo-img" />
-      <div class="aa-title">Ask<br>Anything<sup>TM</sup></div>
-    </div>
+    <div class="aa-title">Ask Anything<sup>TM</sup></div>
     <span class="aa-tagline">100% ethical, uses fully licensed sources</span>
   </div>
 `;
