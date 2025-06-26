@@ -561,11 +561,12 @@
                         existingContainer.remove();
                     }
 
-                    // Create answer container with static message
+                    // Create answer container with loading state
                     const answerContainerHTML = `
                         <div class="gist-answer-container">
-                            <div class="gist-answer">
-                                This feature is temporarily disabled while we update our chat and source attribution system.
+                            <div class="gist-loading">
+                                <div class="gist-loading-spinner"></div>
+                                Getting answer...
                             </div>
                         </div>
                     `;
@@ -577,13 +578,180 @@
 
                     // Show container with animation
                     const answerContainer = document.querySelector('.gist-answer-container');
+                    const loadingElement = answerContainer.querySelector('.gist-loading');
                     requestAnimationFrame(() => {
                         answerContainer.classList.add('visible');
-                        const answerElement = answerContainer.querySelector('.gist-answer');
-                        if (answerElement) {
-                            answerElement.classList.add('visible');
-                        }
+                        loadingElement.classList.add('visible');
                     });
+
+                    try {
+                        const currentHost = window.location.protocol + '//' + window.location.host;
+                        const apiEndpoint = currentHost + '/api/chat';
+                        const requestBody = {
+                            question: question,
+                            context: getPageContext()
+                        };
+                        console.log('[Widget] POST', apiEndpoint, requestBody);
+                        const response = await fetch(apiEndpoint, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Origin': currentHost
+                            },
+                            credentials: 'same-origin',
+                            body: JSON.stringify(requestBody)
+                        });
+                        console.log('[Widget] Response status:', response.status);
+                        if (!response.ok) {
+                            let errorText = '';
+                            try {
+                                const errorData = await response.json();
+                                errorText = JSON.stringify(errorData, null, 2);
+                                console.error('[Widget] Error response data:', errorData);
+                            } catch (e) {
+                                try {
+                                    errorText = await response.text();
+                                    console.error('[Widget] Error response text:', errorText);
+                                } catch (e2) {
+                                    console.error('[Widget] Could not read error response:', e2);
+                                }
+                            }
+                            throw new Error(`HTTP error! status: ${response.status}, details: ${errorText}`);
+                        }
+                        const data = await response.json();
+                        console.log('[Widget] API response:', data);
+                        // Attribution bar and sources
+                        const sources = [];
+                        const colors = ['#4B9FE1', '#8860D0', '#FF8C42', '#10B981', '#F59E0B', '#EF4444'];
+                        if (data.attributions && data.attributions.domain_credit_dist) {
+                            let colorIndex = 0;
+                            for (const [domain, percentage] of Object.entries(data.attributions.domain_credit_dist)) {
+                                if (percentage > 0) {
+                                    sources.push({
+                                        name: domain,
+                                        percentage: Math.round(percentage * 100),
+                                        color: colors[colorIndex % colors.length],
+                                        description: `Content from ${domain}`,
+                                        logo: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>'
+                                    });
+                                    colorIndex++;
+                                }
+                            }
+                        }
+                        if (sources.length === 0) {
+                            sources.push({
+                                name: 'Current Page',
+                                percentage: 100,
+                                color: '#4B9FE1',
+                                description: 'Content extracted from the current webpage you\'re viewing',
+                                logo: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M9 8h6m-6 4h6m-6 4h6"/></svg>'
+                            });
+                        }
+                        const attributionHTML = `
+                            <div class="gist-attribution">
+                                <div class="gist-attribution-title">Answer sources:</div>
+                                <div class="gist-attribution-bar">
+                                    ${sources.map(source => 
+                                        `<div class="gist-attribution-segment" style="width: ${source.percentage}%; background: ${source.color};"></div>`
+                                    ).join('')}
+                                </div>
+                                <div class="gist-attribution-legend">
+                                    ${sources.map(source => `
+                                        <div class="gist-attribution-source">
+                                            <div class="gist-attribution-dot" style="background: ${source.color};"></div>
+                                            ${source.name} (${source.percentage}%)
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="gist-source-cards">
+                                    ${generateSourceCards(data.citations, sources)}
+                                </div>
+                            </div>
+                        `;
+                        answerContainer.innerHTML = `
+                            <div class="gist-answer">${data.answer}</div>
+                            ${attributionHTML}
+                        `;
+                        requestAnimationFrame(() => {
+                            const answerElement = answerContainer.querySelector('.gist-answer');
+                            const attributionElement = answerContainer.querySelector('.gist-attribution');
+                            const sourceCardsElement = answerContainer.querySelector('.gist-source-cards');
+                            if (answerElement) {
+                                answerElement.classList.add('visible');
+                            }
+                            if (attributionElement) {
+                                setTimeout(() => {
+                                    attributionElement.classList.add('visible');
+                                }, 300);
+                            }
+                            if (sourceCardsElement) {
+                                setTimeout(() => {
+                                    sourceCardsElement.classList.add('visible');
+                                    const sourceCards = sourceCardsElement.querySelectorAll('.gist-source-card[data-url]');
+                                    sourceCards.forEach(card => {
+                                        card.style.cursor = 'pointer';
+                                        card.addEventListener('click', () => {
+                                            const url = card.getAttribute('data-url');
+                                            if (url) {
+                                                window.open(url, '_blank');
+                                            }
+                                        });
+                                    });
+                                }, 600);
+                            }
+                        });
+                    } catch (error) {
+                        console.error('[Widget] Error getting answer:', error);
+                        answerContainer.innerHTML = `
+                            <div class="gist-answer" style="color: #e74c3c;">
+                                Sorry, I couldn't get an answer at this time. Please try again later.<br><small style="opacity: 0.7; font-size: 12px;">Error: ${error.message}</small>
+                            </div>
+                        `;
+                        requestAnimationFrame(() => {
+                            const answerElement = answerContainer.querySelector('.gist-answer');
+                            if (answerElement) {
+                                answerElement.classList.add('visible');
+                            }
+                        });
+                    }
+                }
+
+                // Function to generate source cards from citations
+                function generateSourceCards(citations, sources) {
+                    if (!citations || !Array.isArray(citations) || citations.length === 0) {
+                        // Fallback to attribution-based cards
+                        return sources.map(source => `
+                            <div class="gist-source-card">
+                                <div class="gist-source-card-header">
+                                    <div class="gist-source-logo" style="background: ${source.color}">
+                                        ${source.logo}
+                                    </div>
+                                    <div class="gist-source-name">${source.name}</div>
+                                </div>
+                                <div class="gist-source-description">${source.description}</div>
+                            </div>
+                        `).join('');
+                    }
+                    return citations.slice(0, 6).map((citation, index) => {
+                        const sourceColor = sources.find(s => s.name === citation.domain)?.color || '#4B9FE1';
+                        const favicon = citation.favicon || citation.favicon24 || citation.favicon40;
+                        return `
+                            <div class="gist-source-card" data-url="${citation.url}">
+                                <div class="gist-source-card-header">
+                                    <div class="gist-source-logo" style="background: ${sourceColor}">
+                                        ${favicon ? 
+                                            `<img src="${favicon}" alt="${citation.source}" style="width: 16px; height: 16px; border-radius: 2px;">` : 
+                                            `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="width: 16px; height: 16px;"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>`
+                                        }
+                                    </div>
+                                    <div class="gist-source-name">${citation.source || citation.domain}</div>
+                                    ${citation.date ? `<div class="gist-source-date">${formatDate(citation.date)}</div>` : ''}
+                                </div>
+                                <div class="gist-source-title">${citation.title || 'Untitled'}</div>
+                                <div class="gist-source-description">${citation.first_words ? citation.first_words.substring(0, 120) + '...' : 'No description available'}</div>
+                            </div>
+                        `;
+                    }).join('');
                 }
 
                 // Function to handle search
