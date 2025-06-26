@@ -516,6 +516,23 @@
         return '#' + hex;
     }
     
+    // Helper function for color conversion
+    function hexToRgb(hex) {
+        // Remove # if present
+        hex = hex.replace('#', '');
+        
+        // Handle 3-digit hex
+        if (hex.length === 3) {
+            hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+        }
+        
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        
+        return { r, g, b };
+    }
+    
     async function analyzeWebsiteStyling() {
         try {
             const isDarkMode = detectDarkMode();
@@ -552,7 +569,7 @@
             // Create gradient colors from detected theme colors
             const gradientColors = colorScheme.themeColors.slice(0, 3).map(color => rgbToHex(color)).filter(Boolean);
             
-            websiteStyling = {
+                websiteStyling = {
                 primaryColor: primaryColor || (isDarkMode ? '#60a5fa' : '#6366f1'),
                 secondaryColor: secondaryColor || (isDarkMode ? '#a78bfa' : '#8b5cf6'),
                 backgroundColor: backgroundColor || (isDarkMode ? '#1f2937' : '#ffffff'),
@@ -652,6 +669,9 @@
     function generateDynamicStyles(styling) {
         const isDark = styling.isDarkMode;
         
+        // Make websiteStyling globally available for the CSS
+        window.currentWebsiteStyling = styling;
+        
         // Create dynamic gradient from detected theme colors
         let gradientColors = [];
         if (styling.brandColors && styling.brandColors.length > 0) {
@@ -700,7 +720,8 @@
                 --widget-chat-width: 380px;
             }
             
-            .gist-widget {
+            /* Widget Container */
+            .widget-container {
                 position: fixed;
                 top: 20px;
                 left: 20px;
@@ -709,104 +730,114 @@
                 opacity: 0;
                 transform: translateY(-10px);
                 transition: opacity 250ms ease, transform 250ms ease;
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
                 font-family: ${styling.fontFamily};
                 }
                 
-
-                
-                .gist-widget.loaded {
+            .widget-container.loaded {
                     opacity: 1;
-                    transform: translateY(0);
+                transform: translateY(0);
                     pointer-events: auto;
                 }
                 
-                .gist-widget.minimized {
-                    gap: 0;
-                }
-                
-            .gist-widget.minimized .gist-chat-container {
-                    opacity: 0;
-                transform: translateY(-20px) scale(0.95);
-                    pointer-events: none;
-                    max-height: 0;
-                    overflow: hidden;
-                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-            
-            .gist-pill-container {
-                position: relative;
-                order: 1;
-            }
-            
-            .gist-pill {
+            /* Collapsible Search Bar - Enhanced for Dark Mode */
+            .widget-search-bar {
+                display: flex;
+                align-items: center;
                 background: ${isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.98)'};
-                border: 2px solid transparent;
-                border-radius: 28px;
+                /* Enhanced border for better dark mode visibility */
+                border: 3px solid transparent;
+                border-radius: 24px;
+                /* Use website's theme gradient with enhanced visibility */
                 background-image: 
                     linear-gradient(${isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.98)'}, ${isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.98)'}),
                     var(--theme-gradient);
                 background-origin: border-box;
                 background-clip: padding-box, border-box;
-                padding: 12px 20px;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                box-shadow: var(--shadow);
+                /* Enhanced shadow with glow effect for dark mode using theme colors */
+                box-shadow: ${isDark ? `
+                    var(--shadow),
+                    0 0 0 1px ${styling.primaryColor}40,
+                    0 0 20px ${styling.primaryColor}30
+                ` : 'var(--shadow)'};
                 backdrop-filter: blur(10px);
                 cursor: pointer;
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                width: var(--widget-width);
-                min-width: 280px;
-                max-width: min(90vw, calc(100vw - 40px));
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                overflow: hidden;
                 position: relative;
                 z-index: 10001;
+                
+                /* Collapsed state - circle with favicon */
+                width: 48px;
+                height: 48px;
+                padding: 0;
+                gap: 0;
             }
-            
-            @media (max-width: 768px) {
-                .gist-pill {
-                    width: min(var(--widget-width), calc(100vw - 40px));
-                    min-width: 250px;
-                    padding: 10px 16px;
-                    gap: 10px;
-                }
-            }
-            
-            @media (max-width: 480px) {
-                .gist-pill {
-                    width: calc(100vw - 40px);
-                    min-width: 200px;
-                    padding: 8px 12px;
-                    gap: 8px;
-                }
-            }
-            
 
-            
-            .gist-pill:hover {
+            /* Expanded state - full search bar */
+            .widget-search-bar.expanded {
+                width: 320px;
+                padding: 0 8px 0 16px;
+                gap: 12px;
+            }
+
+            .widget-search-bar:hover {
                 transform: translateY(-1px);
                 box-shadow: ${isDark ? '0 6px 25px rgba(0, 0, 0, 0.4)' : '0 4px 15px rgba(0, 0, 0, 0.15)'};
-                }
-                
-                .gist-pill-logo {
-                width: 20px;
-                height: 20px;
-                border-radius: 4px;
-                object-fit: contain;
-                flex-shrink: 0;
             }
-            
-            .gist-pill-logo.gist-default-logo {
-                border-radius: 50%;
+
+            /* Website logo - visible in collapsed state, positioned in center */
+            .widget-logo {
+                width: 24px;
+                height: 24px;
+                flex-shrink: 0;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                    border-radius: 4px;
+                overflow: hidden;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                
+                /* Show in center when collapsed */
+                opacity: 1;
+                transform: scale(1);
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 10003;
             }
-            
-            .gist-pill-input {
+
+            .widget-search-bar.expanded .widget-logo {
+                opacity: 1;
+                transform: scale(1);
+                position: static;
+                transform: none;
+                z-index: auto;
+            }
+
+            .logo-img {
+                width: 100%;
+                height: 100%;
+                    object-fit: contain;
+                border-radius: 4px;
+            }
+
+            .logo-text {
+                width: 24px;
+                height: 24px;
+                background: var(--theme-gradient);
+                color: white;
+                font-size: 12px;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 4px;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            }
+
+            /* Search input - hidden when collapsed */
+            .widget-search-input {
                     flex: 1;
                 border: none;
                 background: transparent;
@@ -815,67 +846,204 @@
                     outline: none;
                     font-family: inherit;
                     min-width: 0;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                
+                /* Hidden when collapsed */
+                opacity: 0;
+                width: 0;
+                pointer-events: none;
             }
-            
-            .gist-pill-input::placeholder {
+
+            .widget-search-bar.expanded .widget-search-input {
+                opacity: 1;
+                width: auto;
+                pointer-events: auto;
+            }
+
+            .widget-search-input::placeholder {
                 color: ${isDark ? '#9ca3af' : '#6b7280'};
             }
             
-            /* Branded input styling */
-            .branded-input {
-                font-weight: 500;
-                letter-spacing: 0.01em;
-                transition: all 0.3s ease;
-            }
-
-            /* Enhanced placeholder styling for branded input */
-            .branded-input::placeholder {
-                color: ${isDark ? '#9ca3af' : '#6b7280'};
-                font-style: normal;
-                opacity: 0.8;
-                transition: all 0.2s ease;
-            }
-
-            /* Focus state with brand integration */
-            .branded-input:focus::placeholder {
-                opacity: 0.6;
-                transform: translateX(2px);
-                transition: all 0.2s ease;
-            }
-            
-            .gist-pill-submit {
-                width: 28px;
-                height: 28px;
-                background: transparent;
+            /* Arrow button - hidden in collapsed state */
+            .widget-arrow-btn {
+                width: 32px;
+                height: 32px;
+                background: #1f2937;
                 border: none;
                 border-radius: 50%;
+        display: flex;
+        align-items: center;
+                justify-content: center;
                 cursor: pointer;
                 transition: all 0.2s ease;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+                flex-shrink: 0;
+                color: white;
+                
+                /* Hidden when collapsed */
+                opacity: 0;
+                transform: scale(0.8);
+                pointer-events: none;
             }
-            
-            .gist-pill-submit:hover {
+
+            .widget-search-bar.expanded .widget-arrow-btn {
+                opacity: 1;
+                transform: scale(1);
+                pointer-events: auto;
+            }
+
+            .widget-arrow-btn:hover {
                 transform: scale(1.05);
+                background: #374151;
             }
 
-            .gist-submit-arrow {
-                width: 20px;
-                height: 20px;
-                transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            }
-            
-            .gist-pill-submit.rotating .gist-submit-arrow {
-                transform: rotate(360deg);
+            .widget-arrow-btn svg {
+                width: 16px;
+                height: 16px;
+                transition: transform 0.3s ease;
             }
 
-            .gist-pill-submit:hover .gist-submit-arrow {
-                transform: scale(1.1);
+            /* Rotate arrow when expanded */
+            .widget-search-bar.expanded .widget-arrow-btn svg {
+                transform: rotate(180deg);
             }
-            
-            .gist-pill-submit:active .gist-submit-arrow {
-                transform: scale(0.95);
+
+            /* Rotation animation for loading */
+            .widget-arrow-btn.rotating svg {
+                animation: spin 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            }
+
+            @keyframes spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+
+            /* Mobile responsive */
+            @media (max-width: 768px) {
+                .widget-search-bar.expanded {
+                    width: min(320px, calc(100vw - 40px));
+                }
+            }
+
+            @media (max-width: 480px) {
+                .widget-search-bar.expanded {
+                    width: calc(100vw - 40px);
+                    max-width: 300px;
+                }
+            }
+
+            /* Floating Suggestions Container */
+            .floating-suggestions {
+                position: absolute;
+                top: 56px; /* Position below search bar (48px height + 8px margin) */
+                left: 0;
+                right: 0;
+                z-index: 10001;
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(-10px);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                pointer-events: none;
+            }
+
+            .floating-suggestions.visible {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0);
+                pointer-events: auto;
+            }
+
+            /* Individual floating suggestion buttons */
+            .floating-suggestion {
+                display: block;
+                width: 100%;
+                padding: 12px 20px;
+                margin-bottom: 8px;
+                background: ${isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.98)'};
+                border: 2px solid transparent;
+                border-radius: 24px;
+                background-image: 
+                    linear-gradient(${isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.98)'}, ${isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.98)'}),
+                    var(--theme-gradient);
+                background-origin: border-box;
+                background-clip: padding-box, border-box;
+                box-shadow: var(--shadow);
+                backdrop-filter: blur(10px);
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-family: inherit;
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--text-color);
+                text-align: left;
+                border: none;
+                outline: none;
+                
+                /* Staggered animation */
+                opacity: 0;
+                transform: translateY(10px);
+                animation: fadeInUp 0.4s ease-out forwards;
+            }
+
+            .floating-suggestion:nth-child(1) { animation-delay: 0.1s; }
+            .floating-suggestion:nth-child(2) { animation-delay: 0.2s; }
+            .floating-suggestion:nth-child(3) { animation-delay: 0.3s; }
+            .floating-suggestion:nth-child(4) { animation-delay: 0.4s; }
+
+            .floating-suggestion:hover {
+                transform: translateY(-2px);
+                box-shadow: 
+                    var(--shadow),
+                    0 8px 25px ${styling.primaryColor}25;
+                background-image: 
+                    linear-gradient(${isDark ? 'rgba(55, 65, 81, 0.95)' : 'rgba(248, 250, 252, 0.98)'}, ${isDark ? 'rgba(55, 65, 81, 0.95)' : 'rgba(248, 250, 252, 0.98)'}),
+                    var(--theme-gradient);
+            }
+
+            .floating-suggestion:active {
+                transform: translateY(0);
+            }
+
+            /* Loading state */
+            .suggestions-loading {
+                text-align: center;
+                padding: 16px 20px;
+                color: ${isDark ? '#9ca3af' : '#6b7280'};
+                font-size: 14px;
+                font-style: italic;
+                background: ${isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.98)'};
+                border: 2px solid transparent;
+                border-radius: 24px;
+                background-image: 
+                    linear-gradient(${isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.98)'}, ${isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.98)'}),
+                    var(--theme-gradient);
+                background-origin: border-box;
+                background-clip: padding-box, border-box;
+                backdrop-filter: blur(10px);
+            }
+
+            /* Fade in animation */
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* Mobile responsive for floating suggestions */
+            @media (max-width: 480px) {
+                .floating-suggestions {
+                    left: -10px;
+                    right: -10px;
+                }
+                
+                .floating-suggestion {
+                    padding: 10px 16px;
+                    font-size: 13px;
+                }
             }
             
             .gist-chat-container {
@@ -921,7 +1089,7 @@
                     width: calc(100vw - 40px);
                     max-height: 350px;
                 }
-            }
+                }
                 
             .gist-chat-header {
                 padding: 16px 20px 12px;
@@ -1464,7 +1632,7 @@
                 .gist-close-btn:hover {
                 background: ${isDark ? 'rgba(107, 114, 128, 0.3)' : 'rgba(107, 114, 128, 0.2)'};
                     transform: scale(1.1);
-                }
+            }
             
             .gist-engagement-footer {
                 margin-top: 32px;
@@ -2441,6 +2609,673 @@
                 }
             }
             
+            /* ================================
+               RIGHT-HAND SIDEBAR STYLES - MATCH WEBPAGE STYLING
+               ================================ */
+            
+            .gist-sidebar {
+                position: fixed;
+                top: 0;
+                right: -400px;
+                width: 400px;
+                height: 100vh;
+                /* Use the same background as detected from website */
+                background: ${styling.backgroundColor || (isDark ? '#1f2937' : '#ffffff')};
+                /* Add gradient border like search box */
+                border: 2px solid transparent;
+                border-left: 2px solid transparent;
+                background-image: 
+                    linear-gradient(${styling.backgroundColor || (isDark ? '#1f2937' : '#ffffff')}, ${styling.backgroundColor || (isDark ? '#1f2937' : '#ffffff')}),
+                    var(--theme-gradient);
+                background-origin: border-box;
+                background-clip: padding-box, border-box;
+                box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+                backdrop-filter: blur(10px);
+                z-index: 10002;
+                display: flex;
+                flex-direction: column;
+                transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                transform: translateZ(0);
+                /* Ensure it's hidden by default */
+                visibility: hidden;
+                opacity: 0;
+                transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, visibility 0.4s ease;
+            }
+
+            .gist-sidebar.open {
+                right: 0;
+                visibility: visible;
+                opacity: 1;
+            }
+
+            /* Sidebar Header - Match webpage styling */
+            .gist-sidebar-header {
+                padding: 20px 24px;
+                border-bottom: 1px solid ${isDark ? '#374151' : '#e5e7eb'};
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                /* Use slightly darker/lighter shade of webpage background */
+                background: ${(() => {
+                    const bgColor = styling.backgroundColor || (isDark ? '#1f2937' : '#ffffff');
+                    if (bgColor.startsWith('#')) {
+                        const rgb = hexToRgb(bgColor);
+                        return isDark ? 
+                            `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.8)` : 
+                            `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.95)`;
+                    }
+                    return isDark ? 'rgba(31, 41, 55, 0.8)' : 'rgba(255, 255, 255, 0.95)';
+                })()};
+                backdrop-filter: blur(10px);
+            }
+
+            .gist-sidebar-header h3 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: 600;
+                color: ${styling.textColor || (isDark ? '#f9fafb' : '#374151')};
+            }
+
+            /* Close button - Adapt to webpage colors */
+            .gist-sidebar-close {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                background: transparent;
+                border: 1px solid ${isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'};
+                color: ${styling.textColor || (isDark ? '#d1d5db' : '#6b7280')};
+                font-size: 18px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+                backdrop-filter: blur(5px);
+            }
+
+            .gist-sidebar-close:hover {
+                background: ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'};
+                border-color: ${styling.primaryColor || '#8b5cf6'};
+                transform: scale(1.05);
+            }
+
+            /* Sidebar Content - Match webpage styling */
+            .gist-sidebar-content {
+                flex: 1;
+                padding: 24px;
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+                gap: 24px;
+                /* Inherit webpage background */
+                background: transparent;
+            }
+
+            .gist-sidebar-content::-webkit-scrollbar {
+                width: 6px;
+            }
+            
+            .gist-sidebar-content::-webkit-scrollbar-track {
+                background: ${isDark ? '#374151' : '#f1f5f9'};
+                border-radius: 3px;
+            }
+            
+            .gist-sidebar-content::-webkit-scrollbar-thumb {
+                background: ${isDark ? '#6b7280' : '#cbd5e1'};
+                border-radius: 3px;
+            }
+
+            /* Welcome Message */
+            .gist-sidebar-welcome {
+                display: flex;
+                gap: 12px;
+                align-items: flex-start;
+            }
+
+            .gist-ai-avatar {
+                flex-shrink: 0;
+            }
+
+            /* Welcome Message - Adapt to webpage colors */
+            .gist-welcome-message {
+                background: ${isDark ? 
+                    'rgba(255, 255, 255, 0.1)' : 
+                    'rgba(0, 0, 0, 0.05)'
+                };
+                border: 1px solid ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
+                padding: 16px;
+                border-radius: 12px;
+                color: ${styling.textColor || (isDark ? '#f9fafb' : '#374151')};
+                line-height: 1.5;
+                flex: 1;
+                backdrop-filter: blur(5px);
+            }
+
+            /* Suggested Questions - Match webpage styling */
+            .gist-sidebar-suggestions {
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .gist-sidebar-suggestions h4 {
+                margin: 0 0 16px 0;
+                font-size: 16px;
+                font-weight: 600;
+                color: ${styling.textColor || (isDark ? '#f9fafb' : '#374151')};
+            }
+
+            .gist-suggestions-container {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .gist-suggestions-loading {
+                text-align: center;
+                color: ${isDark ? '#9ca3af' : '#6b7280'};
+                font-style: italic;
+                padding: 20px;
+            }
+
+            .gist-sidebar-suggestion {
+                padding: 12px 16px;
+                background: ${isDark ? 
+                    'rgba(255, 255, 255, 0.05)' : 
+                    'rgba(0, 0, 0, 0.03)'
+                };
+                border: 1px solid ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                color: ${styling.textColor || (isDark ? '#f9fafb' : '#374151')};
+                font-size: 14px;
+                line-height: 1.4;
+                backdrop-filter: blur(5px);
+            }
+
+            .gist-sidebar-suggestion:hover {
+                background: ${isDark ? 
+                    'rgba(255, 255, 255, 0.1)' : 
+                    'rgba(0, 0, 0, 0.08)'
+                };
+                border-color: ${styling.primaryColor || '#8b5cf6'};
+                transform: translateY(-1px);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Chat Messages Area */
+            .gist-sidebar-messages {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                min-height: 200px;
+            }
+
+            /* User Messages in Sidebar */
+            .gist-user-message {
+                display: flex;
+                justify-content: flex-end;
+                margin-bottom: 12px;
+            }
+
+            .gist-user-message .gist-message-content {
+                background: var(--primary-color);
+                color: white;
+                padding: 12px 16px;
+                border-radius: 16px 16px 4px 16px;
+                max-width: 80%;
+                font-size: 14px;
+                line-height: 1.4;
+            }
+
+            /* Sidebar Footer - Match webpage styling */
+            .gist-sidebar-footer {
+                padding: 16px 24px;
+                border-top: 1px solid ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-size: 12px;
+                color: ${isDark ? '#9ca3af' : '#6b7280'};
+                /* Match header background */
+                background: ${(() => {
+                    const bgColor = styling.backgroundColor || (isDark ? '#1f2937' : '#ffffff');
+                    if (bgColor.startsWith('#')) {
+                        const rgb = hexToRgb(bgColor);
+                        return isDark ? 
+                            `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.8)` : 
+                            `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.95)`;
+                    }
+                    return isDark ? 'rgba(31, 41, 55, 0.8)' : 'rgba(255, 255, 255, 0.95)';
+                })()};
+                backdrop-filter: blur(10px);
+            }
+
+            /* Add to site link - Use webpage primary color */
+            .gist-sidebar-footer .gist-add-to-site {
+                color: ${styling.primaryColor || '#8b5cf6'};
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+            .gist-sidebar-footer .gist-add-to-site:hover {
+                text-decoration: underline;
+            }
+
+            /* Sidebar Input Container */
+            .gist-sidebar-input-container {
+                padding: 16px;
+                border-top: 1px solid ${isDark ? 'rgba(75, 85, 99, 0.3)' : 'rgba(229, 231, 235, 0.5)'};
+                background: ${isDark ? 'rgba(31, 41, 55, 0.8)' : 'rgba(248, 250, 252, 0.8)'};
+                display: flex;
+                gap: 8px;
+                align-items: center;
+                backdrop-filter: blur(10px);
+            }
+
+            .gist-sidebar-input {
+                flex: 1;
+                padding: 10px 16px;
+                background: ${isDark ? 'rgba(55, 65, 81, 0.5)' : 'rgba(255, 255, 255, 0.8)'};
+                border: 1px solid ${isDark ? 'rgba(75, 85, 99, 0.3)' : 'rgba(229, 231, 235, 0.5)'};
+                border-radius: 24px;
+                color: ${styling.textColor || (isDark ? '#f9fafb' : '#374151')};
+                font-size: 14px;
+                outline: none;
+                transition: all 0.2s ease;
+                font-family: inherit;
+            }
+
+            .gist-sidebar-input:focus {
+                border-color: ${styling.primaryColor || '#8b5cf6'};
+                background: ${isDark ? 'rgba(55, 65, 81, 0.8)' : '#ffffff'};
+                box-shadow: 0 0 0 2px ${styling.primaryColor || '#8b5cf6'}20;
+            }
+
+            .gist-sidebar-input::placeholder {
+                color: ${isDark ? '#9ca3af' : '#6b7280'};
+            }
+
+            .gist-sidebar-send-btn {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                background: ${styling.primaryColor || '#8b5cf6'};
+                border: none;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                flex-shrink: 0;
+            }
+
+            .gist-sidebar-send-btn:hover {
+                background: ${styling.secondaryColor || styling.primaryColor || '#7c3aed'};
+                transform: scale(1.05);
+            }
+
+            .gist-sidebar-send-btn svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            /* Sidebar Overlay */
+            .gist-sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.3);
+                z-index: 10001;
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+                transition: all 0.3s ease;
+            }
+
+            .gist-sidebar-overlay.visible {
+                opacity: 1;
+                visibility: visible;
+                pointer-events: auto;
+            }
+
+            /* Mobile Responsive for Sidebar */
+            @media (max-width: 768px) {
+                .gist-sidebar {
+                    width: 100vw;
+                    right: -100vw;
+                }
+                
+                .gist-sidebar.open {
+                    right: 0;
+                }
+                
+                .gist-sidebar-content {
+                    padding: 20px;
+                }
+            }
+
+            /* Chat Sidebar Styles */
+            .widget-sidebar {
+                position: fixed;
+                top: 0;
+                right: -400px;
+                width: 400px;
+                height: 100vh;
+                background: ${isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.98)'};
+                backdrop-filter: blur(10px);
+                border-left: 1px solid ${isDark ? 'rgba(55, 65, 81, 0.5)' : 'rgba(229, 231, 235, 0.5)'};
+                z-index: 10002;
+                display: flex;
+                flex-direction: column;
+                transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: ${isDark ? '-4px 0 20px rgba(0, 0, 0, 0.3)' : '-4px 0 20px rgba(0, 0, 0, 0.1)'};
+            }
+
+            .widget-sidebar.open {
+                right: 0;
+            }
+
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.3);
+                z-index: 10001;
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+                transition: all 0.3s ease;
+            }
+
+            .sidebar-overlay.visible {
+                opacity: 1;
+                visibility: visible;
+                pointer-events: auto;
+            }
+
+            .sidebar-header {
+                padding: 20px;
+                border-bottom: 1px solid ${isDark ? 'rgba(55, 65, 81, 0.5)' : 'rgba(229, 231, 235, 0.5)'};
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: ${isDark ? 'rgba(31, 41, 55, 0.8)' : 'rgba(248, 250, 252, 0.8)'};
+            }
+
+            .sidebar-header h3 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--text-color);
+            }
+
+            .sidebar-close {
+                width: 32px;
+                height: 32px;
+                border: none;
+                background: ${isDark ? 'rgba(107, 114, 128, 0.2)' : 'rgba(107, 114, 128, 0.1)'};
+                color: ${isDark ? '#d1d5db' : '#6b7280'};
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+            }
+
+            .sidebar-close:hover {
+                background: ${isDark ? 'rgba(107, 114, 128, 0.3)' : 'rgba(107, 114, 128, 0.2)'};
+                transform: scale(1.1);
+            }
+
+            .sidebar-content {
+                flex: 1;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+
+            .sidebar-welcome {
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+                margin-bottom: 20px;
+                padding: 16px;
+                background: ${isDark ? 'rgba(55, 65, 81, 0.3)' : 'rgba(248, 250, 252, 0.5)'};
+                border-radius: 12px;
+                border: 1px solid ${isDark ? 'rgba(75, 85, 99, 0.3)' : 'rgba(229, 231, 235, 0.5)'};
+            }
+
+            .sidebar-welcome .ai-avatar {
+                width: 32px;
+                height: 32px;
+                background: var(--theme-gradient);
+                color: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                font-size: 14px;
+                flex-shrink: 0;
+            }
+
+            .welcome-message {
+                flex: 1;
+                font-size: 14px;
+                line-height: 1.5;
+                color: var(--text-color);
+            }
+
+            .sidebar-messages {
+                flex: 1;
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                padding-right: 8px;
+            }
+
+            .sidebar-messages::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .sidebar-messages::-webkit-scrollbar-track {
+                background: ${isDark ? '#374151' : '#f1f5f9'};
+                border-radius: 3px;
+            }
+
+            .sidebar-messages::-webkit-scrollbar-thumb {
+                background: ${isDark ? '#6b7280' : '#cbd5e1'};
+                border-radius: 3px;
+            }
+
+            .sidebar-messages::-webkit-scrollbar-thumb:hover {
+                background: ${isDark ? '#9ca3af' : '#94a3b8'};
+            }
+
+            .chat-message {
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .chat-message.user {
+                flex-direction: row-reverse;
+            }
+
+            .chat-message .ai-avatar {
+                width: 32px;
+                height: 32px;
+                background: var(--theme-gradient);
+                color: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                font-size: 14px;
+                flex-shrink: 0;
+            }
+
+            .chat-message .message-content {
+                flex: 1;
+                max-width: 80%;
+            }
+
+            .chat-message .message-text {
+                padding: 12px 16px;
+                border-radius: 12px;
+                font-size: 14px;
+                line-height: 1.5;
+            }
+
+            .chat-message.user .message-text {
+                background: var(--theme-gradient);
+                color: white;
+                border-radius: 12px 12px 4px 12px;
+            }
+
+            .chat-message.ai .message-text {
+                background: ${isDark ? 'rgba(55, 65, 81, 0.5)' : 'rgba(248, 250, 252, 0.8)'};
+                color: var(--text-color);
+                border: 1px solid ${isDark ? 'rgba(75, 85, 99, 0.3)' : 'rgba(229, 231, 235, 0.5)'};
+                border-radius: 4px 12px 12px 12px;
+            }
+
+            .chat-message.loading .message-text {
+                opacity: 0.7;
+                font-style: italic;
+            }
+
+            .chat-message.error .message-text {
+                background: ${isDark ? 'rgba(239, 68, 68, 0.1)' : 'rgba(254, 226, 226, 0.8)'};
+                color: ${isDark ? '#fca5a5' : '#dc2626'};
+                border-color: ${isDark ? 'rgba(239, 68, 68, 0.3)' : 'rgba(239, 68, 68, 0.2)'};
+            }
+
+            .sidebar-footer {
+                padding: 16px 20px;
+                border-top: 1px solid ${isDark ? 'rgba(55, 65, 81, 0.5)' : 'rgba(229, 231, 235, 0.5)'};
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-size: 12px;
+                color: ${isDark ? '#9ca3af' : '#6b7280'};
+                background: ${isDark ? 'rgba(31, 41, 55, 0.8)' : 'rgba(248, 250, 252, 0.8)'};
+            }
+
+            .sidebar-footer .add-to-site {
+                color: var(--primary-color);
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+            .sidebar-footer .add-to-site:hover {
+                text-decoration: underline;
+            }
+
+            /* Mobile responsive for chat sidebar */
+            @media (max-width: 768px) {
+                .widget-sidebar {
+                    width: 100vw;
+                    right: -100vw;
+                }
+                
+                .widget-sidebar.open {
+                    right: 0;
+                }
+                
+                .sidebar-content {
+                    padding: 16px;
+                }
+                
+                .sidebar-header {
+                    padding: 16px;
+                }
+            }
+            
+            /* Sidebar Input Container */
+            .gist-sidebar-input-container {
+                padding: 16px;
+                border-top: 1px solid ${isDark ? 'rgba(75, 85, 99, 0.3)' : 'rgba(229, 231, 235, 0.5)'};
+                background: ${isDark ? 'rgba(31, 41, 55, 0.8)' : 'rgba(248, 250, 252, 0.8)'};
+                display: flex;
+                gap: 8px;
+                align-items: center;
+                backdrop-filter: blur(10px);
+            }
+
+            .gist-sidebar-input {
+                flex: 1;
+                padding: 10px 16px;
+                background: ${isDark ? 'rgba(55, 65, 81, 0.5)' : 'rgba(255, 255, 255, 0.8)'};
+                border: 1px solid ${isDark ? 'rgba(75, 85, 99, 0.3)' : 'rgba(229, 231, 235, 0.5)'};
+                border-radius: 24px;
+                color: ${styling.textColor || (isDark ? '#f9fafb' : '#374151')};
+                font-size: 14px;
+                outline: none;
+                transition: all 0.2s ease;
+                font-family: inherit;
+            }
+
+            .gist-sidebar-input:focus {
+                border-color: ${styling.primaryColor || '#8b5cf6'};
+                background: ${isDark ? 'rgba(55, 65, 81, 0.8)' : '#ffffff'};
+                box-shadow: 0 0 0 2px ${styling.primaryColor || '#8b5cf6'}20;
+            }
+
+            .gist-sidebar-input::placeholder {
+                color: ${isDark ? '#9ca3af' : '#6b7280'};
+            }
+
+            .gist-sidebar-send-btn {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                background: ${styling.primaryColor || '#8b5cf6'};
+                border: none;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                flex-shrink: 0;
+            }
+
+            .gist-sidebar-send-btn:hover {
+                background: ${styling.secondaryColor || styling.primaryColor || '#7c3aed'};
+                transform: scale(1.05);
+            }
+
+            .gist-sidebar-send-btn svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            /* Update sidebar content to account for input */
+            .gist-sidebar-content {
+                flex: 1;
+                padding: 24px;
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+                gap: 24px;
+                /* Remove bottom padding since input container has its own */
+                padding-bottom: 0;
+            }
 
         `;
     }
@@ -2469,7 +3304,7 @@
         const extractedStyling = await analyzeWebsiteStyling();
         const dynamicStyles = generateDynamicStyles(extractedStyling);
         // Extract website branding for dynamic placeholder
-        const siteBranding = extractWebsiteBranding();
+        const siteBranding = await extractWebsiteBranding();
         const placeholderText = `Ask ${siteBranding.name} anything...`;
         
         // Preload detected font
@@ -2481,55 +3316,81 @@
         
         const widgetHTML = `
             <style>${dynamicStyles}</style>
-            <div class="gist-widget" id="gist-widget">
-                <div class="gist-chat-container" id="gist-chat-container">
-                    <div class="gist-chat-header">
-                        <h3 class="gist-chat-title">Chat with Ask Anything™</h3>
-                        <button class="gist-close-btn" id="gist-close-btn">×</button>
-                    </div>
-                    <div class="gist-messages-container" id="gist-messages-container">
-                        <div class="gist-welcome-message">
-                            <div class="gist-ai-message">
-                                <div class="gist-ai-avatar">
-                                    <img src="${BACKEND_BASE_URL}/Gist G white no background.png" alt="AI" class="gist-avatar-img">
-                </div>
-                                <div class="gist-message-content">
-                                    <div class="gist-message-text">Hello! I'm here to help you understand this content. What would you like to know?</div>
-                                    <div id="gist-welcome-questions" class="gist-suggested-questions hidden"></div>
-                    </div>
-                </div>
-                </div>
-                        </div>
-                    <div class="gist-chat-footer">
-                        <div class="gist-powered-section">
-                            <img src="${BACKEND_BASE_URL}/gist-logo.png" alt="Gist Logo" class="gist-footer-logo">
-                            <span>Powered by Gist Answers</span>
-                        </div>
-                        <a href="https://gpademo.vercel.app" target="_blank" class="gist-add-to-site">Add to your site</a>
-                    </div>
+            <!-- Main Widget Container -->
+            <div class="widget-container" id="widget-container">
+                <!-- Collapsible search bar -->
+                <div class="widget-search-bar collapsed" id="widget-search-bar">
+                    <!-- Website logo (visible in collapsed state) -->
+                    <div class="widget-logo" id="widget-logo">
+                        ${siteBranding.faviconUrl ? 
+                            `<img src="${siteBranding.faviconUrl}" alt="${siteBranding.name}" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                             <span class="logo-text" style="display: none;">${siteBranding.name.charAt(0).toUpperCase()}</span>` : 
+                            `<span class="logo-text">${siteBranding.name.charAt(0).toUpperCase()}</span>`
+                        }
                 </div>
                 
-                <div class="gist-pill-container" id="gist-pill-container">
-                    <div class="gist-pill" id="gist-pill">
-                        ${extractedStyling.logoUrl ? 
-                            `<img src="${extractedStyling.logoUrl}" class="gist-pill-logo" alt="Logo">` :
-                            `<div class="gist-pill-logo gist-default-logo">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <circle cx="10" cy="10" r="8" fill="#8b5cf6" stroke="#ffffff" stroke-width="2"/>
-                                    <text x="10" y="14" text-anchor="middle" fill="white" font-size="10" font-weight="bold">?</text>
-                                </svg>
-                            </div>`
-                        }
-                        <input type="text" class="gist-pill-input branded-input" placeholder="${placeholderText}" id="gist-input" style="font-family: ${siteBranding.font}, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-                        <button class="gist-pill-submit" id="gist-submit">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="gist-submit-arrow">
-                                <circle cx="10" cy="10" r="10" fill="#000000"/>
-                                <path d="M6 14L14 6M14 6H8M14 6V12" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
+                    <!-- Search input (hidden when collapsed) -->
+                    <input 
+                        type="text" 
+                        class="widget-search-input" 
+                        placeholder="${placeholderText}" 
+                        id="widget-search-input"
+                        style="font-family: ${siteBranding.font}, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;"
+                    >
+                    
+                    <!-- Arrow button (always visible) -->
+                    <button class="widget-arrow-btn" id="widget-arrow-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m9 18 6-6-6-6"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Floating suggested questions -->
+                <div class="floating-suggestions" id="floating-suggestions">
+                    <div class="suggestions-loading">Loading suggestions...</div>
+                </div>
+            </div>
+            
+            <!-- Chat Sidebar -->
+            <div class="gist-sidebar-overlay" id="gist-sidebar-overlay"></div>
+            <div class="gist-sidebar" id="gist-sidebar">
+                <div class="gist-sidebar-header">
+                    <h3>Chat with ${siteBranding.name || 'Ask Anything™'}</h3>
+                    <button class="gist-sidebar-close" id="gist-sidebar-close">×</button>
+                </div>
+                <div class="gist-sidebar-content" id="gist-sidebar-content">
+                    <!-- Suggested questions section (shown when sidebar first opens) -->
+                    <div class="gist-sidebar-suggestions" id="gist-sidebar-suggestions">
+                        <h4>Suggested Questions</h4>
+                        <div class="gist-suggestions-loading">Loading suggestions...</div>
                     </div>
                     
-
+                    <!-- Messages container (for Q&A sessions) -->
+                    <div class="gist-sidebar-messages" id="gist-sidebar-messages"></div>
+                </div>
+                
+                <!-- Input container at bottom of sidebar -->
+                <div class="gist-sidebar-input-container">
+                    <input 
+                        type="text" 
+                        class="gist-sidebar-input" 
+                        placeholder="${placeholderText}" 
+                        id="gist-sidebar-input"
+                    >
+                    <button class="gist-sidebar-send-btn" id="gist-sidebar-send">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m22 2-7 20-4-9-9-4 20-7z"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="gist-sidebar-footer">
+                    <div class="gist-powered-section">
+                        <img src="${BACKEND_BASE_URL}/gist-logo.png" alt="Gist Logo" class="gist-footer-logo">
+                        <span>Powered by Gist Answers</span>
+                    </div>
+                    <a href="https://gpademo.vercel.app" target="_blank" class="gist-add-to-site">Add to your site</a>
                 </div>
             </div>
         `;
@@ -2538,15 +3399,24 @@
         document.body.appendChild(widgetContainer);
         
         // Get elements
-        const widget = shadowRoot.getElementById('gist-widget');
-        const pillContainer = shadowRoot.getElementById('gist-pill-container');
-        const pill = shadowRoot.getElementById('gist-pill');
-        const input = shadowRoot.getElementById('gist-input');
-        const submitBtn = shadowRoot.getElementById('gist-submit');
-        const closeBtn = shadowRoot.getElementById('gist-close-btn');
-        const chatContainer = shadowRoot.getElementById('gist-chat-container');
-        const messagesContainer = shadowRoot.getElementById('gist-messages-container');
+        const widget = shadowRoot.getElementById('widget-container');
+        const searchBar = shadowRoot.getElementById('widget-search-bar');
+        const input = shadowRoot.getElementById('widget-search-input');
+        const arrowBtn = shadowRoot.getElementById('widget-arrow-btn');
+        const logo = shadowRoot.getElementById('widget-logo');
+        const floatingSuggestions = shadowRoot.getElementById('floating-suggestions');
 
+        // IMPORTANT: Ensure floating suggestions start hidden
+        if (floatingSuggestions) {
+            floatingSuggestions.classList.remove('visible');
+            console.log('[WIDGET] Floating suggestions initialized as hidden');
+        }
+
+        // Ensure widget starts in collapsed state
+        if (searchBar) {
+            searchBar.classList.add('collapsed');
+            console.log('[WIDGET] Search bar initialized as collapsed');
+        }
         
         // State
         let isMinimized = true;
@@ -2555,6 +3425,12 @@
         let submitTimeout = null;
         let messageHistory = [];
         let hasUserSentMessage = false;
+
+        // Sidebar hover detection state
+        let sidebarHasBeenOpened = false;
+        let rightEdgeHoverTimeout = null;
+        let sidebarCloseTimeout = null;
+        let isHoveringRightEdge = false;
 
         
         // ================================
@@ -2689,12 +3565,18 @@
         // WEBSITE BRANDING DETECTION
         // ================================
         
-        function extractWebsiteBranding() {
+        async function extractWebsiteBranding() {
             console.log('[GIST BRANDING] Starting website name detection...');
             
             let siteName = '';
             let siteFont = '';
             let detectionMethod = '';
+            let faviconUrl = null;
+            
+            // Extract favicon first
+            const logos = await extractLogosAndIcons();
+            faviconUrl = logos.favicon;
+            console.log('[GIST BRANDING] Favicon detected:', faviconUrl);
             
             // Method 1: Enhanced Logo/Brand Element Detection
             const logoSelectors = [
@@ -2835,7 +3717,8 @@
             const result = {
                 name: siteName || 'this site',
                 font: siteFont || 'inherit',
-                method: detectionMethod || 'fallback'
+                method: detectionMethod || 'fallback',
+                faviconUrl: faviconUrl
             };
             
             console.log('[GIST BRANDING] 🎯 FINAL RESULT:', result);
@@ -3421,7 +4304,7 @@ Return exactly 3 questions, one per line, no numbering:`;
             `;
             
             loadingContainer.innerHTML = loadingHTML;
-            messagesContainer.appendChild(loadingContainer);
+            sidebarMessages.appendChild(loadingContainer);
             
             // Scroll to loading
             setTimeout(() => {
@@ -3647,10 +4530,10 @@ Return exactly 3 questions, one per line, no numbering:`;
                     });
                 }, 100);
             
-                            // Scroll to show the new answer
+                // Scroll to show the new answer
             setTimeout(() => {
-                answerLayout.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
+                    answerLayout.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
             }
         }
 
@@ -3830,6 +4713,13 @@ Return exactly 3 questions, one per line, no numbering:`;
 
         // Remove welcome questions section
         function removeWelcomeQuestions() {
+            // Get the messages container from shadow DOM
+            const messagesContainer = shadowRoot.getElementById('gist-sidebar-messages');
+            if (!messagesContainer) {
+                console.warn('[WIDGET] Could not find messages container to remove welcome questions');
+                return;
+            }
+            
             const welcomeQuestions = messagesContainer.querySelector('#gist-welcome-questions');
             if (welcomeQuestions) {
                 // Add fade-out animation
@@ -3838,7 +4728,7 @@ Return exactly 3 questions, one per line, no numbering:`;
                 welcomeQuestions.style.transform = 'translateY(-10px)';
                 
                 // Remove from DOM after animation
-            setTimeout(() => {
+                setTimeout(() => {
                     welcomeQuestions.remove();
                 }, 300);
             }
@@ -3846,6 +4736,13 @@ Return exactly 3 questions, one per line, no numbering:`;
 
         // Remove entire welcome message section including greeting
         function removeWelcomeMessage() {
+            // Get the messages container from shadow DOM
+            const messagesContainer = shadowRoot.getElementById('gist-sidebar-messages');
+            if (!messagesContainer) {
+                console.warn('[WIDGET] Could not find messages container to remove welcome message');
+                return;
+            }
+            
             const welcomeMessage = messagesContainer.querySelector('.gist-welcome-message');
             if (welcomeMessage) {
                 // Add fade-out animation
@@ -5230,188 +6127,686 @@ Return exactly 3 questions, one per line, no numbering:`;
         }
 
         
-        // Submit query
-
-
-        async function submitQuery() {
-            const query = input.value.trim();
-            if (!query) return;
-            
-            // Store the last user question for remix modal
-            window.lastUserQuestion = query;
-            
-            // Add rotation animation
-            const submitBtn = shadowRoot.getElementById('gist-submit');
-            submitBtn.classList.add('rotating');
-            
-            // Remove rotation class after animation
-            setTimeout(() => {
-                submitBtn.classList.remove('rotating');
-            }, 600);
-            
-            if (submitTimeout) {
-                clearTimeout(submitTimeout);
-            }
-            
-            // Track the message for context but don't display it
-            addUserMessage(query);
-            
-            // Clear input and update placeholder
-            input.value = '';
-            
-            if (!hasUserSentMessage) {
-                hasUserSentMessage = true;
-                input.placeholder = 'Ask a follow-up...';
-                removeWelcomeMessage(); // Remove entire welcome message including greeting
-            }
-            
-            // Process query immediately with loading phases
-            submitTimeout = setTimeout(async () => {
-                await processUserQuery(query);
-            }, WIDGET_CONFIG.DEBOUNCE_MS);
-        }
+        // ================================
+        // SIDEBAR FUNCTIONS
+        // ================================
         
-        // Widget state management
-        function expandWidget() {
-            if (!isMinimized) return;
-            isMinimized = false;
-            widget.classList.remove('minimized');
-            chatContainer.classList.add('visible');
-        }
-        
-        function minimizeWidget() {
-            if (isMinimized) return;
-            isMinimized = true;
-            widget.classList.add('minimized');
-            chatContainer.classList.remove('visible');
-        }
-        
-        // Event listeners
-        pill.addEventListener('click', () => {
-            expandWidget();
-            input.focus();
-        });
-        
-        input.addEventListener('focus', () => {
-            expandWidget();
-        });
-        
-
-        
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                // Trigger button animation even on Enter key
-                const submitBtn = shadowRoot.getElementById('gist-submit');
-                submitBtn.classList.add('rotating');
+        function openSidebar() {
+            console.log('[WIDGET] Opening sidebar');
+            sidebarHasBeenOpened = true; // Track that sidebar has been opened
+            if (sidebar && sidebarOverlay) {
+                // Debug positioning
+                const sidebarRect = sidebar.getBoundingClientRect();
+                console.log('[WIDGET] Sidebar position before open:', {
+                    right: sidebarRect.right,
+                    left: sidebarRect.left,
+                    width: sidebarRect.width,
+                    viewportWidth: window.innerWidth
+                });
+                
+                // Add classes to slide in from right
+                sidebar.classList.add('open');
+                sidebarOverlay.classList.add('visible');
+                
+                // Debug positioning after open
                 setTimeout(() => {
-                    submitBtn.classList.remove('rotating');
-                }, 600);
-                submitQuery();
-            } else if (e.key === 'Escape') {
-                input.blur();
-            }
-        });
-        
-        submitBtn.addEventListener('click', submitQuery);
-        
-        closeBtn.addEventListener('click', () => {
-            minimizeWidget();
-            input.blur();
-        });
-        
-        chatContainer.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
-        
-        // Click outside to minimize
-        document.addEventListener('click', (e) => {
-            if (!widgetContainer.contains(e.target)) {
-                setTimeout(minimizeWidget, 100);
-            }
-        });
-        
-
-        
-        // Initialize welcome suggested questions with loading state
-        const welcomeQuestions = shadowRoot.getElementById('gist-welcome-questions');
-        
-        // Show loading state immediately
-        if (welcomeQuestions) {
-            welcomeQuestions.classList.add('loading');
-            welcomeQuestions.classList.remove('hidden');
-            welcomeQuestions.innerHTML = `
-                <div class="gist-loading-text">Analyzing page content...</div>
-                <div class="gist-skeleton-questions">
-                    <div class="gist-skeleton-question"></div>
-                    <div class="gist-skeleton-question"></div>
-                    <div class="gist-skeleton-question"></div>
-                </div>
-            `;
-        }
-        
-        // Generate questions with minimum delay
-        const startTime = Date.now();
-        generateSuggestedQuestions().then(questions => {
-            const elapsedTime = Date.now() - startTime;
-            const minDelay = 2000; // Minimum 2 seconds total
-            const remainingDelay = Math.max(0, minDelay - elapsedTime);
-            
-            setTimeout(() => {
-                if (questions.length > 0 && welcomeQuestions) {
-                    // Remove loading state and show questions
-                    welcomeQuestions.classList.remove('loading');
-                    
-                    let questionsHTML = `<div class="gist-suggested-questions-title">Try asking:</div>`;
-                    
-                    questions.forEach((question, i) => {
-                        questionsHTML += `
-                            <button class="gist-suggested-question" data-question="${question}">
-                                <span class="gist-suggested-question-text">${question}</span>
-                            </button>
-                        `;
+                    const sidebarRectAfter = sidebar.getBoundingClientRect();
+                    console.log('[WIDGET] Sidebar position after open:', {
+                        right: sidebarRectAfter.right,
+                        left: sidebarRectAfter.left,
+                        width: sidebarRectAfter.width,
+                        viewportWidth: window.innerWidth
                     });
+                }, 100);
+                
+                // Load suggested questions if not already loaded
+                loadSidebarSuggestions();
+                
+                console.log('[WIDGET] Sidebar opened successfully');
+            } else {
+                console.error('[WIDGET] Could not find sidebar or overlay elements');
+            }
+        }
+
+        function closeSidebar() {
+            console.log('[WIDGET] Closing sidebar');
+            if (sidebar && sidebarOverlay) {
+                // Remove classes to slide out to right
+                sidebar.classList.remove('open');
+                sidebarOverlay.classList.remove('visible');
+                
+                console.log('[WIDGET] Sidebar closed successfully');
+            } else {
+                console.error('[WIDGET] Could not find sidebar or overlay elements');
+            }
+        }
+
+        async function loadSidebarSuggestions() {
+            const suggestionsContainer = shadowRoot.querySelector('.gist-sidebar-suggestions');
+            if (!suggestionsContainer) {
+                console.log('[WIDGET] No suggestions container found in sidebar');
+                return;
+            }
+            
+            try {
+                // Use existing generateSuggestedQuestions function
+                const questions = await generateSuggestedQuestions();
+                
+                if (questions.length > 0) {
+                    suggestionsContainer.innerHTML = questions.map(question => `
+                        <div class="gist-sidebar-suggestion" data-question="${question}">
+                            ${question}
+                        </div>
+                    `).join('');
                     
-                    welcomeQuestions.innerHTML = questionsHTML;
-                    
-                    // Trigger fade-in animation
-                            setTimeout(() => {
-                        welcomeQuestions.style.opacity = '1';
-                        welcomeQuestions.style.transform = 'translateY(0)';
-                    }, 50);
-                    
-                    // Add event listeners to welcome questions
-                    const questionButtons = welcomeQuestions.querySelectorAll('.gist-suggested-question');
-                    questionButtons.forEach(button => {
-                        button.addEventListener('click', () => {
-                            const question = button.dataset.question;
-                            
-                            // Remove entire welcome message when user clicks a suggestion
-                            if (!hasUserSentMessage) {
-                                hasUserSentMessage = true;
-                                removeWelcomeMessage(); // Remove entire welcome message including greeting
-                            }
-                            
-                            input.value = question;
-                            submitQuery();
+                    // Add click handlers
+                    suggestionsContainer.querySelectorAll('.gist-sidebar-suggestion').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const question = btn.dataset.question;
+                            console.log('[WIDGET] Sidebar suggestion clicked:', question);
+                            // Process the question in sidebar
+                            processSidebarQuestion(question);
                         });
                     });
+                    
+                    console.log('[WIDGET] Loaded', questions.length, 'sidebar suggestions with click handlers');
                 } else {
-                    // Hide section if no valid questions generated
-                    if (welcomeQuestions) {
-                        welcomeQuestions.classList.add('hidden');
-                        welcomeQuestions.classList.remove('loading');
+                    suggestionsContainer.innerHTML = '<div class="gist-suggestions-loading">No suggestions available</div>';
+                }
+            } catch (error) {
+                console.error('[WIDGET] Error loading sidebar suggestions:', error);
+                suggestionsContainer.innerHTML = '<div class="gist-suggestions-loading">Unable to load suggestions</div>';
+            }
+        }
+
+        async function processSidebarQuestion(question) {
+            console.log('[WIDGET] processSidebarQuestion called with:', question);
+            
+            const messagesContainer = shadowRoot.getElementById('gist-sidebar-messages');
+            const suggestionsSection = shadowRoot.getElementById('gist-sidebar-suggestions');
+            
+            console.log('[WIDGET] Elements found:', {
+                messagesContainer: !!messagesContainer,
+                suggestionsSection: !!suggestionsSection
+            });
+            
+            if (!messagesContainer) {
+                console.error('[WIDGET] No messages container found! Cannot process question.');
+                return;
+            }
+            
+            // Hide suggestions section when processing a question
+            if (suggestionsSection) {
+                console.log('[WIDGET] Hiding suggestions section');
+                suggestionsSection.style.display = 'none';
+            }
+            
+            // Add the question to conversation history for context
+            console.log('[WIDGET] Adding user message to history');
+            addUserMessage(question);
+            
+            // Remove welcome message if this is the first user message
+            if (!hasUserSentMessage) {
+                console.log('[WIDGET] First user message - removing welcome message');
+                hasUserSentMessage = true;
+                removeWelcomeMessage();
+            }
+            
+            try {
+                console.log('[WIDGET] Creating loading container');
+                // Create a container for this Q&A session
+                const loadingContainer = document.createElement('div');
+                loadingContainer.className = 'gist-qa-session';
+                loadingContainer.id = 'current-loading-session';
+                
+                // Phase 1: Skeleton loading
+                console.log('[WIDGET] Starting Phase 1: Skeleton loading');
+                const skeletonHTML = `
+                    <div class="gist-loading-phase">
+                        <div class="gist-loading-header">
+                            <div class="gist-loading-spinner-orange"></div>
+                            <span>Generating answer</span>
+                        </div>
+                        <div class="gist-skeleton-container">
+                            <div class="gist-skeleton-box" style="width: 85%;"></div>
+                            <div class="gist-skeleton-box" style="width: 70%;"></div>
+                            <div class="gist-skeleton-box" style="width: 90%;"></div>
+                            <div class="gist-skeleton-box" style="width: 60%;"></div>
+                            <div class="gist-skeleton-box" style="width: 75%;"></div>
+                        </div>
+                    </div>
+                `;
+                
+                loadingContainer.innerHTML = skeletonHTML;
+                messagesContainer.appendChild(loadingContainer);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                
+                console.log('[WIDGET] Loading container added to DOM, waiting for SKELETON_DURATION');
+                await delay(WIDGET_CONFIG.SKELETON_DURATION);
+                
+                // Phase 2: Obtaining sources
+                loadingContainer.innerHTML = `
+                    <div class="gist-loading-phase">
+                        <div class="gist-loading-header">
+                            <div class="gist-loading-spinner-orange"></div>
+                            <span>Obtaining sources</span>
+                        </div>
+                    </div>
+                `;
+                
+                await delay(WIDGET_CONFIG.SOURCES_DURATION);
+                
+                // Phase 3: Generating answer
+                loadingContainer.innerHTML = `
+                    <div class="gist-loading-phase">
+                        <div class="gist-loading-header">
+                            <div class="gist-loading-spinner-orange"></div>
+                            <span>Generating answer</span>
+                        </div>
+                    </div>
+                `;
+                
+                await delay(WIDGET_CONFIG.GENERATING_DURATION);
+                
+                // Get API response
+                const response = await createChatCompletion(question);
+                const sources = generateMockAttributions();
+                
+                // Phase 4: Display final answer with rich layout
+                loadingContainer.removeAttribute('id');
+                loadingContainer.innerHTML = ''; // Clear loading
+                
+                // Create the answer layout
+                const answerLayout = document.createElement('div');
+                answerLayout.className = 'gist-answer-page';
+                
+                // Add question as title
+                const titleElement = document.createElement('h1');
+                titleElement.className = 'gist-answer-title';
+                titleElement.textContent = question.toLowerCase();
+                answerLayout.appendChild(titleElement);
+                
+                // Add sources bar
+                if (sources && sources.length > 0) {
+                    const sourcesBarContainer = document.createElement('div');
+                    sourcesBarContainer.className = 'gist-sources-bar';
+                    
+                    // Attribution bar
+                    const attributionBar = document.createElement('div');
+                    attributionBar.className = 'gist-attribution-bar';
+                    
+                    sources.forEach(source => {
+                        const segment = document.createElement('div');
+                        segment.className = 'gist-attribution-segment';
+                        segment.style.width = `${source.percentage * 100}%`;
+                        segment.style.backgroundColor = source.color;
+                        segment.title = `${source.name}: ${(source.percentage * 100).toFixed(1)}%`;
+                        attributionBar.appendChild(segment);
+                    });
+                    
+                    sourcesBarContainer.appendChild(attributionBar);
+                    
+                    // Sources list
+                    const sourcesList = document.createElement('div');
+                    sourcesList.className = 'gist-sources-list';
+                    
+                    sources.forEach(source => {
+                        const sourceItem = document.createElement('div');
+                        sourceItem.className = 'gist-source-item';
+                        sourceItem.innerHTML = `
+                            <div class="gist-source-color" style="background-color: ${source.color};"></div>
+                            <span>${(source.percentage * 100).toFixed(0)}% ${source.name}</span>
+                        `;
+                        sourcesList.appendChild(sourceItem);
+                    });
+                    
+                    sourcesBarContainer.appendChild(sourcesList);
+                    answerLayout.appendChild(sourcesBarContainer);
+                }
+                
+                // Add content container for typewriter
+                const contentElement = document.createElement('div');
+                contentElement.className = 'gist-answer-content';
+                const uniqueId = `typewriter-target-${Date.now()}`;
+                contentElement.id = uniqueId;
+                answerLayout.appendChild(contentElement);
+                
+                // Add engagement footer with buttons
+                const engagementFooter = document.createElement('div');
+                engagementFooter.className = 'gist-engagement-footer hidden';
+                engagementFooter.innerHTML = `
+                    <div class="gist-engagement-buttons">
+                        <button class="gist-engagement-btn gist-like-btn" title="Like">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                            </svg>
+                        </button>
+                        <button class="gist-engagement-btn gist-dislike-btn" title="Dislike">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path>
+                            </svg>
+                        </button>
+                        <button class="gist-engagement-btn gist-share-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                                <polyline points="16 6 12 2 8 6"></polyline>
+                                <line x1="12" y1="2" x2="12" y2="15"></line>
+                            </svg>
+                            <span>Share</span>
+                        </button>
+                        <button class="gist-engagement-btn gist-remix-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 7l-7 5 7 5V7z"></path>
+                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                            </svg>
+                            <span>Remix</span>
+                        </button>
+                    </div>
+                `;
+                answerLayout.appendChild(engagementFooter);
+                
+                // Add suggested questions section after engagement footer
+                const suggestedQuestionsSection = document.createElement('div');
+                suggestedQuestionsSection.className = 'gist-follow-up-questions hidden';
+                suggestedQuestionsSection.innerHTML = `
+                    <div class="gist-follow-up-title">Ask a follow-up question:</div>
+                    <div class="gist-follow-up-loading">Generating relevant questions...</div>
+                `;
+                answerLayout.appendChild(suggestedQuestionsSection);
+                
+                // Build answer inside the container
+                loadingContainer.appendChild(answerLayout);
+                
+                // Start typewriter effect
+                typewriterEffect(response.answer, uniqueId, () => {
+                    const footer = loadingContainer.querySelector('.gist-engagement-footer');
+                    if (footer) {
+                        footer.classList.remove('hidden');
+                        footer.classList.add('fade-in');
+                    }
+                });
+                
+                // Generate and add follow-up questions after typewriter completes
+                setTimeout(async () => {
+                    setTimeout(() => {
+                        suggestedQuestionsSection.classList.remove('hidden');
+                        addFollowUpQuestions(suggestedQuestionsSection, question, response.answer);
+                    }, 200);
+                }, response.answer.length * 5 + 500);
+                
+                // Add event listeners for engagement buttons
+                setTimeout(() => {
+                    const likeBtn = engagementFooter.querySelector('.gist-like-btn');
+                    const dislikeBtn = engagementFooter.querySelector('.gist-dislike-btn');
+                    const shareBtn = engagementFooter.querySelector('.gist-share-btn');
+                    const remixBtn = engagementFooter.querySelector('.gist-remix-btn');
+                    
+                    if (likeBtn) {
+                        likeBtn.addEventListener('click', () => {
+                            likeBtn.classList.toggle('active');
+                            if (likeBtn.classList.contains('active')) {
+                                dislikeBtn.classList.remove('active');
+                            }
+                        });
+                    }
+                    
+                    if (dislikeBtn) {
+                        dislikeBtn.addEventListener('click', () => {
+                            dislikeBtn.classList.toggle('active');
+                            if (dislikeBtn.classList.contains('active')) {
+                                likeBtn.classList.remove('active');
+                            }
+                        });
+                    }
+                    
+                    if (shareBtn) {
+                        shareBtn.addEventListener('click', async () => {
+                            if (navigator.share) {
+                                try {
+                                    await navigator.share({
+                                        title: question,
+                                        text: response.answer.substring(0, 200) + '...',
+                                        url: window.location.href
+                                    });
+                                } catch (err) {
+                                    console.log('Share cancelled');
+                                }
+                            } else {
+                                navigator.clipboard.writeText(window.location.href);
+                                shareBtn.innerHTML = `
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 6L9 17l-5-5"></path>
+                                    </svg>
+                                    <span>Copied!</span>
+                                `;
+                                setTimeout(() => {
+                                    shareBtn.innerHTML = `
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                                            <polyline points="16 6 12 2 8 6"></polyline>
+                                            <line x1="12" y1="2" x2="12" y2="15"></line>
+                                        </svg>
+                                        <span>Share</span>
+                                    `;
+                                }, 2000);
+                            }
+                        });
+                    }
+                    
+                    if (remixBtn) {
+                        remixBtn.addEventListener('click', () => {
+                            createRemixModal(response.answer);
+                        });
+                    }
+                }, 100);
+                
+                // Scroll to show the new answer
+                setTimeout(() => {
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 100);
+                
+            } catch (error) {
+                console.error('[WIDGET] Error processing question:', error);
+                
+                // Add error message
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'gist-ai-message error';
+                errorMessage.innerHTML = `
+                    <div class="gist-ai-avatar">G</div>
+                    <div class="gist-message-content">
+                        <div class="gist-message-text">Sorry, I encountered an error processing your question. Please try again.</div>
+                    </div>
+                `;
+                messagesContainer.appendChild(errorMessage);
+                
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+
+        // Collapsible Widget Setup with Floating Suggestions
+        function setupCollapsibleWidget() {
+            let isExpanded = false;
+            let suggestionsVisible = false;
+            
+            function toggleWidget() {
+                isExpanded = !isExpanded;
+                
+                if (isExpanded) {
+                    searchBar.classList.remove('collapsed');
+                    searchBar.classList.add('expanded');
+                    
+                    // Focus input and show suggestions after animation
+                    setTimeout(() => {
+                        input.focus();
+                        showFloatingSuggestions();
+                    }, 300);
+            } else {
+                    searchBar.classList.remove('expanded');
+                    searchBar.classList.add('collapsed');
+                    
+                    // Hide suggestions and clear input
+                    hideFloatingSuggestions();
+                    input.value = '';
+                    input.blur();
+                }
+                
+                console.log('[WIDGET] Widget toggled:', isExpanded ? 'expanded' : 'collapsed');
+            }
+            
+            function showFloatingSuggestions() {
+                if (!suggestionsVisible && floatingSuggestions) {
+                    suggestionsVisible = true;
+                    floatingSuggestions.classList.add('visible');
+                    loadFloatingSuggestions();
+                    console.log('[WIDGET] Floating suggestions shown');
+                }
+            }
+            
+            function hideFloatingSuggestions() {
+                if (suggestionsVisible && floatingSuggestions) {
+                    suggestionsVisible = false;
+                    floatingSuggestions.classList.remove('visible');
+                    console.log('[WIDGET] Floating suggestions hidden');
+                }
+            }
+            
+            // Click handler for the entire search bar when collapsed
+            searchBar.addEventListener('click', (e) => {
+                if (!isExpanded) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleWidget();
+                }
+            });
+            
+            // Specific click handler for logo (favicon) when collapsed
+            if (logo) {
+                logo.addEventListener('click', (e) => {
+                    if (!isExpanded) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('[WIDGET] Logo/favicon clicked - expanding widget');
+                        toggleWidget();
+                    }
+                });
+            }
+            
+            // Click handler for arrow button
+            arrowBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (isExpanded) {
+                    const question = input.value.trim();
+                    
+                    if (question) {
+                        console.log('[WIDGET] Arrow clicked with question - opening chat:', question);
+                        openChatWithQuestion(question);
+                    } else {
+                        // Otherwise collapse
+                        toggleWidget();
+                    }
+                } else {
+                    // If collapsed, expand
+                    toggleWidget();
+                }
+            });
+            
+            // Prevent input clicks from bubbling when expanded
+            input.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+            
+            // Handle Enter key
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const question = e.target.value.trim();
+                    
+                    if (question) {
+                        console.log('[WIDGET] Enter pressed with question - opening chat:', question);
+                        openChatWithQuestion(question);
                     }
                 }
-            }, remainingDelay);
-        }).catch(error => {
-            console.error('Failed to generate suggested questions:', error);
-            // Hide section on error
-            if (welcomeQuestions) {
-                welcomeQuestions.classList.add('hidden');
-                welcomeQuestions.classList.remove('loading');
+                
+                if (e.key === 'Escape') {
+                    toggleWidget();
+                }
+            });
+            
+            // Close on click outside
+            document.addEventListener('click', (e) => {
+                if (isExpanded && !searchBar.contains(e.target) && !floatingSuggestions.contains(e.target)) {
+                    toggleWidget();
+                }
+            });
+        }
+        
+        // Load floating suggestions function
+        async function loadFloatingSuggestions() {
+            const container = shadowRoot.getElementById('floating-suggestions');
+            if (!container) return;
+            
+            try {
+                // Show loading state
+                container.innerHTML = '<div class="suggestions-loading">Loading suggestions...</div>';
+                
+                // Generate questions using existing function
+                const questions = await generateSuggestedQuestions();
+                
+                if (questions.length > 0) {
+                    // Create floating suggestion buttons
+                    container.innerHTML = questions.map(question => `
+                        <button class="floating-suggestion" data-question="${question}">
+                            ${question}
+                        </button>
+                    `).join('');
+                    
+                    // Add click handlers
+                    container.querySelectorAll('.floating-suggestion').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            const question = btn.dataset.question;
+                            const searchInput = shadowRoot.getElementById('widget-search-input');
+                            
+                            // Fill input with question
+                            searchInput.value = question;
+                            
+                            // Automatically open chat and process question
+                            setTimeout(() => {
+                                console.log('[WIDGET] Question selected from suggestions - opening chat:', question);
+                                openChatWithQuestion(question);
+                            }, 100);
+                        });
+                    });
+                    
+                } else {
+                    container.innerHTML = '<div class="suggestions-loading">No suggestions available</div>';
+                }
+                
+            } catch (error) {
+                console.error('[WIDGET] Failed to load suggestions:', error);
+                container.innerHTML = '<div class="suggestions-loading">Unable to load suggestions</div>';
             }
-        });
+        }
+        
+        // Initialize collapsible functionality
+        setupCollapsibleWidget();
+        
+        // Define and setup chat functions
+        function openChatWithQuestion(question) {
+            console.log('[WIDGET] Opening chat with question:', question);
+            
+            // First, collapse the search widget and hide suggestions
+            if (searchBar) {
+                searchBar.classList.add('collapsed');
+                searchBar.classList.remove('expanded');
+            }
+            
+            if (floatingSuggestions) {
+                floatingSuggestions.classList.remove('visible');
+            }
+            
+            // Clear and collapse the input
+            if (input) {
+                input.value = '';
+                input.blur();
+            }
+            
+            // Open the sidebar
+            const sidebar = shadowRoot.getElementById('gist-sidebar');
+            const overlay = shadowRoot.getElementById('gist-sidebar-overlay');
+            const messagesContainer = shadowRoot.getElementById('gist-sidebar-messages');
+            const suggestionsSection = shadowRoot.getElementById('gist-sidebar-suggestions');
+            
+            console.log('[WIDGET] Sidebar elements check:', {
+                sidebar: !!sidebar,
+                overlay: !!overlay,
+                messagesContainer: !!messagesContainer,
+                suggestionsSection: !!suggestionsSection
+            });
+            
+            if (sidebar && overlay) {
+                console.log('[WIDGET] Starting sidebar animation...');
+                sidebar.classList.add('open');
+                overlay.classList.add('visible');
+                
+                // Wait for the full sidebar animation to complete (400ms + small buffer)
+                setTimeout(() => {
+                    console.log('[WIDGET] Sidebar animation complete, processing question:', question);
+                    // Double-check elements are still available after animation
+                    const messagesContainerAfter = shadowRoot.getElementById('gist-sidebar-messages');
+                    console.log('[WIDGET] Messages container after animation:', !!messagesContainerAfter);
+                    processSidebarQuestion(question);
+                }, 450); // 450ms to ensure animation is fully complete
+            } else {
+                console.error('[WIDGET] Missing sidebar elements:', { sidebar: !!sidebar, overlay: !!overlay });
+            }
+        }
+
+        // Setup sidebar event handlers
+        function setupSidebarHandlers() {
+            const sidebar = shadowRoot.getElementById('gist-sidebar');
+            const overlay = shadowRoot.getElementById('gist-sidebar-overlay');
+            const closeBtn = shadowRoot.getElementById('gist-sidebar-close');
+            const sidebarInput = shadowRoot.getElementById('gist-sidebar-input');
+            const sidebarSendBtn = shadowRoot.getElementById('gist-sidebar-send');
+            
+            // Close button handler
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    if (sidebar) sidebar.classList.remove('open');
+                    if (overlay) overlay.classList.remove('visible');
+                });
+            }
+            
+            // Overlay click handler
+            if (overlay) {
+                overlay.addEventListener('click', () => {
+                    if (sidebar) sidebar.classList.remove('open');
+                    overlay.classList.remove('visible');
+                });
+            }
+            
+            // Sidebar input event handlers
+            if (sidebarInput && sidebarSendBtn) {
+                // Send button click
+                sidebarSendBtn.addEventListener('click', () => {
+                    const question = sidebarInput.value.trim();
+                    if (question) {
+                        console.log('[WIDGET] Send button clicked with question:', question);
+                        processSidebarQuestion(question);
+                        sidebarInput.value = '';
+                    }
+                });
+                
+                // Enter key handler
+                sidebarInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        const question = sidebarInput.value.trim();
+                        if (question) {
+                            console.log('[WIDGET] Enter key pressed with question:', question);
+                            processSidebarQuestion(question);
+                            sidebarInput.value = '';
+                        }
+                    }
+                });
+            }
+            
+            // ESC key handler
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
+                    sidebar.classList.remove('open');
+                    if (overlay) overlay.classList.remove('visible');
+                }
+            });
+        }
+        
+        // Initialize sidebar handlers
+        setupSidebarHandlers();
         
         // Initialize dynamic width detection
         setTimeout(() => {
@@ -5442,7 +6837,73 @@ Return exactly 3 questions, one per line, no numbering:`;
         // Show widget
         setTimeout(() => {
             widget.classList.add('loaded');
+            console.log('[WIDGET] Widget initialized with floating suggestions hidden and search bar collapsed');
         }, 100);
+        
+        // Setup right edge hover detection for sidebar
+        function setupRightEdgeHoverDetection() {
+            const HOVER_ZONE_WIDTH = 30; // pixels from right edge
+            const HOVER_DELAY = 300; // ms before opening
+            const CLOSE_DELAY = 500; // ms before closing when mouse leaves
+            
+            document.addEventListener('mousemove', (e) => {
+                const isNearRightEdge = window.innerWidth - e.clientX <= HOVER_ZONE_WIDTH;
+                const sidebar = shadowRoot.getElementById('gist-sidebar');
+                
+                if (isNearRightEdge && sidebarHasBeenOpened && !sidebar?.classList.contains('open')) {
+                    // Mouse is near right edge and sidebar has been opened before
+                    if (!isHoveringRightEdge) {
+                        isHoveringRightEdge = true;
+                        clearTimeout(rightEdgeHoverTimeout);
+                        
+                        rightEdgeHoverTimeout = setTimeout(() => {
+                            if (isHoveringRightEdge) {
+                                openSidebar();
+                            }
+                        }, HOVER_DELAY);
+                    }
+                } else if (!isNearRightEdge && isHoveringRightEdge) {
+                    // Mouse left the hover zone
+                    isHoveringRightEdge = false;
+                    clearTimeout(rightEdgeHoverTimeout);
+                    
+                    // Auto-close sidebar if it's open and mouse moves away from right side
+                    if (sidebar?.classList.contains('open')) {
+                        clearTimeout(sidebarCloseTimeout);
+                        sidebarCloseTimeout = setTimeout(() => {
+                            // Only close if mouse is still away from sidebar
+                            const sidebarRect = sidebar.getBoundingClientRect();
+                            const currentMouseX = e.clientX;
+                            
+                            if (currentMouseX < sidebarRect.left - 50) {
+                                closeSidebar();
+                            }
+                        }, CLOSE_DELAY);
+                    }
+                }
+            });
+            
+            // Cancel close timeout if mouse enters sidebar
+            const sidebar = shadowRoot.getElementById('gist-sidebar');
+            if (sidebar) {
+                sidebar.addEventListener('mouseenter', () => {
+                    clearTimeout(sidebarCloseTimeout);
+                });
+                
+                sidebar.addEventListener('mouseleave', (e) => {
+                    // Start close timeout when leaving sidebar
+                    clearTimeout(sidebarCloseTimeout);
+                    sidebarCloseTimeout = setTimeout(() => {
+                        if (!isHoveringRightEdge) {
+                            closeSidebar();
+                        }
+                    }, CLOSE_DELAY);
+                });
+            }
+        }
+        
+        // Initialize right edge hover detection
+        setupRightEdgeHoverDetection();
         
         return shadowRoot;
     }

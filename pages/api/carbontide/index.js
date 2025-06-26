@@ -22,6 +22,12 @@ export default function handler(req, res) {
 
 // Function to update HTML paths to use absolute paths
 function updateHtmlPaths(htmlContent) {
+  // Update favicon links to point to static file in public directory
+  htmlContent = htmlContent.replace(
+    /href="CarbonTideFavicon\.png"/g, 
+    'href="/CarbonTideFavicon.png"'
+  );
+  
   // Update CSS links
   htmlContent = htmlContent.replace(
     /href="styles\.css"/g, 
