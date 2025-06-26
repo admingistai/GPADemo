@@ -507,33 +507,8 @@
 
                 // Function to gather page context
                 function getPageContext() {
-                    // Get main content
-                    const mainContent = document.querySelector('main, article, .main-content, #main-content');
-                    let content = '';
-
-                    if (mainContent) {
-                        content = mainContent.textContent;
-                    } else {
-                        // Fallback to body content
-                        const bodyText = document.body.textContent;
-                        // Remove script contents
-                        content = bodyText.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
-                    }
-
-                    // Clean up the content
-                    content = content
-                        .replace(/\s+/g, ' ')  // Replace multiple spaces with single space
-                        .replace(/[\r\n]+/g, ' ')  // Remove newlines
-                        .trim();
-
-                    // Get meta description
-                    const metaDesc = document.querySelector('meta[name="description"]')?.content || '';
-                    
-                    // Get page title
-                    const title = document.title;
-
-                    // Combine context
-                    return `Page Title: ${title}\\n\\nMeta Description: ${metaDesc}\\n\\nPage Content: ${content.substring(0, 2000)}`;
+                    // Return only the current page URL as context
+                    return window.location.href;
                 }
 
                 // Function to minimize widget
