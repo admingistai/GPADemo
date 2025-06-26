@@ -211,7 +211,7 @@ export default async function handler(req, res) {
             border-left: 1px solid #e0e0e0 !important;
             border-radius: 0 !important;
             box-shadow: none !important;
-            padding: 36px !important;
+            padding: 36px 16px 36px 16px !important;
             font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
             z-index: 999998 !important;
             display: flex !important;
@@ -264,7 +264,7 @@ export default async function handler(req, res) {
             font-size: 22px;
             font-weight: 600;
             margin: 0 0 18px 0;
-            padding: 32px 32px 0 32px;
+            padding: 32px 16px 0 16px;
             color: #222;
             letter-spacing: 0.01em;
           }
@@ -273,7 +273,7 @@ export default async function handler(req, res) {
             align-items: center;
             justify-content: space-between;
             cursor: pointer;
-            padding: 0 32px 0 32px;
+            padding: 0 16px 0 16px;
             font-size: 18px;
             font-weight: 500;
             color: #333;
@@ -289,8 +289,8 @@ export default async function handler(req, res) {
           .collapsible-header.open svg {
             transform: rotate(90deg);
           }
-          .collapsible-content {
-            padding: 0 32px 16px 32px;
+          .collapsible-content, .collapsible-content.open {
+            padding: 0 16px 16px 16px;
             display: none;
             margin-top: 8px !important;
           }
@@ -348,7 +348,7 @@ export default async function handler(req, res) {
             font-weight: 400;
           }
           .size-section {
-            padding: 0 32px 24px 32px;
+            padding: 0 16px 24px 16px;
             margin-bottom: 0;
           }
           .size-label {
@@ -365,6 +365,7 @@ export default async function handler(req, res) {
           }
           .size-btn {
             flex: 1;
+            min-width: 100px;
             padding: 12px 0;
             border: 1px solid #d1d5db;
             border-radius: 6px;
@@ -390,7 +391,7 @@ export default async function handler(req, res) {
             }
           }
           #admin-sidebar {
-            padding-top: 36px !important;
+            padding: 36px 16px 36px 16px !important;
           }
         </style>
 
