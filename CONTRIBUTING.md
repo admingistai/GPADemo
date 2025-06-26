@@ -83,7 +83,7 @@ cd gpa
 3. Create a `.env.local` file:
    ```bash
    cp .env.example .env.local
-
+   # Add your Prorata API key to .env.local for AI features
    ```
 
 4. Run development server:

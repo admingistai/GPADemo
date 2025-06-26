@@ -15,7 +15,7 @@ gpa/
 │   ├── 500.js                   ✓ Custom error page
 │   └── api/
 │       ├── proxy.js             ✓ Main proxy endpoint
-
+│       ├── chat.js              ✓ Prorata AI chat endpoint with citations
 │       └── health.js            ✓ Health check endpoint
 ├── components/
 │   ├── URLInputForm.jsx         ✓ URL input component
@@ -65,7 +65,8 @@ gpa/
 ### 1. **Core Functionality**
 - ✅ Complete website replication with 1:1 fidelity
 - ✅ Automatic widget.js injection into all HTML pages
-
+- ✅ AI-powered chat functionality with Prorata API
+- ✅ Real-time citations and source attributions
 - ✅ Comprehensive URL rewriting (relative to absolute)
 - ✅ Support for all content types (HTML, CSS, JS, images, etc.)
 
@@ -101,7 +102,7 @@ gpa/
 
 - **Frontend**: Next.js 14.1.0, React 18.2.0
 - **Backend**: Node.js serverless functions
-
+- **AI Integration**: Prorata API with citations and attributions
 - **HTTP Client**: Axios
 - **HTML Parsing**: Cheerio
 - **Validation**: validator.js
@@ -121,7 +122,7 @@ gpa/
 2. **Configure Environment**
    ```bash
    cp .env.example .env.local
-
+   # Add your Prorata API key to .env.local
    ```
 
 3. **Run Development Server**
@@ -138,7 +139,9 @@ gpa/
 
 ### Environment Variables
 - `NODE_ENV` - Environment mode
+- `PRORATA_API_KEY` - Prorata API key for AI features
 - `RATE_LIMIT_REQUESTS` - Max requests per minute
+- `CHAT_RATE_LIMIT` - Max AI chat requests per minute
 - `MAX_REQUEST_SIZE` - Maximum request size
 - `BLOCKED_DOMAINS` - Comma-separated blocked domains
 

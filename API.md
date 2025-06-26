@@ -58,7 +58,62 @@ curl "https://your-domain.vercel.app/api/proxy?url=https://example.com&test=true
 }
 ```
 
-### 2. Health Check Endpoint
+### 2. Chat Endpoint
+
+Handles AI chat completions using Prorata API with citations and attributions.
+
+**Endpoint:** `POST /api/chat`
+
+**Request Body:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| question | string | Yes | The user's question or prompt |
+| pageContext | string | No | Context from the current page |
+
+**Example Request:**
+
+```json
+{
+  "question": "What is this website about?",
+  "pageContext": "Page content extracted from the website..."
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "answer": "This website appears to be...",
+  "threadId": "123e4567-e89b-12d3-a456-426614174000",
+  "turnId": "1",
+  "citations": [
+    {
+      "citationId": 1,
+      "url": "https://example.com/article",
+      "title": "Article Title",
+      "source": "Example Source",
+      "domain": "example.com",
+      "date": "2024-01-01",
+      "first_words": "The beginning of the article...",
+      "favicon": "https://example.com/favicon.ico"
+    }
+  ],
+  "attributions": {
+    "domain_credit_dist": {
+      "example.com": 0.75,
+      "another-site.com": 0.25
+    }
+  },
+  "model": "prorata-ai",
+  "responseTime": 1234
+}
+```
+
+**Rate Limiting:** 20 requests per minute per IP
+
+### 3. Health Check Endpoint
 
 Returns the health status of the service.
 

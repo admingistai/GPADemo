@@ -586,35 +586,59 @@
                     });
 
                     try {
-                        // Placeholder for future API integration
-                        const data = {
-                            answer: "AI functionality temporarily disabled. This will be replaced with a new API in the next update."
-                        };
+                        const currentHost = window.location.protocol + '//' + window.location.host;
+                        const apiEndpoint = currentHost + '/api/chat';
+                        
+                        const response = await fetch(apiEndpoint, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Origin': currentHost
+                            },
+                            credentials: 'same-origin',
+                            body: JSON.stringify({
+                                question: question,
+                                context: getPageContext()
+                            })
+                        });
 
-                        // Generate mock attribution data
-                        const sources = [
-                            { 
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const data = await response.json();
+
+                        // Generate attribution data from API response
+                        const sources = [];
+                        const colors = ['#4B9FE1', '#8860D0', '#FF8C42', '#10B981', '#F59E0B', '#EF4444'];
+                        
+                        // Process domain credit distribution from attributions
+                        if (data.attributions && data.attributions.domain_credit_dist) {
+                            let colorIndex = 0;
+                            for (const [domain, percentage] of Object.entries(data.attributions.domain_credit_dist)) {
+                                if (percentage > 0) {
+                                    sources.push({
+                                        name: domain,
+                                        percentage: Math.round(percentage * 100),
+                                        color: colors[colorIndex % colors.length],
+                                        description: `Content from ${domain}`,
+                                        logo: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>'
+                                    });
+                                    colorIndex++;
+                                }
+                            }
+                        }
+
+                        // If no attribution data available, use fallback
+                        if (sources.length === 0) {
+                            sources.push({
                                 name: 'Current Page',
                                 percentage: 45,
                                 color: '#4B9FE1',
                                 description: 'Content extracted from the current webpage you\'re viewing',
                                 logo: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M9 8h6m-6 4h6m-6 4h6"/></svg>'
-                            },
-                            { 
-                                name: 'Documentation',
-                                percentage: 30,
-                                color: '#8860D0',
-                                description: 'Official documentation and technical references',
-                                logo: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 6v12m-6-6h12"/></svg>'
-                            },
-                            { 
-                                name: 'Knowledge Base',
-                                percentage: 25,
-                                color: '#FF8C42',
-                                description: 'Curated knowledge from verified sources',
-                                logo: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>'
-                            }
-                        ];
+                            });
+                        }
 
                         // Create attribution bar HTML
                         const attributionHTML = `
@@ -634,17 +658,7 @@
                                     `).join('')}
                                 </div>
                                 <div class="gist-source-cards">
-                                    ${sources.map(source => `
-                                        <div class="gist-source-card">
-                                            <div class="gist-source-card-header">
-                                                <div class="gist-source-logo" style="background: ${source.color}">
-                                                    ${source.logo}
-                                                </div>
-                                                <div class="gist-source-name">${source.name}</div>
-                                            </div>
-                                            <div class="gist-source-description">${source.description}</div>
-                                        </div>
-                                    `).join('')}
+                                    ${generateSourceCards(data.citations, sources)}
                                 </div>
                             </div>
                         `;
@@ -671,6 +685,18 @@
                             if (sourceCardsElement) {
                                 setTimeout(() => {
                                     sourceCardsElement.classList.add('visible');
+                                    
+                                    // Add click handlers for source cards
+                                    const sourceCards = sourceCardsElement.querySelectorAll('.gist-source-card[data-url]');
+                                    sourceCards.forEach(card => {
+                                        card.style.cursor = 'pointer';
+                                        card.addEventListener('click', () => {
+                                            const url = card.getAttribute('data-url');
+                                            if (url) {
+                                                window.open(url, '_blank');
+                                            }
+                                        });
+                                    });
                                 }, 600);
                             }
                         });
@@ -690,6 +716,61 @@
                                 answerElement.classList.add('visible');
                             }
                         });
+                    }
+                }
+
+                // Function to generate source cards from citations
+                function generateSourceCards(citations, sources) {
+                    if (!citations || !Array.isArray(citations) || citations.length === 0) {
+                        // Fallback to attribution-based cards
+                        return sources.map(source => `
+                            <div class="gist-source-card">
+                                <div class="gist-source-card-header">
+                                    <div class="gist-source-logo" style="background: ${source.color}">
+                                        ${source.logo}
+                                    </div>
+                                    <div class="gist-source-name">${source.name}</div>
+                                </div>
+                                <div class="gist-source-description">${source.description}</div>
+                            </div>
+                        `).join('');
+                    }
+
+                    // Generate cards from actual citations
+                    return citations.slice(0, 6).map((citation, index) => {
+                        const sourceColor = sources.find(s => s.name === citation.domain)?.color || '#4B9FE1';
+                        const favicon = citation.favicon || citation.favicon24 || citation.favicon40;
+                        
+                        return `
+                            <div class="gist-source-card" data-url="${citation.url}">
+                                <div class="gist-source-card-header">
+                                    <div class="gist-source-logo" style="background: ${sourceColor}">
+                                        ${favicon ? 
+                                            `<img src="${favicon}" alt="${citation.source}" style="width: 16px; height: 16px; border-radius: 2px;">` : 
+                                            `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="width: 16px; height: 16px;"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>`
+                                        }
+                                    </div>
+                                    <div class="gist-source-name">${citation.source || citation.domain}</div>
+                                    ${citation.date ? `<div class="gist-source-date">${formatDate(citation.date)}</div>` : ''}
+                                </div>
+                                <div class="gist-source-title">${citation.title || 'Untitled'}</div>
+                                <div class="gist-source-description">${citation.first_words ? citation.first_words.substring(0, 120) + '...' : 'No description available'}</div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+                // Function to format dates
+                function formatDate(dateString) {
+                    try {
+                        const date = new Date(dateString);
+                        return date.toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'short', 
+                            day: 'numeric' 
+                        });
+                    } catch (e) {
+                        return dateString;
                     }
                 }
 

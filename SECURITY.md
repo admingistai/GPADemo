@@ -31,7 +31,9 @@ We will acknowledge receipt within 48 hours and provide updates on the fix.
 - **Port Restrictions:** Blocks common internal service ports
 - **Rate Limiting:** Prevents abuse through request throttling
   - Proxy endpoints: 100 requests/minute per IP
+  - AI chat endpoints: 20 requests/minute per IP
 - **Timeout Protection:** 30-second maximum request duration
+- **API Key Security:** Prorata API key stored server-side only
 
 ### Content Security
 
@@ -52,9 +54,10 @@ We will acknowledge receipt within 48 hours and provide updates on the fix.
 ### For Deployment
 
 1. **Environment Variables**
-   - Never commit sensitive data (especially API keys)
+   - Never commit sensitive data (especially Prorata API keys)
    - Use Vercel's environment variable encryption
-   - Rotate secrets regularly
+   - Rotate secrets regularly, including Prorata API keys
+   - Monitor Prorata API usage and costs
 
 2. **Access Control**
    - Implement IP allowlisting if needed

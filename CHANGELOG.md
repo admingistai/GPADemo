@@ -10,12 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2025-06-16
 
 ### Added
+- **Prorata AI Integration**: Complete chat functionality with citations and attributions
+- **Real-time Source Citations**: Display actual sources used in AI responses
+- **Interactive Source Cards**: Click to open source articles
+- **Domain Attribution Visualization**: Real-time attribution percentages
 - **Website Styling Extraction**: Automatic color and font detection
 - **Dynamic Widget Styling**: Adapts to target website's design
 
 ### Changed
+- **AI Backend**: Replaced OpenAI with Prorata API for better citations
+- **Widget Attribution**: Now shows real source data instead of mock data
 - **Widget Injection**: Improved reliability and cross-origin compatibility
-- **Documentation**: Updated all guides
+- **Environment Variables**: Added PRORATA_API_KEY configuration
+- **Documentation**: Updated all guides with Prorata API integration
 
 ### Fixed
 - Widget script loading issues with defer attribute
