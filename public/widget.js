@@ -641,6 +641,8 @@
                             }
                             return html;
                         }
+                        // Remove bracketed numbers like [1], [23] from the answer before rendering
+                        const cleanedAnswer = data.answer.replace(/\[\d+\]/g, '');
                         // Attribution bar and sources
                         const sources = [];
                         const colors = ['#4B9FE1', '#8860D0', '#FF8C42', '#10B981', '#F59E0B', '#EF4444'];
@@ -690,7 +692,7 @@
                             </div>
                         `;
                         answerContainer.innerHTML = `
-                            <div class="gist-answer">${renderMarkdown(data.answer)}</div>
+                            <div class="gist-answer">${renderMarkdown(cleanedAnswer)}</div>
                             ${attributionHTML}
                         `;
                         requestAnimationFrame(() => {
