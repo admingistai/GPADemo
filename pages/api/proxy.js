@@ -351,6 +351,90 @@ const adminSidebar = `
   </script>
 `;
 
+// Add Ask Anything banner (above everything)
+const askAnythingBanner = `
+  <style>
+    #aa-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      z-index: 1000000;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px 0 24px;
+      height: 64px;
+      font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+    #aa-banner .aa-logo-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    #aa-banner .aa-logo-img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      margin-right: 4px;
+    }
+    #aa-banner .aa-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #111;
+      line-height: 1.1;
+      margin: 0;
+      letter-spacing: -0.01em;
+      display: flex;
+      flex-direction: column;
+    }
+    #aa-banner .aa-title sup {
+      font-size: 0.7em;
+      font-weight: 400;
+      margin-left: 2px;
+    }
+    #aa-banner .aa-tagline {
+      font-size: 1rem;
+      color: #7b7b8b;
+      font-style: italic;
+      font-weight: 500;
+      margin-left: 16px;
+      white-space: nowrap;
+    }
+    @media (max-width: 600px) {
+      #aa-banner {
+        flex-direction: column;
+        height: auto;
+        padding: 8px 8px 8px 8px;
+        gap: 8px;
+      }
+      #aa-banner .aa-title {
+        font-size: 1.2rem;
+      }
+      #aa-banner .aa-tagline {
+        font-size: 0.9rem;
+        margin-left: 0;
+      }
+    }
+    body, #admin-sidebar {
+      margin-top: 64px !important;
+    }
+    #admin-sidebar {
+      top: 64px !important;
+      height: calc(100vh - 64px) !important;
+    }
+  </style>
+  <div id="aa-banner">
+    <div class="aa-logo-section">
+      <img src="/Gist_Mark_000000.png" alt="Gist Logo" class="aa-logo-img" />
+      <div class="aa-title">Ask<br>Anything<sup>TM</sup></div>
+    </div>
+    <span class="aa-tagline">100% ethical, uses fully licensed sources</span>
+  </div>
+`;
+
 export default async function handler(req, res) {
   try {
     // Set CORS headers
@@ -516,6 +600,15 @@ export default async function handler(req, res) {
         // Last resort: append to the end
         html += widgetScript;
         console.log('Widget appended to end of HTML');
+      }
+      
+      // Inject Ask Anything banner at the very top
+      if (html.includes('<body')) {
+        html = html.replace(/(<body[^>]*>)/, `$1${askAnythingBanner}`);
+        console.log('Ask Anything banner injected after <body>');
+      } else {
+        html = askAnythingBanner + html;
+        console.log('Ask Anything banner added at beginning of HTML');
       }
       
       // Inject admin sidebar right after opening body tag
