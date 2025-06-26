@@ -60,7 +60,7 @@ curl "https://your-domain.vercel.app/api/proxy?url=https://example.com&test=true
 
 ### 2. Chat Endpoint
 
-Handles AI chat completions using Gist AI API with citations and attributions.
+**⚠️ TEMPORARILY DISABLED**: AI functionality has been temporarily removed and will be reimplemented.
 
 **Endpoint:** `POST /api/chat`
 
@@ -69,45 +69,29 @@ Handles AI chat completions using Gist AI API with citations and attributions.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | question | string | Yes | The user's question or prompt |
-| pageContext | string | No | Context from the current page |
+| context | string | No | Context from the current page |
 
 **Example Request:**
 
 ```json
 {
   "question": "What is this website about?",
-  "pageContext": "Page content extracted from the website..."
+  "context": "Page content extracted from the website..."
 }
 ```
 
-**Response:**
+**Current Response (Placeholder):**
 
 ```json
 {
   "success": true,
-  "answer": "This website appears to be...",
-  "threadId": "123e4567-e89b-12d3-a456-426614174000",
-  "turnId": "1",
-  "citations": [
-    {
-      "citationId": 1,
-      "url": "https://example.com/article",
-      "title": "Article Title",
-      "source": "Example Source",
-      "domain": "example.com",
-      "date": "2024-01-01",
-      "first_words": "The beginning of the article...",
-      "favicon": "https://example.com/favicon.ico"
-    }
-  ],
-  "attributions": {
-    "domain_credit_dist": {
-      "example.com": 0.75,
-      "another-site.com": 0.25
-    }
-  },
-      "model": "gist-ai",
-  "responseTime": 1234
+  "answer": "This is a placeholder response. The AI functionality has been temporarily disabled while we implement a new chat system.",
+  "threadId": "mock_thread_1234567890",
+  "turnId": 1,
+  "citations": [],
+  "attributions": {},
+  "model": "placeholder",
+  "responseTime": 750
 }
 ```
 

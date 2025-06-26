@@ -67,11 +67,10 @@ This guide provides detailed instructions for deploying GPA to Vercel.
 3. **Configure Environment Variables**
    - Click "Environment Variables"
    - Add each variable:
-     ```
-     NODE_ENV = production
-     GIST_API_KEY = your_gist_api_key_here
-     RATE_LIMIT_REQUESTS = 100
-     CHAT_RATE_LIMIT = 20
+           ```
+      NODE_ENV = production
+      RATE_LIMIT_REQUESTS = 100
+      CHAT_RATE_LIMIT = 20
      MAX_REQUEST_SIZE = 52428800
      ```
 
@@ -85,7 +84,6 @@ This guide provides detailed instructions for deploying GPA to Vercel.
 
 ```bash
 NODE_ENV=production
-GIST_API_KEY=your_gist_api_key_here
 RATE_LIMIT_REQUESTS=100
 CHAT_RATE_LIMIT=20
 MAX_REQUEST_SIZE=52428800

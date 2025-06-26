@@ -15,7 +15,7 @@ gpa/
 │   ├── 500.js                   ✓ Custom error page
 │   └── api/
 │       ├── proxy.js             ✓ Main proxy endpoint
-│       ├── chat.js              ✓ Prorata AI chat endpoint with citations
+│       ├── chat.js              ✓ Chat endpoint (AI temporarily disabled)
 │       └── health.js            ✓ Health check endpoint
 ├── components/
 │   ├── URLInputForm.jsx         ✓ URL input component
@@ -65,7 +65,7 @@ gpa/
 ### 1. **Core Functionality**
 - ✅ Complete website replication with 1:1 fidelity
 - ✅ Automatic widget.js injection into all HTML pages
-- ✅ AI-powered chat functionality with Prorata API
+- ⚠️ AI-powered chat functionality (temporarily disabled)
 - ✅ Real-time citations and source attributions
 - ✅ Comprehensive URL rewriting (relative to absolute)
 - ✅ Support for all content types (HTML, CSS, JS, images, etc.)
@@ -122,7 +122,7 @@ gpa/
 2. **Configure Environment**
    ```bash
    cp .env.example .env.local
-   # Add your Gist AI API key to .env.local
+   # No API key needed - AI functionality temporarily disabled
    ```
 
 3. **Run Development Server**
@@ -139,7 +139,7 @@ gpa/
 
 ### Environment Variables
 - `NODE_ENV` - Environment mode
-- `GIST_API_KEY` - Gist AI API key for AI features
+- ~~`GIST_API_KEY`~~ - AI functionality temporarily disabled
 - `RATE_LIMIT_REQUESTS` - Max requests per minute
 - `CHAT_RATE_LIMIT` - Max AI chat requests per minute
 - `MAX_REQUEST_SIZE` - Maximum request size
