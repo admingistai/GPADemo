@@ -237,18 +237,20 @@
             }
 
             .gist-source-cards {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 10px;
-                margin-top: 15px;
-                opacity: 0;
-                transform: translateY(10px);
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                display: block !important;
+                width: 100%;
+                margin-top: 16px;
             }
 
-            .gist-source-cards.visible {
-                opacity: 1;
-                transform: translateY(0);
+            .gist-source-card-vertical {
+                display: block !important;
+                width: 100% !important;
+                margin-bottom: 16px;
+                box-sizing: border-box;
+            }
+
+            .gist-source-card-vertical:last-child {
+                margin-bottom: 0;
             }
 
             .gist-source-card {
@@ -740,7 +742,7 @@
                     if (!citations || !Array.isArray(citations) || citations.length === 0) {
                         // Fallback to attribution-based cards
                         return sources.map(source => `
-                            <div class="gist-source-card">
+                            <div class="gist-source-card gist-source-card-vertical">
                                 <div class="gist-source-card-header">
                                     <div class="gist-source-logo" style="background: ${source.color}">
                                         ${source.logo}
@@ -755,7 +757,7 @@
                         const sourceColor = sources.find(s => s.name === citation.domain)?.color || '#4B9FE1';
                         const favicon = citation.favicon || citation.favicon24 || citation.favicon40;
                         return `
-                            <div class="gist-source-card" data-url="${citation.url}">
+                            <div class="gist-source-card gist-source-card-vertical" data-url="${citation.url}">
                                 <div class="gist-source-card-header">
                                     <div class="gist-source-logo" style="background: ${sourceColor}">
                                         ${favicon ? 
