@@ -1,5 +1,6 @@
 # Dependencies
-/node_modules
+
+*/node_modules
 /.pnp
 .pnp.js
 
@@ -8,7 +9,7 @@
 /.nyc_output
 
 # Next.js
-/.next/
+*/.next/
 /out/
 
 # Production
@@ -48,6 +49,24 @@ next-env.d.ts
 *.launch
 .settings/
 *.sublime-workspace
+
+# Python virtual environments
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Vector database
+backend/chroma_db/
+backend/*.db
+
+# Logs
+logs/
+
+# Process IDs
+.pids
 
 # OS generated files
 .DS_Store

@@ -1,7 +1,7 @@
 {
-  "name": "gpa",
-  "version": "1.0.0",
-  "description": "GPA Tool with JavaScript Injection",
+  "name": "harbor-frontend",
+  "version": "2.0.0",
+  "description": "The Harbor - RAG-Powered News Website Frontend",
   "private": true,
   "scripts": {
     "dev": "next dev",

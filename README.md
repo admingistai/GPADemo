@@ -1,305 +1,147 @@
-# GPA - JavaScript Widget Demo
+# The Harbor - RAG-Powered News Website
 
-A demo website that showcases JavaScript widget injection functionality. Features "The Harbor" demo website with integrated widget.js for testing AI-powered features.
+A modern news website with an intelligent Q&A system powered by LlamaIndex and RAG (Retrieval-Augmented Generation).
+
+## Architecture
+
+This project is split into two main components:
+
+- **Frontend** (`/frontend`): Next.js-based news website
+- **Backend** (`/backend`): Python FastAPI server with LlamaIndex RAG pipeline
 
 ## Features
 
-- 🌐 **Demo Website**: "The Harbor" news website for testing widget functionality  
-- 💉 **Widget Integration**: Custom widget.js automatically loaded on the demo site
-- 🤖 **AI-Powered Widget**: OpenAI GPT integration for chat and image generation
-- 🎨 **DALL-E Integration**: Generate images directly within the demo website
-- 🚀 **Static Site Serving**: Optimized static file serving with Next.js
-- 📱 **Responsive Design**: Works on all devices
-- 🔍 **Error Handling**: Comprehensive error handling with user-friendly messages
+- 📰 Modern news website interface
+- 🤖 AI-powered Q&A widget with source attribution
+- 🔍 RAG-based search across all website content
+- 🔗 Source tracking - see exactly which pages inform each answer
+- ⚡ Real-time content indexing
+- 🎨 Beautiful, responsive UI
 
-## Prerequisites
+## Quick Start
 
-- Node.js 18.0.0 or higher
-- npm or yarn
-- Vercel account (for deployment)
-- OpenAI API key (for AI features)
+### 1. Environment Setup
 
-## Installation
+Create environment files:
 
-1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd gpa
+# Backend environment
+cp backend/.env.example backend/.env
+# Edit backend/.env and add your OpenAI API key
 ```
 
-2. Install dependencies:
+### 2. Backend Setup
+
 ```bash
+cd backend
+
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Start the RAG API server
+python run.py
+```
+
+The backend will start on `http://localhost:8000`
+
+### 3. Frontend Setup
+
+```bash
+cd frontend
+
+# Install Node.js dependencies
 npm install
-# or
-yarn install
-```
 
-3. Create a `.env.local` file for local development:
-```env
-NODE_ENV=development
-OPENAI_API_KEY=your_openai_api_key_here
-RATE_LIMIT_REQUESTS=100
-CHAT_RATE_LIMIT=20
-IMAGE_RATE_LIMIT=5
-MAX_REQUEST_SIZE=52428800
-```
-
-## Development
-
-Run the development server:
-
-```bash
+# Start the Next.js development server
 npm run dev
-# or
-yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see "The Harbor" demo website with the widget integrated.
+The frontend will start on `http://localhost:3000`
 
-## Project Structure
+### 4. Index the Website
 
-```
-├── pages/
-│   ├── [[...slug]].js           # Catch-all route for static file serving
-│   ├── _app.js                  # Next.js app wrapper
-│   └── api/
-│       ├── proxy.js             # Main proxy endpoint (for widget)
-│       ├── chat.js              # OpenAI chat completion endpoint
-│       ├── image.js             # OpenAI image generation endpoint
-│       ├── tts.js               # Text-to-speech endpoint
-│       └── health.js            # Health check endpoint
-├── pages/api/utils/
-│   ├── proxyHandler.js          # Core proxy logic
-│   ├── htmlModifier.js          # HTML modification utilities
-│   ├── headerProcessor.js       # HTTP header processing
-│   └── errorLogger.js           # Error logging utilities
-├── theharbor/                   # Original demo website files
-│   ├── index.html               # Main harbor page
-│   ├── styles.css               # Harbor styles
-│   ├── script.js                # Harbor scripts
-│   └── *.html                   # Additional harbor pages
-├── public/
-│   ├── index.html               # Harbor home page (copied)
-│   ├── styles.css               # Harbor styles (copied)
-│   ├── script.js                # Harbor scripts (copied)
-│   ├── *.html                   # Harbor pages (copied)
-│   └── widget.js                # Injectable JavaScript widget
-├── package.json
-├── vercel.json                  # Vercel configuration
-└── README.md
-```
+Once both servers are running, you need to index the website content:
 
-## Configuration
-
-### Environment Variables
-
-- `NODE_ENV` - Environment (development/production)
-- `OPENAI_API_KEY` - Your OpenAI API key (required for AI features)
-- `RATE_LIMIT_REQUESTS` - Max requests per minute per IP (default: 100)
-- `CHAT_RATE_LIMIT` - Max AI chat requests per minute per IP (default: 20)
-- `IMAGE_RATE_LIMIT` - Max AI image requests per minute per IP (default: 5)
-- `MAX_REQUEST_SIZE` - Maximum request size in bytes (default: 50MB)
-- `BLOCKED_DOMAINS` - Comma-separated list of blocked domains (optional)
-
-### Customizing widget.js
-
-Edit `/public/widget.js` to add your custom functionality. The widget is automatically injected into all replicated websites.
-
-Built-in AI features:
-- **Ask tool**: Chat with OpenAI GPT models
-- **Gist tool**: Generate website summaries
-- **Remix tool**: Create content variations with AI
-- **Image generation**: Create images with DALL-E
-
-Example customizations:
-- Analytics tracking
-- UI modifications
-- Custom event handlers
-- Content watermarking
-- AI prompt customization
-
-## Deployment to Vercel
-
-### Method 1: Vercel CLI
-
-1. Install Vercel CLI:
 ```bash
-npm i -g vercel
+# Index the website content into the vector database
+curl -X POST "http://localhost:8000/api/index" \
+  -H "Content-Type: application/json" \
+  -d '{"base_url": "http://localhost:3000"}'
 ```
 
-2. Deploy:
-```bash
-vercel --prod
+Or visit the API documentation at `http://localhost:8000/docs` and use the interactive interface.
+
+## How It Works
+
+### RAG Pipeline
+
+1. **Content Crawling**: The backend crawls your website and extracts content
+2. **Vectorization**: Content is chunked and embedded using OpenAI's embeddings
+3. **Storage**: Vector embeddings are stored in ChromaDB locally
+4. **Query Processing**: User questions are embedded and matched against stored content
+5. **Response Generation**: LLM generates responses using relevant context with source attribution
+
+### Frontend Widget
+
+The article widget on each page allows users to:
+- Ask questions about the current article or any content on the site
+- See AI-generated responses with source links
+- Follow up with additional questions
+- Get contextual question suggestions
+
+## API Endpoints
+
+- `POST /api/chat` - Submit questions and get RAG-powered responses
+- `POST /api/index` - Index website content
+- `GET /api/stats` - Get indexing statistics
+- `GET /health` - Health check
+
+## Environment Variables
+
+### Backend (.env)
+
+```
+OPENAI_API_KEY=your_openai_api_key_here
+FRONTEND_URL=http://localhost:3000
+BACKEND_PORT=8000
+CHROMA_PERSIST_DIRECTORY=./chroma_db
 ```
 
-### Method 2: GitHub Integration
+## Deployment
 
-1. Push your code to GitHub
-2. Connect your GitHub repository to Vercel
-3. Configure environment variables in Vercel dashboard:
-   - `OPENAI_API_KEY` - Your OpenAI API key
-   - `CHAT_RATE_LIMIT` - AI chat rate limit (default: 20)
-   - `IMAGE_RATE_LIMIT` - AI image rate limit (default: 5)
-4. Deploy automatically on push
+### Local Development
+Follow the Quick Start guide above.
 
-### Post-Deployment
+### Production (Vercel + External RAG Service)
+For production deployment, you'll need to:
 
-1. Verify deployment at your Vercel URL
-2. Test with various websites
-3. Monitor logs in Vercel dashboard
-4. Set up alerts for errors
+1. Deploy the frontend to Vercel
+2. Host the RAG backend on a cloud service (AWS, GCP, etc.)
+3. Update environment variables to point to production URLs
+4. Consider using a managed vector database (Pinecone, Weaviate, etc.)
 
-## Usage
+## Technologies Used
 
-1. Navigate to [http://localhost:3000](http://localhost:3000) 
-2. You'll see "The Harbor" demo news website
-3. The widget.js is automatically loaded and integrated into the page
-4. Use the widget features (chat, image generation, etc.) to test functionality
+### Backend
+- **FastAPI** - Web framework
+- **LlamaIndex** - RAG framework
+- **ChromaDB** - Vector database
+- **OpenAI** - LLM and embeddings
+- **BeautifulSoup** - Web scraping
 
-## Security Considerations
-
-- Blocks access to localhost and private IP ranges
-- Implements rate limiting
-- Strips sensitive headers
-- Validates all user inputs
-- Prevents XSS attacks
-- Removes CSP and X-Frame-Options headers
-
-## Limitations
-
-- Form submissions have limited functionality
-- Some websites may block proxy access
-- JavaScript-heavy SPAs may have navigation issues
-- Authentication-required pages won't work
-- Maximum response size: 50MB
-- Request timeout: 30 seconds
-
-## Testing
-
-Run tests:
-```bash
-npm test
-# or
-yarn test
-```
-
-Test coverage:
-```bash
-npm run test:coverage
-```
-
-## Troubleshooting
-
-### Common Issues
-
-1. **"URL is not reachable"**
-   - Check if the website is accessible
-   - Verify URL format includes protocol
-   - Some websites block automated requests
-
-2. **"Request timed out"**
-   - Website may be slow
-   - Try a simpler page from the same domain
-   - Check your internet connection
-
-3. **"Security policy violation"**
-   - Website has strict CORS/CSP policies
-   - Use "Open in New Tab" option
-   - Some sites cannot be embedded
-
-### Debug Mode
-
-Enable debug mode in widget.js:
-```javascript
-const config = {
-  debug: true
-};
-```
-
-## API Reference
-
-### GET /api/proxy
-
-Proxy endpoint for website replication.
-
-Query Parameters:
-- `url` (required) - Target website URL
-- `test` (optional) - Test mode flag
-
-### POST /api/chat
-
-OpenAI chat completion endpoint for AI conversations.
-
-Request Body:
-- `messages` (required) - Array of conversation messages
-- `model` (optional) - GPT model to use (default: gpt-3.5-turbo)
-- `temperature` (optional) - Response creativity (default: 0.7)
-- `max_tokens` (optional) - Response length limit (default: 1000)
-
-### POST /api/image
-
-OpenAI DALL-E image generation endpoint.
-
-Request Body:
-- `prompt` (required) - Image description
-- `size` (optional) - Image dimensions (default: 1024x1024)
-- `quality` (optional) - Image quality (default: standard)
-- `style` (optional) - Image style (default: vivid)
-
-### GET /api/health
-
-Health check endpoint returning service status.
+### Frontend
+- **Next.js** - React framework
+- **Custom Web Components** - For the Q&A widget
+- **Modern CSS** - Responsive design
 
 ## Contributing
 
 1. Fork the repository
 2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## Legal & Compliance
-
-⚠️ **Important**: This tool is for educational and testing purposes only.
-
-- Always obtain permission before replicating websites
-- Respect copyright and intellectual property rights
-- Follow websites' terms of service
-- Consider robots.txt files
-- Be aware of legal implications in your jurisdiction
-
-## Performance Optimization
-
-- Streams large responses instead of buffering
-- Implements request deduplication
-- Uses compression for text content
-- Lazy loads non-critical resources
-- Caches processed responses (configurable)
-
-## Monitoring
-
-Recommended monitoring setup:
-- Vercel Analytics for performance
-- Error tracking service (Sentry)
-- Uptime monitoring
-- Cost monitoring for Vercel usage
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
 ## License
 
-[Your License Here]
-
-## Support
-
-For issues and questions:
-- Create an issue in the repository
-- Check existing issues for solutions
-- Review the troubleshooting guide
-
-## Changelog
-
-### Version 1.0.0
-- Initial release
-- Core proxy functionality
-- JavaScript injection
-- Comprehensive error handling
-- Vercel deployment ready
+This project is licensed under the MIT License - see the LICENSE file for details.

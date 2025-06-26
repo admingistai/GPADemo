@@ -7,6 +7,7 @@ class ArticleWidget extends HTMLElement {
     this.question = '';
     this.relatedQuestions = [];
     this.conversationHistory = [];
+    this.backendUrl = 'http://localhost:8000'; // RAG backend URL
     this.render();
     this.attachEventListeners();
     this.generateRelatedQuestions();
@@ -147,8 +148,6 @@ class ArticleWidget extends HTMLElement {
           background: #333;
         }
 
-
-
         /* Powered By */
         .powered-by {
           text-align: right;
@@ -164,8 +163,6 @@ class ArticleWidget extends HTMLElement {
           font-weight: 600;
           color: #8b5cf6;
         }
-
-
 
         .ad-content {
           padding: 12px 12px;
@@ -241,6 +238,53 @@ class ArticleWidget extends HTMLElement {
           color: #6b7280;
           font-size: 14px;
         }
+
+        /* Sources styling */
+        .sources-section {
+          margin-top: 16px;
+          padding-top: 12px;
+          border-top: 1px solid #e5e7eb;
+        }
+
+        .sources-title {
+          font-size: 0.8rem;
+          font-weight: 600;
+          color: #374151;
+          margin-bottom: 8px;
+        }
+
+        .source-item {
+          margin-bottom: 8px;
+          padding: 8px 12px;
+          background: #f9fafb;
+          border-radius: 6px;
+          border-left: 3px solid #8b5cf6;
+        }
+
+        .source-link {
+          color: #8b5cf6;
+          text-decoration: none;
+          font-size: 0.75rem;
+          font-weight: 600;
+          display: block;
+          margin-bottom: 4px;
+        }
+
+        .source-link:hover {
+          text-decoration: underline;
+        }
+
+        .source-snippet {
+          font-size: 0.7rem;
+          color: #6b7280;
+          line-height: 1.3;
+        }
+
+        .source-score {
+          font-size: 0.65rem;
+          color: #9ca3af;
+          float: right;
+        }
       </style>
       
       <div class="widget-container">
@@ -266,7 +310,7 @@ class ArticleWidget extends HTMLElement {
         </div>
 
         <div class="powered-by">
-          Powered by <span class="gist-brand">Gist</span>
+          Powered by <span class="gist-brand">Gist RAG</span>
         </div>
 
         <div class="ad-content">
@@ -302,8 +346,6 @@ class ArticleWidget extends HTMLElement {
     askSubmitBtn.addEventListener('click', () => this.handleAsk());
   }
 
-
-
   askQuestion(question) {
     this.question = question;
     const input = this.shadowRoot.querySelector('#ask-input');
@@ -316,60 +358,34 @@ class ArticleWidget extends HTMLElement {
     this.isLoadingQuestions = true;
     
     try {
-      const context = this.getArticleContext();
-      
-      const requestBody = {
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content: `Generate exactly 2 related questions about this article. The questions should be insightful and encourage deeper thinking about the topic. Return only the questions, one per line, without numbers or bullets.
-
-Article Title: ${context.title}
-Article Content: ${context.content}`
-          },
-          {
-            role: "user",
-            content: "Generate 2 related questions about this article."
-          }
-        ],
-        max_tokens: 200
-      };
-      
-      const response = await fetch('/api/chat', {
+      // Try to get questions from the new RAG backend
+      const response = await fetch(`${this.backendUrl}/api/generate-questions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestBody)
+        }
       });
       
       if (response.ok) {
         const data = await response.json();
-        const questionsText = data.response || data.message || data.choices?.[0]?.message?.content || '';
-        const generatedQuestions = questionsText
-          .split('\n')
-          .filter(q => q.trim())
-          .slice(0, 2)
-          .map(q => q.replace(/^\d+\.?\s*/, '').trim());
-        
-        // Always include the summary question as the third question
-        this.relatedQuestions = [
-          ...generatedQuestions,
+        this.relatedQuestions = data.questions || [
+          'What are the main economic factors discussed?',
+          'How do current trends affect the future?',
           'Can you summarize this article?'
         ];
       } else {
+        // Fallback questions
         this.relatedQuestions = [
-          'Who is Maria Benitez?',
-          'What are the main factors affecting retail sales?',
+          'What are the main economic factors discussed?',
+          'How do current trends affect the future?',
           'Can you summarize this article?'
         ];
       }
     } catch (error) {
       console.error('Error generating questions:', error);
       this.relatedQuestions = [
-        'Who is Maria Benitez?',
-        'What are the main factors affecting retail sales?',
+        'What are the main economic factors discussed?',
+        'How do current trends affect the future?',
         'Can you summarize this article?'
       ];
     } finally {
@@ -408,8 +424,6 @@ Article Content: ${context.content}`
     }
   }
 
-
-
   async handleAsk() {
     if (!this.question.trim()) return;
     
@@ -419,38 +433,12 @@ Article Content: ${context.content}`
     this.openSidePanel(this.question, 'Loading...');
     
     try {
-      const context = this.getArticleContext();
-      
-      // Format the request in OpenAI-compatible format
+      // Call the new RAG backend
       const requestBody = {
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content: `You are a helpful AI assistant. You have access to the content of the current webpage the user is viewing. Use this context to provide relevant and accurate answers about the content, but you can also answer general questions beyond the page content.
-
-Page Title: ${context.title}
-
-Page Content:
-${context.content}
-
-Instructions:
-- When users ask questions related to the page content, reference it directly
-- For questions about specific details in the article, cite the relevant information
-- You can also answer general questions that go beyond the page content
-- Keep responses concise but informative
-- If asked about sources or citations, explain that you're drawing from the current webpage content`
-          },
-          {
-            role: "user",
-            content: this.question
-          }
-        ],
-        max_tokens: 500
+        question: this.question
       };
       
-      // Call the chat API
-      const response = await fetch('/api/chat', {
+      const response = await fetch(`${this.backendUrl}/api/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -458,22 +446,29 @@ Instructions:
         body: JSON.stringify(requestBody)
       });
       
-      let responseText;
+      let responseData;
       if (response.ok) {
-        const data = await response.json();
-        responseText = data.response || data.message || data.choices?.[0]?.message?.content || 'I received your question but couldn\'t generate a response.';
+        responseData = await response.json();
+        if (responseData.success) {
+          // Update the first conversation item with the response including sources
+          this.conversationHistory[0].answer = responseData.response;
+          this.conversationHistory[0].sources = responseData.sources || [];
+        } else {
+          this.conversationHistory[0].answer = responseData.message || 'Failed to get response from RAG system.';
+          this.conversationHistory[0].sources = [];
+        }
       } else {
-        responseText = 'Sorry, I couldn\'t process your question right now. Please try again.';
+        this.conversationHistory[0].answer = 'Sorry, I couldn\'t process your question right now. Please try again.';
+        this.conversationHistory[0].sources = [];
       }
       
-      // Update the first conversation item with the response (don't add new item)
-      this.conversationHistory[0].answer = responseText;
       this.updateConversationDisplay();
       this.updateFollowupSuggestions();
       
     } catch (error) {
       console.error('Error asking question:', error);
       this.conversationHistory[0].answer = 'There was an error processing your question. Please try again.';
+      this.conversationHistory[0].sources = [];
       this.updateConversationDisplay();
     }
   }
@@ -485,7 +480,7 @@ Instructions:
       existingPanel.remove();
     }
 
-    // Create panel HTML
+    // Create panel HTML (keeping most of the existing styles but adding sources display)
     const panelHTML = `
       <style>
         #harbor-side-panel-overlay {
@@ -593,128 +588,176 @@ Instructions:
           font-weight: 600;
         }
 
-                 .harbor-answer-content {
-           font-family: Georgia, 'Times New Roman', serif;
-           text-align: left;
-           margin-left: 0;
-           margin-right: auto;
-           max-width: 85%;
-         }
+        .harbor-answer-content {
+          font-family: Georgia, 'Times New Roman', serif;
+          text-align: left;
+          margin-left: 0;
+          margin-right: auto;
+          max-width: 85%;
+        }
 
-         .conversation-item {
-           margin-bottom: 24px;
-         }
+        .conversation-item {
+          margin-bottom: 24px;
+        }
 
-         .conversation-item:last-child {
-           margin-bottom: 0;
-         }
+        .conversation-item:last-child {
+          margin-bottom: 0;
+        }
 
-         .harbor-followup-section {
-           border-top: 1px solid #e5e7eb;
-           padding: 20px;
-           background: #f9fafb;
-         }
+        /* Sources styling for side panel */
+        .harbor-sources-section {
+          margin-top: 16px;
+          padding-top: 12px;
+          border-top: 1px solid #e5e7eb;
+        }
 
-         .harbor-followup-input-wrapper {
-           position: relative;
-           display: flex;
-           align-items: center;
-           margin-top: 16px;
-         }
+        .harbor-sources-title {
+          font-size: 0.8rem;
+          font-weight: 600;
+          color: #374151;
+          margin-bottom: 8px;
+        }
 
-         .harbor-followup-input {
-           width: 100%;
-           padding: 12px 16px;
-           padding-right: 50px;
-           border: 1px solid #d1d5db;
-           border-radius: 8px;
-           font-size: 0.9rem;
-           outline: none;
-           background: white;
-           font-family: Georgia, 'Times New Roman', serif;
-         }
+        .harbor-source-item {
+          margin-bottom: 12px;
+          padding: 10px 12px;
+          background: #f8fafc;
+          border-radius: 6px;
+          border-left: 3px solid #8b5cf6;
+        }
 
-         .harbor-followup-input:focus {
-           border-color: #000;
-           box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
-         }
+        .harbor-source-link {
+          color: #8b5cf6;
+          text-decoration: none;
+          font-size: 0.8rem;
+          font-weight: 600;
+          display: block;
+          margin-bottom: 6px;
+        }
 
-         .harbor-followup-input::placeholder {
-           color: #9ca3af;
-         }
+        .harbor-source-link:hover {
+          text-decoration: underline;
+        }
 
-         .harbor-followup-submit {
-           position: absolute;
-           right: 8px;
-           width: 32px;
-           height: 32px;
-           background: #000;
-           border: none;
-           border-radius: 50%;
-           color: white;
-           cursor: pointer;
-           display: flex;
-           align-items: center;
-           justify-content: center;
-           font-size: 14px;
-           font-weight: 900;
-           line-height: 1;
-           padding: 0;
-         }
+        .harbor-source-snippet {
+          font-size: 0.75rem;
+          color: #6b7280;
+          line-height: 1.4;
+        }
 
-         .harbor-followup-submit:hover {
-           background: #333;
-         }
+        .harbor-source-score {
+          font-size: 0.7rem;
+          color: #9ca3af;
+          float: right;
+          margin-top: -20px;
+        }
 
-         .harbor-suggestion-item {
-           display: flex;
-           align-items: center;
-           gap: 12px;
-           padding: 12px 16px;
-           margin-bottom: 8px;
-           background: white;
-           border: 1px solid #e5e7eb;
-           border-radius: 8px;
-           cursor: pointer;
-           transition: background-color 0.2s;
-           text-decoration: none;
-           color: #374151;
-         }
+        .harbor-followup-section {
+          border-top: 1px solid #e5e7eb;
+          padding: 20px;
+          background: #f9fafb;
+        }
 
-         .harbor-suggestion-item:hover {
-           background: #f3f4f6;
-         }
+        .harbor-followup-input-wrapper {
+          position: relative;
+          display: flex;
+          align-items: center;
+          margin-top: 16px;
+        }
 
-         .harbor-suggestion-item:last-child {
-           margin-bottom: 0;
-         }
+        .harbor-followup-input {
+          width: 100%;
+          padding: 12px 16px;
+          padding-right: 50px;
+          border: 1px solid #d1d5db;
+          border-radius: 8px;
+          font-size: 0.9rem;
+          outline: none;
+          background: white;
+          font-family: Georgia, 'Times New Roman', serif;
+        }
 
-         .harbor-suggestion-text {
-           font-size: 0.85rem;
-           line-height: 1.4;
-           flex: 1;
-           font-weight: 500;
-         }
+        .harbor-followup-input:focus {
+          border-color: #000;
+          box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+        }
 
-         .harbor-suggestion-arrow {
-           color: #9ca3af;
-           font-size: 16px;
-           margin-left: auto;
-         }
+        .harbor-followup-input::placeholder {
+          color: #9ca3af;
+        }
 
-         @media (max-width: 1024px) {
-           #harbor-side-panel {
-             width: 50vw;
-             min-width: 350px;
-           }
-         }
+        .harbor-followup-submit {
+          position: absolute;
+          right: 8px;
+          width: 32px;
+          height: 32px;
+          background: #000;
+          border: none;
+          border-radius: 50%;
+          color: white;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 14px;
+          font-weight: 900;
+          line-height: 1;
+          padding: 0;
+        }
 
-         @media (max-width: 768px) {
-           #harbor-side-panel {
-             width: 100vw;
-             min-width: 100vw;
-           }
-         }
+        .harbor-followup-submit:hover {
+          background: #333;
+        }
+
+        .harbor-suggestion-item {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 16px;
+          margin-bottom: 8px;
+          background: white;
+          border: 1px solid #e5e7eb;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: background-color 0.2s;
+          text-decoration: none;
+          color: #374151;
+        }
+
+        .harbor-suggestion-item:hover {
+          background: #f3f4f6;
+        }
+
+        .harbor-suggestion-item:last-child {
+          margin-bottom: 0;
+        }
+
+        .harbor-suggestion-text {
+          font-size: 0.85rem;
+          line-height: 1.4;
+          flex: 1;
+          font-weight: 500;
+        }
+
+        .harbor-suggestion-arrow {
+          color: #9ca3af;
+          font-size: 16px;
+          margin-left: auto;
+        }
+
+        @media (max-width: 1024px) {
+          #harbor-side-panel {
+            width: 50vw;
+            min-width: 350px;
+          }
+        }
+
+        @media (max-width: 768px) {
+          #harbor-side-panel {
+            width: 100vw;
+            min-width: 100vw;
+          }
+        }
       </style>
       <div id="harbor-side-panel">
         <div class="harbor-panel-header">
@@ -777,7 +820,7 @@ Instructions:
     const panel = document.getElementById('harbor-side-panel');
     
     // Initialize conversation history with the first Q&A
-    this.conversationHistory = [{ question, answer }];
+    this.conversationHistory = [{ question, answer, sources: [] }];
     this.updateConversationDisplay();
     
     // Populate suggestions with the first 2 related questions
@@ -790,15 +833,6 @@ Instructions:
     panel.classList.add('show');
   }
 
-  updateSidePanelContent(question, answer) {
-    // Add the new Q&A to conversation history
-    this.conversationHistory.push({ question, answer });
-    this.updateConversationDisplay();
-    
-    // Update suggestions with different questions
-    this.updateFollowupSuggestions();
-  }
-
   updateConversationDisplay() {
     const content = document.getElementById('harbor-panel-content');
     if (!content) return;
@@ -809,9 +843,34 @@ Instructions:
           <div class="harbor-question-label">Your Question</div>
           <div class="harbor-question-text-display">${item.question}</div>
         </div>
-        <div class="harbor-answer-content">${item.answer}</div>
+        <div class="harbor-answer-content">
+          ${item.answer}
+          ${item.sources && item.sources.length > 0 ? `
+            <div class="harbor-sources-section">
+              <div class="harbor-sources-title">Sources:</div>
+              ${item.sources.map(source => `
+                <div class="harbor-source-item">
+                  <a href="${source.url}" target="_blank" class="harbor-source-link">
+                    ${this.extractDomainFromUrl(source.url)}
+                  </a>
+                  <div class="harbor-source-snippet">${source.text_snippet}</div>
+                  ${source.score ? `<div class="harbor-source-score">Score: ${source.score.toFixed(2)}</div>` : ''}
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+        </div>
       </div>
     `).join('');
+  }
+
+  extractDomainFromUrl(url) {
+    try {
+      const urlObj = new URL(url);
+      return urlObj.pathname || urlObj.hostname;
+    } catch {
+      return url;
+    }
   }
 
   closeSidePanel() {
@@ -868,42 +927,15 @@ Instructions:
 
   async askFollowupQuestion(question) {
     // Add loading state to conversation
-    this.conversationHistory.push({ question, answer: 'Loading...' });
+    this.conversationHistory.push({ question, answer: 'Loading...', sources: [] });
     this.updateConversationDisplay();
     
     try {
-      const context = this.getArticleContext();
-      
-      // Format the request in OpenAI-compatible format
       const requestBody = {
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content: `You are a helpful AI assistant. You have access to the content of the current webpage the user is viewing. Use this context to provide relevant and accurate answers about the content, but you can also answer general questions beyond the page content.
-
-Page Title: ${context.title}
-
-Page Content:
-${context.content}
-
-Instructions:
-- When users ask questions related to the page content, reference it directly
-- For questions about specific details in the article, cite the relevant information
-- You can also answer general questions that go beyond the page content
-- Keep responses concise but informative
-- If asked about sources or citations, explain that you're drawing from the current webpage content`
-          },
-          {
-            role: "user",
-            content: question
-          }
-        ],
-        max_tokens: 500
+        question: question
       };
       
-      // Call the chat API
-      const response = await fetch('/api/chat', {
+      const response = await fetch(`${this.backendUrl}/api/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -911,27 +943,34 @@ Instructions:
         body: JSON.stringify(requestBody)
       });
       
-      let responseText;
+      let responseData;
       if (response.ok) {
-        const data = await response.json();
-        responseText = data.response || data.message || data.choices?.[0]?.message?.content || 'I received your question but couldn\'t generate a response.';
+        responseData = await response.json();
+        if (responseData.success) {
+          // Update the last item in conversation history with the response
+          this.conversationHistory[this.conversationHistory.length - 1].answer = responseData.response;
+          this.conversationHistory[this.conversationHistory.length - 1].sources = responseData.sources || [];
+        } else {
+          this.conversationHistory[this.conversationHistory.length - 1].answer = responseData.message || 'Failed to get response from RAG system.';
+          this.conversationHistory[this.conversationHistory.length - 1].sources = [];
+        }
       } else {
-        responseText = 'Sorry, I couldn\'t process your question right now. Please try again.';
+        this.conversationHistory[this.conversationHistory.length - 1].answer = 'Sorry, I couldn\'t process your question right now. Please try again.';
+        this.conversationHistory[this.conversationHistory.length - 1].sources = [];
       }
       
-      // Update the last item in conversation history with the response
-      this.conversationHistory[this.conversationHistory.length - 1].answer = responseText;
       this.updateConversationDisplay();
       
     } catch (error) {
       console.error('Error asking followup question:', error);
       this.conversationHistory[this.conversationHistory.length - 1].answer = 'There was an error processing your question. Please try again.';
+      this.conversationHistory[this.conversationHistory.length - 1].sources = [];
       this.updateConversationDisplay();
     }
   }
 
   getArticleContext() {
-    // Extract article content for context
+    // Extract article content for context (kept for potential future use)
     const articleContent = document.querySelector('.article-content');
     const articleTitle = document.querySelector('.article-title');
     const articleByline = document.querySelector('.article-byline');
@@ -939,7 +978,7 @@ Instructions:
     return {
       title: articleTitle?.textContent || '',
       author: articleByline?.textContent || '',
-      content: articleContent?.textContent?.substring(0, 2000) || '', // Limit context size
+      content: articleContent?.textContent?.substring(0, 2000) || '',
       url: window.location.href
     };
   }
