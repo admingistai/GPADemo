@@ -314,16 +314,11 @@ const adminSidebar = `
       const sizeValue = document.getElementById('widget-size-value');
       sizeSlider.addEventListener('input', function() {
         sizeValue.textContent = this.value;
-        // Dynamically update widget size
-        const widget = document.querySelector('.gist-widget');
-        if (widget) {
-          // Map slider value (1-100) to width (300px-600px) and font-size (12px-22px)
-          const minWidth = 300, maxWidth = 600;
-          const minFont = 12, maxFont = 22;
-          const width = minWidth + (maxWidth - minWidth) * (this.value - 1) / 99;
-          const fontSize = minFont + (maxFont - minFont) * (this.value - 1) / 99;
-          widget.style.width = width + 'px';
-          widget.style.fontSize = fontSize + 'px';
+        const val = parseInt(this.value, 10);
+        const scale = 0.65 + ((val - 1) / 99) * 0.7; // 0.65 at 1, 1.35 at 100
+        const widgetContainer = document.querySelector('.gist-widget-container');
+        if (widgetContainer) {
+          widgetContainer.style.transform = 'translateX(-50%) scale(' + scale.toFixed(2) + ')';
         }
       });
 
