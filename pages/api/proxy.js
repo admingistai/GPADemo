@@ -11,7 +11,7 @@ const RATE_WINDOW = 60 * 1000; // 1 minute
 const adminSidebar = `
   <style>
     #admin-sidebar {
-      position: fixed !important;
+      position: sticky !important;
       top: 72px !important;
       right: 0 !important;
       width: 320px !important;
@@ -381,7 +381,7 @@ const adminSidebar = `
 const askAnythingBanner = `
   <style>
     #aa-banner {
-      position: fixed;
+      position: sticky;
       top: 0;
       left: 0;
       width: 100vw;
