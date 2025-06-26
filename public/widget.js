@@ -591,8 +591,14 @@
                     container.innerHTML = answerContainerHTML;
                     document.body.appendChild(container.firstElementChild);
 
-                    // Show container with animation
+                    // Add correct size class to answer container
                     const answerContainer = document.querySelector('.gist-answer-container');
+                    if (answerContainer) {
+                        answerContainer.classList.remove('small', 'medium', 'large');
+                        answerContainer.classList.add(widgetSizeMode);
+                    }
+
+                    // Show container with animation
                     const loadingElement = answerContainer.querySelector('.gist-loading');
                     requestAnimationFrame(() => {
                         answerContainer.classList.add('visible');
