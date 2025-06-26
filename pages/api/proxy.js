@@ -279,9 +279,6 @@ const adminSidebar = `
   </style>
 
   <div id="admin-sidebar">
-    <button class="sidebar-toggle-btn" title="Show/Hide Admin Panel">
-      <svg id="sidebar-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-    </button>
     <div class="admin-header">Configure your Ask Anything button.</div>
     <div class="divider"></div>
     <div class="slider-section">
@@ -340,10 +337,47 @@ const adminSidebar = `
     </div>
     <a href="https://getaskanything.com/setup" target="_blank" class="next-btn">Next -&gt;</a>
   </div>
+  <button id="sidebar-toggle-btn-fixed" class="sidebar-toggle-btn-fixed" title="Show/Hide Admin Panel">
+    <svg id="sidebar-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+  </button>
+  <style>
+    .sidebar-toggle-btn-fixed {
+      position: fixed !important;
+      left: calc(100vw - 320px - 36px);
+      top: 50vh;
+      transform: translateY(-50%);
+      z-index: 1000002 !important;
+      width: 40px !important;
+      height: 40px !important;
+      background: #e5e7eb !important;
+      color: #666 !important;
+      border: 1px solid #d1d5db !important;
+      border-radius: 50% !important;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      cursor: pointer !important;
+      transition: background 0.2s, color 0.2s, left 0.3s !important;
+      border: 2px solid transparent !important;
+      background-image: linear-gradient(#e5e7eb, #e5e7eb), linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0) !important;
+      background-origin: border-box !important;
+      background-clip: padding-box, border-box !important;
+    }
+    .sidebar-toggle-btn-fixed:hover {
+      background: #d1d5db !important;
+      color: #333 !important;
+    }
+    @media (max-width: 900px) {
+      .sidebar-toggle-btn-fixed {
+        left: 12px !important;
+      }
+    }
+  </style>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const sidebar = document.getElementById('admin-sidebar');
-      const toggleBtn = sidebar.querySelector('.sidebar-toggle-btn');
+      const toggleBtn = document.getElementById('sidebar-toggle-btn-fixed');
       const toggleIcon = document.getElementById('sidebar-toggle-icon');
       let isMinimized = false;
 
