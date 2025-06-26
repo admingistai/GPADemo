@@ -400,6 +400,11 @@
                 0% { transform: rotate(0deg); }
                 100% { transform: rotate(-360deg); }
             }
+
+            .gist-answer-container.large {
+                width: 600px !important;
+                bottom: 110px !important;
+            }
         `;
 
         // Create style element and append to head (with safety check)
