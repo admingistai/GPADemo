@@ -673,14 +673,14 @@
                                 <div class="gist-attribution-title">Answer sources:</div>
                                 <div class="gist-attribution-bar">
                                     ${sources.map(source => 
-                                        `<div class="gist-attribution-segment" style="width: ${source.percentage * 100}%; background: ${source.color};"></div>`
+                                        `<div class="gist-attribution-segment" style="width: ${(source.percentage * 100).toFixed(1)}%; background: ${source.color};"></div>`
                                     ).join('')}
                                 </div>
                                 <div class="gist-attribution-legend">
                                     ${sources.map(source => `
                                         <div class="gist-attribution-source">
                                             <div class="gist-attribution-dot" style="background: ${source.color};"></div>
-                                            ${source.name} (${Math.round(source.percentage * 100)}%)
+                                            ${source.name} (${(source.percentage * 100).toFixed(1)}%)
                                         </div>
                                     `).join('')}
                                 </div>
@@ -742,7 +742,7 @@
                     if (!citations || !Array.isArray(citations) || citations.length === 0) {
                         // Fallback to attribution-based cards
                         return sources.map(source => `
-                            <div class="gist-source-card gist-source-card-vertical">
+                            <div class="gist-source-card gist-source-card-vertical" data-url="${source.name.startsWith('http') ? source.name : ''}">
                                 <div class="gist-source-card-header">
                                     <div class="gist-source-logo" style="background: ${source.color}">
                                         ${source.logo}
