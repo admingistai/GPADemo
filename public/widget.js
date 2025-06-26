@@ -479,18 +479,22 @@
                     widgetSizeMode = mode;
                     const widgetContainer = document.querySelector('.gist-widget-container');
                     const answerContainer = document.querySelector('.gist-answer-container');
+                    const searchInput = document.querySelector('.gist-search-input');
                     if (!widgetContainer) return;
                     widgetContainer.classList.remove('small', 'medium', 'large', 'expanded', 'force-noexpand', 'force-expanded');
                     if (answerContainer) answerContainer.classList.remove('small', 'medium', 'large');
                     if (mode === 'small') {
                         widgetContainer.classList.add('small', 'force-noexpand');
                         if (answerContainer) answerContainer.classList.add('small');
+                        if (searchInput) updatePlaceholder(searchInput, false);
                     } else if (mode === 'large') {
                         widgetContainer.classList.add('large', 'expanded', 'force-expanded');
                         if (answerContainer) answerContainer.classList.add('large');
+                        if (searchInput) updatePlaceholder(searchInput, true);
                     } else {
                         widgetContainer.classList.add('medium');
                         if (answerContainer) answerContainer.classList.add('medium');
+                        if (searchInput) updatePlaceholder(searchInput, widgetContainer.classList.contains('expanded'));
                     }
                 }
                 window.addEventListener('message', function(event) {
