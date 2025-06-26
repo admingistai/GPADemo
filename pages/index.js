@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Script from 'next/script';
 import Image from 'next/image';
@@ -12,6 +12,7 @@ export default function Home() {
   const [demoLoading, setDemoLoading] = useState(false);
   const [demoError, setDemoError] = useState('');
   const [widgetPosition, setWidgetPosition] = useState('center');
+  const [widgetVersion, setWidgetVersion] = useState('v1');
 
   const handleGetStarted = () => {
     // Redirect to Ask Anything™ website
@@ -41,7 +42,7 @@ export default function Home() {
       }
       
       // If test succeeds, open the cloned website in a new tab
-      const proxyUrl = `/api/proxy?url=${encodeURIComponent(formattedUrl)}&widget_position=${widgetPosition}`;
+      const proxyUrl = `/api/proxy?url=${encodeURIComponent(formattedUrl)}&widget_position=${widgetPosition}&widget_version=${widgetVersion}`;
       window.open(proxyUrl, '_blank');
       
     } catch (error) {
@@ -64,7 +65,7 @@ export default function Home() {
     
     // Immediately launch the demo
     try {
-      const proxyUrl = `/api/proxy?url=${encodeURIComponent(demoUrl)}&widget_position=${widgetPosition}`;
+      const proxyUrl = `/api/proxy?url=${encodeURIComponent(demoUrl)}&widget_position=${widgetPosition}&widget_version=${widgetVersion}`;
       window.open(proxyUrl, '_blank');
     } catch (error) {
       console.error('Demo link error:', error);
@@ -77,6 +78,10 @@ export default function Home() {
 
   const handlePositionChange = (position) => {
     setWidgetPosition(position);
+  };
+
+  const handleVersionChange = (version) => {
+    setWidgetVersion(version);
   };
 
   const handleTabClick = (tabName) => {
@@ -139,6 +144,48 @@ export default function Home() {
     }, 2500);
   };
 
+  // Handle widget loading in preview mode
+  useEffect(() => {
+    // Clean up previous widgets
+    if (widgetVersion === 'v1') {
+      // Clear any existing v1/refactored widget
+      window.__gistWidgetLoaded = false;
+      
+      // Remove any existing v1 widgets
+      const existingWidgets = document.querySelectorAll('#gist-widget-container');
+      existingWidgets.forEach(widget => widget.remove());
+    } else if (widgetVersion === 'v2') {
+      // Clear any existing v2 widget
+      window.__gistWidgetV2Loaded = false;
+      
+      // Remove any existing v2 widgets
+      const existingWidgets = document.querySelectorAll('#ask-anything-widget-v2');
+      existingWidgets.forEach(widget => widget.remove());
+      
+      // Create script to load widget
+      const script = document.createElement('script');
+      script.src = '/widget-v2.js';
+      script.setAttribute('data-preview-mode', 'true');
+      script.setAttribute('data-container', 'widget-preview-container');
+      script.setAttribute('data-position', widgetPosition);
+      
+      document.body.appendChild(script);
+      
+      return () => {
+        // Cleanup
+        if (script.parentNode) {
+          document.body.removeChild(script);
+        }
+        const container = document.getElementById('widget-preview-container');
+        if (container) container.innerHTML = '';
+        
+        // Remove any widgets created by the script
+        const widgets = document.querySelectorAll('#ask-anything-widget-v2');
+        widgets.forEach(widget => widget.remove());
+      };
+    }
+  }, [widgetVersion, widgetPosition]);
+
   return (
     <>
       <Head>
@@ -149,7 +196,7 @@ export default function Home() {
       </Head>
       
       <Script 
-        src="/widget.js" 
+        src={widgetVersion === 'v2' ? "/widget-v2.js" : "/widget.js"}
         strategy="afterInteractive"
         onLoad={() => {
           // console.log('Ask Anything widget loaded');
@@ -385,10 +432,21 @@ export default function Home() {
               </div>
             )}
             
-            {/* Widget Position Selector */}
+            {/* Widget Position Selector - Show for both v1 and v2 */}
             <div className="widget-position-selector">
               <p className="position-label">Widget Position:</p>
               <div className="position-buttons">
+                <button 
+                  className={`position-btn ${widgetPosition === 'left' ? 'active' : ''}`}
+                  onClick={() => handlePositionChange('left')}
+                  title="Left side position"
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <rect x="2" y="12" width="2" height="2" rx="1"/>
+                    <rect x="2" y="2" width="12" height="8" rx="1" fill="none" stroke="currentColor" strokeWidth="1"/>
+                  </svg>
+                  Left Side
+                </button>
                 <button 
                   className={`position-btn ${widgetPosition === 'center' ? 'active' : ''}`}
                   onClick={() => handlePositionChange('center')}
@@ -411,20 +469,9 @@ export default function Home() {
                   </svg>
                   Right Side
                 </button>
-                <button 
-                  className={`position-btn ${widgetPosition === 'left' ? 'active' : ''}`}
-                  onClick={() => handlePositionChange('left')}
-                  title="Left side position"
-                >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                    <rect x="2" y="12" width="2" height="2" rx="1"/>
-                    <rect x="2" y="2" width="12" height="8" rx="1" fill="none" stroke="currentColor" strokeWidth="1"/>
-                  </svg>
-                  Left Side
-                </button>
               </div>
               
-              {/* Position Preview */}
+              {/* Position Preview - Different for v1 and v2 */}
               <div className="position-preview">
                 <div className="preview-browser">
                   <div className="preview-header">
@@ -433,21 +480,63 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="preview-content">
-                    <div 
-                      className="preview-widget"
-                      style={{
-                        position: 'absolute',
-                        bottom: '8px',
-                        ...(widgetPosition === 'center' ? { left: '50%', transform: 'translateX(-50%)' } : {}),
-                        ...(widgetPosition === 'right' ? { right: '8px' } : {}),
-                        ...(widgetPosition === 'left' ? { left: '8px' } : {})
-                      }}
-                    >
-                      <div className="mini-widget"></div>
-                    </div>
+                    {widgetVersion === 'v1' ? (
+                      <div 
+                        className="preview-widget"
+                        style={{
+                          position: 'absolute',
+                          bottom: '8px',
+                          ...(widgetPosition === 'center' ? { left: '50%', transform: 'translateX(-50%)' } : {}),
+                          ...(widgetPosition === 'right' ? { right: '8px' } : {}),
+                          ...(widgetPosition === 'left' ? { left: '8px' } : {})
+                        }}
+                      >
+                        <div className="mini-widget"></div>
+                      </div>
+                    ) : (
+                      <div 
+                        className="preview-widget"
+                        style={{
+                          position: 'absolute',
+                          top: '12px',
+                          left: '12px',
+                          bottom: 'auto'
+                        }}
+                      >
+                        <div className="mini-widget"></div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
+            </div>
+            
+            {/* Widget Version Selector */}
+            <div className="widget-version-selector">
+              <p className="version-label">Widget Version:</p>
+              <div className="version-buttons">
+                <button 
+                  className={`version-btn ${widgetVersion === 'v1' ? 'active' : ''}`}
+                  onClick={() => handleVersionChange('v1')}
+                  title="Classic widget (current stable version)"
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 1l2.163 4.279L15 6.089l-3.5 3.409.826 4.818L8 12.133l-4.326 2.183.826-4.818L1 6.089l4.837-.81L8 1z"/>
+                  </svg>
+                  Classic (Current)
+                </button>
+                <button 
+                  className={`version-btn ${widgetVersion === 'v2' ? 'active' : ''}`}
+                  onClick={() => handleVersionChange('v2')}
+                  title="Search-first widget (beta version)"
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                  </svg>
+                  Search-First (Beta)
+                </button>
+              </div>
+
             </div>
             
             {/* Demo Links Section */}
@@ -478,6 +567,24 @@ export default function Home() {
                 >
                   🌍 Climate News (CarbonTide)
                 </a>
+                <button
+                  onClick={() => window.open('/api/carbontide/', '_blank')}
+                  className="demo-link carbon-tide-clone"
+                  title="View cloned CarbonTide website"
+                  style={{
+                    marginLeft: '10px',
+                    background: 'linear-gradient(135deg, #00ff94, #0ea5e9)',
+                    border: 'none',
+                    color: 'white',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'transform 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+                  onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+                >
+                  🌐 CarbonTide Cloned Website
+                </button>
               </div>
             </div>
           </div>
@@ -1592,6 +1699,189 @@ export default function Home() {
             .position-preview {
               width: 280px;
               height: 160px;
+            }
+          }
+
+          /* Widget Version Selector Styles */
+          .widget-version-selector {
+            margin: 30px 0 20px 0;
+            text-align: center;
+          }
+
+          .version-label {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 16px;
+            font-size: 16px;
+            font-weight: 500;
+          }
+
+          .version-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+          }
+
+          .version-btn {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            min-width: 140px;
+            justify-content: center;
+          }
+
+          .version-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+            color: white;
+          }
+
+          .version-btn.active {
+            background: linear-gradient(90deg, #f59e0b, #ec4899, #8b5cf6);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+          }
+
+          .version-btn.active:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+          }
+
+          .version-btn svg {
+            opacity: 0.8;
+          }
+
+          .version-btn.active svg {
+            opacity: 1;
+          }
+
+          /* Beta Notice Styles */
+          .beta-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 16px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+          }
+
+          .beta-icon {
+            font-size: 16px;
+            line-height: 1;
+            margin-top: 2px;
+          }
+
+          .beta-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            line-height: 1.4;
+          }
+
+          .beta-text strong {
+            color: #f59e0b;
+            font-weight: 600;
+          }
+
+          /* Responsive version selector */
+          @media (max-width: 768px) {
+            .version-buttons {
+              flex-direction: column;
+              gap: 8px;
+              align-items: center;
+            }
+            
+            .version-btn {
+              width: 100%;
+              max-width: 220px;
+            }
+
+            .beta-notice {
+              margin-left: 16px;
+              margin-right: 16px;
+            }
+          }
+
+          /* V2 Widget Preview Styles */
+          .widget-v2-preview {
+            margin: 30px 0 20px 0;
+            text-align: center;
+          }
+
+          .v2-preview-label {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 16px;
+            font-size: 16px;
+            font-weight: 500;
+          }
+
+          .widget-live-preview-v2 {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: transparent;
+          }
+
+          /* Make widget work within preview bounds */
+          .widget-live-preview-v2 #ask-anything-widget-v2 {
+            position: absolute !important;
+            bottom: 8px !important;
+            z-index: 1 !important;
+            transform: scale(0.9) !important;
+          }
+
+          /* Position-specific styles for V2 widget */
+          .widget-live-preview-v2 #ask-anything-widget-v2.center-position {
+            left: 50% !important;
+            transform: translateX(-50%) scale(0.9) !important;
+            transform-origin: bottom center !important;
+          }
+
+          .widget-live-preview-v2 #ask-anything-widget-v2.right-position {
+            right: 8px !important;
+            transform: scale(0.9) !important;
+            transform-origin: bottom right !important;
+          }
+
+          .widget-live-preview-v2 #ask-anything-widget-v2.left-position {
+            left: 8px !important;
+            transform: scale(0.9) !important;
+            transform-origin: bottom left !important;
+          }
+
+          /* Ensure widget container is positioned correctly */
+          .widget-live-preview-v2 #ask-anything-widget-v2 > div {
+            position: relative !important;
+            bottom: auto !important;
+            right: auto !important;
+            left: auto !important;
+            transform: none !important;
+          }
+
+          /* Responsive v2 preview */
+          @media (max-width: 768px) {
+            .widget-live-preview-v2 #ask-anything-widget-v2 {
+              transform: scale(0.8) !important;
+            }
+            
+            .widget-live-preview-v2 #ask-anything-widget-v2.center-position {
+              transform: translateX(-50%) scale(0.8) !important;
             }
           }
 

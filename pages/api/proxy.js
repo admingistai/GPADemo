@@ -150,6 +150,10 @@ export default async function handler(req, res) {
       const currentUrl = new URL(`${protocol}://${host}${req.url}`);
       const widgetParams = new URLSearchParams();
       
+      // Determine which widget version to load
+      const widgetVersion = req.query.widget_version || 'v1';
+      const widgetFile = widgetVersion === 'v2' ? 'widget-v2.js' : 'widget.js';
+      
       // Copy relevant parameters to the current page URL (for the widget to read)
       for (const [key, value] of currentUrl.searchParams.entries()) {
         if (key !== 'url' && key !== 'test') { // Exclude proxy-specific parameters
@@ -162,7 +166,7 @@ export default async function handler(req, res) {
       const updateUrlScript = widgetParams.toString() ? 
         `<script>history.replaceState({}, '', '${currentPageUrl}');</script>` : '';
       
-      const widgetScript = `${updateUrlScript}<script src="${protocol}://${host}/widget.js"></script>`;
+      const widgetScript = `${updateUrlScript}<script src="${protocol}://${host}/${widgetFile}"></script>`;
       
       if (html.includes('</head>')) {
         // Inject before closing head tag
