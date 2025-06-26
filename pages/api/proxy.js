@@ -400,15 +400,12 @@ const askAnythingBanner = `
       background-clip: padding-box, border-box;
     }
     #aa-banner .aa-title {
-      font-size: 2rem;
+      font-size: 44px;
       font-weight: 700;
-      color: #111;
-      line-height: 1.1;
-      margin: 0;
-      letter-spacing: -0.01em;
-      display: flex;
-      align-items: center;
-      gap: 0.25em;
+      color: #18181b;
+      display: block;
+      text-align: left;
+      line-height: 1.05;
     }
     #aa-banner .aa-title sup {
       font-size: 0.7em;
@@ -449,7 +446,10 @@ const askAnythingBanner = `
     }
   </style>
   <div id="aa-banner">
-    <div class="aa-title">Ask Anything<sup>TM</sup></div>
+    <div class="aa-title">
+      <span class="aa-ask">Ask</span><br>
+      <span class="aa-anything">Anything<sup>TM</sup></span>
+    </div>
   </div>
 `;
 
