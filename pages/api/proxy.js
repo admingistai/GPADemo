@@ -325,9 +325,13 @@ const adminSidebar = `
           document.head.appendChild(scaleStyle);
         }
         const scaleVal = scale.toFixed(2);
+        const baseHeight = widgetContainer ? widgetContainer.offsetHeight : 60;
+        const gap = 20;
+        const newBottom = Math.round(baseHeight * scale + gap);
+
         scaleStyle.textContent = '.gist-widget-container { transform: translateX(-50%) scale(' + scaleVal + ') !important; }' +
-          '.gist-answer-container { transform: translateX(-50%) translateY(20px) scale(' + scaleVal + ') !important; }' +
-          '.gist-answer-container.visible { transform: translateX(-50%) translateY(0) scale(' + scaleVal + ') !important; }';
+          '.gist-answer-container { transform: translateX(-50%) translateY(20px) scale(' + scaleVal + ') !important; bottom: ' + newBottom + 'px !important; }' +
+          '.gist-answer-container.visible { transform: translateX(-50%) translateY(0) scale(' + scaleVal + ') !important; bottom: ' + newBottom + 'px !important; }';
 
         const pillRect = widgetContainer ? widgetContainer.getBoundingClientRect() : null;
         if (pillRect && answerContainerEl) {
