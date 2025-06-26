@@ -445,7 +445,13 @@
                     const parts = input.dataset.placeholderParts.split(',');
                     const placeholderSpan = document.createElement('span');
                     placeholderSpan.style.position = 'absolute';
-                    placeholderSpan.style.left = '57px'; // Adjust based on icon width + padding
+                    // Adjust left offset for large mode
+                    let leftOffset = '57px';
+                    const widgetContainer = input.closest('.gist-widget-container');
+                    if (widgetContainer && widgetContainer.classList.contains('large')) {
+                        leftOffset = '72px';
+                    }
+                    placeholderSpan.style.left = leftOffset; // Adjust based on icon width + padding
                     placeholderSpan.style.top = '50%';
                     placeholderSpan.style.transform = 'translateY(-50%)';
                     placeholderSpan.style.color = '#666';
