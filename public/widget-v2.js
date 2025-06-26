@@ -1831,20 +1831,9 @@
                 animation-delay: 0.3s;
             }
             
-            /* Remix functionality styles */
+                        /* Remix functionality styles - temporarily hidden */
             .gist-remix-btn {
-                background: linear-gradient(135deg, #8b5cf6 0%, #667eea 100%);
-                color: white !important;
-        border: none;
-                border-radius: 20px;
-                padding: 6px 16px;
-                    transition: all 0.2s ease;
-                }
-                
-            .gist-remix-btn:hover {
-                background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
-                    transform: translateY(-1px);
-                box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+                display: none;
             }
 
             .gist-remix-modal {
@@ -4428,13 +4417,6 @@ Return exactly 3 questions, one per line, no numbering:`;
                             </svg>
                             <span>Share</span>
                             </button>
-                        <button class="gist-engagement-btn gist-remix-btn">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M23 7l-7 5 7 5V7z"></path>
-                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
-                            </svg>
-                            <span>Remix</span>
-                            </button>
                         </div>
                 `;
                 answerLayout.appendChild(engagementFooter);
@@ -4492,18 +4474,18 @@ Return exactly 3 questions, one per line, no numbering:`;
                         }
                     });
                     
-                    shareBtn.addEventListener('click', async () => {
+                                        shareBtn.addEventListener('click', async () => {
                         if (navigator.share) {
                             try {
                                 await navigator.share({
                                     title: question,
                                     text: answer.substring(0, 200) + '...',
-                url: window.location.href
+                                    url: window.location.href
                                 });
                             } catch (err) {
                                 console.log('Share cancelled');
                             }
-                } else {
+                        } else {
                             // Fallback: copy to clipboard
                             navigator.clipboard.writeText(window.location.href);
                             shareBtn.innerHTML = `
@@ -4512,7 +4494,7 @@ Return exactly 3 questions, one per line, no numbering:`;
                                 </svg>
                                 <span>Copied!</span>
                             `;
-            setTimeout(() => {
+                            setTimeout(() => {
                                 shareBtn.innerHTML = `
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
@@ -4523,10 +4505,6 @@ Return exactly 3 questions, one per line, no numbering:`;
                                 `;
                             }, 2000);
                         }
-                    });
-                    
-                    remixBtn.addEventListener('click', () => {
-                        createRemixModal(answer);
                     });
                 }, 100);
             
