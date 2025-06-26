@@ -1,6 +1,7 @@
 (function() {
     // Function to safely append widget when DOM is ready
     function initWidget() {
+        let currentSize = 'medium';
         // Function to get website name
         function getWebsiteName() {
             // Try to get from meta tags first
@@ -45,7 +46,7 @@
         const styles = `
             .gist-widget-container {
                 position: fixed;
-                bottom: 40px;
+                bottom: 20px;
                 left: 50%;
                 transform: translateX(-50%);
                 z-index: 999999;
@@ -398,24 +399,47 @@
                 100% { transform: rotate(360deg); }
             }
 
-            /* --- SIDE PANEL (ADMIN SIDEBAR) GRADIENT OUTLINE --- */
-            #admin-sidebar {
-                border: 2px solid transparent !important;
-                background-image: linear-gradient(#f7f7f8, #f7f7f8), linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0) !important;
-                background-origin: border-box !important;
-                background-clip: padding-box, border-box !important;
-                box-shadow: 0 2px 16px rgba(0,0,0,0.06) !important;
+            .size-small {
+                width: 220px;
+                max-width: 90%;
             }
-            /* --- MINIMIZE BUTTON GRADIENT OUTLINE --- */
-            .sidebar-toggle-btn, .gist-close-button {
-                border: 2px solid transparent !important;
-                background-image: linear-gradient(white, white), linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0) !important;
-                background-origin: border-box !important;
-                background-clip: padding-box, border-box !important;
+
+            .size-medium {
+                width: 220px;
+                max-width: 90%;
             }
-            /* --- INCREASE SPACE BETWEEN SOURCES HEADER AND FIRST TOGGLE --- */
-            #sources-header {
-                margin-bottom: 18px !important;
+
+            .size-large {
+                width: 475px;
+                max-width: 90%;
+            }
+
+            .gist-widget-container.size-small {
+                width: 180px;
+                padding: 6px 10px;
+            }
+            .gist-answer-container.size-small {
+                width: 260px;
+                padding: 12px;
+                font-size: 13px;
+            }
+            .gist-widget-container.size-medium {
+                width: 220px;
+                padding: 8px 16px;
+            }
+            .gist-answer-container.size-medium {
+                width: 475px;
+                padding: 20px;
+                font-size: 15px;
+            }
+            .gist-widget-container.size-large {
+                width: 475px;
+                padding: 12px 24px;
+            }
+            .gist-answer-container.size-large {
+                width: 600px;
+                padding: 28px;
+                font-size: 17px;
             }
         `;
 
@@ -450,10 +474,46 @@
 
             // Add input event listener and setup placeholder
             const searchInput = document.querySelector('.gist-search-input');
+            const widgetContainer = searchInput.closest('.gist-widget-container');
             
+            // Helper to apply size
+            function applyWidgetSize(size) {
+                currentSize = size;
+                widgetContainer.classList.remove('size-small', 'size-medium', 'size-large');
+                widgetContainer.classList.add('size-' + size);
+                // Answer box
+                const answerContainer = document.querySelector('.gist-answer-container');
+                if (answerContainer) {
+                    answerContainer.classList.remove('size-small', 'size-medium', 'size-large');
+                    answerContainer.classList.add('size-' + size);
+                }
+                // Placeholder logic
+                if (size === 'small') {
+                    updatePlaceholder(searchInput, false, true); // true = hide website name
+                } else {
+                    updatePlaceholder(searchInput, widgetContainer.classList.contains('expanded'));
+                }
+                // Large: always expanded
+                if (size === 'large') {
+                    widgetContainer.classList.add('expanded');
+                } else if (!searchInput.matches(':focus')) {
+                    widgetContainer.classList.remove('expanded');
+                }
+            }
+
+            // Listen for size messages
+            window.addEventListener('message', (event) => {
+                if (event.data && event.data.type === 'GIST_WIDGET_SIZE') {
+                    applyWidgetSize(event.data.size);
+                }
+            });
+
+            // Initial size
+            applyWidgetSize('medium');
+
             if (searchInput) {
                 // Function to update placeholder with bold website name
-                function updatePlaceholder(input, isExpanded = false) {
+                function updatePlaceholder(input, isExpanded = false, hideWebsiteName = false) {
                     const parts = input.dataset.placeholderParts.split(',');
                     const placeholderSpan = document.createElement('span');
                     placeholderSpan.style.position = 'absolute';
@@ -463,17 +523,18 @@
                     placeholderSpan.style.color = '#666';
                     placeholderSpan.style.pointerEvents = 'none';
                     placeholderSpan.style.transition = 'all 0.3s ease';
-                    
-                    placeholderSpan.innerHTML = isExpanded ? 
-                        `${parts[0]}<strong>${parts[1]}</strong>${parts[2]}` :
-                        'Ask anything...';
-                    
+                    if (hideWebsiteName) {
+                        placeholderSpan.innerHTML = 'Ask anything...';
+                    } else {
+                        placeholderSpan.innerHTML = isExpanded ? 
+                            `${parts[0]}<strong>${parts[1]}</strong>${parts[2]}` :
+                            'Ask anything...';
+                    }
                     // Remove any existing placeholder span
                     const existingSpan = input.parentElement.querySelector('.placeholder-span');
                     if (existingSpan) {
                         existingSpan.remove();
                     }
-                    
                     // Only show if input is empty
                     placeholderSpan.className = 'placeholder-span';
                     if (!input.value) {
@@ -481,12 +542,7 @@
                     }
                 }
 
-                // Initial setup
-                updatePlaceholder(searchInput, false);
-
                 // Handle hover state
-                const widgetContainer = searchInput.closest('.gist-widget-container');
-                
                 widgetContainer.addEventListener('mouseenter', function() {
                     updatePlaceholder(searchInput, true);
                 });
