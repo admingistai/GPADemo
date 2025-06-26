@@ -45,7 +45,7 @@
         const styles = `
             .gist-widget-container {
                 position: fixed;
-                bottom: 20px;
+                bottom: 40px;
                 left: 50%;
                 transform: translateX(-50%);
                 z-index: 999999;
@@ -397,6 +397,26 @@
                 0% { transform: rotate(0deg); }
                 100% { transform: rotate(360deg); }
             }
+
+            /* --- SIDE PANEL (ADMIN SIDEBAR) GRADIENT OUTLINE --- */
+            #admin-sidebar {
+                border: 2px solid transparent !important;
+                background-image: linear-gradient(#f7f7f8, #f7f7f8), linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0) !important;
+                background-origin: border-box !important;
+                background-clip: padding-box, border-box !important;
+                box-shadow: 0 2px 16px rgba(0,0,0,0.06) !important;
+            }
+            /* --- MINIMIZE BUTTON GRADIENT OUTLINE --- */
+            .sidebar-toggle-btn, .gist-close-button {
+                border: 2px solid transparent !important;
+                background-image: linear-gradient(white, white), linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0) !important;
+                background-origin: border-box !important;
+                background-clip: padding-box, border-box !important;
+            }
+            /* --- INCREASE SPACE BETWEEN SOURCES HEADER AND FIRST TOGGLE --- */
+            #sources-header {
+                margin-bottom: 18px !important;
+            }
         `;
 
         // Create style element and append to head (with safety check)
@@ -642,7 +662,7 @@
                             return html;
                         }
                         // Remove bracketed numbers like [1], [23] from the answer before rendering
-                        const cleanedAnswer = data.answer.replace(/\s*\[\d+\]/g, '');
+                        const cleanedAnswer = data.answer.replace(/\s*\[\d+\]\s*/g, '');
                         // Attribution bar and sources
                         const sources = [];
                         const colors = ['#4B9FE1', '#8860D0', '#FF8C42', '#10B981', '#F59E0B', '#EF4444'];
