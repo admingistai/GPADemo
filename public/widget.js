@@ -650,24 +650,14 @@
                                 if (percentage > 0) {
                                     sources.push({
                                         name: domain,
-                                        percentage: percentage, // raw value from API
+                                        percentage: percentage, // Use raw percentage (0.42 for 42%)
                                         color: colors[colorIndex % colors.length],
                                         description: `Content from ${domain}`,
-                                        logo: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>',
-                                        url: null // will be set if found in citations
+                                        logo: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>'
                                     });
                                     colorIndex++;
                                 }
                             }
-                        }
-                        // Attach URLs to sources from citations if available
-                        if (data.citations && Array.isArray(data.citations)) {
-                            data.citations.forEach(citation => {
-                                const source = sources.find(s => s.name === citation.domain);
-                                if (source && citation.url) {
-                                    source.url = citation.url;
-                                }
-                            });
                         }
                         if (sources.length === 0) {
                             sources.push({
@@ -675,8 +665,7 @@
                                 percentage: 1,
                                 color: '#4B9FE1',
                                 description: 'Content extracted from the current webpage you\'re viewing',
-                                logo: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M9 8h6m-6 4h6m-6 4h6"/></svg>',
-                                url: window.location.href
+                                logo: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M9 8h6m-6 4h6m-6 4h6"/></svg>'
                             });
                         }
                         const attributionHTML = `
@@ -684,14 +673,14 @@
                                 <div class="gist-attribution-title">Answer sources:</div>
                                 <div class="gist-attribution-bar">
                                     ${sources.map(source => 
-                                        `<div class="gist-attribution-segment" style="width: ${((source.percentage / 100) * 100).toFixed(1)}%; background: ${source.color};"></div>`
+                                        `<div class="gist-attribution-segment" style="width: ${source.percentage * 100}%; background: ${source.color};"></div>`
                                     ).join('')}
                                 </div>
                                 <div class="gist-attribution-legend">
                                     ${sources.map(source => `
                                         <div class="gist-attribution-source">
                                             <div class="gist-attribution-dot" style="background: ${source.color};"></div>
-                                            ${source.name} (${(source.percentage / 100).toFixed(1)}%)
+                                            ${source.name} (${Math.round(source.percentage * 100)}%)
                                         </div>
                                     `).join('')}
                                 </div>
@@ -719,30 +708,15 @@
                             if (sourceCardsElement) {
                                 setTimeout(() => {
                                     sourceCardsElement.classList.add('visible');
-                                    // Use event delegation for click and keydown
-                                    sourceCardsElement.addEventListener('click', function(e) {
-                                        let card = e.target;
-                                        while (card && !card.classList.contains('gist-source-card')) {
-                                            card = card.parentElement;
-                                        }
-                                        if (card && card.hasAttribute('data-url')) {
+                                    const sourceCards = sourceCardsElement.querySelectorAll('.gist-source-card[data-url]');
+                                    sourceCards.forEach(card => {
+                                        card.style.cursor = 'pointer';
+                                        card.addEventListener('click', () => {
                                             const url = card.getAttribute('data-url');
-                                            if (url && url.startsWith('http')) {
-                                                window.open(url, '_blank', 'noopener');
+                                            if (url) {
+                                                window.open(url, '_blank');
                                             }
-                                        }
-                                    });
-                                    sourceCardsElement.addEventListener('keydown', function(e) {
-                                        let card = e.target;
-                                        while (card && !card.classList.contains('gist-source-card')) {
-                                            card = card.parentElement;
-                                        }
-                                        if ((e.key === 'Enter' || e.key === ' ') && card && card.hasAttribute('data-url')) {
-                                            const url = card.getAttribute('data-url');
-                                            if (url && url.startsWith('http')) {
-                                                window.open(url, '_blank', 'noopener');
-                                            }
-                                        }
+                                        });
                                     });
                                 }, 600);
                             }
@@ -767,39 +741,37 @@
                 function generateSourceCards(citations, sources) {
                     if (!citations || !Array.isArray(citations) || citations.length === 0) {
                         // Fallback to attribution-based cards
-                        return sources.map(source => {
-                            if (!source.url) {
-                                return `<div class=\"gist-source-card gist-source-card-vertical\">
-                                    <div class=\"gist-source-card-header\">
-                                        <div class=\"gist-source-logo\" style=\"background: ${source.color}\">${source.logo}</div>
-                                        <div class=\"gist-source-name\">${source.name}</div>
+                        return sources.map(source => `
+                            <div class="gist-source-card gist-source-card-vertical">
+                                <div class="gist-source-card-header">
+                                    <div class="gist-source-logo" style="background: ${source.color}">
+                                        ${source.logo}
                                     </div>
-                                    <div class=\"gist-source-description\">${source.description}</div>
-                                </div>`;
-                            }
-                            return `<div class=\"gist-source-card gist-source-card-vertical\" role=\"button\" tabindex=\"0\" style=\"cursor:pointer;\" data-url=\"${source.url}\">
-                                <div class=\"gist-source-card-header\">
-                                    <div class=\"gist-source-logo\" style=\"background: ${source.color}\">${source.logo}</div>
-                                    <div class=\"gist-source-name\">${source.name}</div>
+                                    <div class="gist-source-name">${source.name}</div>
                                 </div>
-                                <div class=\"gist-source-description\">${source.description}</div>
-                            </div>`;
-                        }).join('');
+                                <div class="gist-source-description">${source.description}</div>
+                            </div>
+                        `).join('');
                     }
                     return citations.slice(0, 6).map((citation, index) => {
                         const sourceColor = sources.find(s => s.name === citation.domain)?.color || '#4B9FE1';
                         const favicon = citation.favicon || citation.favicon24 || citation.favicon40;
-                        return `<div class=\"gist-source-card gist-source-card-vertical\" role=\"button\" tabindex=\"0\" style=\"cursor:pointer;\" data-url=\"${citation.url}\">
-                            <div class=\"gist-source-card-header\">
-                                <div class=\"gist-source-logo\" style=\"background: ${sourceColor}\">
-                                    ${favicon ? `<img src=\"${favicon}\" alt=\"${citation.source}\" style=\"width: 16px; height: 16px; border-radius: 2px;\">` : `<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" style=\"width: 16px; height: 16px;\"><path d=\"M12 2L2 7l10 5 10-5-10-5z\"/></svg>`}
+                        return `
+                            <div class="gist-source-card gist-source-card-vertical" data-url="${citation.url}">
+                                <div class="gist-source-card-header">
+                                    <div class="gist-source-logo" style="background: ${sourceColor}">
+                                        ${favicon ? 
+                                            `<img src="${favicon}" alt="${citation.source}" style="width: 16px; height: 16px; border-radius: 2px;">` : 
+                                            `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="width: 16px; height: 16px;"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>`
+                                        }
+                                    </div>
+                                    <div class="gist-source-name">${citation.source || citation.domain}</div>
+                                    ${citation.date ? `<div class="gist-source-date">${formatDate(citation.date)}</div>` : ''}
                                 </div>
-                                <div class=\"gist-source-name\">${citation.source || citation.domain}</div>
-                                ${citation.date ? `<div class=\"gist-source-date\">${formatDate(citation.date)}</div>` : ''}
+                                <div class="gist-source-title">${citation.title || 'Untitled'}</div>
+                                <div class="gist-source-description">${citation.first_words ? citation.first_words.substring(0, 120) + '...' : 'No description available'}</div>
                             </div>
-                            <div class=\"gist-source-title\">${citation.title || 'Untitled'}</div>
-                            <div class=\"gist-source-description\">${citation.first_words ? citation.first_words.substring(0, 120) + '...' : 'No description available'}</div>
-                        </div>`;
+                        `;
                     }).join('');
                 }
 
