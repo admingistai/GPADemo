@@ -345,7 +345,7 @@ const adminSidebar = `
       position: fixed !important;
       left: calc(100vw - 320px - 36px);
       top: 50vh;
-      transform: translateY(-50%);
+      transform: translateY(-50%) translateX(0);
       z-index: 1000002 !important;
       width: 40px !important;
       height: 40px !important;
@@ -358,7 +358,7 @@ const adminSidebar = `
       align-items: center !important;
       justify-content: center !important;
       cursor: pointer !important;
-      transition: left 0.4s cubic-bezier(0.4,0,0.2,1), right 0.4s cubic-bezier(0.4,0,0.2,1), background 0.2s, color 0.2s !important;
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), background 0.2s, color 0.2s !important;
       border: 2px solid transparent !important;
       background-image: linear-gradient(#e5e7eb, #e5e7eb), linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0) !important;
       background-origin: border-box !important;
@@ -393,10 +393,12 @@ const adminSidebar = `
           document.body.style.overflow = 'hidden';
           toggleBtn.style.left = 'calc(100vw - 320px - 36px)';
           toggleBtn.style.right = 'auto';
+          toggleBtn.style.transform = 'translateY(-50%) translateX(0)';
         } else {
           document.body.style.overflow = '';
-          toggleBtn.style.left = 'auto';
-          toggleBtn.style.right = '0px';
+          toggleBtn.style.left = 'calc(100vw - 320px - 36px)';
+          toggleBtn.style.right = 'auto';
+          toggleBtn.style.transform = 'translateY(-50%) translateX(calc(-100vw + 320px + 76px))';
         }
       }
 
