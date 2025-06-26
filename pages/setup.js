@@ -158,8 +158,8 @@ export default function Setup() {
           </div>
         ) : !showCode ? (
           <div className="setup-form-container">
-            <h1>Setup Your Widget</h1>
-            <p className="setup-description">Configure your widget settings and get started in minutes</p>
+            <h1>Generate Your Ask Anythign Widget</h1>
+            <p className="setup-description">Configure your Ask Anything widget settings and get started in minutes</p>
             
             {error && (
               <div className="error-message">
@@ -260,7 +260,7 @@ export default function Setup() {
               </div>
 
               <button type="submit" className="submit-button">
-                Generate Widget
+                Generate
               </button>
             </form>
           </div>
