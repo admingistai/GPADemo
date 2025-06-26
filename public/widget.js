@@ -590,12 +590,13 @@
                         const pageContext = getPageContext();
 
                         // Make API call
-                        const response = await fetch('/api/chat', {
+                        const response = await fetch('/api/proxy', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
+                                url: 'https://theatlantic.com/api/chat',
                                 question,
                                 pageContext
                             })

@@ -9,14 +9,32 @@ const RATE_WINDOW = 60 * 1000; // 1 minute
 
 export default async function handler(req, res) {
   try {
-    // Only allow GET requests
-    if (req.method !== 'GET') {
+    // Handle OPTIONS preflight request
+    if (req.method === 'OPTIONS') {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+      res.setHeader('Access-Control-Max-Age', '86400'); // 24 hours
+      return res.status(200).end();
+    }
+
+    // Allow both GET and POST requests
+    if (!['GET', 'POST'].includes(req.method)) {
       return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    // Get URL from query parameters
-    const targetUrl = req.query.url;
-    const isTest = req.query.test === 'true';
+    let targetUrl;
+    let requestData;
+
+    if (req.method === 'POST') {
+      // For POST requests, get URL and data from request body
+      const { url, ...data } = req.body;
+      targetUrl = url;
+      requestData = data;
+    } else {
+      // For GET requests, get URL from query parameters
+      targetUrl = req.query.url;
+    }
 
     // Validate URL parameter
     if (!targetUrl) {
@@ -64,7 +82,7 @@ export default async function handler(req, res) {
     }
 
     // If this is just a test request, return success
-    if (isTest) {
+    if (req.query.test === 'true') {
       try {
         // Do a HEAD request to check if URL is reachable
         await axios.head(normalizedUrl, { 
@@ -102,24 +120,38 @@ export default async function handler(req, res) {
     }
 
     // Fetch the target website
-    const response = await axios.get(normalizedUrl, {
-      timeout: 30000,
-      maxRedirects: 5,
-      validateStatus: status => status < 500,
-      responseType: 'text',
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Upgrade-Insecure-Requests': '1'
-      }
-    });
+    const response = await (req.method === 'POST' 
+      ? axios.post(normalizedUrl, requestData, {
+          timeout: 30000,
+          maxRedirects: 5,
+          validateStatus: status => status < 500,
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'application/json',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Origin': 'https://www.getaskanything.com',
+            'Referer': 'https://www.getaskanything.com/',
+            'Content-Type': 'application/json'
+          }
+        })
+      : axios.get(normalizedUrl, {
+          timeout: 30000,
+          maxRedirects: 5,
+          validateStatus: status => status < 500,
+          responseType: 'text',
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'none',
+            'Upgrade-Insecure-Requests': '1'
+          }
+        }));
 
     // Get content type
     const contentType = response.headers['content-type'] || 'text/html';
@@ -602,10 +634,13 @@ export default async function handler(req, res) {
     
     // Add CORS headers to allow widget script loading
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     
     // Send the content
+    if (req.method === 'POST') {
+      return res.status(response.status).json(response.data);
+    }
     return res.status(200).send(html);
 
   } catch (error) {
