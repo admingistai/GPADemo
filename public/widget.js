@@ -481,7 +481,12 @@
                 currentSize = size;
                 widgetContainer.classList.remove('size-small', 'size-medium', 'size-large');
                 widgetContainer.classList.add('size-' + size);
-                // Answer box
+                // Large: always expanded
+                if (size === 'large') {
+                    widgetContainer.classList.add('expanded');
+                }
+                // Do NOT forcibly remove 'expanded' for small/medium; let hover/focus handlers control it
+                // Answer box: update size if present
                 const answerContainer = document.querySelector('.gist-answer-container');
                 if (answerContainer) {
                     answerContainer.classList.remove('size-small', 'size-medium', 'size-large');
@@ -489,15 +494,9 @@
                 }
                 // Placeholder logic
                 if (size === 'small') {
-                    updatePlaceholder(searchInput, false, true); // true = hide website name
+                    updatePlaceholder(searchInput, widgetContainer.classList.contains('expanded'), true); // true = hide website name
                 } else {
                     updatePlaceholder(searchInput, widgetContainer.classList.contains('expanded'));
-                }
-                // Large: always expanded
-                if (size === 'large') {
-                    widgetContainer.classList.add('expanded');
-                } else if (!searchInput.matches(':focus')) {
-                    widgetContainer.classList.remove('expanded');
                 }
             }
 
@@ -641,7 +640,7 @@
 
                     // Create answer container with loading state
                     const answerContainerHTML = `
-                        <div class="gist-answer-container">
+                        <div class="gist-answer-container size-${currentSize}">
                             <div class="gist-loading">
                                 <div class="gist-loading-spinner"></div>
                                 Getting answer...
