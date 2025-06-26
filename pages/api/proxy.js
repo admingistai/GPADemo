@@ -204,7 +204,7 @@ export default async function handler(req, res) {
           }
 
           #admin-sidebar.minimized {
-            transform: translateX(260px) !important;
+            transform: translateX(calc(100% + 20px)) !important;
           }
 
           #admin-sidebar .header {
@@ -238,6 +238,7 @@ export default async function handler(req, res) {
           }
 
           #admin-sidebar.minimized .minimize-btn {
+            left: -50px !important;
             transform: translateY(-50%) rotate(180deg) !important;
           }
 
@@ -270,16 +271,9 @@ export default async function handler(req, res) {
             position: relative !important;
             display: flex !important;
             align-items: center !important;
-            margin-bottom: 8px !important;
+            margin-bottom: 12px !important;
             cursor: pointer !important;
             user-select: none !important;
-          }
-
-          .source-toggle label {
-            margin-left: 8px !important;
-            font-size: 14px !important;
-            color: #333 !important;
-            cursor: pointer !important;
           }
 
           .toggle-switch {
@@ -291,6 +285,7 @@ export default async function handler(req, res) {
             padding: 2px !important;
             transition: all 0.3s ease !important;
             cursor: pointer !important;
+            flex-shrink: 0 !important;
           }
 
           .toggle-switch::before {
@@ -320,6 +315,12 @@ export default async function handler(req, res) {
             cursor: pointer !important;
             height: 0 !important;
             width: 0 !important;
+          }
+
+          .source-toggle span {
+            margin-left: 16px !important;
+            font-size: 14px !important;
+            color: #333 !important;
           }
 
           .size-selector {
@@ -491,7 +492,7 @@ export default async function handler(req, res) {
               
               // Update body margin
               if (window.innerWidth > 768) {
-                document.body.style.marginRight = adminPanel.isMinimized ? '60px' : '340px';
+                document.body.style.marginRight = adminPanel.isMinimized ? '0' : '340px';
               }
             });
 
@@ -500,7 +501,7 @@ export default async function handler(req, res) {
               if (window.innerWidth <= 768) {
                 document.body.style.marginRight = '0';
               } else {
-                document.body.style.marginRight = adminPanel.isMinimized ? '60px' : '340px';
+                document.body.style.marginRight = adminPanel.isMinimized ? '0' : '340px';
               }
             });
 
