@@ -400,12 +400,26 @@ const askAnythingBanner = `
       background-clip: padding-box, border-box;
     }
     #aa-banner .aa-title-container {
+      position: relative;
       display: flex;
       flex-direction: row;
       align-items: center;
-      justify-content: space-between;
       width: 100%;
       height: 100%;
+    }
+    #aa-banner .aa-preview {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      transform: translateX(-50%);
+      text-align: center;
+      font-size: 20px;
+      font-weight: 700;
+      color: #111;
+      letter-spacing: 0.02em;
+      width: max-content;
+      margin: 0;
+      z-index: 2;
     }
     #aa-banner .aa-title {
       font-size: 22px;
@@ -415,6 +429,7 @@ const askAnythingBanner = `
       text-align: left;
       line-height: 1.02;
       margin-bottom: 0;
+      z-index: 1;
     }
     #aa-banner .aa-title sup {
       font-size: 0.5em;
@@ -424,15 +439,6 @@ const askAnythingBanner = `
       position: relative;
       top: -0.2em;
       right: 0.2em;
-    }
-    #aa-banner .aa-preview {
-      flex: 1;
-      text-align: center;
-      font-size: 20px;
-      font-weight: 700;
-      color: #111;
-      letter-spacing: 0.02em;
-      margin-right: 32px;
     }
     @media (max-width: 600px) {
       #aa-banner {
