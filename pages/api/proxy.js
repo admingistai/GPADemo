@@ -38,7 +38,7 @@ const adminSidebar = `
     }
     #admin-sidebar .sidebar-toggle-btn {
       position: absolute !important;
-      left: -18px !important;
+      right: -20px !important;
       top: 50% !important;
       transform: translateY(-50%);
       z-index: 1000001 !important;
@@ -53,14 +53,14 @@ const adminSidebar = `
       align-items: center !important;
       justify-content: center !important;
       cursor: pointer !important;
-      transition: background 0.2s, color 0.2s, left 0.3s !important;
+      transition: background 0.2s, color 0.2s, right 0.3s !important;
       border: 2px solid transparent !important;
       background-image: linear-gradient(#e5e7eb, #e5e7eb), linear-gradient(60deg, #FF8C42, #4B9FE1, #8860D0) !important;
       background-origin: border-box !important;
       background-clip: padding-box, border-box !important;
     }
     #admin-sidebar.minimized .sidebar-toggle-btn {
-      left: -18px !important;
+      right: -20px !important;
     }
     #admin-sidebar .sidebar-toggle-btn:hover {
       background: #d1d5db !important;
