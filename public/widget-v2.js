@@ -73,6 +73,8 @@
 
     const WIDGET_CONFIG = {
         CHAT_API_URL: `${BACKEND_BASE_URL}/api/chat`,
+        QUESTIONS_API_URL: `${BACKEND_BASE_URL}/api/questions`,
+        ANALYTICS_API_URL: `${BACKEND_BASE_URL}/api/analytics`,
         MODEL: 'gpt-3.5-turbo',
         TIMEOUT_MS: 20000,
         DEBOUNCE_MS: 300,
@@ -83,6 +85,55 @@
         // Widget positioning
         POSITION: getWidgetPosition() // center, left, right
     };
+    
+    // ================================
+    // USER ID MANAGEMENT
+    // ================================
+    
+    function generateUserId() {
+        // Generate a unique user ID using timestamp and random string
+        const timestamp = Date.now().toString(36);
+        const randomStr = Math.random().toString(36).substring(2, 15);
+        return `user_${timestamp}_${randomStr}`;
+    }
+    
+    function getUserId() {
+        const storageKey = 'gist_widget_user_id';
+        let userId = localStorage.getItem(storageKey);
+        
+        if (!userId) {
+            userId = generateUserId();
+            localStorage.setItem(storageKey, userId);
+        }
+        
+        return userId;
+    }
+    
+    // Initialize user ID immediately
+    const USER_ID = getUserId();
+    
+    // ================================
+    // ANALYTICS TRACKING
+    // ================================
+    
+    async function trackAnalyticsEvent(eventType, eventData = {}) {
+        try {
+            await fetch(WIDGET_CONFIG.ANALYTICS_API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: USER_ID,
+                    eventType,
+                    eventData,
+                    timestamp: new Date().toISOString(),
+                    pageUrl: window.location.href,
+                    pageTitle: document.title
+                })
+            });
+        } catch (error) {
+            console.warn('[WIDGET] Analytics tracking failed:', error);
+        }
+    }
     
     // ================================
     // DARK MODE DETECTION
@@ -842,6 +893,17 @@
                 border-radius: 4px;
                 text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
             }
+            
+            .search-icon {
+                width: 24px;
+                height: 24px;
+                transition: all 0.2s ease;
+            }
+            
+            .widget-search-bar.expanded .search-icon {
+                stroke: ${styling.primaryColor || '#8b5cf6'};
+                opacity: 0.7;
+            }
 
             /* Search input - hidden when collapsed */
             .widget-search-input {
@@ -1294,7 +1356,6 @@
                 font-size: 15px;
                 line-height: 1.7;
                 color: var(--text-color);
-                white-space: pre-wrap;
             }
 
             .gist-answer-content h1,
@@ -1321,6 +1382,27 @@
 
             .gist-answer-content li {
                 margin-bottom: 8px;
+            }
+            
+            .gist-answer-content strong {
+                font-weight: 600;
+                color: var(--text-color);
+            }
+            
+            .gist-answer-content em {
+                font-style: italic;
+            }
+            
+            .gist-citation-link {
+                color: var(--primary-color);
+                text-decoration: none;
+                font-weight: 500;
+                transition: opacity 0.2s;
+            }
+            
+            .gist-citation-link:hover {
+                opacity: 0.8;
+                text-decoration: underline;
             }
 
             .gist-user-message {
@@ -3013,6 +3095,101 @@
                 font-weight: 600;
                 color: var(--text-color);
             }
+            
+            /* Mini Tab - shown when sidebar is closed */
+            .gist-mini-tab {
+                position: fixed;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 50px;
+                height: 80px;
+                background: ${isDark ? 'rgba(0, 0, 0, 0.85)' : 'rgba(255, 255, 255, 0.95)'};
+                border: 3px solid ${styling.primaryColor || (isDark ? '#8b5cf6' : '#7c3aed')};
+                border-radius: 20px;
+                border-right: none;
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: space-between;
+                padding: 12px 0;
+                cursor: pointer;
+                z-index: 10001;
+                transition: all 0.3s ease;
+                box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+            }
+            
+            .gist-mini-tab:hover {
+                transform: translateY(-50%) translateX(-5px);
+                box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+            }
+            
+            .gist-mini-tab-icon {
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .gist-mini-tab-icon img {
+                width: 20px;
+                height: 20px;
+                object-fit: contain;
+                border-radius: 4px;
+            }
+            
+            .gist-mini-tab-icon-fallback {
+                width: 20px;
+                height: 20px;
+                background: ${styling.primaryColor || (isDark ? '#8b5cf6' : '#7c3aed')};
+                color: white;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                font-size: 12px;
+            }
+            
+            .gist-mini-tab-text {
+                color: ${isDark ? '#ffffff' : '#000000'};
+                font-size: 14px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                font-weight: 600;
+                writing-mode: horizontal-tb;
+            }
+            
+            /* Mobile responsiveness for mini tab */
+            @media (max-width: 768px) {
+                .gist-mini-tab {
+                    width: 40px;
+                    height: 60px;
+                    padding: 10px 0;
+                }
+                
+                .gist-mini-tab-icon {
+                    width: 16px;
+                    height: 16px;
+                }
+                
+                .gist-mini-tab-icon img {
+                    width: 16px;
+                    height: 16px;
+                }
+                
+                .gist-mini-tab-icon-fallback {
+                    width: 16px;
+                    height: 16px;
+                    font-size: 10px;
+                }
+                
+                .gist-mini-tab-text {
+                    font-size: 12px;
+                }
+            }
 
             .sidebar-close {
                 width: 32px;
@@ -3287,10 +3464,11 @@
     window.__gistWidgetLoaded = true;
 
     async function createWidget() {
-        const widgetContainer = document.createElement('div');
-        widgetContainer.id = 'gist-widget-container';
-        
-        const shadowRoot = widgetContainer.attachShadow({ mode: 'closed' });
+        try {
+            const widgetContainer = document.createElement('div');
+            widgetContainer.id = 'gist-widget-container';
+            
+            const shadowRoot = widgetContainer.attachShadow({ mode: 'closed' });
         
         // Debug theme detection
         console.log('[GIST DEBUG] Starting comprehensive theme analysis...');
@@ -3300,7 +3478,15 @@
         const extractedStyling = await analyzeWebsiteStyling();
         const dynamicStyles = generateDynamicStyles(extractedStyling);
         // Extract website branding for dynamic placeholder
-        const siteBranding = await extractWebsiteBranding();
+        let siteBranding = await extractWebsiteBranding();
+        // Ensure siteBranding has default values
+        if (!siteBranding || !siteBranding.name) {
+            siteBranding = {
+                name: 'this site',
+                font: 'sans-serif',
+                faviconUrl: null
+            };
+        }
         const placeholderText = `Ask ${siteBranding.name} anything...`;
         
         // Preload detected font
@@ -3318,11 +3504,10 @@
                 <div class="widget-search-bar collapsed" id="widget-search-bar">
                     <!-- Website logo (visible in collapsed state) -->
                     <div class="widget-logo" id="widget-logo">
-                        ${siteBranding.faviconUrl ? 
-                            `<img src="${siteBranding.faviconUrl}" alt="${siteBranding.name}" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                             <span class="logo-text" style="display: none;">${siteBranding.name.charAt(0).toUpperCase()}</span>` : 
-                            `<span class="logo-text">${siteBranding.name.charAt(0).toUpperCase()}</span>`
-                        }
+                        <svg viewBox="0 0 24 24" fill="none" stroke="${websiteStyling.primaryColor || '#8b5cf6'}" stroke-width="2.5" class="search-icon">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
                 </div>
                 
                     <!-- Search input (hidden when collapsed) -->
@@ -3389,6 +3574,18 @@
                     <a href="https://gpademo.vercel.app" target="_blank" class="gist-add-to-site">Add to your site</a>
                 </div>
             </div>
+            
+            <!-- Mini Tab (shown when sidebar is closed) -->
+            <div class="gist-mini-tab" id="gist-mini-tab" style="display: none;">
+                <div class="gist-mini-tab-icon">
+                    ${siteBranding.faviconUrl ? 
+                        `<img src="${siteBranding.faviconUrl}" alt="${siteBranding.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                         <span class="gist-mini-tab-icon-fallback" style="display: none;">${siteBranding.name.charAt(0).toUpperCase()}</span>` : 
+                        `<span class="gist-mini-tab-icon-fallback">${siteBranding.name.charAt(0).toUpperCase()}</span>`
+                    }
+                </div>
+                <span class="gist-mini-tab-text">Ask</span>
+            </div>
         `;
         
         shadowRoot.innerHTML = widgetHTML;
@@ -3401,6 +3598,13 @@
         const arrowBtn = shadowRoot.getElementById('widget-arrow-btn');
         const logo = shadowRoot.getElementById('widget-logo');
         const floatingSuggestions = shadowRoot.getElementById('floating-suggestions');
+        
+        // Debug mini tab creation
+        const miniTabCheck = shadowRoot.getElementById('gist-mini-tab');
+        console.log('[WIDGET] Mini tab created:', !!miniTabCheck);
+        if (miniTabCheck) {
+            console.log('[WIDGET] Mini tab initial display:', miniTabCheck.style.display);
+        }
 
         // IMPORTANT: Ensure floating suggestions start hidden
         if (floatingSuggestions) {
@@ -3983,25 +4187,36 @@ Instructions:
             }
         }
         
-        // API call
+        // API call with SSE support
         async function createChatCompletion(userPrompt) {
             initializeConversation();
             
+            // Add user message to conversation history
+            conversationHistory.push({ role: 'user', content: userPrompt });
+            
             const requestBody = {
-                model: WIDGET_CONFIG.MODEL,
+                userId: USER_ID,
                 messages: conversationHistory,
-                max_tokens: 300, // Reduced from 500 for faster response
-                temperature: 0.7, // Add for more consistent speed
-                stream: false // Ensure streaming is off
+                pageContext: extractPageContext(),
+                timestamp: new Date().toISOString()
             };
             
+            // Track the question event
+            trackAnalyticsEvent('question_asked', {
+                question: userPrompt,
+                conversationLength: conversationHistory.length
+            });
+            
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s instead of 20s
+            const timeoutId = setTimeout(() => controller.abort(), WIDGET_CONFIG.TIMEOUT_MS);
             
             try {
                 const response = await fetch(WIDGET_CONFIG.CHAT_API_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'text/event-stream'
+                    },
                     body: JSON.stringify(requestBody),
                     signal: controller.signal
                 });
@@ -4013,14 +4228,107 @@ Instructions:
                     throw new Error(errorData.error || `HTTP ${response.status}`);
                 }
                 
-                const data = await response.json();
-                let assistantMessage = data.response || data.choices?.[0]?.message?.content;
+                // Parse SSE response
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+                let metadata = null;
+                let content = '';
+                let completeData = null;
                 
-                if (!assistantMessage) {
-                    throw new Error('Invalid response format');
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) {
+                        console.log('📍 [SSE] Stream reading completed');
+                        break;
+                    }
+                    
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop() || '';
+                    
+                    console.log('📍 [SSE] Processing', lines.length, 'lines');
+                    
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const data = line.slice(6);
+                            console.log('📍 [SSE] Raw data line:', data);
+                            
+                            if (data === '[DONE]') {
+                                console.log('📍 [SSE] Received [DONE] signal');
+                                continue;
+                            }
+                            
+                            try {
+                                const event = JSON.parse(data);
+                                console.log('📍 [SSE] Parsed event:', { type: event.type, hasData: !!event.data });
+                                
+                                switch (event.type) {
+                                    case 'metadata':
+                                        metadata = event.data;
+                                        console.log('📍 [SSE] Metadata received:', metadata);
+                                        break;
+                                    case 'content':
+                                        content += event.data;
+                                        console.log('📍 [SSE] Content chunk received, total length:', content.length);
+                                        break;
+                                    case 'complete':
+                                        // The event IS the complete data (no nested data property)
+                                        completeData = event;
+                                        console.log('🔍 [SSE] Complete event structure:', JSON.stringify(event, null, 2));
+                                        console.log('🔍 [SSE] Complete data assigned:', completeData);
+                                        console.log('🔍 [SSE] Complete event keys:', Object.keys(event));
+                                        console.log('🔍 [SSE] Complete event.response exists:', !!event.response);
+                                        console.log('🔍 [SSE] Complete event.attributions:', event.attributions);
+                                        console.log('🔍 [SSE] completeData.response exists:', !!completeData?.response);
+                                        console.log('🔍 [SSE] completeData.attributions:', completeData?.attributions);
+                                        break;
+                                    case 'error':
+                                        console.error('📍 [SSE] Error event received:', event);
+                                        throw new Error(event.error || event.message || 'Stream error');
+                                    default:
+                                        console.warn('📍 [SSE] Unknown event type:', event.type);
+                                }
+                            } catch (e) {
+                                console.error('[WIDGET] Error parsing SSE event:', e);
+                                console.error('[WIDGET] Failed to parse data:', data);
+                            }
+                        } else if (line.trim()) {
+                            console.log('📍 [SSE] Non-data line:', line);
+                        }
+                    }
                 }
                 
-                conversationHistory.push({ role: 'assistant', content: assistantMessage });
+                // Log final state after SSE processing
+                console.log('📍 [SSE] Final state after processing:');
+                console.log('📍 [SSE] - completeData:', completeData);
+                console.log('📍 [SSE] - completeData is null/undefined?', completeData == null);
+                console.log('📍 [SSE] - content length:', content.length);
+                console.log('📍 [SSE] - metadata:', metadata);
+                
+                // Use complete data if available, otherwise use accumulated content
+                const finalResponse = completeData?.response || content;
+                const citations = completeData?.citations || [];
+                const attributions = completeData?.attributions || {};
+                const threadId = completeData?.threadId;
+                const turnId = completeData?.turnId;
+                
+                console.log('📊 [SSE] Extraction results:');
+                console.log('📊 [SSE] - finalResponse exists:', !!finalResponse);
+                console.log('📊 [SSE] - finalResponse length:', finalResponse?.length);
+                console.log('📊 [SSE] - citations:', citations);
+                console.log('📊 [SSE] - attributions:', JSON.stringify(attributions, null, 2));
+                console.log('📊 [SSE] - attributions type:', typeof attributions);
+                console.log('📊 [SSE] - has domain_credit_dist:', !!(attributions && attributions.domain_credit_dist));
+                console.log('📊 [SSE] - domain_credit_dist:', attributions?.domain_credit_dist);
+                console.log('📊 [SSE] - threadId:', threadId);
+                console.log('📊 [SSE] - turnId:', turnId);
+                
+                if (!finalResponse) {
+                    throw new Error('No response received from server');
+                }
+                
+                conversationHistory.push({ role: 'assistant', content: finalResponse });
                 
                 // Keep conversation manageable
                 if (conversationHistory.length > 21) {
@@ -4029,14 +4337,46 @@ Instructions:
                     conversationHistory = [systemMessage, ...recentMessages];
                 }
                 
-                return { answer: assistantMessage, usage: data.usage };
+                // Track answer received
+                trackAnalyticsEvent('answer_received', {
+                    threadId,
+                    turnId,
+                    hasAttributions: attributions && Object.keys(attributions).length > 0,
+                    attributionCount: attributions?.domain_credit_dist ? Object.keys(attributions.domain_credit_dist).length : 0
+                });
+                
+                return { 
+                    answer: finalResponse, 
+                    citations,
+                    attributions,
+                    threadId,
+                    turnId,
+                    metadata
+                };
             } catch (error) {
                 clearTimeout(timeoutId);
+                
+                // Track error
+                trackAnalyticsEvent('chat_error', {
+                    error: error.message,
+                    question: userPrompt
+                });
+                
                 if (error.name === 'AbortError') {
                     throw new Error('Request timed out. Please try again.');
                 }
                 throw error;
             }
+        }
+        
+        // Generate color for a source based on its name
+        function generateSourceColor(sourceName) {
+            const colors = ['#3b82f6', '#ec4899', '#f59e0b', '#10b981', '#8b5cf6', '#ef4444'];
+            let hash = 0;
+            for (let i = 0; i < sourceName.length; i++) {
+                hash = sourceName.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            return colors[Math.abs(hash) % colors.length];
         }
         
         // Generate mock attributions
@@ -4064,19 +4404,63 @@ Instructions:
             })).sort((a, b) => b.percentage - a.percentage);
         }
         
-        // Generate suggested questions
+        // Generate suggested questions using the API
         async function generateSuggestedQuestions() {
             const context = extractPageContext();
             
-            // Only proceed if we have substantial content to analyze
-            if (!context.content || context.content.length < 100) {
+            try {
+                const response = await fetch(WIDGET_CONFIG.QUESTIONS_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: USER_ID,
+                        pageContext: context,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to get suggested questions: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const questions = data.questions || [];
+                
+                // Track questions generated
+                trackAnalyticsEvent('questions_generated', {
+                    count: questions.length,
+                    pageUrl: context.url
+                });
+                
+                // Return questions or fallbacks
+                if (questions.length >= 3) {
+                    return questions.slice(0, 3);
+                }
+                
+                // If API doesn't return enough questions, use fallbacks
                 const contextFallbacks = createContextSpecificFallbacks(context, {type: 'article', topics: [], entities: []});
                 return contextFallbacks.slice(0, 3);
+                
+            } catch (error) {
+                console.error('[WIDGET] Failed to generate questions:', error);
+                
+                // Fallback to local generation if API fails
+                if (!context.content || context.content.length < 100) {
+                    const contextFallbacks = createContextSpecificFallbacks(context, {type: 'article', topics: [], entities: []});
+                    return contextFallbacks.slice(0, 3);
+                }
+                
+                // Extract key entities and topics from content for more specific questions
+                const contentAnalysis = analyzePageContent(context);
+                
+                // Return local fallbacks since API failed
+                const localFallbacks = await generateLocalQuestions(context, contentAnalysis);
+                return localFallbacks.slice(0, 3);
             }
-            
-            // Extract key entities and topics from content for more specific questions
-            const contentAnalysis = analyzePageContent(context);
-            
+        }
+        
+        // Generate questions locally (original logic)
+        async function generateLocalQuestions(context, contentAnalysis) {
             const prompt = `You are analyzing this specific webpage to generate relevant questions that visitors might ask.
 
 PAGE TITLE: "${context.title}"
@@ -4356,7 +4740,9 @@ Return exactly 3 questions, one per line, no numbering:`;
 
 
         // Display full answer with new layout
-        function displayFullAnswer(question, answer, sources) {
+        function displayFullAnswer(question, answer, sources, citations = {}) {
+            console.log('📝 displayFullAnswer called with:', { question, answerLength: answer.length, sourcesCount: sources ? sources.length : 0, citationsCount: Object.keys(citations).length });
+            
             // Get the loading container and replace with answer
             const currentSession = shadowRoot.getElementById('current-loading-session');
             if (currentSession) {
@@ -4375,6 +4761,7 @@ Return exactly 3 questions, one per line, no numbering:`;
                 
                 // Add sources bar
                 if (sources && sources.length > 0) {
+                    console.log('🏗️ Creating attribution bar with sources:', sources);
                     const sourcesBarContainer = document.createElement('div');
                     sourcesBarContainer.className = 'gist-sources-bar';
                     
@@ -4382,15 +4769,25 @@ Return exactly 3 questions, one per line, no numbering:`;
                     const attributionBar = document.createElement('div');
                     attributionBar.className = 'gist-attribution-bar';
                     
-                    sources.forEach(source => {
+                    sources.forEach((source, index) => {
                         const segment = document.createElement('div');
                         segment.className = 'gist-attribution-segment';
-                        segment.style.width = `${source.percentage * 100}%`;
+                        const widthPercent = source.percentage * 100;
+                        segment.style.width = `${widthPercent}%`;
                         segment.style.backgroundColor = source.color;
-                        segment.title = `${source.name}: ${(source.percentage * 100).toFixed(1)}%`;
+                        segment.title = `${source.name}: ${widthPercent.toFixed(1)}%`;
+                        
+                        console.log(`📊 Creating segment ${index + 1}:`, {
+                            name: source.name,
+                            width: `${widthPercent}%`,
+                            color: source.color,
+                            percentage: source.percentage
+                        });
+                        
                         attributionBar.appendChild(segment);
                     });
                     
+                    console.log('✅ Attribution bar created with', attributionBar.children.length, 'segments');
                     sourcesBarContainer.appendChild(attributionBar);
                     
                     // Sources list
@@ -4409,6 +4806,9 @@ Return exactly 3 questions, one per line, no numbering:`;
                     
                     sourcesBarContainer.appendChild(sourcesList);
                     answerLayout.appendChild(sourcesBarContainer);
+                    console.log('✅ Sources bar appended to answer layout');
+                } else {
+                    console.log('❌ No sources to display - sources array is empty or null');
                 }
                 
                 // Add content container for typewriter
@@ -4457,14 +4857,14 @@ Return exactly 3 questions, one per line, no numbering:`;
                 // Build answer inside the same container
                 currentSession.appendChild(answerLayout);
                 
-                // Start typewriter effect
+                // Start typewriter effect with citations
                 typewriterEffect(answer, uniqueId, () => {
                     const footer = currentSession.querySelector('.gist-engagement-footer');
                     if (footer) {
                         footer.classList.remove('hidden');
                         footer.classList.add('fade-in');
                     }
-                });
+                }, citations);
                 
                 // Generate and add follow-up questions after typewriter completes
                 setTimeout(async () => {
@@ -4540,24 +4940,85 @@ Return exactly 3 questions, one per line, no numbering:`;
         }
 
         // Typewriter effect
-        function typewriterEffect(text, targetId, onComplete) {
+        // Convert markdown to HTML and add citation links
+        function formatAnswerContent(text, citations = {}) {
+            // Split text into lines for better processing
+            const lines = text.split('\n');
+            let inList = false;
+            let formattedLines = [];
+            
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i];
+                
+                // Check if line is a list item
+                const isListItem = line.match(/^[\*\-•]\s+(.+)$/);
+                
+                if (isListItem) {
+                    if (!inList) {
+                        formattedLines.push('<ul>');
+                        inList = true;
+                    }
+                    line = `<li>${isListItem[1]}</li>`;
+                } else if (inList && line.trim() === '') {
+                    // Empty line after list, close the list
+                    formattedLines.push('</ul>');
+                    inList = false;
+                } else if (inList && !isListItem) {
+                    // Non-list line while in list, close the list
+                    formattedLines.push('</ul>');
+                    inList = false;
+                }
+                
+                // Apply other formatting to the line
+                line = line
+                    // Headers
+                    .replace(/^### (.+)$/, '<h3>$1</h3>')
+                    .replace(/^## (.+)$/, '<h2>$1</h2>')
+                    .replace(/^# (.+)$/, '<h1>$1</h1>')
+                    // Bold (but not list items that start with *)
+                    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                    // Italic (but not list items)
+                    .replace(/(?<!\*)(\*(?!\*))(.+?)\1/g, '<em>$2</em>');
+                
+                formattedLines.push(line);
+            }
+            
+            // Close any open list
+            if (inList) {
+                formattedLines.push('</ul>');
+            }
+            
+            // Join lines with line breaks where appropriate
+            let formatted = formattedLines.join('\n')
+                .replace(/\n\n/g, '<br><br>')
+                .replace(/\n(?!<)/g, '<br>');
+            
+            // Add links to citations [1], [2], etc.
+            formatted = formatted.replace(/\[(\d+)\]/g, (match, num) => {
+                const citation = citations[num];
+                if (citation && citation.url) {
+                    return `<a href="${citation.url}" target="_blank" class="gist-citation-link" title="${citation.source || citation.domain || citation.title}">[${num}]</a>`;
+                }
+                return match;
+            });
+            
+            return formatted;
+        }
+
+        function typewriterEffect(text, targetId, onComplete, citations = {}) {
             const target = shadowRoot.getElementById(targetId);
             if (!target) return;
             
-            let index = 0;
-            const speed = 5; // milliseconds per character (~200 chars/second)
+            // Format the content first
+            const formattedContent = formatAnswerContent(text, citations);
             
-            function type() {
-                if (index < text.length) {
-                    target.textContent += text.charAt(index);
-                    index++;
-                    setTimeout(type, speed);
-                } else if (index >= text.length && onComplete) {
-                    onComplete();
-                }
+            // For now, show all content at once with formatting
+            // You can implement character-by-character HTML rendering if needed
+            target.innerHTML = formattedContent;
+            
+            if (onComplete) {
+                setTimeout(onComplete, 100);
             }
-            
-            type();
         }
 
         // Add follow-up questions after an answer
@@ -4718,7 +5179,67 @@ Return exactly 3 questions, one per line, no numbering:`;
             try {
                 // Wait for API response
                 const response = await apiPromise;
-                const sources = generateMockAttributions();
+                
+                // Log the full response for debugging
+                console.log('🔍 Full API Response:', JSON.stringify(response, null, 2));
+                console.log('🔍 Response attributions:', JSON.stringify(response.attributions, null, 2));
+                console.log('🔍 Type of response.attributions:', typeof response.attributions);
+                console.log('🔍 Has domain_credit_dist?', !!(response.attributions && response.attributions.domain_credit_dist));
+                console.log('🔍 domain_credit_dist value:', response.attributions?.domain_credit_dist);
+                console.log('🔍 domain_credit_dist keys:', response.attributions?.domain_credit_dist ? Object.keys(response.attributions.domain_credit_dist) : 'N/A');
+                
+                // Transform API attributions to widget format
+                let sources;
+                if (response.attributions && response.attributions.domain_credit_dist && 
+                    Object.keys(response.attributions.domain_credit_dist).length > 0) {
+                    
+                    console.log('✅ Found attributions in response');
+                    console.log('📊 domain_credit_dist:', response.attributions.domain_credit_dist);
+                    
+                    // Convert domain_credit_dist to sources array
+                    const domainCredits = response.attributions.domain_credit_dist;
+                    const sourceColors = ['#3b82f6', '#ec4899', '#f59e0b', '#10b981', '#8b5cf6', '#ef4444'];
+                    
+                    sources = Object.entries(domainCredits)
+                        .map(([domain, percentage], index) => {
+                            // Extract domain name without TLD for icon
+                            const domainParts = domain.split('.');
+                            const mainName = domainParts[0];
+                            const icon = mainName.charAt(0).toUpperCase();
+                            
+                            const sourceObj = {
+                                name: domain,
+                                icon: icon,
+                                color: sourceColors[index % sourceColors.length],
+                                percentage: percentage / 100, // Convert from percentage to decimal
+                                title: `Content from ${domain}`,
+                                description: `Source attribution for ${domain}`,
+                                date: new Date(),
+                                url: `https://${domain}`
+                            };
+                            
+                            console.log(`📌 Transformed source ${index + 1}:`, sourceObj);
+                            
+                            return sourceObj;
+                        })
+                        .sort((a, b) => b.percentage - a.percentage); // Sort by percentage descending
+                    
+                    console.log('📊 Final transformed sources array:', sources);
+                } else {
+                    // Fall back to mock attributions if no real ones available
+                    console.log('❌ No attributions found in response, using mock data');
+                    console.log('Response structure:', {
+                        hasAttributions: !!response.attributions,
+                        attributionsType: typeof response.attributions,
+                        attributionsValue: response.attributions,
+                        hasDomainCreditDist: !!(response.attributions && response.attributions.domain_credit_dist),
+                        domainCreditDistKeys: response.attributions && response.attributions.domain_credit_dist ? 
+                            Object.keys(response.attributions.domain_credit_dist) : [],
+                        fullAttributions: JSON.stringify(response.attributions, null, 2)
+                    });
+                    sources = generateMockAttributions();
+                    console.log('🎭 Generated mock sources:', sources);
+                }
                 
                 // Clear phase timeout if still running
                 clearTimeout(phaseTimeout);
@@ -4731,7 +5252,9 @@ Return exactly 3 questions, one per line, no numbering:`;
                 }
                 
                 // Display final answer
-                displayFullAnswer(question, response.answer, sources);
+                console.log('🎯 Calling displayFullAnswer with sources:', sources);
+                console.log('📝 Citations available:', response.citations);
+                displayFullAnswer(question, response.answer, sources, response.citations);
                 
             } catch (error) {
                 clearTimeout(phaseTimeout);
@@ -6171,6 +6694,15 @@ Return exactly 3 questions, one per line, no numbering:`;
         function openSidebar() {
             console.log('[WIDGET] Opening sidebar');
             sidebarHasBeenOpened = true; // Track that sidebar has been opened
+            const sidebar = shadowRoot.getElementById('gist-sidebar');
+            const sidebarOverlay = shadowRoot.getElementById('gist-sidebar-overlay');
+            const miniTab = shadowRoot.getElementById('gist-mini-tab');
+            
+            // Hide mini tab when sidebar opens
+            if (miniTab) {
+                miniTab.style.display = 'none';
+            }
+            
             if (sidebar && sidebarOverlay) {
                 // Debug positioning
                 const sidebarRect = sidebar.getBoundingClientRect();
@@ -6207,10 +6739,25 @@ Return exactly 3 questions, one per line, no numbering:`;
 
         function closeSidebar() {
             console.log('[WIDGET] Closing sidebar');
+            const sidebar = shadowRoot.getElementById('gist-sidebar');
+            const sidebarOverlay = shadowRoot.getElementById('gist-sidebar-overlay');
+            const miniTab = shadowRoot.getElementById('gist-mini-tab');
+            
+            console.log('[WIDGET] Mini tab element found:', !!miniTab);
+            console.log('[WIDGET] sidebarHasBeenOpened:', sidebarHasBeenOpened);
+            
             if (sidebar && sidebarOverlay) {
                 // Remove classes to slide out to right
                 sidebar.classList.remove('open');
                 sidebarOverlay.classList.remove('visible');
+                
+                // Show mini tab when sidebar closes (only if sidebar has been opened before)
+                if (miniTab && sidebarHasBeenOpened) {
+                    miniTab.style.display = 'flex';
+                    console.log('[WIDGET] Mini tab shown');
+                } else {
+                    console.log('[WIDGET] Mini tab not shown - miniTab:', !!miniTab, 'sidebarHasBeenOpened:', sidebarHasBeenOpened);
+                }
                 
                 console.log('[WIDGET] Sidebar closed successfully');
             } else {
@@ -6347,7 +6894,49 @@ Return exactly 3 questions, one per line, no numbering:`;
                 
                 // Get API response
                 const response = await createChatCompletion(question);
-                const sources = generateMockAttributions();
+                
+                // Transform API attributions to widget format
+                let sources;
+                if (response.attributions && response.attributions.domain_credit_dist && 
+                    Object.keys(response.attributions.domain_credit_dist).length > 0) {
+                    
+                    console.log('✅ Found attributions in response');
+                    console.log('📊 domain_credit_dist:', response.attributions.domain_credit_dist);
+                    
+                    // Convert domain_credit_dist to sources array
+                    const domainCredits = response.attributions.domain_credit_dist;
+                    const sourceColors = ['#3b82f6', '#ec4899', '#f59e0b', '#10b981', '#8b5cf6', '#ef4444'];
+                    
+                    sources = Object.entries(domainCredits)
+                        .map(([domain, percentage], index) => {
+                            // Extract domain name without TLD for icon
+                            const domainParts = domain.split('.');
+                            const mainName = domainParts[0];
+                            const icon = mainName.charAt(0).toUpperCase();
+                            
+                            const sourceObj = {
+                                name: domain,
+                                icon: icon,
+                                color: sourceColors[index % sourceColors.length],
+                                percentage: percentage / 100, // Convert from percentage to decimal
+                                title: `Content from ${domain}`,
+                                description: `Source attribution for ${domain}`,
+                                date: new Date(),
+                                url: `https://${domain}`
+                            };
+                            
+                            console.log(`📌 Transformed source ${index + 1}:`, sourceObj);
+                            
+                            return sourceObj;
+                        })
+                        .sort((a, b) => b.percentage - a.percentage); // Sort by percentage descending
+                    
+                    console.log('📊 Final transformed sources array:', sources);
+                } else {
+                    // Fall back to mock attributions if no real ones available
+                    console.log('❌ No attributions found in response, using mock data');
+                    sources = generateMockAttributions();
+                }
                 
                 // Phase 4: Display final answer with rich layout
                 loadingContainer.removeAttribute('id');
@@ -6399,6 +6988,9 @@ Return exactly 3 questions, one per line, no numbering:`;
                     
                     sourcesBarContainer.appendChild(sourcesList);
                     answerLayout.appendChild(sourcesBarContainer);
+                    console.log('✅ Sources bar appended to answer layout');
+                } else {
+                    console.log('❌ No sources to display - sources array is empty or null');
                 }
                 
                 // Add content container for typewriter
@@ -6454,14 +7046,14 @@ Return exactly 3 questions, one per line, no numbering:`;
                 // Build answer inside the container
                 loadingContainer.appendChild(answerLayout);
                 
-                // Start typewriter effect
+                // Start typewriter effect with citations
                 typewriterEffect(response.answer, uniqueId, () => {
                     const footer = loadingContainer.querySelector('.gist-engagement-footer');
                     if (footer) {
                         footer.classList.remove('hidden');
                         footer.classList.add('fade-in');
                     }
-                });
+                }, response.citations || {});
                 
                 // Generate and add follow-up questions after typewriter completes
                 setTimeout(async () => {
@@ -6483,6 +7075,12 @@ Return exactly 3 questions, one per line, no numbering:`;
                             likeBtn.classList.toggle('active');
                             if (likeBtn.classList.contains('active')) {
                                 dislikeBtn.classList.remove('active');
+                                trackAnalyticsEvent('answer_feedback', {
+                                    type: 'like',
+                                    question: question,
+                                    threadId: response.threadId,
+                                    turnId: response.turnId
+                                });
                             }
                         });
                     }
@@ -6492,6 +7090,12 @@ Return exactly 3 questions, one per line, no numbering:`;
                             dislikeBtn.classList.toggle('active');
                             if (dislikeBtn.classList.contains('active')) {
                                 likeBtn.classList.remove('active');
+                                trackAnalyticsEvent('answer_feedback', {
+                                    type: 'dislike',
+                                    question: question,
+                                    threadId: response.threadId,
+                                    turnId: response.turnId
+                                });
                             }
                         });
                     }
@@ -6738,6 +7342,12 @@ Return exactly 3 questions, one per line, no numbering:`;
                 // Setup click handlers
                 setupQuestionClickHandlers(container);
                 
+                // Track suggestions displayed
+                trackAnalyticsEvent('suggestions_displayed', {
+                    questions: questions,
+                    source: 'floating_widget'
+                });
+                
             } catch (error) {
                 console.error('[WIDGET] Failed to load suggestions:', error);
                 // Don't hide container, show fallbacks instead
@@ -6776,6 +7386,12 @@ Return exactly 3 questions, one per line, no numbering:`;
         function openChatWithQuestion(question) {
             console.log('[WIDGET] Opening chat with question:', question);
             
+            // Track chat opened
+            trackAnalyticsEvent('chat_opened', {
+                question: question,
+                source: 'search_bar'
+            });
+            
             // First, collapse the search widget and hide suggestions
             if (searchBar) {
                 searchBar.classList.add('collapsed');
@@ -6807,6 +7423,14 @@ Return exactly 3 questions, one per line, no numbering:`;
             
             if (sidebar && overlay) {
                 console.log('[WIDGET] Starting sidebar animation...');
+                sidebarHasBeenOpened = true; // Track that sidebar has been opened
+                
+                // Hide mini tab when sidebar opens
+                const miniTab = shadowRoot.getElementById('gist-mini-tab');
+                if (miniTab) {
+                    miniTab.style.display = 'none';
+                }
+                
                 sidebar.classList.add('open');
                 overlay.classList.add('visible');
                 
@@ -6834,16 +7458,23 @@ Return exactly 3 questions, one per line, no numbering:`;
             // Close button handler
             if (closeBtn) {
                 closeBtn.addEventListener('click', () => {
-                    if (sidebar) sidebar.classList.remove('open');
-                    if (overlay) overlay.classList.remove('visible');
+                    closeSidebar();
                 });
             }
             
             // Overlay click handler
             if (overlay) {
                 overlay.addEventListener('click', () => {
-                    if (sidebar) sidebar.classList.remove('open');
-                    overlay.classList.remove('visible');
+                    closeSidebar();
+                });
+            }
+            
+            // Mini tab click handler
+            const miniTab = shadowRoot.getElementById('gist-mini-tab');
+            if (miniTab) {
+                miniTab.addEventListener('click', () => {
+                    console.log('[WIDGET] Mini tab clicked - opening sidebar');
+                    openSidebar();
                 });
             }
             
@@ -6876,8 +7507,7 @@ Return exactly 3 questions, one per line, no numbering:`;
             // ESC key handler
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
-                    sidebar.classList.remove('open');
-                    if (overlay) overlay.classList.remove('visible');
+                    closeSidebar();
                 }
             });
         }
@@ -6915,6 +7545,13 @@ Return exactly 3 questions, one per line, no numbering:`;
         setTimeout(() => {
             widget.classList.add('loaded');
             console.log('[WIDGET] Widget initialized with floating suggestions hidden and search bar collapsed');
+            
+            // Track widget loaded
+            trackAnalyticsEvent('widget_loaded', {
+                position: WIDGET_CONFIG.POSITION,
+                pageUrl: window.location.href,
+                pageTitle: document.title
+            });
         }, 100);
         
         // Setup right edge hover detection for sidebar
@@ -6944,45 +7581,49 @@ Return exactly 3 questions, one per line, no numbering:`;
                     isHoveringRightEdge = false;
                     clearTimeout(rightEdgeHoverTimeout);
                     
-                    // Auto-close sidebar if it's open and mouse moves away from right side
-                    if (sidebar?.classList.contains('open')) {
-                        clearTimeout(sidebarCloseTimeout);
-                        sidebarCloseTimeout = setTimeout(() => {
-                            // Only close if mouse is still away from sidebar
-                            const sidebarRect = sidebar.getBoundingClientRect();
-                            const currentMouseX = e.clientX;
-                            
-                            if (currentMouseX < sidebarRect.left - 50) {
-                                closeSidebar();
-                            }
-                        }, CLOSE_DELAY);
-                    }
+                    // Auto-close disabled - sidebar only closes on click
+                    // if (sidebar?.classList.contains('open')) {
+                    //     clearTimeout(sidebarCloseTimeout);
+                    //     sidebarCloseTimeout = setTimeout(() => {
+                    //         // Only close if mouse is still away from sidebar
+                    //         const sidebarRect = sidebar.getBoundingClientRect();
+                    //         const currentMouseX = e.clientX;
+                    //         
+                    //         if (currentMouseX < sidebarRect.left - 50) {
+                    //             closeSidebar();
+                    //         }
+                    //     }, CLOSE_DELAY);
+                    // }
                 }
             });
             
-            // Cancel close timeout if mouse enters sidebar
-            const sidebar = shadowRoot.getElementById('gist-sidebar');
-            if (sidebar) {
-                sidebar.addEventListener('mouseenter', () => {
-                    clearTimeout(sidebarCloseTimeout);
-                });
-                
-                sidebar.addEventListener('mouseleave', (e) => {
-                    // Start close timeout when leaving sidebar
-                    clearTimeout(sidebarCloseTimeout);
-                    sidebarCloseTimeout = setTimeout(() => {
-                        if (!isHoveringRightEdge) {
-                            closeSidebar();
-                        }
-                    }, CLOSE_DELAY);
-                });
-            }
+            // Removed hover-based auto-close functionality
+            // Sidebar now only closes on explicit user actions
         }
         
         // Initialize right edge hover detection
-        setupRightEdgeHoverDetection();
+        // Disabled - sidebar should only close on click, not hover
+        // setupRightEdgeHoverDetection();
+        
+        // Pre-generate questions on widget load
+        setTimeout(() => {
+            generateSuggestedQuestions().then(questions => {
+                pregeneratedQuestions = questions;
+            }).catch(() => {
+                // Silently fail
+            });
+        }, 1000); // Generate after 1 second of page load
         
         return shadowRoot;
+        } catch (error) {
+            console.error('[GIST WIDGET] Error creating widget:', error);
+            console.error('[GIST WIDGET] Stack trace:', error.stack);
+            // Try to show a basic error message
+            const fallbackContainer = document.createElement('div');
+            fallbackContainer.style.cssText = 'position: fixed; bottom: 20px; left: 20px; background: #ff0000; color: white; padding: 10px; border-radius: 4px; z-index: 99999;';
+            fallbackContainer.textContent = 'Widget Error: ' + error.message;
+            document.body.appendChild(fallbackContainer);
+        }
     }
 
     // Initialize
@@ -6992,25 +7633,9 @@ Return exactly 3 questions, one per line, no numbering:`;
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
                 createWidget();
-                // Pre-generate questions on widget load
-                setTimeout(() => {
-                    generateSuggestedQuestions().then(questions => {
-                        pregeneratedQuestions = questions;
-                    }).catch(() => {
-                        // Silently fail
-                    });
-                }, 1000); // Generate after 1 second of page load
             });
         } else {
             createWidget();
-            // Pre-generate questions on widget load
-            setTimeout(() => {
-                generateSuggestedQuestions().then(questions => {
-                    pregeneratedQuestions = questions;
-                }).catch(() => {
-                    // Silently fail
-                });
-            }, 1000); // Generate after 1 second of page load
         }
     }
     

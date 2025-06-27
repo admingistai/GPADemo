@@ -16,6 +16,7 @@
     "cheerio": "1.0.0-rc.12",
     "dompurify": "^3.2.6",
     "elevenlabs": "^1.59.0",
+    "eventsource": "^4.0.0",
     "express-rate-limit": "7.1.5",
     "gsap": "^3.13.0",
     "http-proxy-middleware": "^2.0.9",
@@ -23,6 +24,7 @@
     "openai": "^5.7.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "undici": "^7.11.0",
     "validator": "13.11.0"
   },
   "devDependencies": {
