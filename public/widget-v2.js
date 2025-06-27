@@ -4224,8 +4224,20 @@ Instructions:
                 clearTimeout(timeoutId);
                 
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    throw new Error(errorData.error || `HTTP ${response.status}`);
+                    // Check content type before trying to parse JSON
+                    const contentType = response.headers.get('content-type');
+                    console.error('[WIDGET] Error response content-type:', contentType);
+                    
+                    let errorMessage = `HTTP ${response.status}`;
+                    if (contentType && contentType.includes('application/json')) {
+                        const errorData = await response.json().catch(() => ({}));
+                        errorMessage = errorData.error || errorMessage;
+                    } else {
+                        // If not JSON, try to read as text
+                        const errorText = await response.text().catch(() => '');
+                        console.error('[WIDGET] Error response text:', errorText);
+                    }
+                    throw new Error(errorMessage);
                 }
                 
                 // Parse SSE response
@@ -4420,7 +4432,22 @@ Instructions:
                 });
                 
                 if (!response.ok) {
+                    const contentType = response.headers.get('content-type');
+                    console.error('[WIDGET] Questions API error - content-type:', contentType);
+                    
+                    if (contentType && contentType.includes('text/event-stream')) {
+                        console.error('[WIDGET] Questions API returned SSE instead of JSON');
+                        throw new Error('Questions API returned streaming response instead of JSON');
+                    }
                     throw new Error(`Failed to get suggested questions: ${response.status}`);
+                }
+                
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    console.error('[WIDGET] Questions API unexpected content-type:', contentType);
+                    const responseText = await response.text();
+                    console.error('[WIDGET] Questions API response:', responseText.substring(0, 200));
+                    throw new Error('Questions API returned non-JSON response');
                 }
                 
                 const data = await response.json();

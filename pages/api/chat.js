@@ -35,7 +35,8 @@ export default async function handler(req, res) {
       hasApiKey: !!process.env.PRORATA_API_KEY,
       apiKeyLength: process.env.PRORATA_API_KEY?.length,
       nodeEnv: process.env.NODE_ENV,
-      vercelEnv: process.env.VERCEL_ENV
+      vercelEnv: process.env.VERCEL_ENV,
+      apiBaseUrl: PRORATA_CONFIG.API_BASE_URL
     });
     
     if (!PRORATA_CONFIG.API_KEY) {
