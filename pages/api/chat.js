@@ -31,9 +31,20 @@ export default async function handler(req, res) {
     }
 
     // Check if API key is configured
+    console.log('Environment check:', {
+      hasApiKey: !!process.env.PRORATA_API_KEY,
+      apiKeyLength: process.env.PRORATA_API_KEY?.length,
+      nodeEnv: process.env.NODE_ENV,
+      vercelEnv: process.env.VERCEL_ENV
+    });
+    
     if (!PRORATA_CONFIG.API_KEY) {
       return res.status(500).json({ 
-        error: 'Prorata API key not configured. Please add PRORATA_API_KEY to your environment variables.' 
+        error: 'Prorata API key not configured. Please add PRORATA_API_KEY to your environment variables.',
+        debug: {
+          hasEnvVar: !!process.env.PRORATA_API_KEY,
+          envVarLength: process.env.PRORATA_API_KEY?.length
+        }
       });
     }
 
