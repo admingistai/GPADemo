@@ -223,16 +223,19 @@ export default function Home() {
             Add the Ask Anything™ widget to your site and let visitors get instant AI answers without leaving your&nbsp;page.
           </p>
           
-          {/* YouTube Demo Video */}
-          <YouTubeEmbed 
-            videoId="0vLp7Ri_33M" 
-            title="Ask Anything™ Product Demo"
-            className="hero-video"
-          />
-          
+          {/* Make CTA button visible immediately */}
           <button className="hero-cta-button" onClick={handleGetStarted}>
             Get an Ask Anything™ Button
           </button>
+          
+          {/* YouTube Demo Video - moved after button */}
+          <div className="video-wrapper">
+            <YouTubeEmbed 
+              videoId="0vLp7Ri_33M" 
+              title="Ask Anything™ Product Demo"
+              className="hero-video"
+            />
+          </div>
         </section>
 
         {/* Trust Section - Moved up for better social proof */}
@@ -240,7 +243,15 @@ export default function Home() {
           <h2 className="teams-heading">The teams we empower</h2>
           <p className="teams-subtitle">Trusted by leading publishers and media companies worldwide</p>
           <div className="publishers-logos">
-            <Image src="/publishers-logos.png" alt="Publishers we empower including major news outlets and content creators" width={800} height={200} />
+            <Image 
+              src="/publishers-logos.png" 
+              alt="Publishers we empower including major news outlets and content creators" 
+              width={800} 
+              height={200}
+              loading="lazy"
+              placeholder="blur"
+              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABCAYAAAD5PA/NAAAAFklEQVR42mNkYPhfz0AEYBxVQFsBAB+yAQeUQ3ppAAAAAElFTkSuQmCC"
+            />
           </div>
         </section>
 
@@ -999,9 +1010,15 @@ export default function Home() {
             margin-right: auto;
           }
 
+          /* Video wrapper to prevent layout shift */
+          .video-wrapper {
+            margin-top: 3rem;
+            min-height: 405px; /* 720px * 9/16 aspect ratio */
+          }
+
           /* YouTube Video with proper spacing */
           .hero-video {
-            margin-bottom: 4rem;
+            margin-bottom: 2rem;
           }
 
           /* Hero CTA Button */
@@ -1018,11 +1035,13 @@ export default function Home() {
             box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
             letter-spacing: 0.5px;
             margin-top: 32px;
-            margin-bottom: 6rem;
+            margin-bottom: 0;
             min-width: 260px;
             display: block;
             margin-left: auto;
             margin-right: auto;
+            position: relative;
+            z-index: 10;
           }
 
           .hero-cta-button:hover {
@@ -2523,6 +2542,11 @@ export default function Home() {
               min-width: 240px;
               padding: 0.875rem 2.5rem;
               font-size: 1rem;
+            }
+
+            .video-wrapper {
+              min-height: 200px; /* Smaller on mobile */
+              margin-top: 2rem;
             }
 
             .why-choose-section {
