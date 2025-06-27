@@ -5,6 +5,13 @@
     // CONFIGURATION
     // ================================
     
+    // Fallback questions for instant display
+    const FALLBACK_QUESTIONS = [
+        "What are the key developments mentioned in this news?",
+        "How might this impact the industry?",
+        "What are the main findings discussed here?"
+    ];
+    
     // Dynamically determine the backend URL from the widget script source
     function getBackendBaseUrl() {
         const scripts = document.querySelectorAll('script[src*="widget.js"]');
@@ -69,10 +76,10 @@
         MODEL: 'gpt-3.5-turbo',
         TIMEOUT_MS: 20000,
         DEBOUNCE_MS: 300,
-        // Loading phase durations
-        SKELETON_DURATION: 1750,    // 1.75 seconds
-        SOURCES_DURATION: 1250,     // 1.25 seconds
-        GENERATING_DURATION: 750,   // 0.75 seconds
+        // Loading phase durations - reduced for speed
+        SKELETON_DURATION: 500,     // 0.5 seconds
+        SOURCES_DURATION: 300,      // 0.3 seconds
+        GENERATING_DURATION: 200,   // 0.2 seconds
         // Widget positioning
         POSITION: getWidgetPosition() // center, left, right
     };
@@ -3337,7 +3344,7 @@
                 
                 <!-- Floating suggested questions -->
                 <div class="floating-suggestions" id="floating-suggestions">
-                    <div class="suggestions-loading">Loading suggestions...</div>
+                    <!-- Questions will be loaded here -->
                 </div>
             </div>
             
@@ -3345,7 +3352,7 @@
             <div class="gist-sidebar-overlay" id="gist-sidebar-overlay"></div>
             <div class="gist-sidebar" id="gist-sidebar">
                 <div class="gist-sidebar-header">
-                    <h3>Chat with ${siteBranding.name || 'Ask Anything™'}</h3>
+                    <h3>Ask ${siteBranding.name || 'Ask Anything™'} anything</h3>
                     <button class="gist-sidebar-close" id="gist-sidebar-close">×</button>
                 </div>
                 <div class="gist-sidebar-content" id="gist-sidebar-content">
@@ -3983,11 +3990,13 @@ Instructions:
             const requestBody = {
                 model: WIDGET_CONFIG.MODEL,
                 messages: conversationHistory,
-                max_tokens: 500
+                max_tokens: 300, // Reduced from 500 for faster response
+                temperature: 0.7, // Add for more consistent speed
+                stream: false // Ensure streaming is off
             };
             
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), WIDGET_CONFIG.TIMEOUT_MS);
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s instead of 20s
             
             try {
                 const response = await fetch(WIDGET_CONFIG.CHAT_API_URL, {
@@ -4061,7 +4070,8 @@ Instructions:
             
             // Only proceed if we have substantial content to analyze
             if (!context.content || context.content.length < 100) {
-                throw new Error('Insufficient content for question generation');
+                const contextFallbacks = createContextSpecificFallbacks(context, {type: 'article', topics: [], entities: []});
+                return contextFallbacks.slice(0, 3);
             }
             
             // Extract key entities and topics from content for more specific questions
@@ -4115,39 +4125,53 @@ Return exactly 3 questions, one per line, no numbering:`;
                         .replace(/^Q\d*:?\s*/i, '') // Remove "Q1:" etc
                         .trim();
                     
-                    // Only include lines that are questions (end with ?) and aren't too long
-                    if (cleaned.endsWith('?') && cleaned.length > 15 && cleaned.length < 150) {
+                    // More lenient validation - just ensure it's a question and not too short
+                    if (cleaned.endsWith('?') && cleaned.length >= 10) {
                         questions.push(cleaned);
                     }
                 }
                 
-                // Only return questions if we have at least 2 good ones
-                const validQuestions = questions.slice(0, 3);
-                if (validQuestions.length >= 2) {
-                    // If we have 2 good questions, try to add one context-specific fallback
-                    if (validQuestions.length === 2) {
-                        const contextFallbacks = createContextSpecificFallbacks(context, contentAnalysis);
-                        if (contextFallbacks.length > 0) {
-                            validQuestions.push(contextFallbacks[0]);
-                        }
+                // Get context fallbacks upfront
+                const contextFallbacks = createContextSpecificFallbacks(context, contentAnalysis);
+                
+                // Combine AI-generated questions with fallbacks to ensure exactly 3
+                let finalQuestions = [];
+                
+                // Add AI-generated questions first
+                finalQuestions = questions.slice(0, 3);
+                
+                // If we don't have enough, add fallbacks
+                while (finalQuestions.length < 3 && contextFallbacks.length > 0) {
+                    const fallback = contextFallbacks.shift();
+                    if (!finalQuestions.includes(fallback)) {
+                        finalQuestions.push(fallback);
                     }
-                    return validQuestions;
                 }
                 
-                // If we don't have enough good questions, throw error to hide section
-                throw new Error('Could not generate quality questions');
+                // If we still don't have 3 questions, add generic fallbacks
+                const genericFallbacks = [
+                    "What are the key points discussed in this content?",
+                    "How can I learn more about this topic?",
+                    "What makes this information important?"
+                ];
+                
+                while (finalQuestions.length < 3) {
+                    const fallback = genericFallbacks[finalQuestions.length];
+                    finalQuestions.push(fallback);
+                }
+                
+                return finalQuestions.slice(0, 3);
                     
-                } catch (error) {
-                // Try context-specific fallbacks only if they're truly relevant
-                const contextFallbacks = createContextSpecificFallbacks(context, analyzePageContent(context));
-                
-                // Only return fallbacks if we have good context-specific ones
-                if (contextFallbacks.length >= 2) {
-                    return contextFallbacks.slice(0, 3);
-                }
-                
-                // Otherwise, throw error to hide the section
-                throw new Error('Could not generate relevant questions for this content');
+            } catch (error) {
+                // Return context-specific fallbacks or generic ones
+                const contextFallbacks = createContextSpecificFallbacks(context, contentAnalysis);
+                return contextFallbacks.slice(0, 3).length === 3 ? 
+                    contextFallbacks.slice(0, 3) : 
+                    [
+                        "What are the key points discussed in this content?",
+                        "How can I learn more about this topic?",
+                        "What makes this information important?"
+                    ];
             }
         }
         
@@ -4281,15 +4305,15 @@ Return exactly 3 questions, one per line, no numbering:`;
                     <div class="gist-loading-header">
                         <div class="gist-loading-spinner-orange"></div>
                         <span>Generating answer</span>
-                </div>
+                    </div>
                     <div class="gist-skeleton-container">
-                        <div class="gist-skeleton-box" style="width: 85%;"></div>
-                        <div class="gist-skeleton-box" style="width: 70%;"></div>
-                        <div class="gist-skeleton-box" style="width: 90%;"></div>
-                        <div class="gist-skeleton-box" style="width: 60%;"></div>
-                        <div class="gist-skeleton-box" style="width: 75%;"></div>
+                        <div class="gist-skeleton-box" style="width: 85%; background: #f0f0f0;"></div>
+                        <div class="gist-skeleton-box" style="width: 70%; background: #f0f0f0;"></div>
+                        <div class="gist-skeleton-box" style="width: 90%; background: #f0f0f0;"></div>
+                        <div class="gist-skeleton-box" style="width: 60%; background: #f0f0f0;"></div>
+                        <div class="gist-skeleton-box" style="width: 75%; background: #f0f0f0;"></div>
                     </div>
-                    </div>
+                </div>
             `;
             
             loadingContainer.innerHTML = loadingHTML;
@@ -4557,11 +4581,18 @@ Return exactly 3 questions, one per line, no numbering:`;
             
                                 // Add click handlers for follow-up questions
                 const questionButtons = container.querySelectorAll('.gist-follow-up-question');
+                const sidebarInput = shadowRoot.getElementById('gist-sidebar-input');
+                
                 questionButtons.forEach(button => {
                     button.addEventListener('click', () => {
                         const question = button.dataset.question;
-                        input.value = question;
-                        submitQuery();
+                        if (sidebarInput) {
+                            sidebarInput.value = question;
+                            // Trigger the question processing
+                            processSidebarQuestion(question);
+                            // Remove the follow-up questions section after clicking
+                            container.style.display = 'none';
+                        }
                     });
                 });
             
@@ -4653,37 +4684,65 @@ Return exactly 3 questions, one per line, no numbering:`;
             return new Promise(resolve => setTimeout(resolve, ms));
         }
 
-        // Process user query with loading phases
+        // Process user query with optimized loading phases
         async function processUserQuery(question) {
-            // Phase 1: Skeleton loading
+            // Start API call immediately
+            const apiPromise = createChatCompletion(question);
+            
+            // Show loading phases but don't wait for fixed durations
             showSkeletonLoading();
-            await delay(WIDGET_CONFIG.SKELETON_DURATION);
             
-            // Phase 2: Obtaining sources
-            showObtainingSources();
-            await delay(WIDGET_CONFIG.SOURCES_DURATION);
+            // Set minimum display time for each phase
+            const minSkeletonTime = 400;
+            const minSourcesTime = 200;
             
-            // Phase 3: Generating answer
-            showGeneratingAnswer();
-            await delay(WIDGET_CONFIG.GENERATING_DURATION);
+            const startTime = Date.now();
+            let phaseTimeout;
+            let currentPhase = 0;
             
-            // Get API response
+            // Function to advance phases
+            const advancePhase = () => {
+                if (currentPhase === 0) {
+                    showObtainingSources();
+                    currentPhase = 1;
+                    phaseTimeout = setTimeout(advancePhase, 300);
+                } else if (currentPhase === 1) {
+                    showGeneratingAnswer();
+                    currentPhase = 2;
+                }
+            };
+            
+            // Start phase advancement
+            phaseTimeout = setTimeout(advancePhase, 400);
+            
             try {
-                const response = await createChatCompletion(question);
+                // Wait for API response
+                const response = await apiPromise;
                 const sources = generateMockAttributions();
                 
-                // Phase 4: Display final answer in the same container
+                // Clear phase timeout if still running
+                clearTimeout(phaseTimeout);
+                
+                // Calculate remaining time to ensure smooth transition
+                const elapsed = Date.now() - startTime;
+                const minTotalTime = 1000; // 1 second minimum
+                if (elapsed < minTotalTime) {
+                    await delay(minTotalTime - elapsed);
+                }
+                
+                // Display final answer
                 displayFullAnswer(question, response.answer, sources);
                 
             } catch (error) {
+                clearTimeout(phaseTimeout);
                 const currentSession = shadowRoot.getElementById('current-loading-session');
                 if (currentSession) {
                     currentSession.innerHTML = `
                         <div class="gist-error">
                             <strong>Error:</strong> ${error.message}
-                </div>
-            `;
-        }
+                        </div>
+                    `;
+                }
             }
         }
 
@@ -6513,11 +6572,9 @@ Return exactly 3 questions, one per line, no numbering:`;
                     searchBar.classList.remove('collapsed');
                     searchBar.classList.add('expanded');
                     
-                    // Focus input and show suggestions after animation
-                    setTimeout(() => {
-                        input.focus();
-                        showFloatingSuggestions();
-                    }, 300);
+                    // Focus input and show suggestions immediately
+                    input.focus();
+                    showFloatingSuggestions();
             } else {
                     searchBar.classList.remove('expanded');
                     searchBar.classList.add('collapsed');
@@ -6626,47 +6683,89 @@ Return exactly 3 questions, one per line, no numbering:`;
             if (!container) return;
             
             try {
-                // Show loading state
-                container.innerHTML = '<div class="suggestions-loading">Loading suggestions...</div>';
+                // Ensure container is visible
+                container.classList.add('visible');
                 
-                // Generate questions using existing function
-                const questions = await generateSuggestedQuestions();
-                
-                if (questions.length > 0) {
-                    // Create floating suggestion buttons
-                    container.innerHTML = questions.map(question => `
-                        <button class="floating-suggestion" data-question="${question}">
-                            ${question}
-                        </button>
-                    `).join('');
-                    
-                    // Add click handlers
-                    container.querySelectorAll('.floating-suggestion').forEach(btn => {
-                        btn.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            
-                            const question = btn.dataset.question;
-                            const searchInput = shadowRoot.getElementById('widget-search-input');
-                            
-                            // Fill input with question
-                            searchInput.value = question;
-                            
-                            // Automatically open chat and process question
-                            setTimeout(() => {
-                                console.log('[WIDGET] Question selected from suggestions - opening chat:', question);
-                                openChatWithQuestion(question);
-                            }, 100);
-                        });
-                    });
-                    
-                } else {
-                    container.innerHTML = '<div class="suggestions-loading">No suggestions available</div>';
+                // Define fallback questions if not already defined
+                if (!window.FALLBACK_QUESTIONS) {
+                    window.FALLBACK_QUESTIONS = [
+                        "What are the key points discussed in this content?",
+                        "How might this impact the industry?",
+                        "What are the main findings discussed here?"
+                    ];
                 }
+                
+                let questions = [];
+                
+                // Use pre-generated questions if available
+                if (window.pregeneratedQuestions && window.pregeneratedQuestions.length === 3) {
+                    // If we have pregenerated questions, use them and don't update
+                    questions = window.pregeneratedQuestions;
+                } else {
+                    // Use fallbacks for display
+                    questions = window.FALLBACK_QUESTIONS.slice(0, 3);
+                    
+                    // Only generate new questions if we don't have any pregenerated ones
+                    // These will be used next time, not for current display
+                    if (!window.pregeneratedQuestions) {
+                        generateSuggestedQuestions().then(newQuestions => {
+                            if (newQuestions && newQuestions.length === 3) {
+                                // Store for next time, don't update current display
+                                window.pregeneratedQuestions = newQuestions;
+                            }
+                        }).catch(error => {
+                            console.warn('[WIDGET] Failed to generate questions:', error);
+                        });
+                    }
+                }
+                
+                // Display questions with fade in
+                container.innerHTML = questions.map((question, index) => `
+                    <button class="floating-suggestion" style="opacity: 0" data-question="${question}">
+                        ${question}
+                    </button>
+                `).join('');
+                
+                // Fade in questions sequentially
+                const buttons = container.querySelectorAll('.floating-suggestion');
+                buttons.forEach((btn, index) => {
+                    setTimeout(() => {
+                        btn.style.transition = 'opacity 300ms ease-in';
+                        btn.style.opacity = '1';
+                    }, index * 100);
+                });
+                
+                // Setup click handlers
+                setupQuestionClickHandlers(container);
                 
             } catch (error) {
                 console.error('[WIDGET] Failed to load suggestions:', error);
-                container.innerHTML = '<div class="suggestions-loading">Unable to load suggestions</div>';
+                // Don't hide container, show fallbacks instead
+                const fallbacks = window.FALLBACK_QUESTIONS.slice(0, 3);
+                container.innerHTML = fallbacks.map(question => `
+                    <button class="floating-suggestion" data-question="${question}">
+                        ${question}
+                    </button>
+                `).join('');
+                setupQuestionClickHandlers(container);
+            }
+            
+            function setupQuestionClickHandlers(container) {
+                container.querySelectorAll('.floating-suggestion').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const question = btn.dataset.question;
+                        const searchInput = shadowRoot.getElementById('widget-search-input');
+                        
+                        // Fill input with question
+                        if (searchInput) searchInput.value = question;
+                        
+                        // Open chat with question
+                        openChatWithQuestion(question);
+                    });
+                });
             }
         }
         
@@ -6887,11 +6986,31 @@ Return exactly 3 questions, one per line, no numbering:`;
     }
 
     // Initialize
+    let pregeneratedQuestions = [];
+    
     function initWidget() {
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', createWidget);
+            document.addEventListener('DOMContentLoaded', () => {
+                createWidget();
+                // Pre-generate questions on widget load
+                setTimeout(() => {
+                    generateSuggestedQuestions().then(questions => {
+                        pregeneratedQuestions = questions;
+                    }).catch(() => {
+                        // Silently fail
+                    });
+                }, 1000); // Generate after 1 second of page load
+            });
         } else {
             createWidget();
+            // Pre-generate questions on widget load
+            setTimeout(() => {
+                generateSuggestedQuestions().then(questions => {
+                    pregeneratedQuestions = questions;
+                }).catch(() => {
+                    // Silently fail
+                });
+            }, 1000); // Generate after 1 second of page load
         }
     }
     
