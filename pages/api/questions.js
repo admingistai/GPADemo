@@ -5,6 +5,10 @@ const PRORATA_CONFIG = {
 };
 
 export default async function handler(req, res) {
+  console.log('[QUESTIONS API] Request method:', req.method);
+  console.log('[QUESTIONS API] Request headers:', req.headers);
+  console.log('[QUESTIONS API] Request body:', JSON.stringify(req.body));
+  
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -29,6 +33,8 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
       const count = parseInt(req.query.count) || 3;
       
+      console.log('[QUESTIONS API GET] Calling Prorata API:', `${PRORATA_CONFIG.API_BASE_URL}/questions/recommended?count=${count}`);
+      
       const response = await fetch(
         `${PRORATA_CONFIG.API_BASE_URL}/questions/recommended?count=${count}`,
         {
@@ -39,6 +45,9 @@ export default async function handler(req, res) {
         }
       );
 
+      console.log('[QUESTIONS API GET] Prorata response status:', response.status);
+      console.log('[QUESTIONS API GET] Prorata response headers:', [...response.headers.entries()]);
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         return res.status(response.status).json({ 
@@ -46,7 +55,20 @@ export default async function handler(req, res) {
         });
       }
 
+      // Check content type
+      const contentType = response.headers.get('content-type');
+      console.log('[QUESTIONS API GET] Content type:', contentType);
+      
+      if (contentType && contentType.includes('text/event-stream')) {
+        console.error('[QUESTIONS API GET] ERROR: Got SSE response!');
+        return res.status(200).json({
+          success: true,
+          questions: ["What's discussed here?", "Tell me more", "Key takeaways?"]
+        });
+      }
+
       const data = await response.json();
+      console.log('[QUESTIONS API GET] Response data:', JSON.stringify(data));
       return res.status(200).json({
         success: true,
         questions: data.questions?.recommended_queries?.questions || []
@@ -61,6 +83,8 @@ export default async function handler(req, res) {
       if (!threadId || !turnId) {
         const count = numQuestions || 3;
         
+        console.log('[QUESTIONS API] Calling Prorata API:', `${PRORATA_CONFIG.API_BASE_URL}/questions/recommended?count=${count}`);
+        
         const response = await fetch(
           `${PRORATA_CONFIG.API_BASE_URL}/questions/recommended?count=${count}`,
           {
@@ -71,7 +95,11 @@ export default async function handler(req, res) {
           }
         );
 
+        console.log('[QUESTIONS API] Prorata response status:', response.status);
+        console.log('[QUESTIONS API] Prorata response headers:', [...response.headers.entries()]);
+
         if (!response.ok) {
+          console.log('[QUESTIONS API] Prorata API failed, using fallback questions');
           // Return fallback questions if API fails
           return res.status(200).json({
             success: true,
@@ -83,7 +111,29 @@ export default async function handler(req, res) {
           });
         }
 
+        // Check content type before parsing
+        const contentType = response.headers.get('content-type');
+        console.log('[QUESTIONS API] Prorata response content-type:', contentType);
+        
+        if (contentType && contentType.includes('text/event-stream')) {
+          console.error('[QUESTIONS API] ERROR: Prorata returned SSE for questions endpoint!');
+          // Read the SSE response to see what it contains
+          const text = await response.text();
+          console.error('[QUESTIONS API] SSE response:', text.substring(0, 500));
+          
+          // Return fallback questions
+          return res.status(200).json({
+            success: true,
+            questions: [
+              "What are the main topics covered here?",
+              "Can you summarize the key points?",
+              "What's the most important information?"
+            ]
+          });
+        }
+
         const data = await response.json();
+        console.log('[QUESTIONS API] Prorata response data:', JSON.stringify(data));
         return res.status(200).json({
           success: true,
           questions: data.questions?.recommended_queries?.questions || []

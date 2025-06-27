@@ -4418,9 +4418,17 @@ Instructions:
         
         // Generate suggested questions using the API
         async function generateSuggestedQuestions() {
+            console.log('[WIDGET DEBUG] generateSuggestedQuestions called');
             const context = extractPageContext();
             
             try {
+                console.log('[WIDGET DEBUG] Calling questions API:', WIDGET_CONFIG.QUESTIONS_API_URL);
+                console.log('[WIDGET DEBUG] Request body:', {
+                    userId: USER_ID,
+                    pageContext: context,
+                    timestamp: new Date().toISOString()
+                });
+                
                 const response = await fetch(WIDGET_CONFIG.QUESTIONS_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -4430,6 +4438,9 @@ Instructions:
                         timestamp: new Date().toISOString()
                     })
                 });
+                
+                console.log('[WIDGET DEBUG] Questions API response status:', response.status);
+                console.log('[WIDGET DEBUG] Questions API response headers:', [...response.headers.entries()]);
                 
                 if (!response.ok) {
                     const contentType = response.headers.get('content-type');
@@ -7660,10 +7671,19 @@ Return exactly 3 questions, one per line, no numbering:`;
         
         // Pre-generate questions on widget load
         setTimeout(() => {
+            console.log('[WIDGET INIT] Attempting to pre-generate questions...');
             generateSuggestedQuestions().then(questions => {
+                console.log('[WIDGET INIT] Successfully pre-generated questions:', questions);
                 pregeneratedQuestions = questions;
-            }).catch(() => {
-                // Silently fail
+            }).catch((error) => {
+                console.error('[WIDGET INIT] Failed to pre-generate questions:', error);
+                console.error('[WIDGET INIT] Error stack:', error.stack);
+                // Use fallback questions
+                pregeneratedQuestions = [
+                    "What are the key points discussed here?",
+                    "Can you provide more details about this topic?",
+                    "How does this relate to current trends?"
+                ];
             });
         }, 1000); // Generate after 1 second of page load
         
