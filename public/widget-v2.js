@@ -4445,12 +4445,35 @@ Instructions:
                 const contentType = response.headers.get('content-type');
                 if (!contentType || !contentType.includes('application/json')) {
                     console.error('[WIDGET] Questions API unexpected content-type:', contentType);
-                    const responseText = await response.text();
-                    console.error('[WIDGET] Questions API response:', responseText.substring(0, 200));
-                    throw new Error('Questions API returned non-JSON response');
+                    // Don't try to read the body here as we'll read it below
+                    console.error('[WIDGET] Expected JSON but got:', contentType);
                 }
                 
-                const data = await response.json();
+                let data;
+                try {
+                    data = await response.json();
+                } catch (jsonError) {
+                    console.error('[WIDGET] Failed to parse questions response:', jsonError);
+                    console.error('[WIDGET] Response status:', response.status);
+                    console.error('[WIDGET] Response headers:', response.headers);
+                    
+                    // Try to read as text to see what was returned
+                    try {
+                        const text = await response.text();
+                        console.error('[WIDGET] Response text:', text.substring(0, 200));
+                        if (text.startsWith('data:')) {
+                            console.error('[WIDGET] ERROR: Questions API returned SSE format instead of JSON');
+                        }
+                    } catch (textError) {
+                        console.error('[WIDGET] Could not read response text:', textError);
+                    }
+                    
+                    // Return fallback questions on parse error
+                    console.log('[WIDGET] Using fallback questions due to parse error');
+                    const contextFallbacks = createContextSpecificFallbacks(context, {type: 'article', topics: [], entities: []});
+                    return contextFallbacks.slice(0, 3);
+                }
+                
                 const questions = data.questions || [];
                 
                 // Track questions generated
