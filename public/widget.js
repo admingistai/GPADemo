@@ -2427,23 +2427,72 @@ Instructions:
                     throw new Error(errorData.error || `HTTP ${response.status}`);
                 }
                 
-                const data = await response.json();
-                let assistantMessage = data.response || data.choices?.[0]?.message?.content;
-                
-                if (!assistantMessage) {
-                    throw new Error('Invalid response format');
+                // Check if response is SSE
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('text/event-stream')) {
+                    // Handle SSE response
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    let assistantMessage = '';
+                    
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        
+                        const chunk = decoder.decode(value);
+                        const lines = chunk.split('\n');
+                        
+                        for (const line of lines) {
+                            if (line.startsWith('data: ')) {
+                                const data = line.substring(6);
+                                if (data === '[DONE]') continue;
+                                
+                                try {
+                                    const parsed = JSON.parse(data);
+                                    if (parsed.type === 'content' && parsed.text) {
+                                        assistantMessage += parsed.text;
+                                    }
+                                } catch (e) {
+                                    // Ignore parsing errors for individual chunks
+                                }
+                            }
+                        }
+                    }
+                    
+                    if (!assistantMessage) {
+                        throw new Error('No response content received');
+                    }
+                    
+                    conversationHistory.push({ role: 'assistant', content: assistantMessage });
+                    
+                    // Keep conversation manageable
+                    if (conversationHistory.length > 21) {
+                        const systemMessage = conversationHistory[0];
+                        const recentMessages = conversationHistory.slice(-20);
+                        conversationHistory = [systemMessage, ...recentMessages];
+                    }
+                    
+                    return { answer: assistantMessage, usage: null };
+                } else {
+                    // Handle regular JSON response (fallback)
+                    const data = await response.json();
+                    let assistantMessage = data.response || data.choices?.[0]?.message?.content;
+                    
+                    if (!assistantMessage) {
+                        throw new Error('Invalid response format');
+                    }
+                    
+                    conversationHistory.push({ role: 'assistant', content: assistantMessage });
+                    
+                    // Keep conversation manageable
+                    if (conversationHistory.length > 21) {
+                        const systemMessage = conversationHistory[0];
+                        const recentMessages = conversationHistory.slice(-20);
+                        conversationHistory = [systemMessage, ...recentMessages];
+                    }
+                    
+                    return { answer: assistantMessage, usage: data.usage };
                 }
-                
-                conversationHistory.push({ role: 'assistant', content: assistantMessage });
-                
-                // Keep conversation manageable
-                if (conversationHistory.length > 21) {
-                    const systemMessage = conversationHistory[0];
-                    const recentMessages = conversationHistory.slice(-20);
-                    conversationHistory = [systemMessage, ...recentMessages];
-                }
-                
-                return { answer: assistantMessage, usage: data.usage };
             } catch (error) {
                 clearTimeout(timeoutId);
                 if (error.name === 'AbortError') {
