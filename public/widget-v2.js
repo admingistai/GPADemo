@@ -4449,17 +4449,20 @@ Instructions:
                     console.error('[WIDGET] Expected JSON but got:', contentType);
                 }
                 
+                // Clone the response so we can read it twice if needed
+                const responseClone = response.clone();
+                
                 let data;
                 try {
                     data = await response.json();
                 } catch (jsonError) {
                     console.error('[WIDGET] Failed to parse questions response:', jsonError);
                     console.error('[WIDGET] Response status:', response.status);
-                    console.error('[WIDGET] Response headers:', response.headers);
+                    console.error('[WIDGET] Response headers:', [...response.headers.entries()]);
                     
-                    // Try to read as text to see what was returned
+                    // Try to read as text from the clone to see what was returned
                     try {
-                        const text = await response.text();
+                        const text = await responseClone.text();
                         console.error('[WIDGET] Response text:', text.substring(0, 200));
                         if (text.startsWith('data:')) {
                             console.error('[WIDGET] ERROR: Questions API returned SSE format instead of JSON');
