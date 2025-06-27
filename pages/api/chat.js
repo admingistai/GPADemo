@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Prorata API Configuration
 const PRORATA_CONFIG = {
-  API_BASE_URL: process.env.PRORATA_API_BASE_URL || 'https://api.gist.ai/v1',
+  API_BASE_URL: process.env.PRORATA_API_BASE_URL || 'https://api.prorata.ai/v1',
   API_KEY: process.env.PRORATA_API_KEY,
   ORGANIZATION_ID: process.env.PRORATA_ORGANIZATION_ID
 };
