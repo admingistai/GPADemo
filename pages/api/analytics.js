@@ -54,24 +54,37 @@ export default async function handler(req, res) {
     }
 
     // Extract event data
-    const { eventName, properties = {} } = req.body;
+    console.log('Analytics request body:', JSON.stringify(req.body));
+    // Widget sends eventType, not eventName
+    const { eventName, eventType, eventData = {}, properties = {}, ...otherData } = req.body;
+    
+    // Use eventType if eventName is not provided (for backward compatibility)
+    const finalEventName = eventName || eventType;
+    
+    // Merge all properties
+    const finalProperties = {
+      ...properties,
+      ...eventData,
+      ...otherData
+    };
 
     // Validate request
-    if (!eventName) {
+    if (!finalEventName) {
+      console.log('Missing eventName/eventType in analytics request');
       return res.status(400).json({ error: 'Event name is required' });
     }
 
     // Add common properties
     const enrichedProperties = {
       widgetType: 'chat',
-      timestamp: new Date().toISOString(),
-      pageUrl: properties.pageUrl || req.headers.referer || 'unknown',
+      timestamp: finalProperties.timestamp || new Date().toISOString(),
+      pageUrl: finalProperties.pageUrl || req.headers.referer || 'unknown',
       userAgent: req.headers['user-agent'] || 'unknown',
-      ...properties
+      ...finalProperties
     };
 
     // For now, just log analytics locally since Gist AI might not have this endpoint
-    console.log('Analytics Event:', eventName, enrichedProperties);
+    console.log('Analytics Event:', finalEventName, enrichedProperties);
     
     // Return success without calling external API
     return res.status(200).json({
