@@ -39,14 +39,20 @@ export default function Signup() {
     
     // Simulate API call
     setTimeout(() => {
-      // Store configuration in localStorage for now
-      localStorage.setItem('widgetConfig', JSON.stringify({
-        ...formData,
-        features
-      }));
+      // Generate setup ID
+      const setupId = `gist_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
       
-      // Redirect to setup page
-      router.push('/setup');
+      // Store configuration in localStorage
+      const configData = {
+        ...formData,
+        features,
+        setupId,
+        createdAt: new Date().toISOString()
+      };
+      localStorage.setItem('widgetConfig', JSON.stringify(configData));
+      
+      // Redirect to success page
+      router.push('/success');
     }, 1500);
   };
 
