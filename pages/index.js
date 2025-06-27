@@ -15,8 +15,8 @@ export default function Home() {
   const [widgetVersion, setWidgetVersion] = useState('v1');
 
   const handleGetStarted = () => {
-    // Redirect to Ask Anything™ website
-    window.location.href = 'https://www.getaskanything.com';
+    // Redirect to widget configuration page
+    window.location.href = '/signup';
   };
 
   const handleTryDemoButton = async () => {
