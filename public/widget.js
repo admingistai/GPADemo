@@ -2449,8 +2449,8 @@ Instructions:
                                 
                                 try {
                                     const parsed = JSON.parse(data);
-                                    if (parsed.type === 'content' && parsed.text) {
-                                        assistantMessage += parsed.text;
+                                    if (parsed.type === 'content' && parsed.data) {
+                                        assistantMessage += parsed.data;
                                     }
                                 } catch (e) {
                                     // Ignore parsing errors for individual chunks
