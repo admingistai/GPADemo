@@ -285,6 +285,16 @@ class ArticleWidget extends HTMLElement {
           color: #9ca3af;
           float: right;
         }
+
+        .harbor-sources-section {
+          margin-top: 16px;
+          padding-top: 12px;
+          border-top: 1px solid #e5e7eb;
+          height: 60px;
+          display: flex;
+          flex-direction: column;
+          margin-bottom: 40px;
+        }
       </style>
       
       <div class="widget-container">
@@ -443,6 +453,7 @@ class ArticleWidget extends HTMLElement {
     
     // Open side panel with loading state
     this.openSidePanel(this.question, this.getLoadingHTML());
+    this.scrollToLatestQuestion();
     
     try {
       // Call the new RAG backend
@@ -476,12 +487,14 @@ class ArticleWidget extends HTMLElement {
       
       await this.updateConversationDisplay();
       this.updateFollowupSuggestions();
+      this.scrollToLatestQuestion();
       
     } catch (error) {
       console.error('Error asking question:', error);
       this.conversationHistory[0].answer = 'There was an error processing your question. Please try again.';
       this.conversationHistory[0].sources = [];
       await this.updateConversationDisplay();
+      this.scrollToLatestQuestion();
     }
   }
 
@@ -575,7 +588,8 @@ class ArticleWidget extends HTMLElement {
         }
 
         .harbor-question-display {
-          background: #f0f0f0;
+          background: #f8f9fa;
+          border: 1px solid #e9ecef;
           padding: 12px 16px;
           border-radius: 8px;
           margin-bottom: 20px;
@@ -621,6 +635,10 @@ class ArticleWidget extends HTMLElement {
           margin-top: 16px;
           padding-top: 12px;
           border-top: 1px solid #e5e7eb;
+          height: 60px;
+          display: flex;
+          flex-direction: column;
+          margin-bottom: 40px;
         }
 
         .harbor-sources-title {
@@ -628,40 +646,47 @@ class ArticleWidget extends HTMLElement {
           font-weight: 600;
           color: #374151;
           margin-bottom: 8px;
+          flex-shrink: 0;
+        }
+
+        .harbor-sources-container {
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+          align-items: flex-start;
+          flex: 1;
         }
 
         .harbor-source-item {
-          margin-bottom: 12px;
-          padding: 10px 12px;
-          background: #f8fafc;
-          border-radius: 6px;
-          border-left: 3px solid #4a5568;
+          flex: 1;
+          min-width: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .harbor-source-link {
-          color: #4a5568;
+          color: #374151;
           text-decoration: none;
-          font-size: 0.8rem;
-          font-weight: 600;
+          font-size: 0.75rem;
+          font-weight: 500;
+          padding: 6px 12px;
+          border: 1px solid #e5e7eb;
+          border-radius: 20px;
+          background: #ffffff;
           display: block;
-          margin-bottom: 6px;
+          text-align: center;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          width: 100%;
+          transition: all 0.2s ease;
         }
 
         .harbor-source-link:hover {
-          text-decoration: underline;
-        }
-
-        .harbor-source-snippet {
-          font-size: 0.75rem;
-          color: #6b7280;
-          line-height: 1.4;
-        }
-
-        .harbor-source-score {
-          font-size: 0.7rem;
-          color: #9ca3af;
-          float: right;
-          margin-top: -20px;
+          background: #f9fafb;
+          border-color: #d1d5db;
+          text-decoration: none;
         }
 
         .harbor-loading-container {
@@ -693,7 +718,7 @@ class ArticleWidget extends HTMLElement {
 
         .harbor-followup-section {
           border-top: 1px solid #e5e7eb;
-          padding: 20px;
+          padding: 12px 16px;
           background: #f9fafb;
         }
 
@@ -701,7 +726,7 @@ class ArticleWidget extends HTMLElement {
           position: relative;
           display: flex;
           align-items: center;
-          margin-top: 16px;
+          margin-top: 8px;
         }
 
         .harbor-followup-input {
@@ -751,12 +776,9 @@ class ArticleWidget extends HTMLElement {
         .harbor-suggestion-item {
           display: flex;
           align-items: center;
-          gap: 12px;
-          padding: 12px 16px;
-          margin-bottom: 8px;
-          background: white;
-          border: 1px solid #e5e7eb;
-          border-radius: 8px;
+          gap: 8px;
+          padding: 8px 0;
+          border-bottom: 1px solid #e5e7eb;
           cursor: pointer;
           transition: background-color 0.2s;
           text-decoration: none;
@@ -764,16 +786,16 @@ class ArticleWidget extends HTMLElement {
         }
 
         .harbor-suggestion-item:hover {
-          background: #f3f4f6;
+          background: #f8f9fa;
         }
 
         .harbor-suggestion-item:last-child {
-          margin-bottom: 0;
+          border-bottom: none;
         }
 
         .harbor-suggestion-text {
-          font-size: 0.85rem;
-          line-height: 1.4;
+          font-size: 0.8rem;
+          line-height: 1.3;
           flex: 1;
           font-weight: 500;
         }
@@ -898,7 +920,6 @@ class ArticleWidget extends HTMLElement {
     content.innerHTML = conversationWithTitles.map((item, index) => `
       <div class="conversation-item" id="conversation-item-${index}">
         <div class="harbor-question-display">
-          <div class="harbor-question-label">Your Question</div>
           <div class="harbor-question-text-display">${item.question}</div>
         </div>
         <div class="harbor-answer-content">
@@ -906,15 +927,15 @@ class ArticleWidget extends HTMLElement {
           ${item.sources && item.sources.length > 0 ? `
             <div class="harbor-sources-section">
               <div class="harbor-sources-title">Sources:</div>
-              ${item.sources.map(source => `
-                <div class="harbor-source-item">
-                  <a href="${source.url}" target="_blank" class="harbor-source-link">
-                    ${source.title || source.url}
-                  </a>
-                  <div class="harbor-source-snippet">${source.text_snippet}</div>
-                  ${source.score ? `<div class="harbor-source-score">Score: ${source.score.toFixed(2)}</div>` : ''}
-                </div>
-              `).join('')}
+              <div class="harbor-sources-container">
+                ${item.sources.map(source => `
+                  <div class="harbor-source-item">
+                    <a href="${source.url}" target="_blank" class="harbor-source-link">
+                      ${source.title || source.url}
+                    </a>
+                  </div>
+                `).join('')}
+              </div>
             </div>
           ` : ''}
         </div>
@@ -922,31 +943,31 @@ class ArticleWidget extends HTMLElement {
     `).join('');
 
     // Remove any existing spacer
-    const oldSpacer = document.getElementById('harbor-scroll-spacer');
+    const oldSpacer = document.getElementById('harbor-bottom-spacer');
     if (oldSpacer && oldSpacer.parentNode) {
       oldSpacer.parentNode.removeChild(oldSpacer);
     }
 
-    // If the latest item is loading, add a spacer after it
+    // Add a spacer below the latest answer if needed to keep the latest question at the top
     const items = content.querySelectorAll('.conversation-item');
     if (items.length > 0) {
       const latestItem = items[items.length - 1];
-      const isLoading = conversationWithTitles[conversationWithTitles.length - 1]?.answer?.includes('harbor-loading-container');
-      if (isLoading) {
-        // Calculate spacer height
-        const panel = document.getElementById('harbor-panel-content');
-        const panelHeight = panel ? panel.clientHeight : 400;
+      const panel = document.getElementById('harbor-panel-content');
+      if (latestItem && panel) {
+        // Calculate the total height of the latest question+answer
         const latestRect = latestItem.getBoundingClientRect();
-        const panelRect = panel ? panel.getBoundingClientRect() : { height: 400 };
-        let spacerHeight = panelHeight - latestItem.offsetHeight;
-        if (spacerHeight < 40) spacerHeight = 40;
-        const spacer = document.createElement('div');
-        spacer.id = 'harbor-scroll-spacer';
-        spacer.style.height = spacerHeight + 'px';
-        spacer.style.width = '100%';
-        spacer.style.pointerEvents = 'none';
-        spacer.style.background = 'transparent';
-        latestItem.insertAdjacentElement('afterend', spacer);
+        const panelRect = panel.getBoundingClientRect();
+        const totalHeight = latestItem.offsetHeight;
+        const panelHeight = panel.clientHeight;
+        if (totalHeight < panelHeight) {
+          const spacer = document.createElement('div');
+          spacer.id = 'harbor-bottom-spacer';
+          spacer.style.height = (panelHeight - totalHeight) + 'px';
+          spacer.style.width = '100%';
+          spacer.style.background = '#fff';
+          spacer.style.pointerEvents = 'none';
+          latestItem.insertAdjacentElement('afterend', spacer);
+        }
       }
     }
   }
@@ -955,9 +976,9 @@ class ArticleWidget extends HTMLElement {
     const content = document.getElementById('harbor-panel-content');
     if (!content) return;
     const items = content.querySelectorAll('.conversation-item');
-    if (items.length > 0) {
+    if (items.length > 1) {
       const latestItem = items[items.length - 1];
-      latestItem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      latestItem.scrollIntoView({ behavior: 'auto', block: 'start' });
     }
   }
 
@@ -1101,12 +1122,14 @@ class ArticleWidget extends HTMLElement {
       }
       
       await this.updateConversationDisplay();
+      this.scrollToLatestQuestion();
       
     } catch (error) {
       console.error('Error asking followup question:', error);
       this.conversationHistory[this.conversationHistory.length - 1].answer = 'There was an error processing your question. Please try again.';
       this.conversationHistory[this.conversationHistory.length - 1].sources = [];
       await this.updateConversationDisplay();
+      this.scrollToLatestQuestion();
     }
   }
 
