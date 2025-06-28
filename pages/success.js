@@ -210,8 +210,8 @@ export default function Success() {
 
           {/* CTA Button */}
           <div className="cta-section fade-in-delay-3">
-            <Link href="/dashboard">
-              <a className="dashboard-button">Go to Dashboard</a>
+            <Link href="/dashboard" className="dashboard-button">
+              Go to Dashboard
             </Link>
           </div>
         </div>

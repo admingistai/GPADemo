@@ -3463,136 +3463,200 @@
     }
     window.__gistWidgetLoaded = true;
 
-    async function createWidget() {
+        async function createWidget() {
         try {
             const widgetContainer = document.createElement('div');
             widgetContainer.id = 'gist-widget-container';
             
             const shadowRoot = widgetContainer.attachShadow({ mode: 'closed' });
-        
-        // Debug theme detection
-        console.log('[GIST DEBUG] Starting comprehensive theme analysis...');
-        debugThemeDetection();
-        
-        // Analyze website styling
-        const extractedStyling = await analyzeWebsiteStyling();
-        const dynamicStyles = generateDynamicStyles(extractedStyling);
-        // Extract website branding for dynamic placeholder
-        let siteBranding = await extractWebsiteBranding();
-        // Ensure siteBranding has default values
-        if (!siteBranding || !siteBranding.name) {
-            siteBranding = {
-                name: 'this site',
-                font: 'sans-serif',
-                faviconUrl: null
-            };
-        }
-        const placeholderText = `Ask ${siteBranding.name} anything...`;
-        
-        // Preload detected font
-        preloadWebsiteFont(siteBranding.font);
-        
+
+            // Create initial minimal widget with just the button
+            const initialWidgetHTML = `
+                <style>
+                    .widget-container {
+                        position: fixed;
+                        bottom: 20px;
+                        left: 20px;
+                        z-index: 999999;
+                    }
+                    .widget-search-bar {
+                        display: flex;
+                        align-items: center;
+                        background: #fff;
+                        border-radius: 20px;
+                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                        padding: 8px 12px;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                    }
+                    .widget-search-bar.collapsed {
+                        width: auto;
+                    }
+                    .widget-logo {
+                        display: flex;
+                        align-items: center;
+                    }
+                    .search-icon {
+                        width: 24px;
+                        height: 24px;
+                    }
+                </style>
+                <div class="widget-container" id="widget-container">
+                    <div class="widget-search-bar collapsed" id="widget-search-bar">
+                        <div class="widget-logo" id="widget-logo">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.5" class="search-icon">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            shadowRoot.innerHTML = initialWidgetHTML;
+            document.body.appendChild(widgetContainer);
+
+            // Show the initial button immediately and make it clickable
+            const initialWidget = shadowRoot.getElementById('widget-container');
+            const initialSearchBar = shadowRoot.getElementById('widget-search-bar');
+            initialWidget.classList.add('loaded');
+
+            // Add initial click handler
+            initialSearchBar.addEventListener('click', () => {
+                // Create a loading indicator
+                const loadingDot = document.createElement('div');
+                loadingDot.style.cssText = 'width: 8px; height: 8px; background: #8b5cf6; border-radius: 50%; margin-left: 8px; animation: pulse 1s infinite;';
+                initialSearchBar.appendChild(loadingDot);
+                
+                // Add loading animation style
+                const style = document.createElement('style');
+                style.textContent = '@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }';
+                shadowRoot.appendChild(style);
+            });
+
+            // Load the rest of the features asynchronously
+            console.log('[GIST DEBUG] Starting comprehensive theme analysis...');
+            debugThemeDetection();
+            
+            // Analyze website styling
+            const extractedStyling = await analyzeWebsiteStyling();
+            const dynamicStyles = generateDynamicStyles(extractedStyling);
+            // Extract website branding for dynamic placeholder
+            let siteBranding = await extractWebsiteBranding();
+                // Ensure siteBranding has default values
+                if (!siteBranding || !siteBranding.name) {
+                    siteBranding = {
+                        name: 'this site',
+                        font: 'sans-serif',
+                        faviconUrl: null
+                    };
+                }
+                const placeholderText = `Ask ${siteBranding.name} anything...`;
+
+                // Preload detected font
+                preloadWebsiteFont(siteBranding.font);
+
         // Debug logging
         console.log('[GIST] Detected website branding:', siteBranding);
         console.log('[GIST] Placeholder text:', placeholderText);
         
         const widgetHTML = `
-            <style>${dynamicStyles}</style>
-            <!-- Main Widget Container -->
-            <div class="widget-container" id="widget-container">
-                <!-- Collapsible search bar -->
-                <div class="widget-search-bar collapsed" id="widget-search-bar">
-                    <!-- Website logo (visible in collapsed state) -->
-                    <div class="widget-logo" id="widget-logo">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="${websiteStyling.primaryColor || '#8b5cf6'}" stroke-width="2.5" class="search-icon">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <path d="m21 21-4.35-4.35"></path>
-                        </svg>
-                </div>
+                    <style>${dynamicStyles}</style>
+                    <!-- Main Widget Container -->
+                        <div class="widget-container" id="widget-container">
+                        <!-- Collapsible search bar -->
+                            <div class="widget-search-bar collapsed" id="widget-search-bar">
+                            <!-- Website logo (visible in collapsed state) -->
+                                <div class="widget-logo" id="widget-logo">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="${websiteStyling.primaryColor || '#8b5cf6'}" stroke-width="2.5" class="search-icon">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <path d="m21 21-4.35-4.35"></path>
+                                    </svg>
+                                </div>
                 
-                    <!-- Search input (hidden when collapsed) -->
-                    <input 
-                        type="text" 
-                        class="widget-search-input" 
-                        placeholder="${placeholderText}" 
-                        id="widget-search-input"
-                        style="font-family: ${siteBranding.font}, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;"
-                    >
-                    
-                    <!-- Arrow button (always visible) -->
-                    <button class="widget-arrow-btn" id="widget-arrow-btn">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="m9 18 6-6-6-6"></path>
-                        </svg>
-                    </button>
-                </div>
+                            <!-- Search input (hidden when collapsed) -->
+                            <input 
+                                type="text" 
+                                class="widget-search-input" 
+                                placeholder="${placeholderText}" 
+                                id="widget-search-input"
+                                style="font-family: ${siteBranding.font}, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;"
+                            >
+                            
+                            <!-- Arrow button (always visible) -->
+                            <button class="widget-arrow-btn" id="widget-arrow-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="m9 18 6-6-6-6"></path>
+                                </svg>
+                            </button>
+                            </div>
                 
-                <!-- Floating suggested questions -->
-                <div class="floating-suggestions" id="floating-suggestions">
-                    <!-- Questions will be loaded here -->
-                </div>
-            </div>
-            
-            <!-- Chat Sidebar -->
-            <div class="gist-sidebar-overlay" id="gist-sidebar-overlay"></div>
-            <div class="gist-sidebar" id="gist-sidebar">
-                <div class="gist-sidebar-header">
-                    <h3>Ask ${siteBranding.name || 'Ask Anything™'} anything</h3>
-                    <button class="gist-sidebar-close" id="gist-sidebar-close">×</button>
-                </div>
-                <div class="gist-sidebar-content" id="gist-sidebar-content">
-                    <!-- Suggested questions section (shown when sidebar first opens) -->
-                    <div class="gist-sidebar-suggestions" id="gist-sidebar-suggestions">
-                        <h4>Suggested Questions</h4>
-                        <div class="gist-suggestions-loading">Loading suggestions...</div>
+                        <!-- Floating suggested questions -->
+                        <div class="floating-suggestions" id="floating-suggestions">
+                            <!-- Questions will be loaded here -->
+                        </div>
                     </div>
                     
-                    <!-- Messages container (for Q&A sessions) -->
-                    <div class="gist-sidebar-messages" id="gist-sidebar-messages"></div>
-                </div>
-                
-                <!-- Input container at bottom of sidebar -->
-                <div class="gist-sidebar-input-container">
-                    <input 
-                        type="text" 
-                        class="gist-sidebar-input" 
-                        placeholder="${placeholderText}" 
-                        id="gist-sidebar-input"
-                    >
-                    <button class="gist-sidebar-send-btn" id="gist-sidebar-send">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="m22 2-7 20-4-9-9-4 20-7z"></path>
-                        </svg>
-                    </button>
-                </div>
-                
-                <div class="gist-sidebar-footer">
-                    <div class="gist-powered-section">
-                        <img src="${BACKEND_BASE_URL}/gist-logo.png" alt="Gist Logo" class="gist-footer-logo">
-                        <span>Powered by Gist Answers</span>
+                    <!-- Chat Sidebar -->
+                    <div class="gist-sidebar-overlay" id="gist-sidebar-overlay"></div>
+                    <div class="gist-sidebar" id="gist-sidebar">
+                        <div class="gist-sidebar-header">
+                            <h3>Ask ${siteBranding.name || 'Ask Anything™'} anything</h3>
+                            <button class="gist-sidebar-close" id="gist-sidebar-close">×</button>
+                        </div>
+                        <div class="gist-sidebar-content" id="gist-sidebar-content">
+                            <!-- Suggested questions section (shown when sidebar first opens) -->
+                            <div class="gist-sidebar-suggestions" id="gist-sidebar-suggestions">
+                                <h4>Suggested Questions</h4>
+                                <div class="gist-suggestions-loading">Loading suggestions...</div>
+                            </div>
+                            
+                            <!-- Messages container (for Q&A sessions) -->
+                            <div class="gist-sidebar-messages" id="gist-sidebar-messages"></div>
+                        </div>
+                        
+                        <!-- Input container at bottom of sidebar -->
+                        <div class="gist-sidebar-input-container">
+                            <input 
+                                type="text" 
+                                class="gist-sidebar-input" 
+                                placeholder="${placeholderText}" 
+                                id="gist-sidebar-input"
+                            >
+                            <button class="gist-sidebar-send-btn" id="gist-sidebar-send">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="m22 2-7 20-4-9-9-4 20-7z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <div class="gist-sidebar-footer">
+                            <div class="gist-powered-section">
+                                <img src="${BACKEND_BASE_URL}/gist-logo.png" alt="Gist Logo" class="gist-footer-logo">
+                                <span>Powered by Gist Answers</span>
+                            </div>
+                            <a href="https://gpademo.vercel.app" target="_blank" class="gist-add-to-site">Add to your site</a>
+                        </div>
                     </div>
-                    <a href="https://gpademo.vercel.app" target="_blank" class="gist-add-to-site">Add to your site</a>
-                </div>
-            </div>
-            
-            <!-- Mini Tab (shown when sidebar is closed) -->
-            <div class="gist-mini-tab" id="gist-mini-tab" style="display: none;">
-                <div class="gist-mini-tab-icon">
-                    ${siteBranding.faviconUrl ? 
-                        `<img src="${siteBranding.faviconUrl}" alt="${siteBranding.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                         <span class="gist-mini-tab-icon-fallback" style="display: none;">${siteBranding.name.charAt(0).toUpperCase()}</span>` : 
-                        `<span class="gist-mini-tab-icon-fallback">${siteBranding.name.charAt(0).toUpperCase()}</span>`
-                    }
-                </div>
-                <span class="gist-mini-tab-text">Ask</span>
-            </div>
-        `;
-        
+                    
+                    <!-- Mini Tab (shown when sidebar is closed) -->
+                    <div class="gist-mini-tab" id="gist-mini-tab" style="display: none;">
+                        <div class="gist-mini-tab-icon">
+                            ${siteBranding.faviconUrl ? 
+                                `<img src="${siteBranding.faviconUrl}" alt="${siteBranding.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                 <span class="gist-mini-tab-icon-fallback" style="display: none;">${siteBranding.name.charAt(0).toUpperCase()}</span>` : 
+                                `<span class="gist-mini-tab-icon-fallback">${siteBranding.name.charAt(0).toUpperCase()}</span>`
+                            }
+                        </div>
+                        <span class="gist-mini-tab-text">Ask</span>
+                        </div>
+                `;
+                
         shadowRoot.innerHTML = widgetHTML;
-        document.body.appendChild(widgetContainer);
-        
+            document.body.appendChild(widgetContainer);
+
         // Get elements
-        const widget = shadowRoot.getElementById('widget-container');
+            const widget = shadowRoot.getElementById('widget-container');
         const searchBar = shadowRoot.getElementById('widget-search-bar');
         const input = shadowRoot.getElementById('widget-search-input');
         const arrowBtn = shadowRoot.getElementById('widget-arrow-btn');
@@ -7444,7 +7508,7 @@ Return exactly 3 questions, one per line, no numbering:`;
         }
         
         // Initialize collapsible functionality
-        setupCollapsibleWidget();
+                setupCollapsibleWidget();
         
         // Define and setup chat functions
         function openChatWithQuestion(question) {
@@ -7577,36 +7641,36 @@ Return exactly 3 questions, one per line, no numbering:`;
         }
         
         // Initialize sidebar handlers
-        setupSidebarHandlers();
-        
-        // Initialize dynamic width detection
-        setTimeout(() => {
-            updateWidgetWidth();
-            // Add resize listener
-            window.addEventListener('resize', handleResize);
-            
-            // Also monitor for DOM changes that might affect layout
-            const observer = new MutationObserver(() => {
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(() => {
+                setupSidebarHandlers();
+                
+                // Initialize dynamic width detection
+                setTimeout(() => {
                     updateWidgetWidth();
-                }, 500);
-            });
-            
+            // Add resize listener
+                    window.addEventListener('resize', handleResize);
+                    
+            // Also monitor for DOM changes that might affect layout
+                    const observer = new MutationObserver(() => {
+                        clearTimeout(resizeTimeout);
+                        resizeTimeout = setTimeout(() => {
+                            updateWidgetWidth();
+                        }, 500);
+                    });
+                    
             // Observe changes to body and main content areas
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true,
-                attributes: true,
-                attributeFilter: ['class', 'style']
-            });
-            
+                    observer.observe(document.body, {
+                        childList: true,
+                        subtree: true,
+                        attributes: true,
+                        attributeFilter: ['class', 'style']
+                    });
+                    
             // Store observer for cleanup if needed
-            widgetContainer._widthObserver = observer;
-        }, 300);
-        
+                    widgetContainer._widthObserver = observer;
+                }, 300);
+
         // Show widget
-        setTimeout(() => {
+                setTimeout(() => {
             widget.classList.add('loaded');
             console.log('[WIDGET] Widget initialized with floating suggestions hidden and search bar collapsed');
             
@@ -7672,22 +7736,22 @@ Return exactly 3 questions, one per line, no numbering:`;
         // Pre-generate questions on widget load
         setTimeout(() => {
             console.log('[WIDGET INIT] Attempting to pre-generate questions...');
-            generateSuggestedQuestions().then(questions => {
+                    generateSuggestedQuestions().then(questions => {
                 console.log('[WIDGET INIT] Successfully pre-generated questions:', questions);
-                pregeneratedQuestions = questions;
-            }).catch((error) => {
-                console.error('[WIDGET INIT] Failed to pre-generate questions:', error);
+                        pregeneratedQuestions = questions;
+                    }).catch((error) => {
+                        console.error('[WIDGET INIT] Failed to pre-generate questions:', error);
                 console.error('[WIDGET INIT] Error stack:', error.stack);
                 // Use fallback questions
-                pregeneratedQuestions = [
-                    "What are the key points discussed here?",
-                    "Can you provide more details about this topic?",
-                    "How does this relate to current trends?"
-                ];
-            });
+                        pregeneratedQuestions = [
+                            "What are the key points discussed here?",
+                            "Can you provide more details about this topic?",
+                            "How does this relate to current trends?"
+                        ];
+                    });
         }, 1000); // Generate after 1 second of page load
-        
-        return shadowRoot;
+
+            return shadowRoot;
         } catch (error) {
             console.error('[GIST WIDGET] Error creating widget:', error);
             console.error('[GIST WIDGET] Stack trace:', error.stack);
@@ -7703,14 +7767,23 @@ Return exactly 3 questions, one per line, no numbering:`;
     let pregeneratedQuestions = [];
     
     function initWidget() {
+        // Try to initialize as early as possible
         if (document.readyState === 'loading') {
+            // If still loading, add both interactive and DOMContentLoaded listeners
+            document.addEventListener('readystatechange', () => {
+                if (document.readyState === 'interactive') {
+                    createWidget();
+                }
+            });
             document.addEventListener('DOMContentLoaded', () => {
                 createWidget();
             });
         } else {
+            // If already loaded, initialize immediately
             createWidget();
         }
     }
     
+    // Initialize immediately
     initWidget();
 })();
