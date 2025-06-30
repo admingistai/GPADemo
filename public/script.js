@@ -186,10 +186,60 @@ document.addEventListener('DOMContentLoaded', function() {
         function handleFloatingSearch(query = null) {
             const searchQuery = query || floatingSearchInput.value.trim();
             if (searchQuery) {
-                // Floating search bar only appears on narrow screens, so always navigate to chat page
-                const currentPage = window.location.pathname.split('/').pop();
-                const chatUrl = `chat.html?q=${encodeURIComponent(searchQuery)}&return=${encodeURIComponent(currentPage)}`;
-                window.location.href = chatUrl;
+                // Find the ArticleWidget instance and use its fullscreen panel
+                const articleWidget = document.querySelector('article-widget');
+                if (articleWidget) {
+                    // Clear the input and hide suggestions
+                    floatingSearchInput.value = '';
+                    hideSuggestions();
+                    
+                    // Set the question on the widget and trigger the fullscreen panel immediately
+                    articleWidget.question = searchQuery;
+                    articleWidget.openPanel('fullscreen', searchQuery, articleWidget.getLoadingHTML());
+                    articleWidget.scrollToLatestQuestion();
+                    // Now trigger the API request, which will update the answer when ready
+                    (async () => {
+                        try {
+                            const requestBody = {
+                                question: articleWidget.formatQuestionWithPageTitle(searchQuery)
+                            };
+                            const response = await fetch(`${articleWidget.backendUrl}/api/chat`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(requestBody)
+                            });
+                            let responseData;
+                            if (response.ok) {
+                                responseData = await response.json();
+                                if (responseData.success) {
+                                    articleWidget.conversationHistory[0].answer = responseData.response;
+                                    articleWidget.conversationHistory[0].sources = responseData.sources || [];
+                                } else {
+                                    articleWidget.conversationHistory[0].answer = responseData.message || 'Failed to get response from RAG system.';
+                                    articleWidget.conversationHistory[0].sources = [];
+                                }
+                            } else {
+                                articleWidget.conversationHistory[0].answer = 'Sorry, I couldn\'t process your question right now. Please try again.';
+                                articleWidget.conversationHistory[0].sources = [];
+                            }
+                            await articleWidget.updateConversationDisplay();
+                            await articleWidget.updateFollowupSuggestions();
+                            articleWidget.scrollToLatestQuestion();
+                        } catch (error) {
+                            console.error('Error asking question:', error);
+                            articleWidget.conversationHistory[0].answer = 'There was an error processing your question. Please try again.';
+                            articleWidget.conversationHistory[0].sources = [];
+                            await articleWidget.updateConversationDisplay();
+                            articleWidget.scrollToLatestQuestion();
+                        }
+                    })();
+                } else {
+                    // Show error if widget not found instead of trying to navigate to deleted chat.html
+                    console.error('ArticleWidget not found on page');
+                    alert('Search functionality requires the article widget to be loaded. Please refresh the page and try again.');
+                }
             }
         }
         
@@ -266,4 +316,46 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Dynamically populate floating suggestions from backend
+    async function loadFloatingSuggestions() {
+        const floatingSuggestions = document.getElementById('floating-suggestions');
+        if (!floatingSuggestions) return;
+        floatingSuggestions.innerHTML = '<div class="suggestions-header">Related questions about this article</div>';
+        try {
+            const response = await fetch('http://localhost:8000/api/generate-questions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            let questions = [];
+            if (response.ok) {
+                const data = await response.json();
+                questions = data.questions || [];
+            }
+            if (!questions.length) {
+                questions = [
+                    'What are the main economic factors discussed?',
+                    'How do current trends affect the future?',
+                    'Can you summarize this article?'
+                ];
+            }
+            questions.forEach(q => {
+                const item = document.createElement('div');
+                item.className = 'suggestion-item';
+                item.setAttribute('data-query', q);
+                item.innerHTML = `<span class="suggestion-text">${q}</span><span class="suggestion-arrow">→</span>`;
+                item.addEventListener('click', function() {
+                    handleFloatingSearch(q);
+                });
+                // Prevent blur when clicking suggestions
+                item.addEventListener('mousedown', function(e) { e.preventDefault(); });
+                floatingSuggestions.appendChild(item);
+            });
+        } catch (error) {
+            console.error('Error loading floating suggestions:', error);
+        }
+    }
+
+    // Call this on page load
+    window.addEventListener('DOMContentLoaded', loadFloatingSuggestions);
 }); 

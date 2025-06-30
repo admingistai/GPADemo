@@ -73,9 +73,146 @@
             font-size: 0.9rem;
         }
         
+        /* Floating search bar */
+        .floating-search-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: white;
+            border-radius: 30px;
+            border: 1px solid #000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 12px 20px;
+            display: none;
+            max-width: 90%;
+            width: 400px;
+        }
+        
+        .floating-search-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            padding: 8px 40px 8px 16px;
+            font-size: 16px;
+            border-radius: 25px;
+            background: transparent;
+            box-sizing: border-box;
+        }
+        
+        .floating-search-input::placeholder {
+            color: #9ca3af;
+        }
+        
+        .floating-search-submit {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #000;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 900;
+        }
+        
+        .floating-search-submit:hover {
+            background: #333;
+        }
+        
+        /* Floating search suggestions */
+        .floating-suggestions {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 999;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            display: none;
+            max-width: 90%;
+            width: 400px;
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        .floating-suggestions.show {
+            display: block;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
+        .suggestions-header {
+            font-size: 14px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 14px;
+            color: #000;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .suggestion-item:hover {
+            background: #fafafa;
+        }
+        
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .suggestion-text {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .suggestion-arrow {
+            color: #666;
+            font-size: 16px;
+            margin-left: auto;
+        }
+
+        @media (max-width: 1200px) {
+            .floating-search-bar {
+                display: block;
+            }
+            
+            .article-page {
+                padding-bottom: 120px; /* Add space for floating search bar */
+            }
+        }
+        
         @media (max-width: 768px) {
             .article-page {
-                padding: 15px;
+                padding: 15px 15px 120px 15px; /* Maintain bottom padding for search bar */
             }
             
             .article-title {
@@ -84,6 +221,43 @@
             
             .article-content {
                 font-size: 1rem;
+            }
+            
+            .floating-search-bar {
+                bottom: 15px;
+                left: 15px;
+                right: 15px;
+                transform: none;
+                width: auto;
+                max-width: none;
+            }
+            
+            .floating-search-input {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+            
+            .floating-suggestions {
+                bottom: 75px;
+                left: 15px;
+                right: 15px;
+                transform: none;
+                width: auto;
+                max-width: none;
+            }
+            
+            .floating-suggestions.show {
+                animation: slideUpMobile 0.3s ease-out;
+            }
+            
+            @keyframes slideUpMobile {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
         }
     </style>
@@ -149,6 +323,44 @@
         </article>
     </main>
 
+    <!-- Floating Search Suggestions -->
+    <div class="floating-suggestions" id="floating-suggestions">
+        <div class="suggestions-header">Related questions about this article</div>
+        <div class="suggestion-item" data-query="What is the Posse Comitatus Act?">
+            <span class="suggestion-text">What is the Posse Comitatus Act?</span>
+            <span class="suggestion-arrow">→</span>
+        </div>
+        <div class="suggestion-item" data-query="How are National Guard deployments different from military occupation?">
+            <span class="suggestion-text">How are National Guard deployments different from military occupation?</span>
+            <span class="suggestion-arrow">→</span>
+        </div>
+        <div class="suggestion-item" data-query="What triggered the Los Angeles protests?">
+            <span class="suggestion-text">What triggered the Los Angeles protests?</span>
+            <span class="suggestion-arrow">→</span>
+        </div>
+        <div class="suggestion-item" data-query="Are ICE raids legal without warrants?">
+            <span class="suggestion-text">Are ICE raids legal without warrants?</span>
+            <span class="suggestion-arrow">→</span>
+        </div>
+        <div class="suggestion-item" data-query="How long can martial law be enforced in the US?">
+            <span class="suggestion-text">How long can martial law be enforced in the US?</span>
+            <span class="suggestion-arrow">→</span>
+        </div>
+    </div>
+
+    <!-- Floating Search Bar -->
+    <div class="floating-search-bar">
+        <input 
+            class="floating-search-input"
+            placeholder="✦ Ask The Harbor..."
+            id="floating-search-input"
+        />
+        <button class="floating-search-submit" id="floating-search-submit">
+            <img src="arrow.svg" alt="Send" width="16" height="16" style="filter: brightness(0) invert(1);">
+        </button>
+    </div>
+
     <script src="script.js"></script>
+    <script src="lit-widget-standalone.js"></script>
 </body>
 </html> 

@@ -96,6 +96,7 @@
             z-index: 1000;
             background: white;
             border-radius: 30px;
+            border: 1px solid #000;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             padding: 12px 20px;
             display: none;
@@ -110,7 +111,7 @@
             padding: 8px 40px 8px 16px;
             font-size: 16px;
             border-radius: 25px;
-            background: #f8f9fa;
+            background: transparent;
             box-sizing: border-box;
         }
         
@@ -148,11 +149,9 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 999;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             padding: 16px;
             display: none;
@@ -179,40 +178,54 @@
         .suggestions-header {
             font-size: 14px;
             font-weight: 600;
-            color: #374151;
+            color: #000;
             margin-bottom: 12px;
             padding-bottom: 8px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid #e5e7eb;
         }
         
         .suggestion-item {
             display: flex;
             align-items: center;
-            padding: 10px 12px;
-            margin: 4px 0;
-            border-radius: 8px;
+            padding: 10px 0;
             cursor: pointer;
             transition: background-color 0.2s;
             font-size: 14px;
-            color: #1f2937;
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            color: #000;
+            border-bottom: 1px solid #e5e7eb;
         }
         
         .suggestion-item:hover {
-            background: rgba(255, 255, 255, 0.9);
-            border-color: rgba(0, 0, 0, 0.1);
+            background: #fafafa;
         }
         
-        .suggestion-icon {
-            margin-right: 8px;
-            font-size: 12px;
-            opacity: 0.6;
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .suggestion-text {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .suggestion-arrow {
+            color: #666;
+            font-size: 16px;
+            margin-left: auto;
         }
 
         @media (max-width: 1200px) {
             .content-container {
                 flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            
+            .article-main {
+                max-width: 800px;
+                margin: 0 auto;
+                width: 100%;
+                padding-bottom: 120px; /* Add space for floating search bar */
             }
             
             .widget-panel {
@@ -347,24 +360,24 @@
     <div class="floating-suggestions" id="floating-suggestions">
         <div class="suggestions-header">Related questions about this article</div>
         <div class="suggestion-item" data-query="How will tariffs affect consumer prices?">
-            <span class="suggestion-icon">💡</span>
-            How will tariffs affect consumer prices?
+            <span class="suggestion-text">How will tariffs affect consumer prices?</span>
+            <span class="suggestion-arrow">→</span>
         </div>
         <div class="suggestion-item" data-query="What sectors are most impacted by trade policies?">
-            <span class="suggestion-icon">📊</span>
-            What sectors are most impacted by trade policies?
+            <span class="suggestion-text">What sectors are most impacted by trade policies?</span>
+            <span class="suggestion-arrow">→</span>
         </div>
         <div class="suggestion-item" data-query="Are retail sales really stabilizing?">
-            <span class="suggestion-icon">📈</span>
-            Are retail sales really stabilizing?
+            <span class="suggestion-text">Are retail sales really stabilizing?</span>
+            <span class="suggestion-arrow">→</span>
         </div>
         <div class="suggestion-item" data-query="How does inflation affect different income groups?">
-            <span class="suggestion-icon">💰</span>
-            How does inflation affect different income groups?
+            <span class="suggestion-text">How does inflation affect different income groups?</span>
+            <span class="suggestion-arrow">→</span>
         </div>
         <div class="suggestion-item" data-query="What's the Federal Reserve's next move?">
-            <span class="suggestion-icon">🏦</span>
-            What's the Federal Reserve's next move?
+            <span class="suggestion-text">What's the Federal Reserve's next move?</span>
+            <span class="suggestion-arrow">→</span>
         </div>
     </div>
 

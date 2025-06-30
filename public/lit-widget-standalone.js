@@ -436,82 +436,28 @@ class ArticleWidget extends HTMLElement {
     }
   }
 
-  async handleAsk() {
-    if (!this.question.trim()) return;
-    
-    // Check if we're on mobile/narrow screen (same breakpoint as CSS)
-    if (window.innerWidth <= 1200) {
-      // Navigate to chat page on mobile/narrow screens
-      const currentPage = window.location.pathname.split('/').pop();
-      const chatUrl = `chat.html?q=${encodeURIComponent(this.question)}&return=${encodeURIComponent(currentPage)}`;
-      window.location.href = chatUrl;
-      return;
-    }
-    
-    // Desktop behavior: use side panel
-    const askSubmitBtn = this.shadowRoot.querySelector('#ask-submit-btn');
-    
-    // Open side panel with loading state
-    this.openSidePanel(this.question, this.getLoadingHTML());
-    this.scrollToLatestQuestion();
-    
-    try {
-      // Call the new RAG backend
-      const requestBody = {
-        question: this.formatQuestionWithPageTitle(this.question)
-      };
-      
-      const response = await fetch(`${this.backendUrl}/api/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestBody)
-      });
-      
-      let responseData;
-      if (response.ok) {
-        responseData = await response.json();
-        if (responseData.success) {
-          // Update the first conversation item with the response including sources
-          this.conversationHistory[0].answer = responseData.response;
-          this.conversationHistory[0].sources = responseData.sources || [];
-        } else {
-          this.conversationHistory[0].answer = responseData.message || 'Failed to get response from RAG system.';
-          this.conversationHistory[0].sources = [];
-        }
-      } else {
-        this.conversationHistory[0].answer = 'Sorry, I couldn\'t process your question right now. Please try again.';
-        this.conversationHistory[0].sources = [];
-      }
-      
-      await this.updateConversationDisplay();
-      this.updateFollowupSuggestions();
-      this.scrollToLatestQuestion();
-      
-    } catch (error) {
-      console.error('Error asking question:', error);
-      this.conversationHistory[0].answer = 'There was an error processing your question. Please try again.';
-      this.conversationHistory[0].sources = [];
-      await this.updateConversationDisplay();
-      this.scrollToLatestQuestion();
-    }
-  }
-
-  createSidePanel() {
+  createPanel(mode = 'side') {
     // Remove existing panel if it exists
-    const existingPanel = document.getElementById('harbor-side-panel-overlay');
-    if (existingPanel) {
-      existingPanel.remove();
-    }
+    const existingPanels = [
+      document.getElementById('harbor-side-panel-overlay'),
+      document.getElementById('harbor-fullscreen-panel-overlay')
+    ];
+    existingPanels.forEach(panel => {
+      if (panel) {
+        panel.remove();
+      }
+    });
 
-    // Create panel HTML (keeping most of the existing styles but adding sources display)
-    const panelHTML = `
+    // Panel CSS tweaks for fullscreen mode
+    const isFullscreen = mode === 'fullscreen';
+    const panelId = isFullscreen ? 'harbor-fullscreen-panel' : 'harbor-side-panel';
+    const overlayId = isFullscreen ? 'harbor-fullscreen-panel-overlay' : 'harbor-side-panel-overlay';
+    const panelStyles = `
       <style>
-        #harbor-side-panel-overlay {
+        #${overlayId} {
           position: fixed;
           top: 0;
-          right: 0;
+          left: 0;
           width: 100vw;
           height: 100vh;
           background: rgba(0, 0, 0, 0.3);
@@ -520,33 +466,29 @@ class ArticleWidget extends HTMLElement {
           visibility: hidden;
           transition: opacity 0.3s ease, visibility 0.3s ease;
         }
-
-        #harbor-side-panel-overlay.show {
+        #${overlayId}.show {
           opacity: 1;
           visibility: visible;
         }
-
-        #harbor-side-panel {
+        #${panelId} {
           position: fixed;
           top: 0;
           right: 0;
-          width: 40vw;
-          min-width: 400px;
+          width: ${isFullscreen ? '100vw' : '40vw'};
+          min-width: ${isFullscreen ? '100vw' : '400px'};
           height: 100vh;
           background: white;
           z-index: 99999;
-          transform: translateX(100%);
+          transform: translateX(${isFullscreen ? '0' : '100%'});
           transition: transform 0.3s ease;
           box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
           display: flex;
           flex-direction: column;
           font-family: Georgia, 'Times New Roman', serif;
         }
-
-        #harbor-side-panel.show {
+        #${panelId}.show {
           transform: translateX(0);
         }
-
         .harbor-panel-header {
           padding: 20px;
           border-bottom: 1px solid #e5e7eb;
@@ -555,14 +497,12 @@ class ArticleWidget extends HTMLElement {
           justify-content: space-between;
           align-items: center;
         }
-
         .harbor-panel-title {
           font-size: 1.1rem;
           font-weight: 700;
           color: #000;
           margin: 0;
         }
-
         .harbor-panel-close {
           background: none;
           border: none;
@@ -572,11 +512,9 @@ class ArticleWidget extends HTMLElement {
           padding: 4px;
           line-height: 1;
         }
-
         .harbor-panel-close:hover {
           color: #000;
         }
-
         .harbor-panel-content {
           flex: 1;
           padding: 20px;
@@ -586,7 +524,6 @@ class ArticleWidget extends HTMLElement {
           color: #333;
           padding-bottom: 0;
         }
-
         .harbor-question-display {
           background: #f8f9fa;
           border: 1px solid #e9ecef;
@@ -598,7 +535,6 @@ class ArticleWidget extends HTMLElement {
           max-width: 85%;
           text-align: left;
         }
-
         .harbor-question-label {
           font-size: 0.75rem;
           font-weight: 600;
@@ -607,13 +543,11 @@ class ArticleWidget extends HTMLElement {
           letter-spacing: 0.5px;
           margin-bottom: 4px;
         }
-
         .harbor-question-text-display {
           font-size: 0.9rem;
           color: #000;
           font-weight: 600;
         }
-
         .harbor-answer-content {
           font-family: Georgia, 'Times New Roman', serif;
           text-align: left;
@@ -621,16 +555,12 @@ class ArticleWidget extends HTMLElement {
           margin-right: auto;
           max-width: 85%;
         }
-
         .conversation-item {
           margin-bottom: 24px;
         }
-
         .conversation-item:last-child {
           margin-bottom: 0;
         }
-
-        /* Sources styling for side panel */
         .harbor-sources-section {
           margin-top: 16px;
           padding-top: 12px;
@@ -640,7 +570,6 @@ class ArticleWidget extends HTMLElement {
           flex-direction: column;
           margin-bottom: 40px;
         }
-
         .harbor-sources-title {
           font-size: 0.8rem;
           font-weight: 600;
@@ -648,7 +577,6 @@ class ArticleWidget extends HTMLElement {
           margin-bottom: 8px;
           flex-shrink: 0;
         }
-
         .harbor-sources-container {
           display: flex;
           gap: 8px;
@@ -656,7 +584,6 @@ class ArticleWidget extends HTMLElement {
           align-items: flex-start;
           flex: 1;
         }
-
         .harbor-source-item {
           flex: 1;
           min-width: 0;
@@ -664,7 +591,6 @@ class ArticleWidget extends HTMLElement {
           align-items: center;
           justify-content: center;
         }
-
         .harbor-source-link {
           color: #374151;
           text-decoration: none;
@@ -682,13 +608,11 @@ class ArticleWidget extends HTMLElement {
           width: 100%;
           transition: all 0.2s ease;
         }
-
         .harbor-source-link:hover {
           background: #f9fafb;
           border-color: #d1d5db;
           text-decoration: none;
         }
-
         .harbor-loading-container {
           display: flex;
           align-items: center;
@@ -697,7 +621,6 @@ class ArticleWidget extends HTMLElement {
           font-size: 0.9rem;
           margin: 16px 0;
         }
-
         .harbor-loading-spinner {
           width: 16px;
           height: 16px;
@@ -706,29 +629,24 @@ class ArticleWidget extends HTMLElement {
           border-radius: 50%;
           animation: harbor-spin 1s linear infinite;
         }
-
         .harbor-loading-text {
           font-weight: 500;
         }
-
         @keyframes harbor-spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
         }
-
         .harbor-followup-section {
           border-top: 1px solid #e5e7eb;
           padding: 12px 16px;
           background: #f9fafb;
         }
-
         .harbor-followup-input-wrapper {
           position: relative;
           display: flex;
           align-items: center;
           margin-top: 8px;
         }
-
         .harbor-followup-input {
           width: 100%;
           padding: 12px 16px;
@@ -740,16 +658,13 @@ class ArticleWidget extends HTMLElement {
           background: white;
           font-family: Georgia, 'Times New Roman', serif;
         }
-
         .harbor-followup-input:focus {
           border-color: #000;
           box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
         }
-
         .harbor-followup-input::placeholder {
           color: #9ca3af;
         }
-
         .harbor-followup-submit {
           position: absolute;
           right: 8px;
@@ -768,11 +683,9 @@ class ArticleWidget extends HTMLElement {
           line-height: 1;
           padding: 0;
         }
-
         .harbor-followup-submit:hover {
           background: #333;
         }
-
         .harbor-suggestion-item {
           display: flex;
           align-items: center;
@@ -784,43 +697,40 @@ class ArticleWidget extends HTMLElement {
           text-decoration: none;
           color: #374151;
         }
-
         .harbor-suggestion-item:hover {
           background: #f8f9fa;
         }
-
         .harbor-suggestion-item:last-child {
           border-bottom: none;
         }
-
         .harbor-suggestion-text {
           font-size: 0.8rem;
           line-height: 1.3;
           flex: 1;
           font-weight: 500;
         }
-
         .harbor-suggestion-arrow {
           color: #9ca3af;
           font-size: 16px;
           margin-left: auto;
         }
-
         @media (max-width: 1024px) {
-          #harbor-side-panel {
-            width: 50vw;
-            min-width: 350px;
+          #${panelId} {
+            width: ${isFullscreen ? '100vw' : '50vw'};
+            min-width: ${isFullscreen ? '100vw' : '350px'};
           }
         }
-
         @media (max-width: 768px) {
-          #harbor-side-panel {
+          #${panelId} {
             width: 100vw;
             min-width: 100vw;
           }
         }
       </style>
-      <div id="harbor-side-panel">
+    `;
+    const panelHTML = `
+      ${panelStyles}
+      <div id="${panelId}">
         <div class="harbor-panel-header">
           <h3 class="harbor-panel-title">Ask The Harbor</h3>
           <button class="harbor-panel-close" id="harbor-panel-close">×</button>
@@ -848,7 +758,7 @@ class ArticleWidget extends HTMLElement {
 
     // Create overlay element
     const overlay = document.createElement('div');
-    overlay.id = 'harbor-side-panel-overlay';
+    overlay.id = overlayId;
     overlay.innerHTML = panelHTML;
 
     // Add to document body
@@ -856,10 +766,10 @@ class ArticleWidget extends HTMLElement {
 
     // Add event listeners
     const panelClose = document.getElementById('harbor-panel-close');
-    panelClose.addEventListener('click', () => this.closeSidePanel());
+    panelClose.addEventListener('click', () => this.closePanel(mode));
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) {
-        this.closeSidePanel();
+        this.closePanel(mode);
       }
     });
 
@@ -878,23 +788,65 @@ class ArticleWidget extends HTMLElement {
     return overlay;
   }
 
-  openSidePanel(question, answer) {
-    const overlay = this.createSidePanel();
-    const panel = document.getElementById('harbor-side-panel');
-    
+  async openPanel(mode, question, answer) {
+    const overlay = this.createPanel(mode);
+    const panel = document.getElementById(mode === 'fullscreen' ? 'harbor-fullscreen-panel' : 'harbor-side-panel');
     // Initialize conversation history with the first Q&A
     this.conversationHistory = [{ question, answer, sources: [] }];
-    this.updateConversationDisplay();
-    
-    // Populate suggestions with the first 2 related questions
-    this.updateFollowupSuggestions();
-    
-    // Force reflow to ensure element is rendered
     overlay.offsetHeight;
-    
     overlay.classList.add('show');
     panel.classList.add('show');
+    // Now update content and suggestions
+    await this.updateConversationDisplay();
+    await this.updateFollowupSuggestions();
     this.scrollToLatestQuestion();
+  }
+
+  async handleAsk() {
+    if (!this.question.trim()) return;
+    if (window.innerWidth <= 1200) {
+      // Mobile: open fullscreen overlay
+      await this.openPanel('fullscreen', this.question, this.getLoadingHTML());
+    } else {
+      // Desktop: open side panel
+      await this.openPanel('side', this.question, this.getLoadingHTML());
+    }
+    this.scrollToLatestQuestion();
+    try {
+      const requestBody = {
+        question: this.formatQuestionWithPageTitle(this.question)
+      };
+      const response = await fetch(`${this.backendUrl}/api/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      });
+      let responseData;
+      if (response.ok) {
+        responseData = await response.json();
+        if (responseData.success) {
+          this.conversationHistory[0].answer = responseData.response;
+          this.conversationHistory[0].sources = responseData.sources || [];
+        } else {
+          this.conversationHistory[0].answer = responseData.message || 'Failed to get response from RAG system.';
+          this.conversationHistory[0].sources = [];
+        }
+      } else {
+        this.conversationHistory[0].answer = 'Sorry, I couldn\'t process your question right now. Please try again.';
+        this.conversationHistory[0].sources = [];
+      }
+      await this.updateConversationDisplay();
+      await this.updateFollowupSuggestions();
+      this.scrollToLatestQuestion();
+    } catch (error) {
+      console.error('Error asking question:', error);
+      this.conversationHistory[0].answer = 'There was an error processing your question. Please try again.';
+      this.conversationHistory[0].sources = [];
+      await this.updateConversationDisplay();
+      this.scrollToLatestQuestion();
+    }
   }
 
   async updateConversationDisplay() {
@@ -1034,15 +986,14 @@ class ArticleWidget extends HTMLElement {
     }
   }
 
-  closeSidePanel() {
-    const overlay = document.getElementById('harbor-side-panel-overlay');
-    const panel = document.getElementById('harbor-side-panel');
-    
+  closePanel(mode) {
+    const overlayId = mode === 'fullscreen' ? 'harbor-fullscreen-panel-overlay' : 'harbor-side-panel-overlay';
+    const panelId = mode === 'fullscreen' ? 'harbor-fullscreen-panel' : 'harbor-side-panel';
+    const overlay = document.getElementById(overlayId);
+    const panel = document.getElementById(panelId);
     if (overlay && panel) {
       overlay.classList.remove('show');
       panel.classList.remove('show');
-      
-      // Remove panel after animation completes
       setTimeout(() => {
         if (overlay.parentNode) {
           overlay.parentNode.removeChild(overlay);
@@ -1051,20 +1002,43 @@ class ArticleWidget extends HTMLElement {
     }
   }
 
-  updateFollowupSuggestions() {
+  async updateFollowupSuggestions() {
     const suggestionsContainer = document.getElementById('harbor-suggestions');
     if (!suggestionsContainer) return;
-    
-    // Use the first 2 related questions as suggestions
-    const suggestions = this.relatedQuestions.slice(0, 2);
-    
+    // Fetch new followup questions from backend
+    let questions = [];
+    try {
+      const response = await fetch(`${this.backendUrl}/api/generate-questions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        questions = data.questions || [];
+      }
+      if (!questions.length) {
+        questions = [
+          'What are the main economic factors discussed?',
+          'How do current trends affect the future?',
+          'Can you summarize this article?'
+        ];
+      }
+    } catch (error) {
+      console.error('Error generating followup questions:', error);
+      questions = [
+        'What are the main economic factors discussed?',
+        'How do current trends affect the future?',
+        'Can you summarize this article?'
+      ];
+    }
+    // Use the first 2 questions as suggestions
+    const suggestions = questions.slice(0, 2);
     suggestionsContainer.innerHTML = suggestions.map(question => `
       <div class="harbor-suggestion-item" data-question="${question}">
         <span class="harbor-suggestion-text">${question}</span>
         <span class="harbor-suggestion-arrow">→</span>
       </div>
     `).join('');
-    
     // Add click handlers to suggestions
     suggestionsContainer.querySelectorAll('.harbor-suggestion-item').forEach(item => {
       item.addEventListener('click', () => {
@@ -1091,12 +1065,10 @@ class ArticleWidget extends HTMLElement {
     this.conversationHistory.push({ question, answer: this.getLoadingHTML(), sources: [] });
     await this.updateConversationDisplay();
     this.scrollToLatestQuestion();
-    
     try {
       const requestBody = {
         question: this.formatQuestionWithPageTitle(question)
       };
-      
       const response = await fetch(`${this.backendUrl}/api/chat`, {
         method: 'POST',
         headers: {
@@ -1104,7 +1076,6 @@ class ArticleWidget extends HTMLElement {
         },
         body: JSON.stringify(requestBody)
       });
-      
       let responseData;
       if (response.ok) {
         responseData = await response.json();
@@ -1120,10 +1091,9 @@ class ArticleWidget extends HTMLElement {
         this.conversationHistory[this.conversationHistory.length - 1].answer = 'Sorry, I couldn\'t process your question right now. Please try again.';
         this.conversationHistory[this.conversationHistory.length - 1].sources = [];
       }
-      
       await this.updateConversationDisplay();
+      await this.updateFollowupSuggestions();
       this.scrollToLatestQuestion();
-      
     } catch (error) {
       console.error('Error asking followup question:', error);
       this.conversationHistory[this.conversationHistory.length - 1].answer = 'There was an error processing your question. Please try again.';
@@ -1131,20 +1101,6 @@ class ArticleWidget extends HTMLElement {
       await this.updateConversationDisplay();
       this.scrollToLatestQuestion();
     }
-  }
-
-  getArticleContext() {
-    // Extract article content for context (kept for potential future use)
-    const articleContent = document.querySelector('.article-content');
-    const articleTitle = document.querySelector('.article-title');
-    const articleByline = document.querySelector('.article-byline');
-    
-    return {
-      title: articleTitle?.textContent || '',
-      author: articleByline?.textContent || '',
-      content: articleContent?.textContent?.substring(0, 2000) || '',
-      url: window.location.href
-    };
   }
 }
 
